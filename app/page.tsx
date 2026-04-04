@@ -4,6 +4,13 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../lib/supabase/client";
 
+type Post = {
+  id: number;
+  title: string;
+  content: string;
+  created_at: string;
+};
+
 export default function HomePage() {
   const supabase = createClient();
   const router = useRouter();
@@ -18,6 +25,7 @@ export default function HomePage() {
   const [signupMessage, setSignupMessage] = useState("");
   const [loginMessage, setLoginMessage] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -25,7 +33,17 @@ export default function HomePage() {
       setUserEmail(data.user?.email ?? "");
     };
 
+    const loadPosts = async () => {
+      const { data } = await supabase
+        .from("posts")
+        .select("id, title, content, created_at")
+        .order("created_at", { ascending: false });
+
+      setPosts(data || []);
+    };
+
     loadUser();
+    loadPosts();
 
     const {
       data: { subscription },
@@ -85,7 +103,7 @@ export default function HomePage() {
       setLoginMessage("Logged in successfully.");
       setLoginEmail("");
       setLoginPassword("");
-      router.push("/dashboard"); // ✅ 자동 이동
+      router.push("/dashboard");
     }
   };
 
@@ -100,21 +118,19 @@ export default function HomePage() {
   };
 
   return (
-    <main style={{ padding: 20, maxWidth: 700, margin: "0 auto" }}>
-      {/* 🎯 랜딩 영역 */}
+    <main style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
       <h1 style={{ fontSize: 42, marginBottom: 12 }}>Neonadri</h1>
 
       <p style={{ fontSize: 20, color: "#555", marginBottom: 30 }}>
         Do you want to meet someone? Try Neonadri.
       </p>
 
-      {/* 👤 로그인 상태 */}
       {userEmail ? (
         <>
           <button onClick={handleLogout}>Log Out</button>
           <p style={{ marginTop: 10 }}>Logged in as: {userEmail}</p>
 
-          <div style={{ marginTop: 16 }}>
+          <div style={{ marginTop: 16, marginBottom: 40 }}>
             <a href="/dashboard">
               <button>Go to Dashboard</button>
             </a>
@@ -122,7 +138,6 @@ export default function HomePage() {
         </>
       ) : (
         <>
-          {/* 📝 회원가입 */}
           <h2>Sign Up</h2>
           <form onSubmit={handleSignup}>
             <input
@@ -148,7 +163,6 @@ export default function HomePage() {
           </form>
           <p>{signupMessage}</p>
 
-          {/* 🔐 로그인 */}
           <h2>Log In</h2>
           <form onSubmit={handleLogin}>
             <input
@@ -170,6 +184,39 @@ export default function HomePage() {
           {loginMessage && <p>{loginMessage}</p>}
         </>
       )}
+
+      <div style={{ marginTop: 50 }}>
+        <h2>Recent Posts</h2>
+
+        {posts.length === 0 ? (
+          <p>No posts yet.</p>
+        ) : (
+          posts.map((post) => (
+            <div
+              key={post.id}
+              style={{
+                border: "1px solid #ccc",
+                padding: 16,
+                marginBottom: 16,
+                borderRadius: 8,
+              }}
+            >
+              <h3 style={{ marginBottom: 8 }}>
+                <a
+                  href={`/posts/${post.id}`}
+                  style={{ color: "black", textDecoration: "none" }}
+                >
+                  {post.title}
+                </a>
+              </h3>
+
+              <p style={{ marginBottom: 8 }}>{post.content}</p>
+
+              <small>{new Date(post.created_at).toLocaleString()}</small>
+            </div>
+          ))
+        )}
+      </div>
     </main>
   );
 }
