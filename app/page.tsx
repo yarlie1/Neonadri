@@ -40,13 +40,22 @@ export default function HomePage() {
     e.preventDefault();
     setSignupMessage("");
 
-    const { error } = await supabase.auth.signUp({
-      email: signupEmail,
-      password: signupPassword,
-      options: {
-        data: { full_name: signupName },
-      },
-    });
+    const { data, error } = await supabase.auth.signUp({
+  email: signupEmail,
+  password: signupPassword,
+  options: {
+    data: { full_name: signupName }
+  },
+});
+
+if (data?.user) {
+  await supabase.from("profiles").insert([
+    {
+      id: data.user.id,
+      full_name: signupName,
+    },
+  ]);
+}
 
     if (error) {
       setSignupMessage(error.message);
