@@ -131,8 +131,12 @@ export default function HomePage() {
           <p style={{ marginTop: 10 }}>Logged in as: {userEmail}</p>
 
           <div style={{ marginTop: 16, marginBottom: 40 }}>
-            <a href="/dashboard">
+            <a href="/dashboard" style={{ marginRight: 8 }}>
               <button>Go to Dashboard</button>
+            </a>
+
+            <a href="/write">
+              <button>Write a Post</button>
             </a>
           </div>
         </>
