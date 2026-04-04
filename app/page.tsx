@@ -48,8 +48,14 @@ export default function HomePage() {
       },
     });
 
-    if (error) setSignupMessage(error.message);
-    else setSignupMessage("Signup successful. Check your email.");
+    if (error) {
+      setSignupMessage(error.message);
+    } else {
+      setSignupMessage("Signup successful. Check your email.");
+      setSignupName("");
+      setSignupEmail("");
+      setSignupPassword("");
+    }
   };
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
@@ -61,14 +67,24 @@ export default function HomePage() {
       password: loginPassword,
     });
 
-    if (error) setLoginMessage(error.message);
-    else setLoginMessage("Logged in successfully.");
+    if (error) {
+      setLoginMessage(error.message);
+    } else {
+      setLoginMessage("Logged in successfully.");
+      setLoginEmail("");
+      setLoginPassword("");
+    }
   };
 
-const handleLogout = async () => {
-  await supabase.auth.signOut();
-  setLoginMessage("Logged out successfully.");
-};
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      setLoginMessage(error.message);
+    } else {
+      setLoginMessage("Logged out successfully.");
+    }
+  };
 
   return (
     <main style={{ padding: 20 }}>
@@ -76,23 +92,51 @@ const handleLogout = async () => {
 
       <h2>Sign Up</h2>
       <form onSubmit={handleSignup}>
-        <input placeholder="Name" value={signupName} onChange={(e)=>setSignupName(e.target.value)} />
-        <input placeholder="Email" value={signupEmail} onChange={(e)=>setSignupEmail(e.target.value)} />
-        <input placeholder="Password" type="password" value={signupPassword} onChange={(e)=>setSignupPassword(e.target.value)} />
+        <input
+          placeholder="Name"
+          value={signupName}
+          onChange={(e) => setSignupName(e.target.value)}
+        />
+        <input
+          placeholder="Email"
+          value={signupEmail}
+          onChange={(e) => setSignupEmail(e.target.value)}
+        />
+        <input
+          placeholder="Password"
+          type="password"
+          value={signupPassword}
+          onChange={(e) => setSignupPassword(e.target.value)}
+        />
         <button type="submit">Sign Up</button>
       </form>
       <p>{signupMessage}</p>
 
       <h2>Log In</h2>
       <form onSubmit={handleLogin}>
-        <input placeholder="Email" value={loginEmail} onChange={(e)=>setLoginEmail(e.target.value)} />
-        <input placeholder="Password" type="password" value={loginPassword} onChange={(e)=>setLoginPassword(e.target.value)} />
+        <input
+          placeholder="Email"
+          value={loginEmail}
+          onChange={(e) => setLoginEmail(e.target.value)}
+        />
+        <input
+          placeholder="Password"
+          type="password"
+          value={loginPassword}
+          onChange={(e) => setLoginPassword(e.target.value)}
+        />
         <button type="submit">Log In</button>
       </form>
+
       <p>{loginMessage}</p>
 
-      <p>Current User: {userEmail || "None"}</p>
+      <button onClick={handleLogout}>Log Out</button>
+
+      {userEmail ? (
+        <p>Logged in as: {userEmail}</p>
+      ) : (
+        <p>Current User: None</p>
+      )}
     </main>
   );
 }
-// update
