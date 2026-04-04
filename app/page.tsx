@@ -1,4 +1,4 @@
-"use client";
+9i"use client";
 
 import { FormEvent, useEffect, useState } from "react";
 import { createClient } from "../lib/supabase/client";
@@ -137,6 +137,14 @@ export default function HomePage() {
       ) : (
         <p>Current User: None</p>
       )}
+
+{userEmail && (
+  <div style={{ marginTop: 16 }}>
+    <a href="/dashboard">
+      <button>Go to Dashboard</button>
+    </a>
+  </div>
+)}
 
 <a href="/dashboard">
   <button>Go to Dashboard</button>
