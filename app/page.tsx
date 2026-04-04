@@ -60,74 +60,119 @@ export default function HomePage() {
   };
 
   return (
-    <main style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
-      <h1 style={{ fontSize: 42, marginBottom: 12 }}>Neonadri</h1>
+    <main className="min-h-screen bg-slate-50 text-slate-900">
+      <section className="mx-auto max-w-5xl px-6 py-16">
+        <div className="mb-12 rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200 md:p-12">
+          <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
+            Neonadri
+          </p>
 
-      <p style={{ fontSize: 20, color: "#555", marginBottom: 30 }}>
-        Do you want to meet someone? Try Neonadri.
-      </p>
+          <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
+            Do you want to meet someone?
+            <span className="block text-blue-600">Try Neonadri.</span>
+          </h1>
 
-      {userEmail ? (
-        <>
-          <button onClick={handleLogout}>Log Out</button>
-          <p style={{ marginTop: 10 }}>Logged in as: {userEmail}</p>
+          <p className="mt-6 max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
+            Discover people, share posts, and build connections in a simple,
+            clean space designed to feel easy from the first click.
+          </p>
 
-          <div style={{ marginTop: 16, marginBottom: 40 }}>
-            <a href="/dashboard" style={{ marginRight: 8 }}>
-              <button>Go to Dashboard</button>
-            </a>
+          {userEmail ? (
+            <div className="mt-8">
+              <p className="mb-4 text-sm text-slate-600">
+                Logged in as{" "}
+                <span className="font-semibold text-slate-900">{userEmail}</span>
+              </p>
 
-            <a href="/write">
-              <button>Write a Post</button>
-            </a>
-          </div>
-        </>
-      ) : (
-        <div style={{ marginBottom: 40 }}>
-          <a href="/login" style={{ marginRight: 10 }}>
-            <button>Log In</button>
-          </a>
-
-          <a href="/signup">
-            <button>Sign Up</button>
-          </a>
-        </div>
-      )}
-
-      {message && <p>{message}</p>}
-
-      <div style={{ marginTop: 50 }}>
-        <h2>Recent Posts</h2>
-
-        {posts.length === 0 ? (
-          <p>No posts yet.</p>
-        ) : (
-          posts.map((post) => (
-            <div
-              key={post.id}
-              style={{
-                border: "1px solid #ccc",
-                padding: 16,
-                marginBottom: 16,
-                borderRadius: 8,
-              }}
-            >
-              <h3 style={{ marginBottom: 8 }}>
+              <div className="flex flex-wrap gap-3">
                 <a
-                  href={`/posts/${post.id}`}
-                  style={{ color: "black", textDecoration: "none" }}
+                  href="/dashboard"
+                  className="inline-flex items-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
                 >
-                  {post.title}
+                  Go to Dashboard
                 </a>
-              </h3>
 
-              <p style={{ marginBottom: 8 }}>{post.content}</p>
+                <a
+                  href="/write"
+                  className="inline-flex items-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+                >
+                  Write a Post
+                </a>
 
-              <small>{new Date(post.created_at).toLocaleString()}</small>
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex items-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+                >
+                  Log Out
+                </button>
+              </div>
             </div>
-          ))
-        )}
-      </div>
+          ) : (
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="/login"
+                className="inline-flex items-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+              >
+                Log In
+              </a>
+
+              <a
+                href="/signup"
+                className="inline-flex items-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+              >
+                Sign Up
+              </a>
+            </div>
+          )}
+
+          {message && (
+            <p className="mt-4 rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-700">
+              {message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+                Recent Posts
+              </h2>
+              <p className="mt-2 text-sm text-slate-600">
+                See what people are sharing right now.
+              </p>
+            </div>
+          </div>
+
+          {posts.length === 0 ? (
+            <div className="rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
+              <p className="text-slate-600">No posts yet.</p>
+            </div>
+          ) : (
+            <div className="grid gap-5">
+              {posts.map((post) => (
+                <a
+                  key={post.id}
+                  href={`/posts/${post.id}`}
+                  className="block rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  <h3 className="text-xl font-semibold tracking-tight text-slate-900">
+                    {post.title}
+                  </h3>
+
+                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">
+                    {post.content}
+                  </p>
+
+                  <div className="mt-4 text-xs text-slate-400">
+                    {new Date(post.created_at).toLocaleString()}
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
     </main>
   );
 }
