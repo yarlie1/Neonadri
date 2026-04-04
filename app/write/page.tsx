@@ -53,60 +53,62 @@ export default function WritePage() {
       return;
     }
 
-    setMessage("Post created successfully.");
-    setTitle("");
-    setContent("");
-    setLoading(false);
-
     router.push("/");
   };
 
   return (
-    <main style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
-      <h1>Write a Post</h1>
+    <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text-[#2f2a26]">
+      <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
+        <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#a48f7a]">
+          Neonadri
+        </p>
 
-      <div style={{ marginTop: 20 }}>
-        <input
-          placeholder="Post title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          style={{
-            width: "100%",
-            maxWidth: 500,
-            marginBottom: 12,
-            padding: 8,
-          }}
-        />
+        <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
+          Write a Post
+        </h1>
 
-        <br />
+        <p className="mt-3 text-sm leading-7 text-[#6f655c]">
+          Share a thought, story, or moment with the community.
+        </p>
 
-        <textarea
-          placeholder="Write your content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          rows={10}
-          style={{
-            width: "100%",
-            maxWidth: 700,
-            padding: 8,
-          }}
-        />
+        <div className="mt-8 space-y-4">
+          <input
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            placeholder="Post title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
 
-        <div style={{ marginTop: 16 }}>
+          <textarea
+            className="min-h-[220px] w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            placeholder="Write your content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-3">
           <button
             onClick={handleCreatePost}
             disabled={loading || !userId}
-            style={{ marginRight: 8 }}
+            className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
           >
             {loading ? "Creating..." : "Create Post"}
           </button>
 
-          <a href="/">
-            <button>Back to Home</button>
+          <a
+            href="/"
+            className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+          >
+            Back to Home
           </a>
         </div>
 
-        {message && <p style={{ marginTop: 12 }}>{message}</p>}
+        {message && (
+          <p className="mt-5 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+            {message}
+          </p>
+        )}
       </div>
     </main>
   );
