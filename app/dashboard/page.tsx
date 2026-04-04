@@ -86,21 +86,13 @@ export default function DashboardPage() {
   };
 
   const handleDeletePost = async (postId: number) => {
-    if (!userId) {
-      alert("User not loaded yet.");
-      return;
-    }
-
     const confirmed = window.confirm("Delete this post?");
     if (!confirmed) return;
 
-    const { error } = await supabase
-      .from("posts")
-      .delete()
-      .eq("id", postId);
+    const { error } = await supabase.from("posts").delete().eq("id", postId);
 
     if (error) {
-      alert(error.message);
+      setPostMessage(error.message);
       return;
     }
 
@@ -149,104 +141,143 @@ export default function DashboardPage() {
   };
 
   return (
-    <main style={{ padding: 20, maxWidth: 900, margin: "0 auto" }}>
-      <h1>Dashboard</h1>
+    <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text-[#2f2a26]">
+      <div className="mx-auto max-w-5xl space-y-8">
+        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#a48f7a]">
+            Dashboard
+          </p>
 
-      <p>Welcome: {fullName || userEmail}</p>
-      <p>Email: {userEmail}</p>
-      {fullName && <p>Name: {fullName}</p>}
+          <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
+            Welcome, {fullName || userEmail}
+          </h1>
 
-      <div style={{ marginTop: 20 }}>
-        <a href="/write">
-          <button>Write a New Post</button>
-        </a>
-      </div>
+          <p className="mt-3 text-sm leading-7 text-[#6f655c]">
+            Email: {userEmail}
+          </p>
 
-      <div style={{ marginTop: 30 }}>
-        <h2>Edit Profile</h2>
-        <input
-          placeholder="Full name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          style={{ marginRight: 8 }}
-        />
-        <button onClick={handleSaveProfile} disabled={loading || !userId}>
-          {loading ? "Saving..." : "Save"}
-        </button>
-        {message && <p style={{ marginTop: 12 }}>{message}</p>}
-      </div>
-
-      <div style={{ marginTop: 40 }}>
-        <h2>Posts</h2>
-
-        {postMessage && <p style={{ marginTop: 12 }}>{postMessage}</p>}
-
-        {posts.length === 0 ? (
-          <p>No posts yet.</p>
-        ) : (
-          posts.map((post) => (
-            <div
-              key={post.id}
-              style={{
-                border: "1px solid #ccc",
-                padding: 16,
-                marginBottom: 16,
-                borderRadius: 8,
-              }}
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a
+              href="/write"
+              className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
             >
-              {editingPostId === post.id ? (
-                <div>
-                  <input
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                    style={{ width: "100%", maxWidth: 400, marginBottom: 8 }}
-                  />
-                  <br />
-                  <textarea
-                    value={editContent}
-                    onChange={(e) => setEditContent(e.target.value)}
-                    rows={6}
-                    style={{ width: "100%", maxWidth: 600 }}
-                  />
-                  <div style={{ marginTop: 12 }}>
-                    <button
-                      onClick={handleUpdatePost}
-                      style={{ marginRight: 8 }}
-                    >
-                      Save Edit
-                    </button>
-                    <button onClick={handleCancelEdit}>Cancel</button>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <h3>
-                    <a
-                      href={`/posts/${post.id}`}
-                      style={{ color: "black", textDecoration: "none" }}
-                    >
-                      {post.title}
-                    </a>
-                  </h3>
-                  <p>{post.content}</p>
-                  <small>{new Date(post.created_at).toLocaleString()}</small>
+              Write a New Post
+            </a>
 
-                  <div style={{ marginTop: 12 }}>
-                    <button
-                      onClick={() => handleStartEdit(post)}
-                      style={{ marginRight: 8 }}
-                    >
-                      Edit
-                    </button>
-                    <button onClick={() => handleDeletePost(post.id)}>
-                      Delete
-                    </button>
-                  </div>
+            <a
+              href="/"
+              className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+            >
+              Back to Home
+            </a>
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
+          <h2 className="text-2xl font-semibold text-[#2f2a26]">Edit Profile</h2>
+
+          <div className="mt-5 flex flex-col gap-4 md:flex-row">
+            <input
+              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              placeholder="Full name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+
+            <button
+              onClick={handleSaveProfile}
+              disabled={loading || !userId}
+              className="rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046] disabled:opacity-50"
+            >
+              {loading ? "Saving..." : "Save"}
+            </button>
+          </div>
+
+          {message && (
+            <p className="mt-4 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+              {message}
+            </p>
+          )}
+        </div>
+
+        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
+          <h2 className="text-2xl font-semibold text-[#2f2a26]">Your Posts</h2>
+
+          {postMessage && (
+            <p className="mt-4 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+              {postMessage}
+            </p>
+          )}
+
+          <div className="mt-6 space-y-5">
+            {posts.length === 0 ? (
+              <p className="text-[#6f655c]">No posts yet.</p>
+            ) : (
+              posts.map((post) => (
+                <div
+                  key={post.id}
+                  className="rounded-[1.5rem] border border-[#e7ddd2] bg-white p-6 shadow-sm"
+                >
+                  {editingPostId === post.id ? (
+                    <div className="space-y-4">
+                      <input
+                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                      />
+                      <textarea
+                        className="min-h-[180px] w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                        value={editContent}
+                        onChange={(e) => setEditContent(e.target.value)}
+                      />
+                      <div className="flex flex-wrap gap-3">
+                        <button
+                          onClick={handleUpdatePost}
+                          className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                        >
+                          Save Edit
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <h3 className="text-xl font-semibold text-[#2f2a26]">
+                        <a href={`/posts/${post.id}`}>{post.title}</a>
+                      </h3>
+                      <p className="mt-3 text-sm leading-7 text-[#6f655c]">
+                        {post.content}
+                      </p>
+                      <p className="mt-4 text-xs text-[#9b8f84]">
+                        {new Date(post.created_at).toLocaleString()}
+                      </p>
+
+                      <div className="mt-5 flex flex-wrap gap-3">
+                        <button
+                          onClick={() => handleStartEdit(post)}
+                          className="rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046]"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeletePost(post.id)}
+                          className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          ))
-        )}
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </main>
   );
