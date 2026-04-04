@@ -268,7 +268,14 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div>
-                  <h3>{post.title}</h3>
+                  <h3>
+                    <a
+                      href={`/posts/${post.id}`}
+                      style={{ color: "black", textDecoration: "none" }}
+                    >
+                      {post.title}
+                    </a>
+                  </h3>
                   <p>{post.content}</p>
                   <small>{new Date(post.created_at).toLocaleString()}</small>
 
