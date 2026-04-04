@@ -137,6 +137,11 @@ export default function HomePage() {
       ) : (
         <p>Current User: None</p>
       )}
+
+<a href="/dashboard">
+  <button>Go to Dashboard</button>
+</a>
+
     </main>
   );
 }
