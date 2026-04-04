@@ -26,6 +26,10 @@ export default function DashboardPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [postMessage, setPostMessage] = useState("");
 
+  const [editingPostId, setEditingPostId] = useState<number | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+
   useEffect(() => {
     const loadDashboard = async () => {
       const {
@@ -113,12 +117,76 @@ export default function DashboardPage() {
     await loadPosts();
   };
 
+  const handleDeletePost = async (postId: number) => {
+    if (!userId) {
+      alert("User not loaded yet.");
+      return;
+    }
+
+    const confirmed = window.confirm("Delete this post?");
+    if (!confirmed) return;
+
+    const { error } = await supabase
+      .from("posts")
+      .delete()
+      .eq("id", postId);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    setPostMessage("Post deleted successfully.");
+    await loadPosts();
+  };
+
+  const handleStartEdit = (post: Post) => {
+    setEditingPostId(post.id);
+    setEditTitle(post.title);
+    setEditContent(post.content);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingPostId(null);
+    setEditTitle("");
+    setEditContent("");
+  };
+
+  const handleUpdatePost = async () => {
+    if (!editingPostId) return;
+
+    if (!editTitle.trim() || !editContent.trim()) {
+      setPostMessage("Please enter both title and content.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("posts")
+      .update({
+        title: editTitle,
+        content: editContent,
+      })
+      .eq("id", editingPostId);
+
+    if (error) {
+      setPostMessage(error.message);
+      return;
+    }
+
+    setPostMessage("Post updated successfully.");
+    setEditingPostId(null);
+    setEditTitle("");
+    setEditContent("");
+    await loadPosts();
+  };
+
   return (
     <main style={{ padding: 20 }}>
       <h1>Dashboard</h1>
 
       <p>Welcome: {fullName || userEmail}</p>
       <p>Email: {userEmail}</p>
+      {fullName && <p>Name: {fullName}</p>}
 
       <div style={{ marginTop: 20 }}>
         <h2>Edit Profile</h2>
@@ -177,11 +245,46 @@ export default function DashboardPage() {
                 borderRadius: 8,
               }}
             >
-              <h3>{post.title}</h3>
-              <p>{post.content}</p>
-              <small>
-                {new Date(post.created_at).toLocaleString()}
-              </small>
+              {editingPostId === post.id ? (
+                <div>
+                  <input
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    style={{ width: "100%", maxWidth: 400, marginBottom: 8 }}
+                  />
+                  <br />
+                  <textarea
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    rows={6}
+                    style={{ width: "100%", maxWidth: 600 }}
+                  />
+                  <div style={{ marginTop: 12 }}>
+                    <button onClick={handleUpdatePost} style={{ marginRight: 8 }}>
+                      Save Edit
+                    </button>
+                    <button onClick={handleCancelEdit}>Cancel</button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <h3>{post.title}</h3>
+                  <p>{post.content}</p>
+                  <small>{new Date(post.created_at).toLocaleString()}</small>
+
+                  <div style={{ marginTop: 12 }}>
+                    <button
+                      onClick={() => handleStartEdit(post)}
+                      style={{ marginRight: 8 }}
+                    >
+                      Edit
+                    </button>
+                    <button onClick={() => handleDeletePost(post.id)}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))
         )}
