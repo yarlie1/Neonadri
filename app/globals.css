@@ -1,14 +1,16 @@
 @import "tailwindcss";
 
-/* 기본 리셋 + 부드러운 UX */
+/* 기본 리셋 */
 * {
   box-sizing: border-box;
 }
 
+/* 스크롤 부드럽게 */
 html {
   scroll-behavior: smooth;
 }
 
+/* 전체 기본 스타일 */
 body {
   margin: 0;
   padding: 0;
@@ -24,24 +26,70 @@ a {
   text-decoration: none;
 }
 
-/* 버튼 기본 스타일 개선 */
+/* 버튼 UX 개선 */
 button {
   cursor: pointer;
   border: none;
 }
 
-/* 입력창 기본 스타일 */
+/* input / textarea 기본 스타일 */
 input,
 textarea {
   outline: none;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
-  padding: 8px;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  width: 100%;
 }
 
-/* 포커스 시 강조 */
+/* 포커스 효과 */
 input:focus,
 textarea:focus {
   border-color: #2563eb;
   box-shadow: 0 0 0 1px #2563eb;
+}
+
+/* 카드 기본 느낌 */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+/* 버튼 기본 스타일 (옵션) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-dark {
+  background: #111827;
+  color: white;
+}
+
+.btn-dark:hover {
+  background: #1f2937;
 }
