@@ -21,8 +21,6 @@ export default function DashboardPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
   const [postMessage, setPostMessage] = useState("");
 
@@ -54,12 +52,7 @@ export default function DashboardPage() {
         setFullName(profile.full_name);
       }
 
-      const { data: postData } = await supabase
-        .from("posts")
-        .select("id, title, content, created_at")
-        .order("created_at", { ascending: false });
-
-      setPosts(postData || []);
+      await loadPosts();
     };
 
     loadDashboard();
@@ -90,31 +83,6 @@ export default function DashboardPage() {
     }
 
     setLoading(false);
-  };
-
-  const handleCreatePost = async () => {
-    setPostMessage("");
-
-    if (!title.trim() || !content.trim()) {
-      setPostMessage("Please enter both title and content.");
-      return;
-    }
-
-    const { error } = await supabase.from("posts").insert({
-      user_id: userId,
-      title,
-      content,
-    });
-
-    if (error) {
-      setPostMessage(error.message);
-      return;
-    }
-
-    setPostMessage("Post created successfully.");
-    setTitle("");
-    setContent("");
-    await loadPosts();
   };
 
   const handleDeletePost = async (postId: number) => {
@@ -181,7 +149,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <main style={{ padding: 20 }}>
+    <main style={{ padding: 20, maxWidth: 900, margin: "0 auto" }}>
       <h1>Dashboard</h1>
 
       <p>Welcome: {fullName || userEmail}</p>
@@ -189,6 +157,12 @@ export default function DashboardPage() {
       {fullName && <p>Name: {fullName}</p>}
 
       <div style={{ marginTop: 20 }}>
+        <a href="/write">
+          <button>Write a New Post</button>
+        </a>
+      </div>
+
+      <div style={{ marginTop: 30 }}>
         <h2>Edit Profile</h2>
         <input
           placeholder="Full name"
@@ -203,34 +177,9 @@ export default function DashboardPage() {
       </div>
 
       <div style={{ marginTop: 40 }}>
-        <h2>Create Post</h2>
-
-        <div style={{ marginBottom: 12 }}>
-          <input
-            placeholder="Post title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            style={{ width: "100%", maxWidth: 400, marginBottom: 8 }}
-          />
-          <br />
-          <textarea
-            placeholder="Write your content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            rows={6}
-            style={{ width: "100%", maxWidth: 600 }}
-          />
-        </div>
-
-        <button onClick={handleCreatePost} disabled={!userId}>
-          Create Post
-        </button>
+        <h2>Posts</h2>
 
         {postMessage && <p style={{ marginTop: 12 }}>{postMessage}</p>}
-      </div>
-
-      <div style={{ marginTop: 40 }}>
-        <h2>Posts</h2>
 
         {posts.length === 0 ? (
           <p>No posts yet.</p>
@@ -260,7 +209,10 @@ export default function DashboardPage() {
                     style={{ width: "100%", maxWidth: 600 }}
                   />
                   <div style={{ marginTop: 12 }}>
-                    <button onClick={handleUpdatePost} style={{ marginRight: 8 }}>
+                    <button
+                      onClick={handleUpdatePost}
+                      style={{ marginRight: 8 }}
+                    >
                       Save Edit
                     </button>
                     <button onClick={handleCancelEdit}>Cancel</button>
