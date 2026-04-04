@@ -1,10 +1,12 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "../lib/supabase/client";
 
 export default function HomePage() {
   const supabase = createClient();
+  const router = useRouter();
 
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
@@ -83,6 +85,7 @@ export default function HomePage() {
       setLoginMessage("Logged in successfully.");
       setLoginEmail("");
       setLoginPassword("");
+      router.push("/dashboard");
     }
   };
 
