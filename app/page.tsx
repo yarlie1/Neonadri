@@ -58,55 +58,50 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-stone-50 via-stone-100 to-stone-50 text-stone-800">
+    <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
       <section className="mx-auto max-w-5xl px-6 py-16">
-        {/* HERO */}
-        <div className="mb-14 rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm md:p-12">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-stone-400">
+        <div className="mb-14 rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-12">
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#a48f7a]">
             Neonadri
           </p>
 
-          <h1 className="text-4xl font-semibold leading-tight tracking-tight text-stone-900 md:text-6xl">
+          <h1 className="text-4xl font-semibold leading-tight tracking-tight text-[#2f2a26] md:text-6xl">
             Do you want to
             <br />
             meet someone?
-            <span className="mt-2 block text-stone-700">
-              Try Neonadri.
-            </span>
+            <span className="mt-2 block text-[#8d7763]">Try Neonadri.</span>
           </h1>
 
-          <p className="mt-6 max-w-2xl text-base leading-8 text-stone-600 md:text-lg">
+          <p className="mt-6 max-w-2xl text-base leading-8 text-[#6f655c] md:text-lg">
             Discover people, share posts, and build connections in a clean,
             simple space that feels comfortable from the first click.
           </p>
 
           {userEmail ? (
             <div className="mt-10">
-              <p className="mb-5 text-sm text-stone-500">
+              <p className="mb-5 text-sm text-[#7b7067]">
                 Logged in as{" "}
-                <span className="font-semibold text-stone-800">
-                  {userEmail}
-                </span>
+                <span className="font-semibold text-[#2f2a26]">{userEmail}</span>
               </p>
 
               <div className="flex flex-wrap gap-3">
                 <a
                   href="/dashboard"
-                  className="rounded-2xl bg-stone-800 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-700"
+                  className="inline-flex items-center justify-center rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046]"
                 >
                   Dashboard
                 </a>
 
                 <a
                   href="/write"
-                  className="rounded-2xl bg-stone-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-700"
+                  className="inline-flex items-center justify-center rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
                 >
                   Write a Post
                 </a>
 
                 <button
                   onClick={handleLogout}
-                  className="rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
+                  className="inline-flex items-center justify-center rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
                 >
                   Log Out
                 </button>
@@ -116,14 +111,14 @@ export default function HomePage() {
             <div className="mt-10 flex flex-wrap gap-3">
               <a
                 href="/login"
-                className="rounded-2xl bg-stone-800 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-700"
+                className="inline-flex items-center justify-center rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046]"
               >
                 Log In
               </a>
 
               <a
                 href="/signup"
-                className="rounded-2xl bg-stone-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-700"
+                className="inline-flex items-center justify-center rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
               >
                 Sign Up
               </a>
@@ -131,25 +126,24 @@ export default function HomePage() {
           )}
 
           {message && (
-            <p className="mt-5 rounded-2xl border border-stone-200 bg-stone-100 px-4 py-3 text-sm text-stone-700">
+            <p className="mt-5 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
               {message}
             </p>
           )}
         </div>
 
-        {/* POSTS */}
         <div>
-          <h2 className="text-2xl font-semibold text-stone-900 md:text-3xl">
+          <h2 className="text-2xl font-semibold text-[#2f2a26] md:text-3xl">
             Recent Posts
           </h2>
 
-          <p className="mt-2 text-sm text-stone-500">
+          <p className="mt-2 text-sm text-[#7b7067]">
             See what people are sharing right now.
           </p>
 
           {posts.length === 0 ? (
-            <div className="mt-6 rounded-[1.5rem] border border-stone-200 bg-white p-8 text-center shadow-sm">
-              <p className="text-stone-500">No posts yet.</p>
+            <div className="mt-6 rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 text-center shadow-sm">
+              <p className="text-[#7b7067]">No posts yet.</p>
             </div>
           ) : (
             <div className="mt-6 grid gap-5">
@@ -157,19 +151,19 @@ export default function HomePage() {
                 <a
                   key={post.id}
                   href={`/posts/${post.id}`}
-                  className="block rounded-[1.5rem] border border-stone-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+                  className="block rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_10px_24px_rgba(80,60,40,0.08)]"
                 >
-                  <h3 className="text-xl font-semibold text-stone-900">
+                  <h3 className="text-xl font-semibold text-[#2f2a26]">
                     {post.title}
                   </h3>
 
-                  <p className="mt-3 text-sm leading-7 text-stone-600">
+                  <p className="mt-3 text-sm leading-7 text-[#6f655c]">
                     {post.content.length > 180
                       ? `${post.content.slice(0, 180)}...`
                       : post.content}
                   </p>
 
-                  <div className="mt-4 text-xs text-stone-400">
+                  <div className="mt-4 text-xs text-[#9b8f84]">
                     {new Date(post.created_at).toLocaleString()}
                   </div>
                 </a>
