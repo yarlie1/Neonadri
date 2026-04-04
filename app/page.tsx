@@ -60,65 +60,67 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
+    <main className="min-h-screen bg-gradient-to-b from-rose-50 via-orange-50 to-stone-50 text-stone-800">
       <section className="mx-auto max-w-5xl px-6 py-16">
-        <div className="mb-12 rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200 md:p-12">
-          <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
+        <div className="mb-14 rounded-[2rem] border border-rose-100/70 bg-white/80 p-8 shadow-[0_10px_40px_rgba(120,53,15,0.08)] backdrop-blur md:p-12">
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-rose-400">
             Neonadri
           </p>
 
-          <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
-            Do you want to meet someone?
-            <span className="block text-blue-600">Try Neonadri.</span>
+          <h1 className="text-4xl font-semibold leading-tight tracking-tight text-stone-900 md:text-6xl">
+            Do you want to
+            <br />
+            meet someone?
+            <span className="mt-2 block text-rose-500">Try Neonadri.</span>
           </h1>
 
-          <p className="mt-6 max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
-            Discover people, share posts, and build connections in a simple,
-            clean space designed to feel easy from the first click.
+          <p className="mt-6 max-w-2xl text-base leading-8 text-stone-600 md:text-lg">
+            Discover people, share posts, and build connections in a warm,
+            welcoming space designed to feel natural from the first click.
           </p>
 
           {userEmail ? (
-            <div className="mt-8">
-              <p className="mb-4 text-sm text-slate-600">
+            <div className="mt-10">
+              <p className="mb-5 text-sm text-stone-500">
                 Logged in as{" "}
-                <span className="font-semibold text-slate-900">{userEmail}</span>
+                <span className="font-semibold text-stone-800">{userEmail}</span>
               </p>
 
               <div className="flex flex-wrap gap-3">
                 <a
                   href="/dashboard"
-                  className="inline-flex items-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+                  className="inline-flex items-center rounded-2xl bg-stone-800 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-stone-700"
                 >
                   Go to Dashboard
                 </a>
 
                 <a
                   href="/write"
-                  className="inline-flex items-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+                  className="inline-flex items-center rounded-2xl bg-rose-400 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-rose-500"
                 >
                   Write a Post
                 </a>
 
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+                  className="inline-flex items-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
                 >
                   Log Out
                 </button>
               </div>
             </div>
           ) : (
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-10 flex flex-wrap gap-3">
               <a
                 href="/login"
-                className="inline-flex items-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+                className="inline-flex items-center rounded-2xl bg-stone-800 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-stone-700"
               >
                 Log In
               </a>
 
               <a
                 href="/signup"
-                className="inline-flex items-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+                className="inline-flex items-center rounded-2xl bg-rose-400 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-rose-500"
               >
                 Sign Up
               </a>
@@ -126,7 +128,7 @@ export default function HomePage() {
           )}
 
           {message && (
-            <p className="mt-4 rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-700">
+            <p className="mt-5 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-600">
               {message}
             </p>
           )}
@@ -135,18 +137,18 @@ export default function HomePage() {
         <div>
           <div className="mb-6 flex items-end justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+              <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
                 Recent Posts
               </h2>
-              <p className="mt-2 text-sm text-slate-600">
+              <p className="mt-2 text-sm text-stone-500">
                 See what people are sharing right now.
               </p>
             </div>
           </div>
 
           {posts.length === 0 ? (
-            <div className="rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
-              <p className="text-slate-600">No posts yet.</p>
+            <div className="rounded-[1.5rem] border border-stone-200 bg-white/80 p-8 text-center shadow-sm">
+              <p className="text-stone-500">No posts yet.</p>
             </div>
           ) : (
             <div className="grid gap-5">
@@ -154,17 +156,19 @@ export default function HomePage() {
                 <a
                   key={post.id}
                   href={`/posts/${post.id}`}
-                  className="block rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md"
+                  className="block rounded-[1.5rem] border border-stone-200 bg-white/85 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(120,53,15,0.08)]"
                 >
-                  <h3 className="text-xl font-semibold tracking-tight text-slate-900">
+                  <h3 className="text-xl font-semibold tracking-tight text-stone-900">
                     {post.title}
                   </h3>
 
-                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">
-                    {post.content}
+                  <p className="mt-3 text-sm leading-7 text-stone-600">
+                    {post.content.length > 180
+                      ? `${post.content.slice(0, 180)}...`
+                      : post.content}
                   </p>
 
-                  <div className="mt-4 text-xs text-slate-400">
+                  <div className="mt-4 text-xs text-stone-400">
                     {new Date(post.created_at).toLocaleString()}
                   </div>
                 </a>
