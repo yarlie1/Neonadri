@@ -26,39 +26,52 @@ export default async function PostDetailPage({ params }: PageProps) {
 
   if (error || !post) {
     return (
-      <main style={{ padding: 20 }}>
-        <h1>Post not found</h1>
-        <a href="/dashboard">
-          <button>Back to Dashboard</button>
-        </a>
+      <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text-[#2f2a26]">
+        <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
+          <h1 className="text-3xl font-semibold text-[#2f2a26]">
+            Post not found
+          </h1>
+
+          <div className="mt-6">
+            <a
+              href="/"
+              className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+            >
+              Back to Home
+            </a>
+          </div>
+        </div>
       </main>
     );
   }
 
   return (
-    <main style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
-      <h1>{post.title}</h1>
+    <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text-[#2f2a26]">
+      <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
+        <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#a48f7a]">
+          Post
+        </p>
 
-      <p style={{ color: "#666", marginBottom: 20 }}>
-        {new Date(post.created_at).toLocaleString()}
-      </p>
+        <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
+          {post.title}
+        </h1>
 
-      <div
-        style={{
-          border: "1px solid #ccc",
-          borderRadius: 8,
-          padding: 16,
-          lineHeight: 1.6,
-          whiteSpace: "pre-wrap",
-        }}
-      >
-        {post.content}
-      </div>
+        <p className="mt-4 text-sm text-[#9b8f84]">
+          {new Date(post.created_at).toLocaleString()}
+        </p>
 
-      <div style={{ marginTop: 20 }}>
-        <a href="/dashboard">
-          <button>Back to Dashboard</button>
-        </a>
+        <div className="mt-8 rounded-[1.5rem] border border-[#e7ddd2] bg-white p-6 text-sm leading-8 text-[#6f655c]">
+          {post.content}
+        </div>
+
+        <div className="mt-8">
+          <a
+            href="/"
+            className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+          >
+            Back to Home
+          </a>
+        </div>
       </div>
     </main>
   );
