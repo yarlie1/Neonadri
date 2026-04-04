@@ -65,6 +65,11 @@ export default function HomePage() {
     else setLoginMessage("Logged in successfully.");
   };
 
+const handleLogout = async () => {
+  await supabase.auth.signOut();
+  setLoginMessage("Logged out successfully.");
+};
+
   return (
     <main style={{ padding: 20 }}>
       <h1>Neonadri Auth Test</h1>
