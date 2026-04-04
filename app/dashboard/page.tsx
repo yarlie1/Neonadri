@@ -1,42 +1,28 @@
-"use client";
+import { redirect } from "next/navigation";
+import { createClient } from "../../lib/supabase/server";
 
-import { useEffect, useState } from "react";
-import { createClient } from "../../lib/supabase/client";
-
-export default function Dashboard() {
+export default async function DashboardPage() {
   const supabase = createClient();
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [name, setName] = useState<string | null>(null);
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-      if (user) {
-        setUserEmail(user.email!);
+  if (!user) {
+    redirect("/");
+  }
 
-        // 👉 profiles 테이블에서 이름 가져오기
-        const { data } = await supabase
-          .from("profiles")
-          .select("full_name")
-          .eq("id", user.id)
-          .single();
-
-        if (data) {
-          setName(data.full_name);
-        }
-      }
-    };
-
-    getUser();
-  }, []);
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", user.id)
+    .maybeSingle();
 
   return (
-    <div>
+    <main style={{ padding: 20 }}>
       <h1>Dashboard</h1>
-      <p>Welcome: {userEmail}</p>
-
-      {name && <p>Name: {name}</p>}
-    </div>
+      <p>Welcome: {user.email}</p>
+      {profile?.full_name ? <p>Name: {profile.full_name}</p> : null}
+    </main>
   );
 }
