@@ -58,7 +58,7 @@ export default function WritePage() {
     setContent("");
     setLoading(false);
 
-    router.push("/dashboard");
+    router.push("/");
   };
 
   return (
@@ -101,8 +101,8 @@ export default function WritePage() {
             {loading ? "Creating..." : "Create Post"}
           </button>
 
-          <a href="/dashboard">
-            <button>Back to Dashboard</button>
+          <a href="/">
+            <button>Back to Home</button>
           </a>
         </div>
 
