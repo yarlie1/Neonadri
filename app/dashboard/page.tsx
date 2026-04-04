@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
 
+type Post = {
+  id: number;
+  title: string;
+  content: string;
+  created_at: string;
+};
+
 export default function DashboardPage() {
   const supabase = createClient();
   const router = useRouter();
@@ -14,8 +21,13 @@ export default function DashboardPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [postMessage, setPostMessage] = useState("");
+
   useEffect(() => {
-    const loadProfile = async () => {
+    const loadDashboard = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -37,10 +49,26 @@ export default function DashboardPage() {
       if (profile?.full_name) {
         setFullName(profile.full_name);
       }
+
+      const { data: postData } = await supabase
+        .from("posts")
+        .select("id, title, content, created_at")
+        .order("created_at", { ascending: false });
+
+      setPosts(postData || []);
     };
 
-    loadProfile();
+    loadDashboard();
   }, [router, supabase]);
+
+  const loadPosts = async () => {
+    const { data: postData } = await supabase
+      .from("posts")
+      .select("id, title, content, created_at")
+      .order("created_at", { ascending: false });
+
+    setPosts(postData || []);
+  };
 
   const handleSaveProfile = async () => {
     setMessage("");
@@ -60,6 +88,31 @@ export default function DashboardPage() {
     setLoading(false);
   };
 
+  const handleCreatePost = async () => {
+    setPostMessage("");
+
+    if (!title.trim() || !content.trim()) {
+      setPostMessage("Please enter both title and content.");
+      return;
+    }
+
+    const { error } = await supabase.from("posts").insert({
+      user_id: userId,
+      title,
+      content,
+    });
+
+    if (error) {
+      setPostMessage(error.message);
+      return;
+    }
+
+    setPostMessage("Post created successfully.");
+    setTitle("");
+    setContent("");
+    await loadPosts();
+  };
+
   return (
     <main style={{ padding: 20 }}>
       <h1>Dashboard</h1>
@@ -69,20 +122,70 @@ export default function DashboardPage() {
 
       <div style={{ marginTop: 20 }}>
         <h2>Edit Profile</h2>
-
         <input
           placeholder="Full name"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           style={{ marginRight: 8 }}
         />
-
         <button onClick={handleSaveProfile} disabled={loading || !userId}>
           {loading ? "Saving..." : "Save"}
         </button>
+        {message && <p style={{ marginTop: 12 }}>{message}</p>}
       </div>
 
-      {message && <p style={{ marginTop: 12 }}>{message}</p>}
+      <div style={{ marginTop: 40 }}>
+        <h2>Create Post</h2>
+
+        <div style={{ marginBottom: 12 }}>
+          <input
+            placeholder="Post title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={{ width: "100%", maxWidth: 400, marginBottom: 8 }}
+          />
+          <br />
+          <textarea
+            placeholder="Write your content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            rows={6}
+            style={{ width: "100%", maxWidth: 600 }}
+          />
+        </div>
+
+        <button onClick={handleCreatePost} disabled={!userId}>
+          Create Post
+        </button>
+
+        {postMessage && <p style={{ marginTop: 12 }}>{postMessage}</p>}
+      </div>
+
+      <div style={{ marginTop: 40 }}>
+        <h2>Posts</h2>
+
+        {posts.length === 0 ? (
+          <p>No posts yet.</p>
+        ) : (
+          posts.map((post) => (
+            <div
+              key={post.id}
+              style={{
+                border: "1px solid #ccc",
+                padding: 16,
+                marginBottom: 16,
+                borderRadius: 8,
+              }}
+            >
+              <h3>{post.title}</h3>
+              <p>{post.content}</p>
+              <small>
+                {new Date(post.created_at).toLocaleString()}
+              </small>
+            </div>
+          ))
+        )}
+      </div>
     </main>
   );
 }
