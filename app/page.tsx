@@ -85,7 +85,7 @@ export default function HomePage() {
       setLoginMessage("Logged in successfully.");
       setLoginEmail("");
       setLoginPassword("");
-      router.push("/dashboard");
+      router.push("/dashboard"); // ✅ 자동 이동
     }
   };
 
@@ -100,53 +100,19 @@ export default function HomePage() {
   };
 
   return (
-    <main style={{ padding: 20 }}>
-      <h1>Neonadri Auth Test</h1>
+    <main style={{ padding: 20, maxWidth: 700, margin: "0 auto" }}>
+      {/* 🎯 랜딩 영역 */}
+      <h1 style={{ fontSize: 42, marginBottom: 12 }}>Neonadri</h1>
 
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSignup}>
-        <input
-          placeholder="Name"
-          value={signupName}
-          onChange={(e) => setSignupName(e.target.value)}
-        />
-        <input
-          placeholder="Email"
-          value={signupEmail}
-          onChange={(e) => setSignupEmail(e.target.value)}
-        />
-        <input
-          placeholder="Password"
-          type="password"
-          value={signupPassword}
-          onChange={(e) => setSignupPassword(e.target.value)}
-        />
-        <button type="submit">Sign Up</button>
-      </form>
-      <p>{signupMessage}</p>
+      <p style={{ fontSize: 20, color: "#555", marginBottom: 30 }}>
+        Do you want to meet someone? Try Neonadri.
+      </p>
 
-      <h2>Log In</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          placeholder="Email"
-          value={loginEmail}
-          onChange={(e) => setLoginEmail(e.target.value)}
-        />
-        <input
-          placeholder="Password"
-          type="password"
-          value={loginPassword}
-          onChange={(e) => setLoginPassword(e.target.value)}
-        />
-        <button type="submit">Log In</button>
-      </form>
-
-      {loginMessage && <p>{loginMessage}</p>}
-
+      {/* 👤 로그인 상태 */}
       {userEmail ? (
         <>
           <button onClick={handleLogout}>Log Out</button>
-          <p>Logged in as: {userEmail}</p>
+          <p style={{ marginTop: 10 }}>Logged in as: {userEmail}</p>
 
           <div style={{ marginTop: 16 }}>
             <a href="/dashboard">
@@ -155,7 +121,54 @@ export default function HomePage() {
           </div>
         </>
       ) : (
-        <p>Current User: None</p>
+        <>
+          {/* 📝 회원가입 */}
+          <h2>Sign Up</h2>
+          <form onSubmit={handleSignup}>
+            <input
+              placeholder="Name"
+              value={signupName}
+              onChange={(e) => setSignupName(e.target.value)}
+            />
+            <br />
+            <input
+              placeholder="Email"
+              value={signupEmail}
+              onChange={(e) => setSignupEmail(e.target.value)}
+            />
+            <br />
+            <input
+              placeholder="Password"
+              type="password"
+              value={signupPassword}
+              onChange={(e) => setSignupPassword(e.target.value)}
+            />
+            <br />
+            <button type="submit">Sign Up</button>
+          </form>
+          <p>{signupMessage}</p>
+
+          {/* 🔐 로그인 */}
+          <h2>Log In</h2>
+          <form onSubmit={handleLogin}>
+            <input
+              placeholder="Email"
+              value={loginEmail}
+              onChange={(e) => setLoginEmail(e.target.value)}
+            />
+            <br />
+            <input
+              placeholder="Password"
+              type="password"
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+            />
+            <br />
+            <button type="submit">Log In</button>
+          </form>
+
+          {loginMessage && <p>{loginMessage}</p>}
+        </>
       )}
     </main>
   );
