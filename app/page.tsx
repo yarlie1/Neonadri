@@ -41,9 +41,7 @@ export default function HomePage() {
       setUserEmail(session?.user?.email ?? "");
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, [supabase]);
 
   const handleLogout = async () => {
@@ -54,16 +52,17 @@ export default function HomePage() {
     if (error) {
       setMessage(error.message);
     } else {
-      setMessage("Logged out successfully.");
       setUserEmail("");
+      setMessage("Logged out successfully.");
     }
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-rose-50 via-orange-50 to-stone-50 text-stone-800">
+    <main className="min-h-screen bg-gradient-to-b from-stone-50 via-stone-100 to-stone-50 text-stone-800">
       <section className="mx-auto max-w-5xl px-6 py-16">
-        <div className="mb-14 rounded-[2rem] border border-rose-100/70 bg-white/80 p-8 shadow-[0_10px_40px_rgba(120,53,15,0.08)] backdrop-blur md:p-12">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-rose-400">
+        {/* HERO */}
+        <div className="mb-14 rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm md:p-12">
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-stone-400">
             Neonadri
           </p>
 
@@ -71,39 +70,43 @@ export default function HomePage() {
             Do you want to
             <br />
             meet someone?
-            <span className="mt-2 block text-rose-500">Try Neonadri.</span>
+            <span className="mt-2 block text-stone-700">
+              Try Neonadri.
+            </span>
           </h1>
 
           <p className="mt-6 max-w-2xl text-base leading-8 text-stone-600 md:text-lg">
-            Discover people, share posts, and build connections in a warm,
-            welcoming space designed to feel natural from the first click.
+            Discover people, share posts, and build connections in a clean,
+            simple space that feels comfortable from the first click.
           </p>
 
           {userEmail ? (
             <div className="mt-10">
               <p className="mb-5 text-sm text-stone-500">
                 Logged in as{" "}
-                <span className="font-semibold text-stone-800">{userEmail}</span>
+                <span className="font-semibold text-stone-800">
+                  {userEmail}
+                </span>
               </p>
 
               <div className="flex flex-wrap gap-3">
                 <a
                   href="/dashboard"
-                  className="inline-flex items-center rounded-2xl bg-stone-800 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-stone-700"
+                  className="rounded-2xl bg-stone-800 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-700"
                 >
-                  Go to Dashboard
+                  Dashboard
                 </a>
 
                 <a
                   href="/write"
-                  className="inline-flex items-center rounded-2xl bg-rose-400 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-rose-500"
+                  className="rounded-2xl bg-stone-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-700"
                 >
                   Write a Post
                 </a>
 
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
+                  className="rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
                 >
                   Log Out
                 </button>
@@ -113,14 +116,14 @@ export default function HomePage() {
             <div className="mt-10 flex flex-wrap gap-3">
               <a
                 href="/login"
-                className="inline-flex items-center rounded-2xl bg-stone-800 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-stone-700"
+                className="rounded-2xl bg-stone-800 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-700"
               >
                 Log In
               </a>
 
               <a
                 href="/signup"
-                className="inline-flex items-center rounded-2xl bg-rose-400 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-rose-500"
+                className="rounded-2xl bg-stone-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-700"
               >
                 Sign Up
               </a>
@@ -128,37 +131,35 @@ export default function HomePage() {
           )}
 
           {message && (
-            <p className="mt-5 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-600">
+            <p className="mt-5 rounded-2xl border border-stone-200 bg-stone-100 px-4 py-3 text-sm text-stone-700">
               {message}
             </p>
           )}
         </div>
 
+        {/* POSTS */}
         <div>
-          <div className="mb-6 flex items-end justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
-                Recent Posts
-              </h2>
-              <p className="mt-2 text-sm text-stone-500">
-                See what people are sharing right now.
-              </p>
-            </div>
-          </div>
+          <h2 className="text-2xl font-semibold text-stone-900 md:text-3xl">
+            Recent Posts
+          </h2>
+
+          <p className="mt-2 text-sm text-stone-500">
+            See what people are sharing right now.
+          </p>
 
           {posts.length === 0 ? (
-            <div className="rounded-[1.5rem] border border-stone-200 bg-white/80 p-8 text-center shadow-sm">
+            <div className="mt-6 rounded-[1.5rem] border border-stone-200 bg-white p-8 text-center shadow-sm">
               <p className="text-stone-500">No posts yet.</p>
             </div>
           ) : (
-            <div className="grid gap-5">
+            <div className="mt-6 grid gap-5">
               {posts.map((post) => (
                 <a
                   key={post.id}
                   href={`/posts/${post.id}`}
-                  className="block rounded-[1.5rem] border border-stone-200 bg-white/85 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(120,53,15,0.08)]"
+                  className="block rounded-[1.5rem] border border-stone-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
                 >
-                  <h3 className="text-xl font-semibold tracking-tight text-stone-900">
+                  <h3 className="text-xl font-semibold text-stone-900">
                     {post.title}
                   </h3>
 
