@@ -7,84 +7,49 @@ export default function Dashboard() {
   const supabase = createClient();
 
   const [posts, setPosts] = useState<any[]>([]);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editContent, setEditContent] = useState("");
 
   useEffect(() => {
     const load = async () => {
-      const { data } = await supabase
-        .from("posts")
-        .select("*")
-        .order("created_at", { ascending: false });
-
+      const { data } = await supabase.from("posts").select("*");
       setPosts(data || []);
     };
-
     load();
-  }, []);
+  }, [supabase]);
 
-  const handleDelete = async (id: number) => {
+  const deletePost = async (id: number) => {
     await supabase.from("posts").delete().eq("id", id);
     setPosts(posts.filter((p) => p.id !== id));
   };
 
-  const handleUpdate = async (id: number) => {
-    await supabase
-      .from("posts")
-      .update({ content: editContent })
-      .eq("id", id);
-
-    setEditingId(null);
-  };
-
   return (
-    <main className="p-6 bg-[#f7f1ea] min-h-screen">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+    <main className="p-10 max-w-3xl mx-auto">
+
+      <h1 className="text-3xl font-bold mb-6">My Posts</h1>
 
       <div className="space-y-4">
         {posts.map((post) => (
-          <div key={post.id} className="bg-white p-4 rounded shadow">
+          <div key={post.id} className="p-5 bg-white shadow rounded-xl">
 
             <h2 className="font-semibold">{post.title}</h2>
 
-            <div className="text-sm text-gray-600 space-y-1 mt-1">
-              <p>📍 {post.location}</p>
-              <p>🎯 {post.meeting_purpose}</p>
-              <p>💰 {post.payment_amount}</p>
-            </div>
+            <p className="text-sm text-gray-600 mt-2">
+              {post.location}
+            </p>
 
-            {editingId === post.id ? (
-              <>
-                <textarea
-                  value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full mt-2 border p-2"
-                />
-                <button
-                  onClick={() => handleUpdate(post.id)}
-                  className="mt-2 bg-blue-500 text-white px-3 py-1 rounded"
-                >
-                  Save
-                </button>
-              </>
-            ) : (
-              <p className="mt-2 text-sm">{post.content}</p>
-            )}
+            <p className="text-sm">💵 {post.payment_amount}</p>
+            <p className="text-sm">🎁 {post.benefit_amount}</p>
 
-            <div className="mt-3 flex gap-2">
-              <button
-                onClick={() => {
-                  setEditingId(post.id);
-                  setEditContent(post.content);
-                }}
-                className="text-blue-500"
+            <div className="mt-3 flex gap-3">
+              <a
+                href={`/posts/${post.id}`}
+                className="text-blue-600 text-sm"
               >
-                Edit
-              </button>
+                View
+              </a>
 
               <button
-                onClick={() => handleDelete(post.id)}
-                className="text-red-500"
+                onClick={() => deletePost(post.id)}
+                className="text-red-500 text-sm"
               >
                 Delete
               </button>
@@ -93,6 +58,7 @@ export default function Dashboard() {
           </div>
         ))}
       </div>
+
     </main>
   );
 }
