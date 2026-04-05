@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "../lib/supabase/client";
+import HomePostsMap from "./components/HomePostsMap";
 
 type Post = {
   id: number;
@@ -12,6 +13,8 @@ type Post = {
   meeting_time: string | null;
   target_gender: string | null;
   target_age_group: string | null;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export default function HomePage() {
@@ -30,7 +33,7 @@ export default function HomePage() {
       const { data } = await supabase
         .from("posts")
         .select(
-          "id, title, content, created_at, location, meeting_time, target_gender, target_age_group"
+          "id, title, content, created_at, location, meeting_time, target_gender, target_age_group, latitude, longitude"
         )
         .order("created_at", { ascending: false });
 
@@ -105,6 +108,20 @@ export default function HomePage() {
           )}
         </div>
 
+        <div className="mb-14">
+          <h2 className="text-2xl font-semibold text-[#2f2a26] md:text-3xl">
+            Meetups on the Map
+          </h2>
+
+          <p className="mt-2 text-sm text-[#7b7067]">
+            See where people want to meet. Tap a pin to view the post.
+          </p>
+
+          <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-3 shadow-sm">
+            <HomePostsMap posts={posts} />
+          </div>
+        </div>
+
         <div>
           <h2 className="text-2xl font-semibold text-[#2f2a26] md:text-3xl">
             Recent Posts
@@ -121,11 +138,14 @@ export default function HomePage() {
           ) : (
             <div className="mt-6 grid gap-5">
               {posts.map((post) => {
-                const mapUrl = post.location
-                  ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                      post.location
-                    )}`
-                  : "";
+                const mapUrl =
+                  post.latitude !== null && post.longitude !== null
+                    ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
+                    : post.location
+                    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                        post.location
+                      )}`
+                    : "";
 
                 return (
                   <div
@@ -163,7 +183,7 @@ export default function HomePage() {
                       </div>
                     </a>
 
-                    {post.location && (
+                    {mapUrl && (
                       <div className="mt-4">
                         <a
                           href={mapUrl}
