@@ -115,9 +115,20 @@ export default function DashboardPage() {
     setEditTitle(post.title);
     setEditContent(post.content);
     setEditLocation(post.location || "");
-    setEditMeetingTime(post.meeting_time || "");
     setEditTargetGender(post.target_gender || "");
     setEditTargetAgeGroup(post.target_age_group || "");
+
+    if (post.meeting_time) {
+      const local = new Date(post.meeting_time);
+      const yyyy = local.getFullYear();
+      const mm = String(local.getMonth() + 1).padStart(2, "0");
+      const dd = String(local.getDate()).padStart(2, "0");
+      const hh = String(local.getHours()).padStart(2, "0");
+      const min = String(local.getMinutes()).padStart(2, "0");
+      setEditMeetingTime(`${yyyy}-${mm}-${dd}T${hh}:${min}`);
+    } else {
+      setEditMeetingTime("");
+    }
   };
 
   const handleCancelEdit = () => {
@@ -151,7 +162,7 @@ export default function DashboardPage() {
         title: editTitle,
         content: editContent,
         location: editLocation,
-        meeting_time: editMeetingTime,
+        meeting_time: new Date(editMeetingTime).toISOString(),
         target_gender: editTargetGender,
         target_age_group: editTargetAgeGroup,
       })
@@ -262,10 +273,10 @@ export default function DashboardPage() {
                       />
 
                       <input
+                        type="datetime-local"
                         className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
                         value={editMeetingTime}
                         onChange={(e) => setEditMeetingTime(e.target.value)}
-                        placeholder="Meeting time"
                       />
 
                       <select
@@ -322,7 +333,11 @@ export default function DashboardPage() {
 
                       <div className="mt-3 space-y-1 text-sm text-[#6f655c]">
                         {post.location && <p>Location: {post.location}</p>}
-                        {post.meeting_time && <p>Time: {post.meeting_time}</p>}
+                        {post.meeting_time && (
+                          <p>
+                            Time: {new Date(post.meeting_time).toLocaleString()}
+                          </p>
+                        )}
                         {post.target_gender && (
                           <p>Target Gender: {post.target_gender}</p>
                         )}
