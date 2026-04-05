@@ -13,6 +13,10 @@ type Post = {
   meeting_time: string | null;
   target_gender: string | null;
   target_age_group: string | null;
+  meeting_purpose: string | null;
+  payment_amount: string | null;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export default function DashboardPage() {
@@ -35,6 +39,8 @@ export default function DashboardPage() {
   const [editMeetingTime, setEditMeetingTime] = useState("");
   const [editTargetGender, setEditTargetGender] = useState("");
   const [editTargetAgeGroup, setEditTargetAgeGroup] = useState("");
+  const [editMeetingPurpose, setEditMeetingPurpose] = useState("");
+  const [editPaymentAmount, setEditPaymentAmount] = useState("");
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -70,7 +76,7 @@ export default function DashboardPage() {
     const { data: postData } = await supabase
       .from("posts")
       .select(
-        "id, title, content, created_at, location, meeting_time, target_gender, target_age_group"
+        "id, title, content, created_at, location, meeting_time, target_gender, target_age_group, meeting_purpose, payment_amount, latitude, longitude"
       )
       .order("created_at", { ascending: false });
 
@@ -117,6 +123,8 @@ export default function DashboardPage() {
     setEditLocation(post.location || "");
     setEditTargetGender(post.target_gender || "");
     setEditTargetAgeGroup(post.target_age_group || "");
+    setEditMeetingPurpose(post.meeting_purpose || "");
+    setEditPaymentAmount(post.payment_amount || "");
 
     if (post.meeting_time) {
       const local = new Date(post.meeting_time);
@@ -139,6 +147,8 @@ export default function DashboardPage() {
     setEditMeetingTime("");
     setEditTargetGender("");
     setEditTargetAgeGroup("");
+    setEditMeetingPurpose("");
+    setEditPaymentAmount("");
   };
 
   const handleUpdatePost = async () => {
@@ -150,7 +160,9 @@ export default function DashboardPage() {
       !editLocation.trim() ||
       !editMeetingTime.trim() ||
       !editTargetGender.trim() ||
-      !editTargetAgeGroup.trim()
+      !editTargetAgeGroup.trim() ||
+      !editMeetingPurpose.trim() ||
+      !editPaymentAmount.trim()
     ) {
       setPostMessage("Please fill in all fields.");
       return;
@@ -165,6 +177,8 @@ export default function DashboardPage() {
         meeting_time: new Date(editMeetingTime).toISOString(),
         target_gender: editTargetGender,
         target_age_group: editTargetAgeGroup,
+        meeting_purpose: editMeetingPurpose,
+        payment_amount: editPaymentAmount,
       })
       .eq("id", editingPostId);
 
@@ -303,6 +317,40 @@ export default function DashboardPage() {
                         <option value="Any">Any</option>
                       </select>
 
+                      <select
+                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                        value={editMeetingPurpose}
+                        onChange={(e) => setEditMeetingPurpose(e.target.value)}
+                      >
+                        <option value="">Select meeting purpose</option>
+                        <option value="Coffee">Coffee</option>
+                        <option value="Meal">Meal</option>
+                        <option value="Conversation">Conversation</option>
+                        <option value="Dating">Dating</option>
+                        <option value="Friendship">Friendship</option>
+                        <option value="Networking">Networking</option>
+                        <option value="Study">Study</option>
+                        <option value="Walk">Walk</option>
+                        <option value="Drinks">Drinks</option>
+                        <option value="Other">Other</option>
+                      </select>
+
+                      <select
+                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                        value={editPaymentAmount}
+                        onChange={(e) => setEditPaymentAmount(e.target.value)}
+                      >
+                        <option value="">Select payment amount</option>
+                        <option value="$0">No cost</option>
+                        <option value="$1-$20">$1 - $20</option>
+                        <option value="$21-$50">$21 - $50</option>
+                        <option value="$51-$100">$51 - $100</option>
+                        <option value="$101+">$101+</option>
+                        <option value="Split">Split the bill</option>
+                        <option value="I will pay">I will pay</option>
+                        <option value="Discuss later">Discuss later</option>
+                      </select>
+
                       <textarea
                         className="min-h-[180px] w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
                         value={editContent}
@@ -343,6 +391,12 @@ export default function DashboardPage() {
                         )}
                         {post.target_age_group && (
                           <p>Target Age Group: {post.target_age_group}</p>
+                        )}
+                        {post.meeting_purpose && (
+                          <p>Purpose: {post.meeting_purpose}</p>
+                        )}
+                        {post.payment_amount && (
+                          <p>Payment: {post.payment_amount}</p>
                         )}
                       </div>
 
