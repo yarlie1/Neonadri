@@ -33,7 +33,9 @@ export default function HomePostsMap({ posts }: Props) {
       }
 
       const validPosts = posts.filter(
-        (post) => post.latitude !== null && post.longitude !== null
+        (post) =>
+          typeof post.latitude === "number" &&
+          typeof post.longitude === "number"
       );
 
       const defaultCenter = { lat: 34.0522, lng: -118.2437 };
@@ -41,6 +43,7 @@ export default function HomePostsMap({ posts }: Props) {
       const map = new window.google.maps.Map(mapRef.current, {
         center: defaultCenter,
         zoom: 10,
+        clickableIcons: false,
       });
 
       if (validPosts.length === 0) {
@@ -96,7 +99,7 @@ export default function HomePostsMap({ posts }: Props) {
       map.fitBounds(bounds);
 
       if (validPosts.length === 1) {
-        map.setZoom(14);
+        map.setZoom(15);
       }
 
       return true;
