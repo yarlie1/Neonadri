@@ -14,7 +14,13 @@ export default function WritePage() {
   const supabase = createClient();
   const router = useRouter();
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const mapRef = useRef<any>(null);
+  const markerRef = useRef<any>(null);
+  const geocoderRef = useRef<any>(null);
+  const autocompleteRef = useRef<any>(null);
 
   const [userId, setUserId] = useState("");
   const [title, setTitle] = useState("");
@@ -23,6 +29,8 @@ export default function WritePage() {
   const [meetingTime, setMeetingTime] = useState("");
   const [targetGender, setTargetGender] = useState("");
   const [targetAgeGroup, setTargetAgeGroup] = useState("");
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -44,28 +52,113 @@ export default function WritePage() {
   }, [router, supabase]);
 
   useEffect(() => {
-    if (!window.google || !inputRef.current) return;
+    let interval: NodeJS.Timeout;
 
-    const autocomplete = new window.google.maps.places.Autocomplete(
-      inputRef.current,
-      {
-        fields: ["formatted_address", "name", "geometry"],
+    const initMap = () => {
+      if (
+        !window.google ||
+        !window.google.maps ||
+        !window.google.maps.places ||
+        !searchInputRef.current ||
+        !mapContainerRef.current
+      ) {
+        return false;
       }
-    );
 
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
+      if (!mapRef.current) {
+        const defaultCenter = { lat: 34.0522, lng: -118.2437 };
 
-      if (place?.formatted_address) {
-        setLocation(place.formatted_address);
-      } else if (place?.name) {
-        setLocation(place.name);
+        mapRef.current = new window.google.maps.Map(mapContainerRef.current, {
+          center: defaultCenter,
+          zoom: 11,
+          disableDefaultUI: false,
+          clickableIcons: false,
+        });
+
+        markerRef.current = new window.google.maps.Marker({
+          map: mapRef.current,
+          position: defaultCenter,
+          visible: false,
+        });
+
+        geocoderRef.current = new window.google.maps.Geocoder();
+
+        mapRef.current.addListener("click", (event: any) => {
+          const lat = event.latLng.lat();
+          const lng = event.latLng.lng();
+
+          setLatitude(lat);
+          setLongitude(lng);
+
+          markerRef.current.setPosition({ lat, lng });
+          markerRef.current.setVisible(true);
+
+          geocoderRef.current.geocode(
+            { location: { lat, lng } },
+            (results: any, status: string) => {
+              if (status === "OK" && results && results[0]) {
+                setLocation(results[0].formatted_address);
+                if (searchInputRef.current) {
+                  searchInputRef.current.value = results[0].formatted_address;
+                }
+              }
+            }
+          );
+        });
       }
-    });
+
+      if (!autocompleteRef.current) {
+        autocompleteRef.current =
+          new window.google.maps.places.Autocomplete(searchInputRef.current, {
+            fields: ["formatted_address", "name", "geometry"],
+          });
+
+        autocompleteRef.current.addListener("place_changed", () => {
+          const place = autocompleteRef.current.getPlace();
+
+          if (!place) return;
+
+          const formattedAddress =
+            place.formatted_address || place.name || "";
+
+          const lat = place.geometry?.location?.lat?.();
+          const lng = place.geometry?.location?.lng?.();
+
+          setLocation(formattedAddress);
+
+          if (typeof lat === "number" && typeof lng === "number") {
+            setLatitude(lat);
+            setLongitude(lng);
+
+            mapRef.current.setCenter({ lat, lng });
+            mapRef.current.setZoom(15);
+
+            markerRef.current.setPosition({ lat, lng });
+            markerRef.current.setVisible(true);
+          }
+        });
+      }
+
+      return true;
+    };
+
+    if (!initMap()) {
+      interval = setInterval(() => {
+        if (initMap()) {
+          clearInterval(interval);
+        }
+      }, 500);
+    }
 
     return () => {
-      if (window.google?.maps?.event) {
-        window.google.maps.event.clearInstanceListeners(autocomplete);
+      if (interval) clearInterval(interval);
+      if (autocompleteRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(
+          autocompleteRef.current
+        );
+      }
+      if (mapRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(mapRef.current);
       }
     };
   }, []);
@@ -79,9 +172,11 @@ export default function WritePage() {
       !location.trim() ||
       !meetingTime.trim() ||
       !targetGender.trim() ||
-      !targetAgeGroup.trim()
+      !targetAgeGroup.trim() ||
+      latitude === null ||
+      longitude === null
     ) {
-      setMessage("Please fill in all fields.");
+      setMessage("Please fill in all fields and select a location on the map.");
       return;
     }
 
@@ -95,6 +190,8 @@ export default function WritePage() {
       meeting_time: new Date(meetingTime).toISOString(),
       target_gender: targetGender,
       target_age_group: targetAgeGroup,
+      latitude,
+      longitude,
     });
 
     setLoading(false);
@@ -119,7 +216,7 @@ export default function WritePage() {
         </h1>
 
         <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-          Share who you want to meet, where, and when.
+          Search a place from the dropdown, or tap directly on the map to drop a pin.
         </p>
 
         <div className="mt-8 space-y-4">
@@ -131,12 +228,34 @@ export default function WritePage() {
           />
 
           <input
-            ref={inputRef}
+            ref={searchInputRef}
             className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
             placeholder="Search location"
             defaultValue={location}
             onChange={(e) => setLocation(e.target.value)}
           />
+
+          <div className="rounded-[1.5rem] border border-[#dccfc2] bg-white p-3">
+            <div
+              ref={mapContainerRef}
+              className="h-72 w-full rounded-[1rem]"
+            />
+            <p className="mt-3 text-xs text-[#7b7067]">
+              Tap the map to drop a pin if you want to choose the exact meeting place.
+            </p>
+          </div>
+
+          {location && (
+            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+              <p className="font-medium text-[#2f2a26]">Selected location</p>
+              <p className="mt-1">{location}</p>
+              {latitude !== null && longitude !== null && (
+                <p className="mt-1 text-xs text-[#8b7f74]">
+                  Lat: {latitude.toFixed(6)}, Lng: {longitude.toFixed(6)}
+                </p>
+              )}
+            </div>
+          )}
 
           <input
             type="datetime-local"
