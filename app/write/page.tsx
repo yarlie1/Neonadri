@@ -23,14 +23,11 @@ export default function WritePage() {
   const autocompleteRef = useRef<any>(null);
 
   const [userId, setUserId] = useState("");
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
   const [location, setLocation] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
   const [targetGender, setTargetGender] = useState("");
   const [targetAgeGroup, setTargetAgeGroup] = useState("");
   const [meetingPurpose, setMeetingPurpose] = useState("");
-  const [paymentAmount, setPaymentAmount] = useState("");
   const [benefitAmount, setBenefitAmount] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
@@ -192,13 +189,10 @@ export default function WritePage() {
     setMessage("");
 
     if (
-      !title.trim() ||
-      !content.trim() ||
       !meetingTime.trim() ||
       !targetGender.trim() ||
       !targetAgeGroup.trim() ||
       !meetingPurpose.trim() ||
-      !paymentAmount.trim() ||
       !benefitAmount.trim()
     ) {
       setMessage("Please fill in all required fields.");
@@ -221,14 +215,11 @@ export default function WritePage() {
 
     const { error } = await supabase.from("posts").insert({
       user_id: userId,
-      title,
-      content,
       location,
       meeting_time: new Date(meetingTime).toISOString(),
       target_gender: targetGender,
       target_age_group: targetAgeGroup,
       meeting_purpose: meetingPurpose,
-      payment_amount: paymentAmount,
       benefit_amount: benefitAmount,
       latitude,
       longitude,
@@ -252,22 +243,14 @@ export default function WritePage() {
         </p>
 
         <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
-          Write a Post
+          Create Meetup
         </h1>
 
         <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-          Search a place from the dropdown, or tap directly on the map to drop a
-          pin. Only one exact location will be saved.
+          Choose one exact place from the dropdown or by tapping the map.
         </p>
 
         <div className="mt-8 space-y-4">
-          <input
-            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            placeholder="Post title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-
           <input
             ref={searchInputRef}
             className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
@@ -310,6 +293,24 @@ export default function WritePage() {
 
           <select
             className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            value={meetingPurpose}
+            onChange={(e) => setMeetingPurpose(e.target.value)}
+          >
+            <option value="">Select meeting purpose</option>
+            <option value="Coffee">Coffee</option>
+            <option value="Meal">Meal</option>
+            <option value="Conversation">Conversation</option>
+            <option value="Dating">Dating</option>
+            <option value="Friendship">Friendship</option>
+            <option value="Networking">Networking</option>
+            <option value="Study">Study</option>
+            <option value="Walk">Walk</option>
+            <option value="Drinks">Drinks</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <select
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
             value={targetGender}
             onChange={(e) => setTargetGender(e.target.value)}
           >
@@ -334,40 +335,6 @@ export default function WritePage() {
 
           <select
             className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            value={meetingPurpose}
-            onChange={(e) => setMeetingPurpose(e.target.value)}
-          >
-            <option value="">Select meeting purpose</option>
-            <option value="Coffee">Coffee</option>
-            <option value="Meal">Meal</option>
-            <option value="Conversation">Conversation</option>
-            <option value="Dating">Dating</option>
-            <option value="Friendship">Friendship</option>
-            <option value="Networking">Networking</option>
-            <option value="Study">Study</option>
-            <option value="Walk">Walk</option>
-            <option value="Drinks">Drinks</option>
-            <option value="Other">Other</option>
-          </select>
-
-          <select
-            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            value={paymentAmount}
-            onChange={(e) => setPaymentAmount(e.target.value)}
-          >
-            <option value="">Select payment amount</option>
-            <option value="$0">No cost</option>
-            <option value="$1-$20">$1 - $20</option>
-            <option value="$21-$50">$21 - $50</option>
-            <option value="$51-$100">$51 - $100</option>
-            <option value="$101+">$101+</option>
-            <option value="Split">Split the bill</option>
-            <option value="I will pay">I will pay</option>
-            <option value="Discuss later">Discuss later</option>
-          </select>
-
-          <select
-            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
             value={benefitAmount}
             onChange={(e) => setBenefitAmount(e.target.value)}
           >
@@ -380,13 +347,6 @@ export default function WritePage() {
             <option value="$100">$100</option>
             <option value="$200+">$200+</option>
           </select>
-
-          <textarea
-            className="min-h-[220px] w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            placeholder="Write your content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
@@ -395,7 +355,7 @@ export default function WritePage() {
             disabled={loading || !userId}
             className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
           >
-            {loading ? "Creating..." : "Create Post"}
+            {loading ? "Creating..." : "Create Meetup"}
           </button>
 
           <a
