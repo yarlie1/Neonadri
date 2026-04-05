@@ -1,27 +1,42 @@
 import { createClient } from "../../../lib/supabase/server";
 import ClientMap from "./ClientMap";
 
-type PageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function PostDetailPage({ params }: PageProps) {
+export default async function PostDetail({ params }: any) {
   const supabase = createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data: post, error } = await supabase
+  const { data: post } = await supabase
     .from("posts")
-    .select(
-      "id, title, content, created_at, user_id, location, meeting_time, target_gender, target_age_group, meeting_purpose, payment_amount, latitude, longitude"
-    )
+    .select("*")
     .eq("id", params.id)
-    .maybeSingle();
+    .single();
 
-  if (error || !post) {
-    return (
-      <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text
+  if (!post) return <div>Not found</div>;
+
+  return (
+    <main className="min-h-screen bg-[#f7f1ea] p-6 text-[#2f2a26]">
+      <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow">
+
+        <h1 className="text-3xl font-bold">{post.title}</h1>
+
+        <div className="mt-4 space-y-2 text-sm text-gray-600">
+          <p>📍 {post.location}</p>
+          <p>🕒 {new Date(post.meeting_time).toLocaleString()}</p>
+          <p>🎯 {post.meeting_purpose}</p>
+          <p>💰 {post.payment_amount}</p>
+          <p>👥 {post.target_gender} / {post.target_age_group}</p>
+        </div>
+
+        {post.latitude && post.longitude && (
+          <div className="mt-6">
+            <ClientMap latitude={post.latitude} longitude={post.longitude} />
+          </div>
+        )}
+
+        <div className="mt-6 text-sm leading-7">
+          {post.content}
+        </div>
+
+      </div>
+    </main>
+  );
+}
