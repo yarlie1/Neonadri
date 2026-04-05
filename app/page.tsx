@@ -120,42 +120,64 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="mt-6 grid gap-5">
-              {posts.map((post) => (
-                <a
-                  key={post.id}
-                  href={`/posts/${post.id}`}
-                  className="block rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_10px_24px_rgba(80,60,40,0.08)]"
-                >
-                  <h3 className="text-xl font-semibold text-[#2f2a26]">
-                    {post.title}
-                  </h3>
+              {posts.map((post) => {
+                const mapUrl = post.location
+                  ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                      post.location
+                    )}`
+                  : "";
 
-                  <div className="mt-3 space-y-1 text-sm text-[#6f655c]">
-                    {post.location && <p>Location: {post.location}</p>}
-                    {post.meeting_time && (
-                      <p>
-                        Time: {new Date(post.meeting_time).toLocaleString()}
+                return (
+                  <div
+                    key={post.id}
+                    className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_10px_24px_rgba(80,60,40,0.08)]"
+                  >
+                    <a href={`/posts/${post.id}`} className="block">
+                      <h3 className="text-xl font-semibold text-[#2f2a26]">
+                        {post.title}
+                      </h3>
+
+                      <div className="mt-3 space-y-1 text-sm text-[#6f655c]">
+                        {post.location && <p>Location: {post.location}</p>}
+                        {post.meeting_time && (
+                          <p>
+                            Time: {new Date(post.meeting_time).toLocaleString()}
+                          </p>
+                        )}
+                        {post.target_gender && (
+                          <p>Target Gender: {post.target_gender}</p>
+                        )}
+                        {post.target_age_group && (
+                          <p>Target Age Group: {post.target_age_group}</p>
+                        )}
+                      </div>
+
+                      <p className="mt-4 text-sm leading-7 text-[#6f655c]">
+                        {post.content.length > 180
+                          ? `${post.content.slice(0, 180)}...`
+                          : post.content}
                       </p>
-                    )}
-                    {post.target_gender && (
-                      <p>Target Gender: {post.target_gender}</p>
-                    )}
-                    {post.target_age_group && (
-                      <p>Target Age Group: {post.target_age_group}</p>
+
+                      <div className="mt-4 text-xs text-[#9b8f84]">
+                        {new Date(post.created_at).toLocaleString()}
+                      </div>
+                    </a>
+
+                    {post.location && (
+                      <div className="mt-4">
+                        <a
+                          href={mapUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+                        >
+                          Open in Google Maps
+                        </a>
+                      </div>
                     )}
                   </div>
-
-                  <p className="mt-4 text-sm leading-7 text-[#6f655c]">
-                    {post.content.length > 180
-                      ? `${post.content.slice(0, 180)}...`
-                      : post.content}
-                  </p>
-
-                  <div className="mt-4 text-xs text-[#9b8f84]">
-                    {new Date(post.created_at).toLocaleString()}
-                  </div>
-                </a>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
