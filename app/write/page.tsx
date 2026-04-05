@@ -31,6 +31,7 @@ export default function WritePage() {
   const [targetAgeGroup, setTargetAgeGroup] = useState("");
   const [meetingPurpose, setMeetingPurpose] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
+  const [benefitAmount, setBenefitAmount] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [locationConfirmed, setLocationConfirmed] = useState(false);
@@ -197,7 +198,8 @@ export default function WritePage() {
       !targetGender.trim() ||
       !targetAgeGroup.trim() ||
       !meetingPurpose.trim() ||
-      !paymentAmount.trim()
+      !paymentAmount.trim() ||
+      !benefitAmount.trim()
     ) {
       setMessage("Please fill in all required fields.");
       return;
@@ -227,6 +229,7 @@ export default function WritePage() {
       target_age_group: targetAgeGroup,
       meeting_purpose: meetingPurpose,
       payment_amount: paymentAmount,
+      benefit_amount: benefitAmount,
       latitude,
       longitude,
     });
@@ -361,6 +364,21 @@ export default function WritePage() {
             <option value="Split">Split the bill</option>
             <option value="I will pay">I will pay</option>
             <option value="Discuss later">Discuss later</option>
+          </select>
+
+          <select
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            value={benefitAmount}
+            onChange={(e) => setBenefitAmount(e.target.value)}
+          >
+            <option value="">Select benefit amount</option>
+            <option value="$0">$0</option>
+            <option value="$10">$10</option>
+            <option value="$20">$20</option>
+            <option value="$30">$30</option>
+            <option value="$50">$50</option>
+            <option value="$100">$100</option>
+            <option value="$200+">$200+</option>
           </select>
 
           <textarea
