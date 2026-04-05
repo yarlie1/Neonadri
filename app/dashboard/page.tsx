@@ -9,6 +9,10 @@ type Post = {
   title: string;
   content: string;
   created_at: string;
+  location: string | null;
+  meeting_time: string | null;
+  target_gender: string | null;
+  target_age_group: string | null;
 };
 
 export default function DashboardPage() {
@@ -27,6 +31,10 @@ export default function DashboardPage() {
   const [editingPostId, setEditingPostId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
+  const [editLocation, setEditLocation] = useState("");
+  const [editMeetingTime, setEditMeetingTime] = useState("");
+  const [editTargetGender, setEditTargetGender] = useState("");
+  const [editTargetAgeGroup, setEditTargetAgeGroup] = useState("");
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -61,7 +69,9 @@ export default function DashboardPage() {
   const loadPosts = async () => {
     const { data: postData } = await supabase
       .from("posts")
-      .select("id, title, content, created_at")
+      .select(
+        "id, title, content, created_at, location, meeting_time, target_gender, target_age_group"
+      )
       .order("created_at", { ascending: false });
 
     setPosts(postData || []);
@@ -104,19 +114,34 @@ export default function DashboardPage() {
     setEditingPostId(post.id);
     setEditTitle(post.title);
     setEditContent(post.content);
+    setEditLocation(post.location || "");
+    setEditMeetingTime(post.meeting_time || "");
+    setEditTargetGender(post.target_gender || "");
+    setEditTargetAgeGroup(post.target_age_group || "");
   };
 
   const handleCancelEdit = () => {
     setEditingPostId(null);
     setEditTitle("");
     setEditContent("");
+    setEditLocation("");
+    setEditMeetingTime("");
+    setEditTargetGender("");
+    setEditTargetAgeGroup("");
   };
 
   const handleUpdatePost = async () => {
     if (!editingPostId) return;
 
-    if (!editTitle.trim() || !editContent.trim()) {
-      setPostMessage("Please enter both title and content.");
+    if (
+      !editTitle.trim() ||
+      !editContent.trim() ||
+      !editLocation.trim() ||
+      !editMeetingTime.trim() ||
+      !editTargetGender.trim() ||
+      !editTargetAgeGroup.trim()
+    ) {
+      setPostMessage("Please fill in all fields.");
       return;
     }
 
@@ -125,6 +150,10 @@ export default function DashboardPage() {
       .update({
         title: editTitle,
         content: editContent,
+        location: editLocation,
+        meeting_time: editMeetingTime,
+        target_gender: editTargetGender,
+        target_age_group: editTargetAgeGroup,
       })
       .eq("id", editingPostId);
 
@@ -134,9 +163,7 @@ export default function DashboardPage() {
     }
 
     setPostMessage("Post updated successfully.");
-    setEditingPostId(null);
-    setEditTitle("");
-    setEditContent("");
+    handleCancelEdit();
     await loadPosts();
   };
 
@@ -224,12 +251,54 @@ export default function DashboardPage() {
                         className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
                         value={editTitle}
                         onChange={(e) => setEditTitle(e.target.value)}
+                        placeholder="Title"
                       />
+
+                      <input
+                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                        value={editLocation}
+                        onChange={(e) => setEditLocation(e.target.value)}
+                        placeholder="Location"
+                      />
+
+                      <input
+                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                        value={editMeetingTime}
+                        onChange={(e) => setEditMeetingTime(e.target.value)}
+                        placeholder="Meeting time"
+                      />
+
+                      <select
+                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                        value={editTargetGender}
+                        onChange={(e) => setEditTargetGender(e.target.value)}
+                      >
+                        <option value="">Select target gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Any">Any</option>
+                      </select>
+
+                      <select
+                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                        value={editTargetAgeGroup}
+                        onChange={(e) => setEditTargetAgeGroup(e.target.value)}
+                      >
+                        <option value="">Select target age group</option>
+                        <option value="20s">20s</option>
+                        <option value="30s">30s</option>
+                        <option value="40s">40s</option>
+                        <option value="50s+">50s+</option>
+                        <option value="Any">Any</option>
+                      </select>
+
                       <textarea
                         className="min-h-[180px] w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
                         value={editContent}
                         onChange={(e) => setEditContent(e.target.value)}
+                        placeholder="Content"
                       />
+
                       <div className="flex flex-wrap gap-3">
                         <button
                           onClick={handleUpdatePost}
@@ -250,9 +319,22 @@ export default function DashboardPage() {
                       <h3 className="text-xl font-semibold text-[#2f2a26]">
                         <a href={`/posts/${post.id}`}>{post.title}</a>
                       </h3>
-                      <p className="mt-3 text-sm leading-7 text-[#6f655c]">
+
+                      <div className="mt-3 space-y-1 text-sm text-[#6f655c]">
+                        {post.location && <p>Location: {post.location}</p>}
+                        {post.meeting_time && <p>Time: {post.meeting_time}</p>}
+                        {post.target_gender && (
+                          <p>Target Gender: {post.target_gender}</p>
+                        )}
+                        {post.target_age_group && (
+                          <p>Target Age Group: {post.target_age_group}</p>
+                        )}
+                      </div>
+
+                      <p className="mt-4 text-sm leading-7 text-[#6f655c]">
                         {post.content}
                       </p>
+
                       <p className="mt-4 text-xs text-[#9b8f84]">
                         {new Date(post.created_at).toLocaleString()}
                       </p>
