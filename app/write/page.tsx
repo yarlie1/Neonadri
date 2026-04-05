@@ -33,6 +33,7 @@ export default function WritePage() {
   const [paymentAmount, setPaymentAmount] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [locationConfirmed, setLocationConfirmed] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -99,9 +100,12 @@ export default function WritePage() {
             { location: { lat, lng } },
             (results: any, status: string) => {
               if (status === "OK" && results && results[0]) {
-                setLocation(results[0].formatted_address);
+                const address = results[0].formatted_address;
+                setLocation(address);
+                setLocationConfirmed(true);
+
                 if (searchInputRef.current) {
-                  searchInputRef.current.value = results[0].formatted_address;
+                  searchInputRef.current.value = address;
                 }
               }
             }
@@ -118,25 +122,34 @@ export default function WritePage() {
         autocompleteRef.current.addListener("place_changed", () => {
           const place = autocompleteRef.current.getPlace();
 
-          if (!place) return;
-
           const formattedAddress =
-            place.formatted_address || place.name || "";
+            place?.formatted_address || place?.name || "";
 
-          const lat = place.geometry?.location?.lat?.();
-          const lng = place.geometry?.location?.lng?.();
+          const lat = place?.geometry?.location?.lat?.();
+          const lng = place?.geometry?.location?.lng?.();
+
+          if (
+            !formattedAddress ||
+            typeof lat !== "number" ||
+            typeof lng !== "number"
+          ) {
+            setLocationConfirmed(false);
+            return;
+          }
 
           setLocation(formattedAddress);
+          setLatitude(lat);
+          setLongitude(lng);
+          setLocationConfirmed(true);
 
-          if (typeof lat === "number" && typeof lng === "number") {
-            setLatitude(lat);
-            setLongitude(lng);
+          mapRef.current.setCenter({ lat, lng });
+          mapRef.current.setZoom(15);
 
-            mapRef.current.setCenter({ lat, lng });
-            mapRef.current.setZoom(15);
+          markerRef.current.setPosition({ lat, lng });
+          markerRef.current.setVisible(true);
 
-            markerRef.current.setPosition({ lat, lng });
-            markerRef.current.setVisible(true);
+          if (searchInputRef.current) {
+            searchInputRef.current.value = formattedAddress;
           }
         });
       }
@@ -165,22 +178,40 @@ export default function WritePage() {
     };
   }, []);
 
+  const handleLocationInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setLocation(e.target.value);
+    setLatitude(null);
+    setLongitude(null);
+    setLocationConfirmed(false);
+  };
+
   const handleCreatePost = async () => {
     setMessage("");
 
     if (
       !title.trim() ||
       !content.trim() ||
-      !location.trim() ||
       !meetingTime.trim() ||
       !targetGender.trim() ||
       !targetAgeGroup.trim() ||
       !meetingPurpose.trim() ||
-      !paymentAmount.trim() ||
-      latitude === null ||
-      longitude === null
+      !paymentAmount.trim()
     ) {
-      setMessage("Please fill in all fields and select a location on the map.");
+      setMessage("Please fill in all required fields.");
+      return;
+    }
+
+    if (
+      !location.trim() ||
+      latitude === null ||
+      longitude === null ||
+      !locationConfirmed
+    ) {
+      setMessage(
+        "Please choose one exact location from the dropdown or by tapping the map."
+      );
       return;
     }
 
@@ -222,7 +253,8 @@ export default function WritePage() {
         </h1>
 
         <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-          Search a place from the dropdown, or tap directly on the map to drop a pin.
+          Search a place from the dropdown, or tap directly on the map to drop a
+          pin. Only one exact location will be saved.
         </p>
 
         <div className="mt-8 space-y-4">
@@ -237,17 +269,15 @@ export default function WritePage() {
             ref={searchInputRef}
             className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
             placeholder="Search location"
-            defaultValue={location}
-            onChange={(e) => setLocation(e.target.value)}
+            value={location}
+            onChange={handleLocationInputChange}
           />
 
           <div className="rounded-[1.5rem] border border-[#dccfc2] bg-white p-3">
-            <div
-              ref={mapContainerRef}
-              className="h-72 w-full rounded-[1rem]"
-            />
+            <div ref={mapContainerRef} className="h-72 w-full rounded-[1rem]" />
             <p className="mt-3 text-xs text-[#7b7067]">
-              Tap the map to drop a pin if you want to choose the exact meeting place.
+              Tap the map to drop a pin if you want to choose the exact meeting
+              place.
             </p>
           </div>
 
@@ -260,6 +290,11 @@ export default function WritePage() {
                   Lat: {latitude.toFixed(6)}, Lng: {longitude.toFixed(6)}
                 </p>
               )}
+              <p className="mt-1 text-xs">
+                {locationConfirmed
+                  ? "Exact location selected."
+                  : "Please select from the dropdown or tap the map."}
+              </p>
             </div>
           )}
 
