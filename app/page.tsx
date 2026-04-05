@@ -15,7 +15,6 @@ export default function HomePage() {
 
   const [userEmail, setUserEmail] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const loadUser = async () => {
@@ -44,22 +43,9 @@ export default function HomePage() {
     return () => subscription.unsubscribe();
   }, [supabase]);
 
-  const handleLogout = async () => {
-    setMessage("");
-
-    const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      setMessage(error.message);
-    } else {
-      setUserEmail("");
-      setMessage("Logged out successfully.");
-    }
-  };
-
   return (
     <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
-      <section className="mx-auto max-w-5xl px-6 py-16">
+      <section className="mx-auto max-w-5xl px-6 py-12 md:py-14">
         <div className="mb-14 rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-12">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#a48f7a]">
             Neonadri
@@ -78,57 +64,17 @@ export default function HomePage() {
           </p>
 
           {userEmail ? (
-            <div className="mt-10">
-              <p className="mb-5 text-sm text-[#7b7067]">
-                Logged in as{" "}
-                <span className="font-semibold text-[#2f2a26]">{userEmail}</span>
-              </p>
-
-              <div className="flex flex-wrap gap-3">
-                <a
-                  href="/dashboard"
-                  className="inline-flex items-center justify-center rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046]"
-                >
-                  Dashboard
-                </a>
-
-                <a
-                  href="/write"
-                  className="inline-flex items-center justify-center rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
-                >
-                  Write a Post
-                </a>
-
-                <button
-                  onClick={handleLogout}
-                  className="inline-flex items-center justify-center rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
-                >
-                  Log Out
-                </button>
-              </div>
+            <div className="mt-8 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-5 py-4 text-sm text-[#6b5f52]">
+              Welcome back,
+              <span className="ml-1 font-semibold text-[#2f2a26]">
+                {userEmail}
+              </span>
             </div>
           ) : (
-            <div className="mt-10 flex flex-wrap gap-3">
-              <a
-                href="/login"
-                className="inline-flex items-center justify-center rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046]"
-              >
-                Log In
-              </a>
-
-              <a
-                href="/signup"
-                className="inline-flex items-center justify-center rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
-              >
-                Sign Up
-              </a>
+            <div className="mt-8 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-5 py-4 text-sm text-[#6b5f52]">
+              Sign up or log in from the top navigation to start posting and
+              connecting.
             </div>
-          )}
-
-          {message && (
-            <p className="mt-5 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-              {message}
-            </p>
           )}
         </div>
 
