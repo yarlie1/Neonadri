@@ -12,12 +12,20 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   const { data: post } = await supabase
     .from("posts")
-    .select("*")
+    .select(
+      "id, created_at, location, meeting_time, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
+    )
     .eq("id", params.id)
     .single();
 
   if (!post) {
-    return <div>Not found</div>;
+    return (
+      <main className="min-h-screen bg-[#f7f1ea] flex items-center justify-center">
+        <div className="text-center text-[#6f655c]">
+          Meetup not found
+        </div>
+      </main>
+    );
   }
 
   const mapUrl =
@@ -28,7 +36,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text-[#2f2a26]">
       <div className="mx-auto max-w-3xl space-y-6">
-        
+
         {/* 카드 */}
         <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
 
@@ -36,34 +44,41 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             MEETUP
           </p>
 
-          <h1 className="text-2xl font-semibold">
-            📍 {post.location}
+          <h1 className="text-2xl font-semibold leading-snug">
+            📍 {post.location || "Location not set"}
           </h1>
 
           <div className="mt-6 space-y-3 text-sm text-[#6f655c]">
 
-            <p>⏰ {new Date(post.meeting_time).toLocaleString()}</p>
+            {post.meeting_time && (
+              <p>⏰ {new Date(post.meeting_time).toLocaleString()}</p>
+            )}
 
-            <p>🎯 {post.meeting_purpose}</p>
+            {post.meeting_purpose && (
+              <p>🎯 {post.meeting_purpose}</p>
+            )}
 
             <p>
               👤 {post.target_gender || "Any"} /{" "}
               {post.target_age_group || "Any"}
             </p>
 
-            <p className="font-medium text-[#2f2a26]">
-              🎁 Benefit: {post.benefit_amount}
-            </p>
+            {post.benefit_amount && (
+              <p className="font-medium text-[#2f2a26]">
+                🎁 Benefit: {post.benefit_amount}
+              </p>
+            )}
           </div>
 
-          {/* 버튼 */}
+          {/* 버튼 영역 */}
           <div className="mt-6 flex gap-3">
 
             {mapUrl && (
               <a
                 href={mapUrl}
                 target="_blank"
-                className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white"
+                rel="noopener noreferrer"
+                className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
               >
                 Open Map
               </a>
@@ -71,7 +86,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
             <a
               href="/"
-              className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm"
+              className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
             >
               Back
             </a>
@@ -80,13 +95,18 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
         {/* 지도 */}
         {post.latitude && post.longitude && (
-          <div className="rounded-[1.5rem] overflow-hidden border border-[#e7ddd2] bg-white p-3">
+          <div className="overflow-hidden rounded-[1.5rem] border border-[#e7ddd2] bg-white p-3">
             <ClientMap
               latitude={post.latitude}
               longitude={post.longitude}
             />
           </div>
         )}
+
+        {/* 생성일 */}
+        <div className="text-xs text-[#9b8f84]">
+          Created at {new Date(post.created_at).toLocaleString()}
+        </div>
       </div>
     </main>
   );
