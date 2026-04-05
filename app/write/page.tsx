@@ -1,12 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
+
+declare global {
+  interface Window {
+    google: any;
+  }
+}
 
 export default function WritePage() {
   const supabase = createClient();
   const router = useRouter();
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [userId, setUserId] = useState("");
   const [title, setTitle] = useState("");
@@ -35,6 +43,33 @@ export default function WritePage() {
     checkUser();
   }, [router, supabase]);
 
+  useEffect(() => {
+    if (!window.google || !inputRef.current) return;
+
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      inputRef.current,
+      {
+        fields: ["formatted_address", "name", "geometry"],
+      }
+    );
+
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+
+      if (place?.formatted_address) {
+        setLocation(place.formatted_address);
+      } else if (place?.name) {
+        setLocation(place.name);
+      }
+    });
+
+    return () => {
+      if (window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(autocomplete);
+      }
+    };
+  }, []);
+
   const handleCreatePost = async () => {
     setMessage("");
 
@@ -62,9 +97,10 @@ export default function WritePage() {
       target_age_group: targetAgeGroup,
     });
 
+    setLoading(false);
+
     if (error) {
       setMessage(error.message);
-      setLoading(false);
       return;
     }
 
@@ -95,9 +131,10 @@ export default function WritePage() {
           />
 
           <input
+            ref={inputRef}
             className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            placeholder="Location"
-            value={location}
+            placeholder="Search location"
+            defaultValue={location}
             onChange={(e) => setLocation(e.target.value)}
           />
 
