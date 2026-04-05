@@ -1,6 +1,13 @@
 import { createClient } from "../../../lib/supabase/server";
+import ClientMap from "./ClientMap";
 
-export default async function PostDetail({ params }: any) {
+type PageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export default async function MeetupDetailPage({ params }: PageProps) {
   const supabase = createClient();
 
   const { data: post } = await supabase
@@ -9,7 +16,9 @@ export default async function PostDetail({ params }: any) {
     .eq("id", params.id)
     .single();
 
-  if (!post) return <div>Not found</div>;
+  if (!post) {
+    return <div>Not found</div>;
+  }
 
   const mapUrl =
     post.latitude && post.longitude
@@ -17,31 +26,68 @@ export default async function PostDetail({ params }: any) {
       : "";
 
   return (
-    <main className="p-10 max-w-3xl mx-auto">
+    <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text-[#2f2a26]">
+      <div className="mx-auto max-w-3xl space-y-6">
+        
+        {/* 카드 */}
+        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
 
-      <h1 className="text-3xl font-bold">{post.title}</h1>
+          <p className="mb-3 text-xs tracking-[0.3em] text-[#a48f7a]">
+            MEETUP
+          </p>
 
-      <div className="mt-4 space-y-2">
-        <p>📍 {post.location}</p>
-        <p>⏰ {new Date(post.meeting_time).toLocaleString()}</p>
-        <p>🎯 {post.meeting_purpose}</p>
-        <p>👤 {post.target_gender} / {post.target_age_group}</p>
-        <p>💵 Payment: {post.payment_amount}</p>
-        <p>🎁 Benefit: {post.benefit_amount}</p>
+          <h1 className="text-2xl font-semibold">
+            📍 {post.location}
+          </h1>
+
+          <div className="mt-6 space-y-3 text-sm text-[#6f655c]">
+
+            <p>⏰ {new Date(post.meeting_time).toLocaleString()}</p>
+
+            <p>🎯 {post.meeting_purpose}</p>
+
+            <p>
+              👤 {post.target_gender || "Any"} /{" "}
+              {post.target_age_group || "Any"}
+            </p>
+
+            <p className="font-medium text-[#2f2a26]">
+              🎁 Benefit: {post.benefit_amount}
+            </p>
+          </div>
+
+          {/* 버튼 */}
+          <div className="mt-6 flex gap-3">
+
+            {mapUrl && (
+              <a
+                href={mapUrl}
+                target="_blank"
+                className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white"
+              >
+                Open Map
+              </a>
+            )}
+
+            <a
+              href="/"
+              className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm"
+            >
+              Back
+            </a>
+          </div>
+        </div>
+
+        {/* 지도 */}
+        {post.latitude && post.longitude && (
+          <div className="rounded-[1.5rem] overflow-hidden border border-[#e7ddd2] bg-white p-3">
+            <ClientMap
+              latitude={post.latitude}
+              longitude={post.longitude}
+            />
+          </div>
+        )}
       </div>
-
-      {mapUrl && (
-        <a href={mapUrl} target="_blank" className="block mt-3 text-blue-600">
-          Open Map
-        </a>
-      )}
-
-      <p className="mt-6">{post.content}</p>
-
-      <a href="/" className="block mt-10 text-gray-500">
-        ← Back
-      </a>
-
     </main>
   );
 }
