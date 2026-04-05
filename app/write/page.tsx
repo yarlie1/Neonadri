@@ -29,6 +29,8 @@ export default function WritePage() {
   const [meetingTime, setMeetingTime] = useState("");
   const [targetGender, setTargetGender] = useState("");
   const [targetAgeGroup, setTargetAgeGroup] = useState("");
+  const [meetingPurpose, setMeetingPurpose] = useState("");
+  const [paymentAmount, setPaymentAmount] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [message, setMessage] = useState("");
@@ -173,6 +175,8 @@ export default function WritePage() {
       !meetingTime.trim() ||
       !targetGender.trim() ||
       !targetAgeGroup.trim() ||
+      !meetingPurpose.trim() ||
+      !paymentAmount.trim() ||
       latitude === null ||
       longitude === null
     ) {
@@ -190,6 +194,8 @@ export default function WritePage() {
       meeting_time: new Date(meetingTime).toISOString(),
       target_gender: targetGender,
       target_age_group: targetAgeGroup,
+      meeting_purpose: meetingPurpose,
+      payment_amount: paymentAmount,
       latitude,
       longitude,
     });
@@ -286,6 +292,40 @@ export default function WritePage() {
             <option value="40s">40s</option>
             <option value="50s+">50s+</option>
             <option value="Any">Any</option>
+          </select>
+
+          <select
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            value={meetingPurpose}
+            onChange={(e) => setMeetingPurpose(e.target.value)}
+          >
+            <option value="">Select meeting purpose</option>
+            <option value="Coffee">Coffee</option>
+            <option value="Meal">Meal</option>
+            <option value="Conversation">Conversation</option>
+            <option value="Dating">Dating</option>
+            <option value="Friendship">Friendship</option>
+            <option value="Networking">Networking</option>
+            <option value="Study">Study</option>
+            <option value="Walk">Walk</option>
+            <option value="Drinks">Drinks</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <select
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            value={paymentAmount}
+            onChange={(e) => setPaymentAmount(e.target.value)}
+          >
+            <option value="">Select payment amount</option>
+            <option value="$0">No cost</option>
+            <option value="$1-$20">$1 - $20</option>
+            <option value="$21-$50">$21 - $50</option>
+            <option value="$51-$100">$51 - $100</option>
+            <option value="$101+">$101+</option>
+            <option value="Split">Split the bill</option>
+            <option value="I will pay">I will pay</option>
+            <option value="Discuss later">Discuss later</option>
           </select>
 
           <textarea
