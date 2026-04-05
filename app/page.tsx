@@ -8,6 +8,10 @@ type Post = {
   title: string;
   content: string;
   created_at: string;
+  location: string | null;
+  meeting_time: string | null;
+  target_gender: string | null;
+  target_age_group: string | null;
 };
 
 export default function HomePage() {
@@ -25,7 +29,9 @@ export default function HomePage() {
     const loadPosts = async () => {
       const { data } = await supabase
         .from("posts")
-        .select("id, title, content, created_at")
+        .select(
+          "id, title, content, created_at, location, meeting_time, target_gender, target_age_group"
+        )
         .order("created_at", { ascending: false });
 
       setPosts(data || []);
@@ -42,6 +48,11 @@ export default function HomePage() {
 
     return () => subscription.unsubscribe();
   }, [supabase]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  };
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
@@ -64,11 +75,27 @@ export default function HomePage() {
           </p>
 
           {userEmail ? (
-            <div className="mt-8 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-5 py-4 text-sm text-[#6b5f52]">
-              Welcome back,
-              <span className="ml-1 font-semibold text-[#2f2a26]">
-                {userEmail}
-              </span>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="/dashboard"
+                className="rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046]"
+              >
+                Dashboard
+              </a>
+
+              <a
+                href="/write"
+                className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+              >
+                Write a Post
+              </a>
+
+              <button
+                onClick={handleLogout}
+                className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+              >
+                Log Out
+              </button>
             </div>
           ) : (
             <div className="mt-8 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-5 py-4 text-sm text-[#6b5f52]">
@@ -103,7 +130,18 @@ export default function HomePage() {
                     {post.title}
                   </h3>
 
-                  <p className="mt-3 text-sm leading-7 text-[#6f655c]">
+                  <div className="mt-3 space-y-1 text-sm text-[#6f655c]">
+                    {post.location && <p>Location: {post.location}</p>}
+                    {post.meeting_time && <p>Time: {post.meeting_time}</p>}
+                    {post.target_gender && (
+                      <p>Target Gender: {post.target_gender}</p>
+                    )}
+                    {post.target_age_group && (
+                      <p>Target Age Group: {post.target_age_group}</p>
+                    )}
+                  </div>
+
+                  <p className="mt-4 text-sm leading-7 text-[#6f655c]">
                     {post.content.length > 180
                       ? `${post.content.slice(0, 180)}...`
                       : post.content}
