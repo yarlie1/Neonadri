@@ -10,11 +10,14 @@ declare global {
 
 type MapPost = {
   id: number;
-  title: string;
   location: string | null;
   meeting_time: string | null;
   latitude: number | null;
   longitude: number | null;
+  meeting_purpose?: string | null;
+  target_gender?: string | null;
+  target_age_group?: string | null;
+  benefit_amount?: string | null;
 };
 
 type Props = {
@@ -62,7 +65,7 @@ export default function HomePostsMap({ posts }: Props) {
         const marker = new window.google.maps.Marker({
           position,
           map,
-          title: post.title,
+          title: post.location || "Meetup",
         });
 
         bounds.extend(position);
@@ -73,19 +76,31 @@ export default function HomePostsMap({ posts }: Props) {
 
         const content = `
           <div style="max-width:220px; font-family:Arial,sans-serif;">
-            <div style="font-weight:700; margin-bottom:6px;">${post.title}</div>
+            <div style="font-weight:700; margin-bottom:6px;">
+              ${post.location || "Meetup"}
+            </div>
             ${
-              post.location
-                ? `<div style="font-size:13px; color:#555; margin-bottom:4px;">${post.location}</div>`
+              timeText
+                ? `<div style="font-size:12px; color:#777; margin-bottom:4px;">${timeText}</div>`
                 : ""
             }
             ${
-              timeText
-                ? `<div style="font-size:12px; color:#777; margin-bottom:8px;">${timeText}</div>`
+              post.meeting_purpose
+                ? `<div style="font-size:12px; color:#555; margin-bottom:4px;">Purpose: ${post.meeting_purpose}</div>`
+                : ""
+            }
+            ${
+              post.target_gender || post.target_age_group
+                ? `<div style="font-size:12px; color:#555; margin-bottom:4px;">Target: ${post.target_gender || "Any"} / ${post.target_age_group || "Any"}</div>`
+                : ""
+            }
+            ${
+              post.benefit_amount
+                ? `<div style="font-size:12px; color:#555; margin-bottom:8px;">Benefit: ${post.benefit_amount}</div>`
                 : ""
             }
             <a href="/posts/${post.id}" style="font-size:13px; color:#8d7763; text-decoration:none;">
-              View post
+              View meetup
             </a>
           </div>
         `;
