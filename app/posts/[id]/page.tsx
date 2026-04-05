@@ -43,6 +43,17 @@ export default async function PostDetailPage({ params }: PageProps) {
   }
 
   const isOwner = user?.id === post.user_id;
+  const mapUrl = post.location
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        post.location
+      )}`
+    : "";
+
+  const mapEmbedUrl = post.location
+    ? `https://www.google.com/maps?q=${encodeURIComponent(
+        post.location
+      )}&output=embed`
+    : "";
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text-[#2f2a26]">
@@ -87,6 +98,30 @@ export default async function PostDetailPage({ params }: PageProps) {
             </p>
           )}
         </div>
+
+        {post.location && (
+          <div className="mt-6">
+            <div className="overflow-hidden rounded-[1.5rem] border border-[#e7ddd2] bg-white">
+              <iframe
+                title="Google Map"
+                src={mapEmbedUrl}
+                className="h-72 w-full"
+                loading="lazy"
+              />
+            </div>
+
+            <div className="mt-4">
+              <a
+                href={mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+              >
+                Open in Google Maps
+              </a>
+            </div>
+          </div>
+        )}
 
         <div className="mt-8 rounded-[1.5rem] border border-[#e7ddd2] bg-white p-6 text-sm leading-8 text-[#6f655c]">
           {post.content}
