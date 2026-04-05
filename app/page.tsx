@@ -13,6 +13,8 @@ type Post = {
   meeting_time: string | null;
   target_gender: string | null;
   target_age_group: string | null;
+  meeting_purpose: string | null;
+  payment_amount: string | null;
   latitude: number | null;
   longitude: number | null;
 };
@@ -33,7 +35,7 @@ export default function HomePage() {
       const { data } = await supabase
         .from("posts")
         .select(
-          "id, title, content, created_at, location, meeting_time, target_gender, target_age_group, latitude, longitude"
+          "id, title, content, created_at, location, meeting_time, target_gender, target_age_group, meeting_purpose, payment_amount, latitude, longitude"
         )
         .order("created_at", { ascending: false });
 
@@ -169,6 +171,12 @@ export default function HomePage() {
                         )}
                         {post.target_age_group && (
                           <p>Target Age Group: {post.target_age_group}</p>
+                        )}
+                        {post.meeting_purpose && (
+                          <p>Purpose: {post.meeting_purpose}</p>
+                        )}
+                        {post.payment_amount && (
+                          <p>Payment: {post.payment_amount}</p>
                         )}
                       </div>
 
