@@ -57,7 +57,7 @@ export default function WritePage() {
       title,
       content,
       location,
-      meeting_time: meetingTime,
+      meeting_time: new Date(meetingTime).toISOString(),
       target_gender: targetGender,
       target_age_group: targetAgeGroup,
     });
@@ -102,8 +102,8 @@ export default function WritePage() {
           />
 
           <input
+            type="datetime-local"
             className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            placeholder="Meeting time (e.g. Saturday 7 PM)"
             value={meetingTime}
             onChange={(e) => setMeetingTime(e.target.value)}
           />
