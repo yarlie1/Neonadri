@@ -132,7 +132,11 @@ export default function HomePage() {
 
                   <div className="mt-3 space-y-1 text-sm text-[#6f655c]">
                     {post.location && <p>Location: {post.location}</p>}
-                    {post.meeting_time && <p>Time: {post.meeting_time}</p>}
+                    {post.meeting_time && (
+                      <p>
+                        Time: {new Date(post.meeting_time).toLocaleString()}
+                      </p>
+                    )}
                     {post.target_gender && (
                       <p>Target Gender: {post.target_gender}</p>
                     )}
