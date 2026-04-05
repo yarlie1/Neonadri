@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -83,7 +83,7 @@ export default function WritePage() {
         </h1>
 
         <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-          Share who you want to meet and when.
+          Share who you want to meet, where, and when.
         </p>
 
         <div className="mt-8 space-y-4">
