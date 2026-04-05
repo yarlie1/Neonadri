@@ -66,6 +66,9 @@ export default function HomePostsMap({ posts }: Props) {
           position,
           map,
           title: post.location || "Meetup",
+          icon: {
+            url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+          },
         });
 
         bounds.extend(position);
@@ -75,32 +78,49 @@ export default function HomePostsMap({ posts }: Props) {
           : "";
 
         const content = `
-          <div style="max-width:220px; font-family:Arial,sans-serif;">
-            <div style="font-weight:700; margin-bottom:6px;">
-              ${post.location || "Meetup"}
+          <div style="
+            width:220px;
+            font-family:Arial,sans-serif;
+            border-radius:12px;
+            padding:12px;
+          ">
+            <div style="font-weight:700; font-size:14px; margin-bottom:6px;">
+              📍 ${post.location || "Meetup"}
             </div>
+
             ${
               timeText
-                ? `<div style="font-size:12px; color:#777; margin-bottom:4px;">${timeText}</div>`
+                ? `<div style="font-size:12px; color:#666; margin-bottom:4px;">⏰ ${timeText}</div>`
                 : ""
             }
+
             ${
               post.meeting_purpose
-                ? `<div style="font-size:12px; color:#555; margin-bottom:4px;">Purpose: ${post.meeting_purpose}</div>`
+                ? `<div style="font-size:12px; color:#555; margin-bottom:4px;">🎯 ${post.meeting_purpose}</div>`
                 : ""
             }
+
             ${
               post.target_gender || post.target_age_group
-                ? `<div style="font-size:12px; color:#555; margin-bottom:4px;">Target: ${post.target_gender || "Any"} / ${post.target_age_group || "Any"}</div>`
+                ? `<div style="font-size:12px; color:#555; margin-bottom:4px;">👤 ${post.target_gender || "Any"} / ${post.target_age_group || "Any"}</div>`
                 : ""
             }
+
             ${
               post.benefit_amount
-                ? `<div style="font-size:12px; color:#555; margin-bottom:8px;">Benefit: ${post.benefit_amount}</div>`
+                ? `<div style="font-size:12px; color:#555; margin-bottom:8px;">🎁 ${post.benefit_amount}</div>`
                 : ""
             }
-            <a href="/posts/${post.id}" style="font-size:13px; color:#8d7763; text-decoration:none;">
-              View meetup
+
+            <a href="/posts/${post.id}" style="
+              display:block;
+              margin-top:8px;
+              font-size:12px;
+              color:#8d7763;
+              text-decoration:none;
+              font-weight:600;
+            ">
+              View →
             </a>
           </div>
         `;
@@ -115,6 +135,9 @@ export default function HomePostsMap({ posts }: Props) {
 
       if (validPosts.length === 1) {
         map.setZoom(15);
+      }
+      if (validPosts.length > 1) {
+        map.setZoom(Math.min(map.getZoom() || 13, 13));
       }
 
       return true;
