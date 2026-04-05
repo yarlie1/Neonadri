@@ -1,4 +1,5 @@
 import { createClient } from "../../../lib/supabase/server";
+import ClientMap from "./ClientMap";
 
 type PageProps = {
   params: {
@@ -16,143 +17,11 @@ export default async function PostDetailPage({ params }: PageProps) {
   const { data: post, error } = await supabase
     .from("posts")
     .select(
-      "id, title, content, created_at, user_id, location, meeting_time, target_gender, target_age_group"
+      "id, title, content, created_at, user_id, location, meeting_time, target_gender, target_age_group, meeting_purpose, payment_amount, latitude, longitude"
     )
     .eq("id", params.id)
     .maybeSingle();
 
   if (error || !post) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text-[#2f2a26]">
-        <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
-          <h1 className="text-3xl font-semibold text-[#2f2a26]">
-            Post not found
-          </h1>
-
-          <div className="mt-6">
-            <a
-              href="/"
-              className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
-            >
-              Back to Home
-            </a>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  const isOwner = user?.id === post.user_id;
-  const mapUrl = post.location
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-        post.location
-      )}`
-    : "";
-
-  const mapEmbedUrl = post.location
-    ? `https://www.google.com/maps?q=${encodeURIComponent(
-        post.location
-      )}&output=embed`
-    : "";
-
-  return (
-    <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text-[#2f2a26]">
-      <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
-        <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#a48f7a]">
-          Post
-        </p>
-
-        <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
-          {post.title}
-        </h1>
-
-        <p className="mt-4 text-sm text-[#9b8f84]">
-          {new Date(post.created_at).toLocaleString()}
-        </p>
-
-        <div className="mt-6 space-y-2 rounded-[1.5rem] border border-[#e7ddd2] bg-white p-5 text-sm text-[#6f655c]">
-          {post.location && (
-            <p>
-              <span className="font-medium text-[#2f2a26]">Location:</span>{" "}
-              {post.location}
-            </p>
-          )}
-          {post.meeting_time && (
-            <p>
-              <span className="font-medium text-[#2f2a26]">Time:</span>{" "}
-              {new Date(post.meeting_time).toLocaleString()}
-            </p>
-          )}
-          {post.target_gender && (
-            <p>
-              <span className="font-medium text-[#2f2a26]">Target Gender:</span>{" "}
-              {post.target_gender}
-            </p>
-          )}
-          {post.target_age_group && (
-            <p>
-              <span className="font-medium text-[#2f2a26]">
-                Target Age Group:
-              </span>{" "}
-              {post.target_age_group}
-            </p>
-          )}
-        </div>
-
-        {post.location && (
-          <div className="mt-6">
-            <div className="overflow-hidden rounded-[1.5rem] border border-[#e7ddd2] bg-white">
-              <iframe
-                title="Google Map"
-                src={mapEmbedUrl}
-                className="h-72 w-full"
-                loading="lazy"
-              />
-            </div>
-
-            <div className="mt-4">
-              <a
-                href={mapUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
-              >
-                Open in Google Maps
-              </a>
-            </div>
-          </div>
-        )}
-
-        <div className="mt-8 rounded-[1.5rem] border border-[#e7ddd2] bg-white p-6 text-sm leading-8 text-[#6f655c]">
-          {post.content}
-        </div>
-
-        {!user && (
-          <div className="mt-8 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-5 py-4 text-sm text-[#6b5f52]">
-            Log in to write posts or interact with others.
-          </div>
-        )}
-
-        {isOwner && (
-          <div className="mt-8">
-            <a
-              href="/dashboard"
-              className="rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046]"
-            >
-              Edit in Dashboard
-            </a>
-          </div>
-        )}
-
-        <div className="mt-8">
-          <a
-            href="/"
-            className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
-          >
-            Back to Home
-          </a>
-        </div>
-      </div>
-    </main>
-  );
-}
+      <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text
