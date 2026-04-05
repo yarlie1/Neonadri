@@ -2,433 +2,96 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
-import { useRouter } from "next/navigation";
 
-type Post = {
-  id: number;
-  title: string;
-  content: string;
-  created_at: string;
-  location: string | null;
-  meeting_time: string | null;
-  target_gender: string | null;
-  target_age_group: string | null;
-  meeting_purpose: string | null;
-  payment_amount: string | null;
-  latitude: number | null;
-  longitude: number | null;
-};
-
-export default function DashboardPage() {
+export default function Dashboard() {
   const supabase = createClient();
-  const router = useRouter();
 
-  const [userId, setUserId] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [postMessage, setPostMessage] = useState("");
-
-  const [editingPostId, setEditingPostId] = useState<number | null>(null);
-  const [editTitle, setEditTitle] = useState("");
+  const [posts, setPosts] = useState<any[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
-  const [editLocation, setEditLocation] = useState("");
-  const [editMeetingTime, setEditMeetingTime] = useState("");
-  const [editTargetGender, setEditTargetGender] = useState("");
-  const [editTargetAgeGroup, setEditTargetAgeGroup] = useState("");
-  const [editMeetingPurpose, setEditMeetingPurpose] = useState("");
-  const [editPaymentAmount, setEditPaymentAmount] = useState("");
 
   useEffect(() => {
-    const loadDashboard = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    const load = async () => {
+      const { data } = await supabase
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-      if (!user) {
-        router.push("/");
-        return;
-      }
-
-      setUserId(user.id);
-      setUserEmail(user.email || "");
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (profile?.full_name) {
-        setFullName(profile.full_name);
-      }
-
-      await loadPosts();
+      setPosts(data || []);
     };
 
-    loadDashboard();
-  }, [router, supabase]);
+    load();
+  }, []);
 
-  const loadPosts = async () => {
-    const { data: postData } = await supabase
+  const handleDelete = async (id: number) => {
+    await supabase.from("posts").delete().eq("id", id);
+    setPosts(posts.filter((p) => p.id !== id));
+  };
+
+  const handleUpdate = async (id: number) => {
+    await supabase
       .from("posts")
-      .select(
-        "id, title, content, created_at, location, meeting_time, target_gender, target_age_group, meeting_purpose, payment_amount, latitude, longitude"
-      )
-      .order("created_at", { ascending: false });
+      .update({ content: editContent })
+      .eq("id", id);
 
-    setPosts(postData || []);
-  };
-
-  const handleSaveProfile = async () => {
-    setMessage("");
-    setLoading(true);
-
-    const { error } = await supabase.from("profiles").upsert({
-      id: userId,
-      full_name: fullName,
-    });
-
-    if (error) {
-      setMessage(error.message);
-    } else {
-      setMessage("Profile updated successfully.");
-    }
-
-    setLoading(false);
-  };
-
-  const handleDeletePost = async (postId: number) => {
-    const confirmed = window.confirm("Delete this post?");
-    if (!confirmed) return;
-
-    const { error } = await supabase.from("posts").delete().eq("id", postId);
-
-    if (error) {
-      setPostMessage(error.message);
-      return;
-    }
-
-    setPostMessage("Post deleted successfully.");
-    await loadPosts();
-  };
-
-  const handleStartEdit = (post: Post) => {
-    setEditingPostId(post.id);
-    setEditTitle(post.title);
-    setEditContent(post.content);
-    setEditLocation(post.location || "");
-    setEditTargetGender(post.target_gender || "");
-    setEditTargetAgeGroup(post.target_age_group || "");
-    setEditMeetingPurpose(post.meeting_purpose || "");
-    setEditPaymentAmount(post.payment_amount || "");
-
-    if (post.meeting_time) {
-      const local = new Date(post.meeting_time);
-      const yyyy = local.getFullYear();
-      const mm = String(local.getMonth() + 1).padStart(2, "0");
-      const dd = String(local.getDate()).padStart(2, "0");
-      const hh = String(local.getHours()).padStart(2, "0");
-      const min = String(local.getMinutes()).padStart(2, "0");
-      setEditMeetingTime(`${yyyy}-${mm}-${dd}T${hh}:${min}`);
-    } else {
-      setEditMeetingTime("");
-    }
-  };
-
-  const handleCancelEdit = () => {
-    setEditingPostId(null);
-    setEditTitle("");
-    setEditContent("");
-    setEditLocation("");
-    setEditMeetingTime("");
-    setEditTargetGender("");
-    setEditTargetAgeGroup("");
-    setEditMeetingPurpose("");
-    setEditPaymentAmount("");
-  };
-
-  const handleUpdatePost = async () => {
-    if (!editingPostId) return;
-
-    if (
-      !editTitle.trim() ||
-      !editContent.trim() ||
-      !editLocation.trim() ||
-      !editMeetingTime.trim() ||
-      !editTargetGender.trim() ||
-      !editTargetAgeGroup.trim() ||
-      !editMeetingPurpose.trim() ||
-      !editPaymentAmount.trim()
-    ) {
-      setPostMessage("Please fill in all fields.");
-      return;
-    }
-
-    const { error } = await supabase
-      .from("posts")
-      .update({
-        title: editTitle,
-        content: editContent,
-        location: editLocation,
-        meeting_time: new Date(editMeetingTime).toISOString(),
-        target_gender: editTargetGender,
-        target_age_group: editTargetAgeGroup,
-        meeting_purpose: editMeetingPurpose,
-        payment_amount: editPaymentAmount,
-      })
-      .eq("id", editingPostId);
-
-    if (error) {
-      setPostMessage(error.message);
-      return;
-    }
-
-    setPostMessage("Post updated successfully.");
-    handleCancelEdit();
-    await loadPosts();
+    setEditingId(null);
   };
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text-[#2f2a26]">
-      <div className="mx-auto max-w-5xl space-y-8">
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#a48f7a]">
-            Dashboard
-          </p>
+    <main className="p-6 bg-[#f7f1ea] min-h-screen">
+      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
-          <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
-            Welcome, {fullName || userEmail}
-          </h1>
+      <div className="space-y-4">
+        {posts.map((post) => (
+          <div key={post.id} className="bg-white p-4 rounded shadow">
 
-          <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-            Email: {userEmail}
-          </p>
+            <h2 className="font-semibold">{post.title}</h2>
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a
-              href="/write"
-              className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
-            >
-              Write a New Post
-            </a>
+            <div className="text-sm text-gray-600 space-y-1 mt-1">
+              <p>📍 {post.location}</p>
+              <p>🎯 {post.meeting_purpose}</p>
+              <p>💰 {post.payment_amount}</p>
+            </div>
 
-            <a
-              href="/"
-              className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
-            >
-              Back to Home
-            </a>
-          </div>
-        </div>
-
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
-          <h2 className="text-2xl font-semibold text-[#2f2a26]">Edit Profile</h2>
-
-          <div className="mt-5 flex flex-col gap-4 md:flex-row">
-            <input
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-              placeholder="Full name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-            />
-
-            <button
-              onClick={handleSaveProfile}
-              disabled={loading || !userId}
-              className="rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046] disabled:opacity-50"
-            >
-              {loading ? "Saving..." : "Save"}
-            </button>
-          </div>
-
-          {message && (
-            <p className="mt-4 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-              {message}
-            </p>
-          )}
-        </div>
-
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
-          <h2 className="text-2xl font-semibold text-[#2f2a26]">Your Posts</h2>
-
-          {postMessage && (
-            <p className="mt-4 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-              {postMessage}
-            </p>
-          )}
-
-          <div className="mt-6 space-y-5">
-            {posts.length === 0 ? (
-              <p className="text-[#6f655c]">No posts yet.</p>
-            ) : (
-              posts.map((post) => (
-                <div
-                  key={post.id}
-                  className="rounded-[1.5rem] border border-[#e7ddd2] bg-white p-6 shadow-sm"
+            {editingId === post.id ? (
+              <>
+                <textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  className="w-full mt-2 border p-2"
+                />
+                <button
+                  onClick={() => handleUpdate(post.id)}
+                  className="mt-2 bg-blue-500 text-white px-3 py-1 rounded"
                 >
-                  {editingPostId === post.id ? (
-                    <div className="space-y-4">
-                      <input
-                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-                        value={editTitle}
-                        onChange={(e) => setEditTitle(e.target.value)}
-                        placeholder="Title"
-                      />
-
-                      <input
-                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-                        value={editLocation}
-                        onChange={(e) => setEditLocation(e.target.value)}
-                        placeholder="Location"
-                      />
-
-                      <input
-                        type="datetime-local"
-                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-                        value={editMeetingTime}
-                        onChange={(e) => setEditMeetingTime(e.target.value)}
-                      />
-
-                      <select
-                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-                        value={editTargetGender}
-                        onChange={(e) => setEditTargetGender(e.target.value)}
-                      >
-                        <option value="">Select target gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Any">Any</option>
-                      </select>
-
-                      <select
-                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-                        value={editTargetAgeGroup}
-                        onChange={(e) => setEditTargetAgeGroup(e.target.value)}
-                      >
-                        <option value="">Select target age group</option>
-                        <option value="20s">20s</option>
-                        <option value="30s">30s</option>
-                        <option value="40s">40s</option>
-                        <option value="50s+">50s+</option>
-                        <option value="Any">Any</option>
-                      </select>
-
-                      <select
-                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-                        value={editMeetingPurpose}
-                        onChange={(e) => setEditMeetingPurpose(e.target.value)}
-                      >
-                        <option value="">Select meeting purpose</option>
-                        <option value="Coffee">Coffee</option>
-                        <option value="Meal">Meal</option>
-                        <option value="Conversation">Conversation</option>
-                        <option value="Dating">Dating</option>
-                        <option value="Friendship">Friendship</option>
-                        <option value="Networking">Networking</option>
-                        <option value="Study">Study</option>
-                        <option value="Walk">Walk</option>
-                        <option value="Drinks">Drinks</option>
-                        <option value="Other">Other</option>
-                      </select>
-
-                      <select
-                        className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-                        value={editPaymentAmount}
-                        onChange={(e) => setEditPaymentAmount(e.target.value)}
-                      >
-                        <option value="">Select payment amount</option>
-                        <option value="$0">No cost</option>
-                        <option value="$1-$20">$1 - $20</option>
-                        <option value="$21-$50">$21 - $50</option>
-                        <option value="$51-$100">$51 - $100</option>
-                        <option value="$101+">$101+</option>
-                        <option value="Split">Split the bill</option>
-                        <option value="I will pay">I will pay</option>
-                        <option value="Discuss later">Discuss later</option>
-                      </select>
-
-                      <textarea
-                        className="min-h-[180px] w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-                        value={editContent}
-                        onChange={(e) => setEditContent(e.target.value)}
-                        placeholder="Content"
-                      />
-
-                      <div className="flex flex-wrap gap-3">
-                        <button
-                          onClick={handleUpdatePost}
-                          className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
-                        >
-                          Save Edit
-                        </button>
-                        <button
-                          onClick={handleCancelEdit}
-                          className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <h3 className="text-xl font-semibold text-[#2f2a26]">
-                        <a href={`/posts/${post.id}`}>{post.title}</a>
-                      </h3>
-
-                      <div className="mt-3 space-y-1 text-sm text-[#6f655c]">
-                        {post.location && <p>Location: {post.location}</p>}
-                        {post.meeting_time && (
-                          <p>
-                            Time: {new Date(post.meeting_time).toLocaleString()}
-                          </p>
-                        )}
-                        {post.target_gender && (
-                          <p>Target Gender: {post.target_gender}</p>
-                        )}
-                        {post.target_age_group && (
-                          <p>Target Age Group: {post.target_age_group}</p>
-                        )}
-                        {post.meeting_purpose && (
-                          <p>Purpose: {post.meeting_purpose}</p>
-                        )}
-                        {post.payment_amount && (
-                          <p>Payment: {post.payment_amount}</p>
-                        )}
-                      </div>
-
-                      <p className="mt-4 text-sm leading-7 text-[#6f655c]">
-                        {post.content}
-                      </p>
-
-                      <p className="mt-4 text-xs text-[#9b8f84]">
-                        {new Date(post.created_at).toLocaleString()}
-                      </p>
-
-                      <div className="mt-5 flex flex-wrap gap-3">
-                        <button
-                          onClick={() => handleStartEdit(post)}
-                          className="rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046]"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeletePost(post.id)}
-                          className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))
+                  Save
+                </button>
+              </>
+            ) : (
+              <p className="mt-2 text-sm">{post.content}</p>
             )}
+
+            <div className="mt-3 flex gap-2">
+              <button
+                onClick={() => {
+                  setEditingId(post.id);
+                  setEditContent(post.content);
+                }}
+                className="text-blue-500"
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={() => handleDelete(post.id)}
+                className="text-red-500"
+              >
+                Delete
+              </button>
+            </div>
+
           </div>
-        </div>
+        ))}
       </div>
     </main>
   );
