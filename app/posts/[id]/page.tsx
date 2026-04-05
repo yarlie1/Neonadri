@@ -69,7 +69,7 @@ export default async function PostDetailPage({ params }: PageProps) {
           {post.meeting_time && (
             <p>
               <span className="font-medium text-[#2f2a26]">Time:</span>{" "}
-              {post.meeting_time}
+              {new Date(post.meeting_time).toLocaleString()}
             </p>
           )}
           {post.target_gender && (
