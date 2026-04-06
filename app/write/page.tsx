@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 declare global {
   interface Window {
@@ -13,7 +13,6 @@ declare global {
 export default function WritePage() {
   const supabase = createClient();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const autocompleteRef = useRef<any>(null);
@@ -51,9 +50,12 @@ export default function WritePage() {
   }, [router, supabase]);
 
   useEffect(() => {
-    const qLocation = searchParams.get("location");
-    const qLat = searchParams.get("lat");
-    const qLng = searchParams.get("lng");
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    const qLocation = params.get("location");
+    const qLat = params.get("lat");
+    const qLng = params.get("lng");
 
     if (qLocation && qLat && qLng) {
       setLocation(qLocation);
@@ -62,7 +64,7 @@ export default function WritePage() {
       setLocationConfirmed(true);
       setMessage("");
     }
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
