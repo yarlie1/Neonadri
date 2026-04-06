@@ -189,6 +189,12 @@ export default function WritePage() {
     setLocationConfirmed(false);
   };
 
+  const handleSearchClick = () => {
+    setShowMap(true);
+    searchInputRef.current?.focus();
+    setMessage("Choose one place from the dropdown list.");
+  };
+
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
       setMessage("Geolocation is not supported on this device.");
@@ -327,6 +333,14 @@ export default function WritePage() {
 
             <button
               type="button"
+              onClick={handleSearchClick}
+              className="rounded-2xl bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+            >
+              Search
+            </button>
+
+            <button
+              type="button"
               onClick={() => setShowMap((prev) => !prev)}
               className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
             >
@@ -334,13 +348,15 @@ export default function WritePage() {
             </button>
           </div>
 
-          <input
-            ref={searchInputRef}
-            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            placeholder="Search exact place or address"
-            value={location}
-            onChange={handleLocationInputChange}
-          />
+          <div className="flex gap-3">
+            <input
+              ref={searchInputRef}
+              className="flex-1 rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              placeholder="Search exact place or address"
+              value={location}
+              onChange={handleLocationInputChange}
+            />
+          </div>
 
           {location && (
             <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
