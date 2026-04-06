@@ -88,6 +88,25 @@ export default function EditMeetupPage() {
   }, [params.id, router, supabase]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const qName = urlParams.get("name");
+    const qLocation = urlParams.get("location");
+    const qLat = urlParams.get("lat");
+    const qLng = urlParams.get("lng");
+
+    if (qLocation && qLat && qLng) {
+      setPlaceName(qName || qLocation);
+      setLocation(qLocation);
+      setLatitude(Number(qLat));
+      setLongitude(Number(qLng));
+      setLocationConfirmed(true);
+      setMessage("");
+    }
+  }, []);
+
+  useEffect(() => {
     let interval: NodeJS.Timeout;
 
     const initAutocomplete = () => {
@@ -216,7 +235,7 @@ export default function EditMeetupPage() {
   };
 
   const handleOpenMapPicker = () => {
-    router.push(`/write/location`);
+    router.push(`/write/location?returnTo=/write/${params.id}`);
   };
 
   const handleSave = async () => {
@@ -240,7 +259,7 @@ export default function EditMeetupPage() {
       !locationConfirmed
     ) {
       setMessage(
-        "Please choose one exact location from the dropdown or current location."
+        "Please choose one exact location from the dropdown, current location, or map picker."
       );
       return;
     }
