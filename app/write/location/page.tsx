@@ -18,20 +18,30 @@ type PendingLocation = {
 export default function WriteLocationPage() {
   const router = useRouter();
   const mapRef = useRef<HTMLDivElement | null>(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+
   const mapInstanceRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
   const geocoderRef = useRef<any>(null);
+  const autocompleteRef = useRef<any>(null);
 
   const [pendingLocation, setPendingLocation] = useState<PendingLocation | null>(
     null
   );
   const [message, setMessage] = useState("");
+  const [locating, setLocating] = useState(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
     const initMap = () => {
-      if (!window.google || !window.google.maps || !mapRef.current) {
+      if (
+        !window.google ||
+        !window.google.maps ||
+        !window.google.maps.places ||
+        !mapRef.current ||
+        !searchInputRef.current
+      ) {
         return false;
       }
 
@@ -79,6 +89,45 @@ export default function WriteLocationPage() {
         });
       }
 
+      if (!autocompleteRef.current) {
+        autocompleteRef.current =
+          new window.google.maps.places.Autocomplete(searchInputRef.current, {
+            fields: ["formatted_address", "name", "geometry"],
+          });
+
+        autocompleteRef.current.addListener("place_changed", () => {
+          const place = autocompleteRef.current.getPlace();
+
+          const formattedAddress =
+            place?.formatted_address || place?.name || "";
+          const lat = place?.geometry?.location?.lat?.();
+          const lng = place?.geometry?.location?.lng?.();
+
+          if (
+            !formattedAddress ||
+            typeof lat !== "number" ||
+            typeof lng !== "number"
+          ) {
+            setPendingLocation(null);
+            setMessage("Please choose a valid place from the dropdown.");
+            return;
+          }
+
+          mapInstanceRef.current.setCenter({ lat, lng });
+          mapInstanceRef.current.setZoom(15);
+
+          markerRef.current.setPosition({ lat, lng });
+          markerRef.current.setVisible(true);
+
+          setPendingLocation({
+            address: formattedAddress,
+            lat,
+            lng,
+          });
+          setMessage("");
+        });
+      }
+
       return true;
     };
 
@@ -90,12 +139,79 @@ export default function WriteLocationPage() {
 
     return () => {
       if (interval) clearInterval(interval);
+      if (autocompleteRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(
+          autocompleteRef.current
+        );
+      }
     };
   }, []);
 
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setMessage("Geolocation is not supported on this device.");
+      return;
+    }
+
+    if (!geocoderRef.current || !mapInstanceRef.current || !markerRef.current) {
+      setMessage("Map is still loading. Please try again.");
+      return;
+    }
+
+    setMessage("");
+    setLocating(true);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        mapInstanceRef.current.setCenter({ lat, lng });
+        mapInstanceRef.current.setZoom(15);
+
+        markerRef.current.setPosition({ lat, lng });
+        markerRef.current.setVisible(true);
+
+        geocoderRef.current.geocode(
+          { location: { lat, lng } },
+          (results: any, status: string) => {
+            setLocating(false);
+
+            if (status === "OK" && results && results[0]) {
+              const address = results[0].formatted_address;
+
+              setPendingLocation({
+                address,
+                lat,
+                lng,
+              });
+
+              if (searchInputRef.current) {
+                searchInputRef.current.value = address;
+              }
+
+              setMessage("");
+            } else {
+              setPendingLocation(null);
+              setMessage("Could not convert your current location to an address.");
+            }
+          }
+        );
+      },
+      () => {
+        setLocating(false);
+        setMessage("Could not get your current location.");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+      }
+    );
+  };
+
   const handleConfirm = () => {
     if (!pendingLocation) {
-      setMessage("Tap a place on the map first.");
+      setMessage("Choose a place from search, current location, or tap the map first.");
       return;
     }
 
@@ -121,10 +237,29 @@ export default function WriteLocationPage() {
           </h1>
 
           <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-            Tap one exact location on the map, then confirm it.
+            Search a place, use your current location, or tap the map. Then confirm one exact location.
           </p>
 
-          <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-[#dccfc2] bg-white p-3">
+          <div className="mt-6 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={handleUseCurrentLocation}
+              disabled={locating}
+              className="rounded-2xl bg-[#6b5f52] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046] disabled:opacity-50"
+            >
+              {locating ? "Finding..." : "Use Current Location"}
+            </button>
+          </div>
+
+          <div className="mt-4">
+            <input
+              ref={searchInputRef}
+              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              placeholder="Search exact place or address"
+            />
+          </div>
+
+          <div className="mt-4 overflow-hidden rounded-[1.5rem] border border-[#dccfc2] bg-white p-3">
             <div ref={mapRef} className="h-[28rem] w-full rounded-[1rem]" />
           </div>
 
