@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
-import TopNav from "../components/TopNav";
 
 type Post = {
   id: number;
@@ -23,7 +22,6 @@ export default function DashboardPage() {
   const supabase = createClient();
   const router = useRouter();
 
-  const [userEmail, setUserEmail] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
   const [message, setMessage] = useState("");
 
@@ -38,8 +36,6 @@ export default function DashboardPage() {
         return;
       }
 
-      setUserEmail(user.email ?? "");
-
       const { data: postData } = await supabase
         .from("posts")
         .select(
@@ -52,11 +48,6 @@ export default function DashboardPage() {
 
     loadDashboard();
   }, [router, supabase]);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    window.location.href = "/";
-  };
 
   const handleDeletePost = async (postId: number) => {
     const confirmed = window.confirm("Delete this meetup?");
@@ -75,8 +66,6 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
-      <TopNav userEmail={userEmail} onLogout={handleLogout} />
-
       <div className="mx-auto max-w-5xl space-y-8 px-6 py-8">
         <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
           <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
