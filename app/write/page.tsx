@@ -34,6 +34,8 @@ export default function WritePage() {
   const [locationConfirmed, setLocationConfirmed] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [locating, setLocating] = useState(false);
+  const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -101,6 +103,7 @@ export default function WritePage() {
                 const address = results[0].formatted_address;
                 setLocation(address);
                 setLocationConfirmed(true);
+                setShowMap(true);
 
                 if (searchInputRef.current) {
                   searchInputRef.current.value = address;
@@ -139,6 +142,7 @@ export default function WritePage() {
           setLatitude(lat);
           setLongitude(lng);
           setLocationConfirmed(true);
+          setShowMap(true);
 
           mapRef.current.setCenter({ lat, lng });
           mapRef.current.setZoom(15);
@@ -185,6 +189,66 @@ export default function WritePage() {
     setLocationConfirmed(false);
   };
 
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setMessage("Geolocation is not supported on this device.");
+      return;
+    }
+
+    setMessage("");
+    setLocating(true);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        setLatitude(lat);
+        setLongitude(lng);
+        setShowMap(true);
+
+        if (mapRef.current && markerRef.current) {
+          mapRef.current.setCenter({ lat, lng });
+          mapRef.current.setZoom(15);
+          markerRef.current.setPosition({ lat, lng });
+          markerRef.current.setVisible(true);
+        }
+
+        if (geocoderRef.current) {
+          geocoderRef.current.geocode(
+            { location: { lat, lng } },
+            (results: any, status: string) => {
+              setLocating(false);
+
+              if (status === "OK" && results && results[0]) {
+                const address = results[0].formatted_address;
+                setLocation(address);
+                setLocationConfirmed(true);
+
+                if (searchInputRef.current) {
+                  searchInputRef.current.value = address;
+                }
+              } else {
+                setMessage("Could not convert your location to an address.");
+              }
+            }
+          );
+        } else {
+          setLocating(false);
+          setMessage("Map is still loading. Please try again.");
+        }
+      },
+      () => {
+        setLocating(false);
+        setMessage("Could not get your current location.");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+      }
+    );
+  };
+
   const handleCreatePost = async () => {
     setMessage("");
 
@@ -206,7 +270,7 @@ export default function WritePage() {
       !locationConfirmed
     ) {
       setMessage(
-        "Please choose one exact location from the dropdown or by tapping the map."
+        "Please choose one exact location from the dropdown or by using the map."
       );
       return;
     }
@@ -247,25 +311,36 @@ export default function WritePage() {
         </h1>
 
         <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-          Choose one exact place from the dropdown or by tapping the map.
+          Use your current location, or search and select one exact place.
         </p>
 
         <div className="mt-8 space-y-4">
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={handleUseCurrentLocation}
+              disabled={locating}
+              className="rounded-2xl bg-[#6b5f52] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046] disabled:opacity-50"
+            >
+              {locating ? "Finding..." : "Use Current Location"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowMap((prev) => !prev)}
+              className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+            >
+              {showMap ? "Hide Map" : "Show Map"}
+            </button>
+          </div>
+
           <input
             ref={searchInputRef}
             className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            placeholder="Search location"
+            placeholder="Search exact place or address"
             value={location}
             onChange={handleLocationInputChange}
           />
-
-          <div className="rounded-[1.5rem] border border-[#dccfc2] bg-white p-3">
-            <div ref={mapContainerRef} className="h-72 w-full rounded-[1rem]" />
-            <p className="mt-3 text-xs text-[#7b7067]">
-              Tap the map to drop a pin if you want to choose the exact meeting
-              place.
-            </p>
-          </div>
 
           {location && (
             <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
@@ -279,7 +354,19 @@ export default function WritePage() {
               <p className="mt-1 text-xs">
                 {locationConfirmed
                   ? "Exact location selected."
-                  : "Please select from the dropdown or tap the map."}
+                  : "Please select from the dropdown or use current location."}
+              </p>
+            </div>
+          )}
+
+          {showMap && (
+            <div className="rounded-[1.5rem] border border-[#dccfc2] bg-white p-3">
+              <div
+                ref={mapContainerRef}
+                className="h-72 w-full rounded-[1rem]"
+              />
+              <p className="mt-3 text-xs text-[#7b7067]">
+                You can also tap the map to choose the exact meeting place.
               </p>
             </div>
           )}
