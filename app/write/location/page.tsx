@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 declare global {
   interface Window {
@@ -28,8 +28,6 @@ const PAGE_SIZE = 5;
 
 export default function WriteLocationPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const returnTo = searchParams.get("returnTo") || "/write";
 
   const mapRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
@@ -39,6 +37,7 @@ export default function WriteLocationPage() {
   const geocoderRef = useRef<any>(null);
   const placesServiceRef = useRef<any>(null);
 
+  const [returnTo, setReturnTo] = useState("/write");
   const [pendingLocation, setPendingLocation] = useState<PendingLocation | null>(
     null
   );
@@ -49,6 +48,17 @@ export default function WriteLocationPage() {
   const [message, setMessage] = useState("");
   const [locating, setLocating] = useState(false);
   const [searching, setSearching] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    const value = params.get("returnTo");
+
+    if (value) {
+      setReturnTo(value);
+    }
+  }, []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
