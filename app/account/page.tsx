@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 
 type Profile = {
   id: string;
-  email: string | null;
   display_name: string | null;
   avatar_url: string | null;
   bio: string | null;
@@ -48,11 +47,13 @@ export default function AccountPage() {
 
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, email, display_name, avatar_url, bio, gender, age_group, is_public")
+        .select(
+          "id, display_name, avatar_url, bio, gender, age_group, is_public"
+        )
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== "PGRST116") {
+      if (error) {
         setMessage(error.message);
         setLoading(false);
         return;
@@ -61,7 +62,6 @@ export default function AccountPage() {
       if (!data) {
         const { error: insertError } = await supabase.from("profiles").insert({
           id: user.id,
-          email: user.email,
           display_name: "",
           avatar_url: "",
           bio: "",
@@ -99,7 +99,6 @@ export default function AccountPage() {
 
     const { error } = await supabase.from("profiles").upsert({
       id: userId,
-      email,
       display_name: displayName,
       avatar_url: avatarUrl,
       bio,
