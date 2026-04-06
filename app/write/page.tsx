@@ -55,6 +55,8 @@ export default function WritePage() {
   }, [router, supabase]);
 
   useEffect(() => {
+    if (!showMap) return;
+
     let interval: NodeJS.Timeout;
 
     const initMap = () => {
@@ -103,12 +105,10 @@ export default function WritePage() {
                 const address = results[0].formatted_address;
                 setLocation(address);
                 setLocationConfirmed(true);
-
-                if (searchInputRef.current) {
-                  searchInputRef.current.value = address;
-                }
+                setMessage("");
               } else {
                 setLocationConfirmed(false);
+                setMessage("Could not get address from the selected point.");
               }
             }
           );
@@ -143,18 +143,24 @@ export default function WritePage() {
           setLatitude(lat);
           setLongitude(lng);
           setLocationConfirmed(true);
-          setShowMap(true);
+          setMessage("");
 
           mapRef.current.setCenter({ lat, lng });
           mapRef.current.setZoom(15);
 
           markerRef.current.setPosition({ lat, lng });
           markerRef.current.setVisible(true);
-
-          if (searchInputRef.current) {
-            searchInputRef.current.value = formattedAddress;
-          }
         });
+      }
+
+      window.google.maps.event.trigger(mapRef.current, "resize");
+
+      if (latitude !== null && longitude !== null) {
+        const center = { lat: latitude, lng: longitude };
+        mapRef.current.setCenter(center);
+        mapRef.current.setZoom(15);
+        markerRef.current.setPosition(center);
+        markerRef.current.setVisible(true);
       }
 
       return true;
@@ -170,16 +176,8 @@ export default function WritePage() {
 
     return () => {
       if (interval) clearInterval(interval);
-      if (autocompleteRef.current && window.google?.maps?.event) {
-        window.google.maps.event.clearInstanceListeners(
-          autocompleteRef.current
-        );
-      }
-      if (mapRef.current && window.google?.maps?.event) {
-        window.google.maps.event.clearInstanceListeners(mapRef.current);
-      }
     };
-  }, []);
+  }, [showMap, latitude, longitude]);
 
   const handleLocationInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -198,6 +196,7 @@ export default function WritePage() {
 
     setMessage("");
     setLocating(true);
+    setShowMap(true);
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -206,7 +205,6 @@ export default function WritePage() {
 
         setLatitude(lat);
         setLongitude(lng);
-        setShowMap(true);
 
         if (mapRef.current && markerRef.current) {
           mapRef.current.setCenter({ lat, lng });
@@ -225,10 +223,6 @@ export default function WritePage() {
                 const address = results[0].formatted_address;
                 setLocation(address);
                 setLocationConfirmed(true);
-
-                if (searchInputRef.current) {
-                  searchInputRef.current.value = address;
-                }
               } else {
                 setMessage("Could not convert your location to an address.");
               }
@@ -271,7 +265,7 @@ export default function WritePage() {
       !locationConfirmed
     ) {
       setMessage(
-        "Please choose one exact location from the dropdown or by using the map."
+        "Please choose one exact location from the dropdown, current location, or map."
       );
       return;
     }
@@ -367,7 +361,7 @@ export default function WritePage() {
                 className="h-72 w-full rounded-[1rem]"
               />
               <p className="mt-3 text-xs text-[#7b7067]">
-                Tap the map and the exact address will be reflected in the text box above.
+                Tap the map and the exact address will appear in the text box above.
               </p>
             </div>
           )}
