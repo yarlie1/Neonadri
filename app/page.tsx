@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "../lib/supabase/client";
-import HomePostsMap from "./components/HomePostsMap";
 
 type Post = {
   id: number;
@@ -60,74 +59,66 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
-      <section className="mx-auto max-w-5xl px-6 py-12 md:py-14">
-        <div className="mb-14 rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-12">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#a48f7a]">
-            Neonadri
-          </p>
+      <section className="mx-auto max-w-5xl px-6 py-10 md:py-12">
+        <div className="mb-8 rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-8">
+          <div className="flex flex-wrap gap-3">
+            <a
+              href="/map"
+              className="rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046]"
+            >
+              Map View
+            </a>
 
-          <h1 className="text-4xl font-semibold leading-tight tracking-tight text-[#2f2a26] md:text-6xl">
-            Do you want to
-            <br />
-            meet someone?
-            <span className="mt-2 block text-[#8d7763]">Try Neonadri.</span>
-          </h1>
+            {userEmail ? (
+              <>
+                <a
+                  href="/write"
+                  className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                >
+                  Create Meetup
+                </a>
 
-          <p className="mt-6 max-w-2xl text-base leading-8 text-[#6f655c] md:text-lg">
-            Discover people, choose a place, and connect around a simple meetup.
-          </p>
+                <a
+                  href="/dashboard"
+                  className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+                >
+                  Dashboard
+                </a>
 
-          {userEmail ? (
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="/dashboard"
-                className="rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046]"
-              >
-                Dashboard
-              </a>
+                <button
+                  onClick={handleLogout}
+                  className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+                >
+                  Log Out
+                </button>
+              </>
+            ) : (
+              <>
+                <a
+                  href="/login"
+                  className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                >
+                  Log In
+                </a>
 
-              <a
-                href="/write"
-                className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
-              >
-                Create Meetup
-              </a>
-
-              <button
-                onClick={handleLogout}
-                className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
-              >
-                Log Out
-              </button>
-            </div>
-          ) : (
-            <div className="mt-8 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-5 py-4 text-sm text-[#6b5f52]">
-              Sign up or log in from the top navigation to start creating meetups.
-            </div>
-          )}
-        </div>
-
-        <div className="mb-14">
-          <h2 className="text-2xl font-semibold text-[#2f2a26] md:text-3xl">
-            Meetups on the Map
-          </h2>
-
-          <p className="mt-2 text-sm text-[#7b7067]">
-            Tap a pin to see one exact meetup location.
-          </p>
-
-          <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-3 shadow-sm">
-            <HomePostsMap posts={posts} />
+                <a
+                  href="/signup"
+                  className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+                >
+                  Sign Up
+                </a>
+              </>
+            )}
           </div>
         </div>
 
         <div>
-          <h2 className="text-2xl font-semibold text-[#2f2a26] md:text-3xl">
+          <h1 className="text-2xl font-semibold text-[#2f2a26] md:text-3xl">
             Recent Meetups
-          </h2>
+          </h1>
 
           <p className="mt-2 text-sm text-[#7b7067]">
-            Browse quick meetup cards.
+            Browse the latest meetup posts.
           </p>
 
           {posts.length === 0 ? (
