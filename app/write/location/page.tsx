@@ -10,6 +10,7 @@ declare global {
 }
 
 type PendingLocation = {
+  name: string;
   address: string;
   lat: number;
   lng: number;
@@ -48,7 +49,7 @@ export default function WriteLocationPage() {
     let interval: NodeJS.Timeout;
 
     const initMap = () => {
-      if (!window.google || !window.google.maps || !mapRef.current) {
+      if (!window.google || !window.google.maps || !window.google.maps.places || !mapRef.current) {
         return false;
       }
 
@@ -84,14 +85,42 @@ export default function WriteLocationPage() {
             { location: { lat, lng } },
             (results: any, status: string) => {
               if (status === "OK" && results && results[0]) {
-                setPendingLocation({
-                  address: results[0].formatted_address,
-                  lat,
-                  lng,
-                });
-                setAllSearchResults([]);
-                setCurrentPage(1);
-                setMessage("");
+                const address = results[0].formatted_address;
+
+                if (placesServiceRef.current) {
+                  placesServiceRef.current.nearbySearch(
+                    {
+                      location: { lat, lng },
+                      radius: 50,
+                    },
+                    (places: any, placesStatus: string) => {
+                      const placeName =
+                        placesStatus === "OK" && places && places[0]?.name
+                          ? places[0].name
+                          : address;
+
+                      setPendingLocation({
+                        name: placeName,
+                        address,
+                        lat,
+                        lng,
+                      });
+                      setAllSearchResults([]);
+                      setCurrentPage(1);
+                      setMessage("");
+                    }
+                  );
+                } else {
+                  setPendingLocation({
+                    name: address,
+                    address,
+                    lat,
+                    lng,
+                  });
+                  setAllSearchResults([]);
+                  setCurrentPage(1);
+                  setMessage("");
+                }
               } else {
                 setPendingLocation(null);
                 setMessage("Could not get address from that point.");
@@ -227,6 +256,7 @@ export default function WriteLocationPage() {
     markerRef.current.setVisible(true);
 
     setPendingLocation({
+      name: item.name,
       address: item.address,
       lat: item.lat,
       lng: item.lng,
@@ -275,6 +305,7 @@ export default function WriteLocationPage() {
               const address = results[0].formatted_address;
 
               setPendingLocation({
+                name: "Current Location",
                 address,
                 lat,
                 lng,
@@ -439,8 +470,13 @@ export default function WriteLocationPage() {
 
           {pendingLocation && (
             <div className="mt-4 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-              <p className="font-medium text-[#2f2a26]">Pending location</p>
-              <p className="mt-1">{pendingLocation.address}</p>
+              <p className="font-medium text-[#2f2a26]">Selected place</p>
+              <p className="mt-1 text-base font-semibold text-[#2f2a26]">
+                {pendingLocation.name}
+              </p>
+              <p className="mt-1 text-sm text-[#6b5f52]">
+                {pendingLocation.address}
+              </p>
               <p className="mt-1 text-xs text-[#8b7f74]">
                 Lat: {pendingLocation.lat.toFixed(6)}, Lng:{" "}
                 {pendingLocation.lng.toFixed(6)}
