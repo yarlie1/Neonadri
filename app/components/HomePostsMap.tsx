@@ -165,5 +165,5 @@ export default function HomePostsMap({ posts }: Props) {
     };
   }, [posts]);
 
-  return <div ref={mapRef} className="h-80 w-full rounded-[1.5rem]" />;
+  return <div ref={mapRef} className="h-[70vh] w-full rounded-[1.5rem]" />;
 }
