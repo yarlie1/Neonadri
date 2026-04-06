@@ -103,11 +103,12 @@ export default function WritePage() {
                 const address = results[0].formatted_address;
                 setLocation(address);
                 setLocationConfirmed(true);
-                setShowMap(true);
 
                 if (searchInputRef.current) {
                   searchInputRef.current.value = address;
                 }
+              } else {
+                setLocationConfirmed(false);
               }
             }
           );
@@ -187,12 +188,6 @@ export default function WritePage() {
     setLatitude(null);
     setLongitude(null);
     setLocationConfirmed(false);
-  };
-
-  const handleSearchClick = () => {
-    setShowMap(true);
-    searchInputRef.current?.focus();
-    setMessage("Choose one place from the dropdown list.");
   };
 
   const handleUseCurrentLocation = () => {
@@ -333,14 +328,6 @@ export default function WritePage() {
 
             <button
               type="button"
-              onClick={handleSearchClick}
-              className="rounded-2xl bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
-            >
-              Search
-            </button>
-
-            <button
-              type="button"
               onClick={() => setShowMap((prev) => !prev)}
               className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
             >
@@ -348,15 +335,13 @@ export default function WritePage() {
             </button>
           </div>
 
-          <div className="flex gap-3">
-            <input
-              ref={searchInputRef}
-              className="flex-1 rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-              placeholder="Search exact place or address"
-              value={location}
-              onChange={handleLocationInputChange}
-            />
-          </div>
+          <input
+            ref={searchInputRef}
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            placeholder="Search exact place or address"
+            value={location}
+            onChange={handleLocationInputChange}
+          />
 
           {location && (
             <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
@@ -370,7 +355,7 @@ export default function WritePage() {
               <p className="mt-1 text-xs">
                 {locationConfirmed
                   ? "Exact location selected."
-                  : "Please select from the dropdown or use current location."}
+                  : "Please select from the dropdown, use current location, or tap the map."}
               </p>
             </div>
           )}
@@ -382,7 +367,7 @@ export default function WritePage() {
                 className="h-72 w-full rounded-[1rem]"
               />
               <p className="mt-3 text-xs text-[#7b7067]">
-                You can also tap the map to choose the exact meeting place.
+                Tap the map and the exact address will be reflected in the text box above.
               </p>
             </div>
           )}
