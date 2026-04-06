@@ -15,6 +15,14 @@ type PendingLocation = {
   lng: number;
 };
 
+type SearchResultItem = {
+  id: string;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+};
+
 export default function WriteLocationPage() {
   const router = useRouter();
   const mapRef = useRef<HTMLDivElement | null>(null);
@@ -23,25 +31,21 @@ export default function WriteLocationPage() {
   const mapInstanceRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
   const geocoderRef = useRef<any>(null);
-  const autocompleteRef = useRef<any>(null);
+  const placesServiceRef = useRef<any>(null);
 
   const [pendingLocation, setPendingLocation] = useState<PendingLocation | null>(
     null
   );
+  const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
   const [message, setMessage] = useState("");
   const [locating, setLocating] = useState(false);
+  const [searching, setSearching] = useState(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
     const initMap = () => {
-      if (
-        !window.google ||
-        !window.google.maps ||
-        !window.google.maps.places ||
-        !mapRef.current ||
-        !searchInputRef.current
-      ) {
+      if (!window.google || !window.google.maps || !mapRef.current) {
         return false;
       }
 
@@ -62,6 +66,9 @@ export default function WriteLocationPage() {
         });
 
         geocoderRef.current = new window.google.maps.Geocoder();
+        placesServiceRef.current = new window.google.maps.places.PlacesService(
+          mapInstanceRef.current
+        );
 
         mapInstanceRef.current.addListener("click", (event: any) => {
           const lat = event.latLng.lat();
@@ -79,6 +86,7 @@ export default function WriteLocationPage() {
                   lat,
                   lng,
                 });
+                setSearchResults([]);
                 setMessage("");
               } else {
                 setPendingLocation(null);
@@ -86,45 +94,6 @@ export default function WriteLocationPage() {
               }
             }
           );
-        });
-      }
-
-      if (!autocompleteRef.current) {
-        autocompleteRef.current =
-          new window.google.maps.places.Autocomplete(searchInputRef.current, {
-            fields: ["formatted_address", "name", "geometry"],
-          });
-
-        autocompleteRef.current.addListener("place_changed", () => {
-          const place = autocompleteRef.current.getPlace();
-
-          const formattedAddress =
-            place?.formatted_address || place?.name || "";
-          const lat = place?.geometry?.location?.lat?.();
-          const lng = place?.geometry?.location?.lng?.();
-
-          if (
-            !formattedAddress ||
-            typeof lat !== "number" ||
-            typeof lng !== "number"
-          ) {
-            setPendingLocation(null);
-            setMessage("Please choose a valid place from the dropdown.");
-            return;
-          }
-
-          mapInstanceRef.current.setCenter({ lat, lng });
-          mapInstanceRef.current.setZoom(15);
-
-          markerRef.current.setPosition({ lat, lng });
-          markerRef.current.setVisible(true);
-
-          setPendingLocation({
-            address: formattedAddress,
-            lat,
-            lng,
-          });
-          setMessage("");
         });
       }
 
@@ -139,13 +108,91 @@ export default function WriteLocationPage() {
 
     return () => {
       if (interval) clearInterval(interval);
-      if (autocompleteRef.current && window.google?.maps?.event) {
-        window.google.maps.event.clearInstanceListeners(
-          autocompleteRef.current
-        );
-      }
     };
   }, []);
+
+  const handleSearchPlace = () => {
+    const query = searchInputRef.current?.value?.trim();
+
+    if (!query) {
+      setMessage("Enter a place or address first.");
+      return;
+    }
+
+    if (!placesServiceRef.current || !mapInstanceRef.current) {
+      setMessage("Map is still loading. Please try again.");
+      return;
+    }
+
+    setSearching(true);
+    setMessage("");
+    setSearchResults([]);
+
+    placesServiceRef.current.textSearch(
+      {
+        query,
+        location: mapInstanceRef.current.getCenter(),
+        radius: 5000,
+      },
+      (results: any, status: string) => {
+        setSearching(false);
+
+        if (status !== "OK" || !results || results.length === 0) {
+          setPendingLocation(null);
+          setSearchResults([]);
+          setMessage("No matching places found.");
+          return;
+        }
+
+        const mappedResults: SearchResultItem[] = results
+          .filter((place: any) => {
+            const lat = place.geometry?.location?.lat?.();
+            const lng = place.geometry?.location?.lng?.();
+            return typeof lat === "number" && typeof lng === "number";
+          })
+          .slice(0, 5)
+          .map((place: any, index: number) => ({
+            id: place.place_id || `${place.name}-${index}`,
+            name: place.name || "Unnamed place",
+            address: place.formatted_address || place.name || "No address",
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng(),
+          }));
+
+        if (mappedResults.length === 0) {
+          setPendingLocation(null);
+          setSearchResults([]);
+          setMessage("Could not get valid search results.");
+          return;
+        }
+
+        setSearchResults(mappedResults);
+        setMessage("Choose one result below.");
+      }
+    );
+  };
+
+  const handleSelectSearchResult = (item: SearchResultItem) => {
+    if (!mapInstanceRef.current || !markerRef.current) return;
+
+    mapInstanceRef.current.setCenter({ lat: item.lat, lng: item.lng });
+    mapInstanceRef.current.setZoom(15);
+
+    markerRef.current.setPosition({ lat: item.lat, lng: item.lng });
+    markerRef.current.setVisible(true);
+
+    setPendingLocation({
+      address: item.address,
+      lat: item.lat,
+      lng: item.lng,
+    });
+
+    if (searchInputRef.current) {
+      searchInputRef.current.value = item.address;
+    }
+
+    setMessage("");
+  };
 
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -160,6 +207,7 @@ export default function WriteLocationPage() {
 
     setMessage("");
     setLocating(true);
+    setSearchResults([]);
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -211,7 +259,7 @@ export default function WriteLocationPage() {
 
   const handleConfirm = () => {
     if (!pendingLocation) {
-      setMessage("Choose a place from search, current location, or tap the map first.");
+      setMessage("Search, choose a result, use current location, or tap the map first.");
       return;
     }
 
@@ -237,7 +285,8 @@ export default function WriteLocationPage() {
           </h1>
 
           <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-            Search a place, use your current location, or tap the map. Then confirm one exact location.
+            Search with the button, choose one result, use your current location,
+            or tap the map. Then confirm one exact location.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
@@ -251,13 +300,38 @@ export default function WriteLocationPage() {
             </button>
           </div>
 
-          <div className="mt-4">
+          <div className="mt-4 flex gap-3">
             <input
               ref={searchInputRef}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-              placeholder="Search exact place or address"
+              className="flex-1 rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              placeholder="Enter place or address"
             />
+
+            <button
+              type="button"
+              onClick={handleSearchPlace}
+              disabled={searching}
+              className="rounded-2xl bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+            >
+              {searching ? "Searching..." : "Search"}
+            </button>
           </div>
+
+          {searchResults.length > 0 && (
+            <div className="mt-4 space-y-2">
+              {searchResults.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => handleSelectSearchResult(item)}
+                  className="w-full rounded-2xl border border-[#e7ddd2] bg-white px-4 py-3 text-left transition hover:bg-[#f8f3ee]"
+                >
+                  <p className="text-sm font-medium text-[#2f2a26]">{item.name}</p>
+                  <p className="mt-1 text-xs text-[#6f655c]">{item.address}</p>
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="mt-4 overflow-hidden rounded-[1.5rem] border border-[#dccfc2] bg-white p-3">
             <div ref={mapRef} className="h-[28rem] w-full rounded-[1rem]" />
