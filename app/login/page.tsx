@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
-import TopNav from "../components/TopNav";
 
 export default function LoginPage() {
   const supabase = createClient();
@@ -31,8 +30,6 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
-      <TopNav userEmail="" />
-
       <div className="mx-auto max-w-xl px-6 py-8">
         <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
           <h1 className="text-3xl font-semibold text-[#2f2a26]">Log In</h1>
