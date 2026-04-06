@@ -2,93 +2,79 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { createClient } from "../lib/supabase/client";
+import { createClient } from "../../lib/supabase/client";
+
+type SimpleUser = {
+  id: string;
+  email?: string | null;
+} | null;
 
 export default function TopNav() {
-  const supabase = createClient();
-
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<SimpleUser>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getUser = async () => {
+    const supabase = createClient();
+
+    const loadUser = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
-      setUser(user);
+      setUser(user ? { id: user.id, email: user.email } : null);
       setLoading(false);
     };
 
-    getUser();
+    loadUser();
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
-      }
-    );
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      const nextUser = session?.user;
+      setUser(nextUser ? { id: nextUser.id, email: nextUser.email } : null);
+    });
 
     return () => {
-      listener.subscription.unsubscribe();
+      subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, []);
 
   const handleLogout = async () => {
+    const supabase = createClient();
     await supabase.auth.signOut();
     window.location.href = "/";
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#e7ddd2] bg-[#fffaf5]/80 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-[#e7ddd2] bg-[#fffaf5]/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        {/* 왼쪽 로고 */}
         <Link
           href="/"
           className="text-lg font-semibold tracking-tight text-[#2f2a26]"
         >
-          Meetup
+          Neonadri
         </Link>
 
-        {/* 오른쪽 버튼 */}
         <div className="flex items-center gap-2">
           {loading ? null : user ? (
             <>
-              {/* 지도 */}
-              <Link
-                href="/map"
-                className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] hover:bg-[#f4ece4]"
-              >
-                Map
-              </Link>
-
-              {/* 글쓰기 */}
-              <Link
-                href="/write"
-                className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] hover:bg-[#f4ece4]"
-              >
-                Create
-              </Link>
-
-              {/* 대시보드 */}
-              <Link
-                href="/dashboard"
-                className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] hover:bg-[#f4ece4]"
-              >
-                Dashboard
-              </Link>
-
-              {/* ✅ Account 버튼 */}
               <Link
                 href="/account"
-                className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white hover:bg-[#927d69]"
+                className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
               >
                 Account
               </Link>
 
-              {/* 로그아웃 */}
+              <Link
+                href="/dashboard"
+                className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
+              >
+                Dashboard
+              </Link>
+
               <button
                 onClick={handleLogout}
-                className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] hover:bg-[#f4ece4]"
+                className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
               >
                 Logout
               </button>
@@ -97,14 +83,14 @@ export default function TopNav() {
             <>
               <Link
                 href="/login"
-                className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] hover:bg-[#f4ece4]"
+                className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
               >
-                Login
+                Log In
               </Link>
 
               <Link
                 href="/signup"
-                className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white hover:bg-[#927d69]"
+                className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
               >
                 Sign Up
               </Link>
