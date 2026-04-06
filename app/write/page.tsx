@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 declare global {
   interface Window {
@@ -10,23 +10,14 @@ declare global {
   }
 }
 
-type PendingPin = {
-  address: string;
-  lat: number;
-  lng: number;
-};
-
 export default function WritePage() {
   const supabase = createClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const searchInputRef = useRef<HTMLInputElement | null>(null);
-  const mapContainerRef = useRef<HTMLDivElement | null>(null);
-
-  const mapRef = useRef<any>(null);
-  const markerRef = useRef<any>(null);
-  const geocoderRef = useRef<any>(null);
   const autocompleteRef = useRef<any>(null);
+  const geocoderRef = useRef<any>(null);
 
   const [userId, setUserId] = useState("");
   const [location, setLocation] = useState("");
@@ -38,11 +29,9 @@ export default function WritePage() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [locationConfirmed, setLocationConfirmed] = useState(false);
-  const [pendingPin, setPendingPin] = useState<PendingPin | null>(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [locating, setLocating] = useState(false);
-  const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -62,64 +51,34 @@ export default function WritePage() {
   }, [router, supabase]);
 
   useEffect(() => {
-    if (!showMap) return;
+    const qLocation = searchParams.get("location");
+    const qLat = searchParams.get("lat");
+    const qLng = searchParams.get("lng");
 
+    if (qLocation && qLat && qLng) {
+      setLocation(qLocation);
+      setLatitude(Number(qLat));
+      setLongitude(Number(qLng));
+      setLocationConfirmed(true);
+      setMessage("");
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     let interval: NodeJS.Timeout;
 
-    const initMap = () => {
+    const initAutocomplete = () => {
       if (
         !window.google ||
         !window.google.maps ||
         !window.google.maps.places ||
-        !searchInputRef.current ||
-        !mapContainerRef.current
+        !searchInputRef.current
       ) {
         return false;
       }
 
-      if (!mapRef.current) {
-        const defaultCenter = { lat: 34.0522, lng: -118.2437 };
-
-        mapRef.current = new window.google.maps.Map(mapContainerRef.current, {
-          center: defaultCenter,
-          zoom: 11,
-          disableDefaultUI: false,
-          clickableIcons: false,
-          gestureHandling: "greedy",
-        });
-
-        markerRef.current = new window.google.maps.Marker({
-          map: mapRef.current,
-          position: defaultCenter,
-          visible: false,
-        });
-
+      if (!geocoderRef.current) {
         geocoderRef.current = new window.google.maps.Geocoder();
-
-        mapRef.current.addListener("click", (event: any) => {
-          const lat = event.latLng.lat();
-          const lng = event.latLng.lng();
-
-          markerRef.current.setPosition({ lat, lng });
-          markerRef.current.setVisible(true);
-
-          geocoderRef.current.geocode(
-            { location: { lat, lng } },
-            (results: any, status: string) => {
-              if (status === "OK" && results && results[0]) {
-                setPendingPin({
-                  address: results[0].formatted_address,
-                  lat,
-                  lng,
-                });
-                setMessage("");
-              } else {
-                setPendingPin(null);
-                setMessage("Could not get an address for that point.");
-              }
-            }
-          );
-        });
       }
 
       if (!autocompleteRef.current) {
@@ -142,7 +101,6 @@ export default function WritePage() {
             typeof lng !== "number"
           ) {
             setLocationConfirmed(false);
-            setPendingPin(null);
             return;
           }
 
@@ -150,39 +108,30 @@ export default function WritePage() {
           setLatitude(lat);
           setLongitude(lng);
           setLocationConfirmed(true);
-          setPendingPin(null);
           setMessage("");
-
-          mapRef.current.setCenter({ lat, lng });
-          mapRef.current.setZoom(15);
-          markerRef.current.setPosition({ lat, lng });
-          markerRef.current.setVisible(true);
         });
-      }
-
-      window.google.maps.event.trigger(mapRef.current, "resize");
-
-      if (latitude !== null && longitude !== null) {
-        const center = { lat: latitude, lng: longitude };
-        mapRef.current.setCenter(center);
-        mapRef.current.setZoom(15);
-        markerRef.current.setPosition(center);
-        markerRef.current.setVisible(true);
       }
 
       return true;
     };
 
-    if (!initMap()) {
+    if (!initAutocomplete()) {
       interval = setInterval(() => {
-        if (initMap()) clearInterval(interval);
+        if (initAutocomplete()) {
+          clearInterval(interval);
+        }
       }, 500);
     }
 
     return () => {
       if (interval) clearInterval(interval);
+      if (autocompleteRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(
+          autocompleteRef.current
+        );
+      }
     };
-  }, [showMap, latitude, longitude]);
+  }, []);
 
   const handleLocationInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -191,7 +140,6 @@ export default function WritePage() {
     setLatitude(null);
     setLongitude(null);
     setLocationConfirmed(false);
-    setPendingPin(null);
   };
 
   const handleUseCurrentLocation = () => {
@@ -202,7 +150,6 @@ export default function WritePage() {
 
     setMessage("");
     setLocating(true);
-    setShowMap(true);
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -217,19 +164,11 @@ export default function WritePage() {
 
               if (status === "OK" && results && results[0]) {
                 const address = results[0].formatted_address;
-
                 setLocation(address);
                 setLatitude(lat);
                 setLongitude(lng);
                 setLocationConfirmed(true);
-                setPendingPin(null);
-
-                if (mapRef.current && markerRef.current) {
-                  mapRef.current.setCenter({ lat, lng });
-                  mapRef.current.setZoom(15);
-                  markerRef.current.setPosition({ lat, lng });
-                  markerRef.current.setVisible(true);
-                }
+                setMessage("");
               } else {
                 setMessage("Could not convert your location to an address.");
               }
@@ -237,28 +176,22 @@ export default function WritePage() {
           );
         } else {
           setLocating(false);
-          setMessage("Map is still loading. Please try again.");
+          setMessage("Map service is still loading. Please try again.");
         }
       },
       () => {
         setLocating(false);
         setMessage("Could not get your current location.");
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+      }
     );
   };
 
-  const handleConfirmPendingLocation = () => {
-    if (!pendingPin) {
-      setMessage("Tap a point on the map first.");
-      return;
-    }
-
-    setLocation(pendingPin.address);
-    setLatitude(pendingPin.lat);
-    setLongitude(pendingPin.lng);
-    setLocationConfirmed(true);
-    setMessage("");
+  const handleOpenMapPicker = () => {
+    router.push("/write/location");
   };
 
   const handleCreatePost = async () => {
@@ -282,7 +215,7 @@ export default function WritePage() {
       !locationConfirmed
     ) {
       setMessage(
-        "Please choose one exact location from search, current location, or the map."
+        "Please choose one exact location from the dropdown, current location, or map picker."
       );
       return;
     }
@@ -323,7 +256,7 @@ export default function WritePage() {
         </h1>
 
         <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-          Use your current location, search for a place, or tap the map and confirm that pin.
+          Search for a place, use your current location, or choose on a separate map page.
         </p>
 
         <div className="mt-8 space-y-4">
@@ -339,10 +272,10 @@ export default function WritePage() {
 
             <button
               type="button"
-              onClick={() => setShowMap((prev) => !prev)}
+              onClick={handleOpenMapPicker}
               className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
             >
-              {showMap ? "Hide Map" : "Show Map"}
+              Pick on Map
             </button>
           </div>
 
@@ -366,36 +299,8 @@ export default function WritePage() {
               <p className="mt-1 text-xs">
                 {locationConfirmed
                   ? "Exact location selected."
-                  : "Choose from search, current location, or confirm a map pin."}
+                  : "Select from dropdown or use the map picker."}
               </p>
-            </div>
-          )}
-
-          {showMap && (
-            <div className="rounded-[1.5rem] border border-[#dccfc2] bg-white p-3">
-              <div ref={mapContainerRef} className="h-72 w-full rounded-[1rem]" />
-
-              <p className="mt-3 text-xs text-[#7b7067]">
-                Tap the map to place a pin. Then confirm that location below.
-              </p>
-
-              {pendingPin && (
-                <div className="mt-3 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-                  <p className="font-medium text-[#2f2a26]">Pending location</p>
-                  <p className="mt-1">{pendingPin.address}</p>
-                  <p className="mt-1 text-xs text-[#8b7f74]">
-                    Lat: {pendingPin.lat.toFixed(6)}, Lng: {pendingPin.lng.toFixed(6)}
-                  </p>
-                </div>
-              )}
-
-              <button
-                type="button"
-                onClick={handleConfirmPendingLocation}
-                className="mt-3 rounded-2xl bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
-              >
-                Select This Location
-              </button>
             </div>
           )}
 
