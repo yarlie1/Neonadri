@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 type Profile = {
   id: string;
   display_name: string | null;
-  avatar_url: string | null;
   bio: string | null;
   gender: string | null;
   age_group: string | null;
@@ -21,7 +20,6 @@ export default function AccountPage() {
   const [userId, setUserId] = useState("");
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
   const [bio, setBio] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
@@ -47,9 +45,7 @@ export default function AccountPage() {
 
       const { data, error } = await supabase
         .from("profiles")
-        .select(
-          "id, display_name, avatar_url, bio, gender, age_group, is_public"
-        )
+        .select("id, display_name, bio, gender, age_group, is_public")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -63,7 +59,6 @@ export default function AccountPage() {
         const { error: insertError } = await supabase.from("profiles").insert({
           id: user.id,
           display_name: "",
-          avatar_url: "",
           bio: "",
           gender: "",
           age_group: "",
@@ -78,7 +73,6 @@ export default function AccountPage() {
       } else {
         const profile = data as Profile;
         setDisplayName(profile.display_name || "");
-        setAvatarUrl(profile.avatar_url || "");
         setBio(profile.bio || "");
         setGender(profile.gender || "");
         setAgeGroup(profile.age_group || "");
@@ -100,7 +94,6 @@ export default function AccountPage() {
     const { error } = await supabase.from("profiles").upsert({
       id: userId,
       display_name: displayName,
-      avatar_url: avatarUrl,
       bio,
       gender,
       age_group: ageGroup,
@@ -160,18 +153,6 @@ export default function AccountPage() {
               onChange={(e) => setDisplayName(e.target.value)}
               className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
               placeholder="Your name"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-              Avatar URL
-            </label>
-            <input
-              value={avatarUrl}
-              onChange={(e) => setAvatarUrl(e.target.value)}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-              placeholder="https://..."
             />
           </div>
 
