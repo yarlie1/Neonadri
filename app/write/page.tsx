@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
-import TopNav from "../components/TopNav";
 
 declare global {
   interface Window {
@@ -19,7 +18,6 @@ export default function WritePage() {
   const autocompleteRef = useRef<any>(null);
   const geocoderRef = useRef<any>(null);
 
-  const [userEmail, setUserEmail] = useState("");
   const [userId, setUserId] = useState("");
   const [placeName, setPlaceName] = useState("");
   const [location, setLocation] = useState("");
@@ -47,7 +45,6 @@ export default function WritePage() {
       }
 
       setUserId(user.id);
-      setUserEmail(user.email ?? "");
     };
 
     checkUser();
@@ -142,11 +139,6 @@ export default function WritePage() {
       }
     };
   }, []);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    window.location.href = "/";
-  };
 
   const handleLocationInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -264,8 +256,6 @@ export default function WritePage() {
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
-      <TopNav userEmail={userEmail} onLogout={handleLogout} />
-
       <div className="mx-auto max-w-3xl px-6 py-8">
         <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
           <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
