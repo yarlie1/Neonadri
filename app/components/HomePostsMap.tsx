@@ -10,6 +10,7 @@ declare global {
 
 type MapPost = {
   id: number;
+  place_name?: string | null;
   location: string | null;
   meeting_time: string | null;
   latitude: number | null;
@@ -62,10 +63,12 @@ export default function HomePostsMap({ posts }: Props) {
           lng: post.longitude as number,
         };
 
+        const title = post.place_name || post.location || "Meetup";
+
         const marker = new window.google.maps.Marker({
           position,
           map,
-          title: post.location || "Meetup",
+          title,
           icon: {
             url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
           },
@@ -85,8 +88,14 @@ export default function HomePostsMap({ posts }: Props) {
             padding:12px;
           ">
             <div style="font-weight:700; font-size:14px; margin-bottom:6px;">
-              📍 ${post.location || "Meetup"}
+              📍 ${title}
             </div>
+
+            ${
+              post.location && post.location !== title
+                ? `<div style="font-size:12px; color:#666; margin-bottom:6px;">${post.location}</div>`
+                : ""
+            }
 
             ${
               timeText
