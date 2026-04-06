@@ -1,8 +1,8 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
 import { createClient } from "../lib/supabase/client";
-import TopNav from "./components/TopNav";
 
 type Post = {
   id: number;
@@ -20,16 +20,9 @@ type Post = {
 
 export default function HomePage() {
   const supabase = createClient();
-
-  const [userEmail, setUserEmail] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    const loadUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUserEmail(data.user?.email ?? "");
-    };
-
     const loadPosts = async () => {
       const { data } = await supabase
         .from("posts")
@@ -41,27 +34,11 @@ export default function HomePage() {
       setPosts(data || []);
     };
 
-    loadUser();
     loadPosts();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUserEmail(session?.user?.email ?? "");
-    });
-
-    return () => subscription.unsubscribe();
   }, [supabase]);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    window.location.href = "/";
-  };
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
-      <TopNav userEmail={userEmail} onLogout={handleLogout} />
-
       <section className="mx-auto max-w-5xl px-6 py-8 md:py-10">
         <div>
           <h1 className="text-2xl font-semibold text-[#2f2a26] md:text-3xl">
