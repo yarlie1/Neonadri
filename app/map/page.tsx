@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import HomePostsMap from "../components/HomePostsMap";
+import TopNav from "../components/TopNav";
 
 type Post = {
   id: number;
@@ -19,9 +20,15 @@ type Post = {
 
 export default function MapPage() {
   const supabase = createClient();
+  const [userEmail, setUserEmail] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
+    const loadUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUserEmail(data.user?.email ?? "");
+    };
+
     const loadPosts = async () => {
       const { data } = await supabase
         .from("posts")
@@ -33,33 +40,35 @@ export default function MapPage() {
       setPosts(data || []);
     };
 
+    loadUser();
     loadPosts();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserEmail(session?.user?.email ?? "");
+    });
+
+    return () => subscription.unsubscribe();
   }, [supabase]);
 
-  return (
-    <main className="min-h-screen bg-[#f7f1ea] px-6 py-10 text-[#2f2a26]">
-      <div className="mx-auto max-w-5xl space-y-6">
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-[#a48f7a]">
-                Neonadri
-              </p>
-              <h1 className="mt-2 text-3xl font-semibold text-[#2f2a26]">
-                Meetups on the Map
-              </h1>
-              <p className="mt-2 text-sm text-[#6f655c]">
-                Tap a pin to see meetup details.
-              </p>
-            </div>
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  };
 
-            <a
-              href="/"
-              className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
-            >
-              Back to Home
-            </a>
-          </div>
+  return (
+    <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
+      <TopNav userEmail={userEmail} onLogout={handleLogout} />
+
+      <div className="mx-auto max-w-5xl space-y-6 px-6 py-8">
+        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-8">
+          <h1 className="text-3xl font-semibold text-[#2f2a26]">
+            Meetups on the Map
+          </h1>
+          <p className="mt-2 text-sm text-[#6f655c]">
+            Tap a pin to see meetup details.
+          </p>
         </div>
 
         <div className="overflow-hidden rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-3 shadow-sm">
