@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 declare global {
   interface Window {
@@ -28,6 +28,9 @@ const PAGE_SIZE = 5;
 
 export default function WriteLocationPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo") || "/write";
+
   const mapRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -343,7 +346,9 @@ export default function WriteLocationPage() {
 
   const handleConfirm = () => {
     if (!pendingLocation) {
-      setMessage("Search, choose a result, use current location, or tap the map first.");
+      setMessage(
+        "Search, choose a result, use current location, or tap the map first."
+      );
       return;
     }
 
@@ -354,7 +359,7 @@ export default function WriteLocationPage() {
       lng: String(pendingLocation.lng),
     });
 
-    router.push(`/write?${params.toString()}`);
+    router.push(`${returnTo}?${params.toString()}`);
   };
 
   const handlePrevPage = () => {
@@ -369,17 +374,13 @@ export default function WriteLocationPage() {
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-10 text-[#2f2a26]">
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#a48f7a]">
-            Neonadri
-          </p>
-
           <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
             Pick on Map
           </h1>
 
           <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-            Search with the button, choose one result, use your current location,
-            or tap the map. Then confirm one exact location.
+            Search with the button, choose one result, use your current
+            location, or tap the map. Then confirm one exact location.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
@@ -419,7 +420,9 @@ export default function WriteLocationPage() {
                   onClick={() => handleSelectSearchResult(item)}
                   className="w-full rounded-2xl border border-[#e7ddd2] bg-white px-4 py-3 text-left transition hover:bg-[#f8f3ee]"
                 >
-                  <p className="text-sm font-medium text-[#2f2a26]">{item.name}</p>
+                  <p className="text-sm font-medium text-[#2f2a26]">
+                    {item.name}
+                  </p>
                   <p className="mt-1 text-xs text-[#6f655c]">{item.address}</p>
                 </button>
               ))}
@@ -503,7 +506,7 @@ export default function WriteLocationPage() {
 
             <button
               type="button"
-              onClick={() => router.push("/write")}
+              onClick={() => router.push(returnTo)}
               className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
             >
               Back
