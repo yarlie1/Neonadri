@@ -87,7 +87,6 @@ export default function DashboardPage() {
 
     return posts.filter((post) => {
       if (!post.meeting_time) return filter === "expired";
-
       const isUpcoming = new Date(post.meeting_time) >= now;
       return filter === "upcoming" ? isUpcoming : !isUpcoming;
     });
@@ -271,6 +270,13 @@ export default function DashboardPage() {
                         className="rounded-xl bg-[#6b5f52] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#5b5046]"
                       >
                         View
+                      </a>
+
+                      <a
+                        href={`/write/${post.id}`}
+                        className="rounded-xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+                      >
+                        Edit
                       </a>
 
                       {mapUrl && (
