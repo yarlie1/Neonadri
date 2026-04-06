@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 declare global {
@@ -23,6 +23,8 @@ type SearchResultItem = {
   lng: number;
 };
 
+const PAGE_SIZE = 5;
+
 export default function WriteLocationPage() {
   const router = useRouter();
   const mapRef = useRef<HTMLDivElement | null>(null);
@@ -36,7 +38,8 @@ export default function WriteLocationPage() {
   const [pendingLocation, setPendingLocation] = useState<PendingLocation | null>(
     null
   );
-  const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
+  const [allSearchResults, setAllSearchResults] = useState<SearchResultItem[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [message, setMessage] = useState("");
   const [locating, setLocating] = useState(false);
   const [searching, setSearching] = useState(false);
@@ -86,7 +89,8 @@ export default function WriteLocationPage() {
                   lat,
                   lng,
                 });
-                setSearchResults([]);
+                setAllSearchResults([]);
+                setCurrentPage(1);
                 setMessage("");
               } else {
                 setPendingLocation(null);
@@ -111,6 +115,44 @@ export default function WriteLocationPage() {
     };
   }, []);
 
+  const totalPages = Math.ceil(allSearchResults.length / PAGE_SIZE);
+
+  const pagedResults = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return allSearchResults.slice(start, start + PAGE_SIZE);
+  }, [allSearchResults, currentPage]);
+
+  const getVisiblePages = () => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    if (currentPage <= 3) {
+      return [1, 2, 3, 4, "ellipsis", totalPages] as const;
+    }
+
+    if (currentPage >= totalPages - 2) {
+      return [
+        1,
+        "ellipsis",
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ] as const;
+    }
+
+    return [
+      1,
+      "ellipsis",
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
+      "ellipsis",
+      totalPages,
+    ] as const;
+  };
+
   const handleSearchPlace = () => {
     const query = searchInputRef.current?.value?.trim();
 
@@ -126,7 +168,8 @@ export default function WriteLocationPage() {
 
     setSearching(true);
     setMessage("");
-    setSearchResults([]);
+    setAllSearchResults([]);
+    setCurrentPage(1);
 
     placesServiceRef.current.textSearch(
       {
@@ -139,7 +182,8 @@ export default function WriteLocationPage() {
 
         if (status !== "OK" || !results || results.length === 0) {
           setPendingLocation(null);
-          setSearchResults([]);
+          setAllSearchResults([]);
+          setCurrentPage(1);
           setMessage("No matching places found.");
           return;
         }
@@ -150,7 +194,6 @@ export default function WriteLocationPage() {
             const lng = place.geometry?.location?.lng?.();
             return typeof lat === "number" && typeof lng === "number";
           })
-          .slice(0, 5)
           .map((place: any, index: number) => ({
             id: place.place_id || `${place.name}-${index}`,
             name: place.name || "Unnamed place",
@@ -161,12 +204,14 @@ export default function WriteLocationPage() {
 
         if (mappedResults.length === 0) {
           setPendingLocation(null);
-          setSearchResults([]);
+          setAllSearchResults([]);
+          setCurrentPage(1);
           setMessage("Could not get valid search results.");
           return;
         }
 
-        setSearchResults(mappedResults);
+        setAllSearchResults(mappedResults);
+        setCurrentPage(1);
         setMessage("Choose one result below.");
       }
     );
@@ -207,7 +252,8 @@ export default function WriteLocationPage() {
 
     setMessage("");
     setLocating(true);
-    setSearchResults([]);
+    setAllSearchResults([]);
+    setCurrentPage(1);
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -272,6 +318,14 @@ export default function WriteLocationPage() {
     router.push(`/write?${params.toString()}`);
   };
 
+  const handlePrevPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-10 text-[#2f2a26]">
       <div className="mx-auto max-w-3xl space-y-6">
@@ -317,9 +371,9 @@ export default function WriteLocationPage() {
             </button>
           </div>
 
-          {searchResults.length > 0 && (
+          {pagedResults.length > 0 && (
             <div className="mt-4 space-y-2">
-              {searchResults.map((item) => (
+              {pagedResults.map((item) => (
                 <button
                   key={item.id}
                   type="button"
@@ -330,6 +384,52 @@ export default function WriteLocationPage() {
                   <p className="mt-1 text-xs text-[#6f655c]">{item.address}</p>
                 </button>
               ))}
+
+              {totalPages > 1 && (
+                <div className="flex flex-wrap items-center gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={handlePrevPage}
+                    disabled={currentPage === 1}
+                    className="rounded-xl border border-[#dccfc2] bg-[#f4ece4] px-3 py-2 text-sm text-[#5a5149] transition hover:bg-[#ede3da] disabled:opacity-50"
+                  >
+                    Prev
+                  </button>
+
+                  {getVisiblePages().map((item, index) =>
+                    item === "ellipsis" ? (
+                      <span
+                        key={`ellipsis-${index}`}
+                        className="px-2 py-2 text-sm text-[#8b7f74]"
+                      >
+                        ...
+                      </span>
+                    ) : (
+                      <button
+                        key={item}
+                        type="button"
+                        onClick={() => setCurrentPage(item)}
+                        className={`min-w-10 rounded-xl px-3 py-2 text-sm transition ${
+                          currentPage === item
+                            ? "bg-[#a48f7a] text-white"
+                            : "border border-[#dccfc2] bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
+                        }`}
+                      >
+                        {item}
+                      </button>
+                    )
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                    className="rounded-xl border border-[#dccfc2] bg-[#f4ece4] px-3 py-2 text-sm text-[#5a5149] transition hover:bg-[#ede3da] disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
