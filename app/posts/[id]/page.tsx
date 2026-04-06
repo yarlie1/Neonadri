@@ -26,10 +26,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     );
   }
 
-  const mapUrl =
-    post.latitude && post.longitude
-      ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
-      : "";
+  const hasCoordinates =
+    post.latitude !== null && post.longitude !== null;
+
+  const mapUrl = hasCoordinates
+    ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
+    : "";
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
@@ -51,11 +53,14 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             {post.meeting_time && (
               <p>⏰ {new Date(post.meeting_time).toLocaleString()}</p>
             )}
+
             {post.meeting_purpose && <p>🎯 {post.meeting_purpose}</p>}
+
             <p>
               👤 {post.target_gender || "Any"} /{" "}
               {post.target_age_group || "Any"}
             </p>
+
             {post.benefit_amount && (
               <p className="font-medium text-[#2f2a26]">
                 🎁 Benefit: {post.benefit_amount}
@@ -84,9 +89,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        {post.latitude && post.longitude && (
+        {hasCoordinates && (
           <div className="overflow-hidden rounded-[1.5rem] border border-[#e7ddd2] bg-white p-3">
-            <ClientMap latitude={post.latitude} longitude={post.longitude} />
+            <ClientMap
+              latitude={post.latitude as number}
+              longitude={post.longitude as number}
+            />
           </div>
         )}
 
