@@ -39,7 +39,9 @@ export default function WriteLocationPage() {
   const [pendingLocation, setPendingLocation] = useState<PendingLocation | null>(
     null
   );
-  const [allSearchResults, setAllSearchResults] = useState<SearchResultItem[]>([]);
+  const [allSearchResults, setAllSearchResults] = useState<SearchResultItem[]>(
+    []
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [message, setMessage] = useState("");
   const [locating, setLocating] = useState(false);
@@ -49,7 +51,12 @@ export default function WriteLocationPage() {
     let interval: NodeJS.Timeout;
 
     const initMap = () => {
-      if (!window.google || !window.google.maps || !window.google.maps.places || !mapRef.current) {
+      if (
+        !window.google ||
+        !window.google.maps ||
+        !window.google.maps.places ||
+        !mapRef.current
+      ) {
         return false;
       }
 
@@ -341,6 +348,7 @@ export default function WriteLocationPage() {
     }
 
     const params = new URLSearchParams({
+      name: pendingLocation.name,
       location: pendingLocation.address,
       lat: String(pendingLocation.lat),
       lng: String(pendingLocation.lng),
