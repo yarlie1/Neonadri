@@ -10,6 +10,12 @@ declare global {
   }
 }
 
+type PendingPin = {
+  address: string;
+  lat: number;
+  lng: number;
+};
+
 export default function WritePage() {
   const supabase = createClient();
   const router = useRouter();
@@ -31,8 +37,8 @@ export default function WritePage() {
   const [benefitAmount, setBenefitAmount] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null);
   const [locationConfirmed, setLocationConfirmed] = useState(false);
+  const [pendingPin, setPendingPin] = useState<PendingPin | null>(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [locating, setLocating] = useState(false);
@@ -79,27 +85,40 @@ export default function WritePage() {
           zoom: 11,
           disableDefaultUI: false,
           clickableIcons: false,
+          gestureHandling: "greedy",
         });
 
         markerRef.current = new window.google.maps.Marker({
           map: mapRef.current,
           position: defaultCenter,
-          visible: true,
+          visible: false,
         });
 
         geocoderRef.current = new window.google.maps.Geocoder();
 
-        mapRef.current.addListener("center_changed", () => {
-          const center = mapRef.current.getCenter();
-          if (!center) return;
-
-          const lat = center.lat();
-          const lng = center.lng();
-
-          setMapCenter({ lat, lng });
+        mapRef.current.addListener("click", (event: any) => {
+          const lat = event.latLng.lat();
+          const lng = event.latLng.lng();
 
           markerRef.current.setPosition({ lat, lng });
           markerRef.current.setVisible(true);
+
+          geocoderRef.current.geocode(
+            { location: { lat, lng } },
+            (results: any, status: string) => {
+              if (status === "OK" && results && results[0]) {
+                setPendingPin({
+                  address: results[0].formatted_address,
+                  lat,
+                  lng,
+                });
+                setMessage("");
+              } else {
+                setPendingPin(null);
+                setMessage("Could not get an address for that point.");
+              }
+            }
+          );
         });
       }
 
@@ -114,7 +133,6 @@ export default function WritePage() {
 
           const formattedAddress =
             place?.formatted_address || place?.name || "";
-
           const lat = place?.geometry?.location?.lat?.();
           const lng = place?.geometry?.location?.lng?.();
 
@@ -124,19 +142,19 @@ export default function WritePage() {
             typeof lng !== "number"
           ) {
             setLocationConfirmed(false);
+            setPendingPin(null);
             return;
           }
 
           setLocation(formattedAddress);
           setLatitude(lat);
           setLongitude(lng);
-          setMapCenter({ lat, lng });
           setLocationConfirmed(true);
+          setPendingPin(null);
           setMessage("");
 
           mapRef.current.setCenter({ lat, lng });
           mapRef.current.setZoom(15);
-
           markerRef.current.setPosition({ lat, lng });
           markerRef.current.setVisible(true);
         });
@@ -150,7 +168,6 @@ export default function WritePage() {
         mapRef.current.setZoom(15);
         markerRef.current.setPosition(center);
         markerRef.current.setVisible(true);
-        setMapCenter(center);
       }
 
       return true;
@@ -158,9 +175,7 @@ export default function WritePage() {
 
     if (!initMap()) {
       interval = setInterval(() => {
-        if (initMap()) {
-          clearInterval(interval);
-        }
+        if (initMap()) clearInterval(interval);
       }, 500);
     }
 
@@ -176,6 +191,7 @@ export default function WritePage() {
     setLatitude(null);
     setLongitude(null);
     setLocationConfirmed(false);
+    setPendingPin(null);
   };
 
   const handleUseCurrentLocation = () => {
@@ -193,17 +209,6 @@ export default function WritePage() {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
 
-        setLatitude(lat);
-        setLongitude(lng);
-        setMapCenter({ lat, lng });
-
-        if (mapRef.current && markerRef.current) {
-          mapRef.current.setCenter({ lat, lng });
-          mapRef.current.setZoom(15);
-          markerRef.current.setPosition({ lat, lng });
-          markerRef.current.setVisible(true);
-        }
-
         if (geocoderRef.current) {
           geocoderRef.current.geocode(
             { location: { lat, lng } },
@@ -212,8 +217,19 @@ export default function WritePage() {
 
               if (status === "OK" && results && results[0]) {
                 const address = results[0].formatted_address;
+
                 setLocation(address);
+                setLatitude(lat);
+                setLongitude(lng);
                 setLocationConfirmed(true);
+                setPendingPin(null);
+
+                if (mapRef.current && markerRef.current) {
+                  mapRef.current.setCenter({ lat, lng });
+                  mapRef.current.setZoom(15);
+                  markerRef.current.setPosition({ lat, lng });
+                  markerRef.current.setVisible(true);
+                }
               } else {
                 setMessage("Could not convert your location to an address.");
               }
@@ -228,38 +244,21 @@ export default function WritePage() {
         setLocating(false);
         setMessage("Could not get your current location.");
       },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-      }
+      { enableHighAccuracy: true, timeout: 10000 }
     );
   };
 
-  const handleUseMapLocation = () => {
-    if (!mapCenter || !geocoderRef.current) {
-      setMessage("Move the map first, then try again.");
+  const handleConfirmPendingLocation = () => {
+    if (!pendingPin) {
+      setMessage("Tap a point on the map first.");
       return;
     }
 
-    const { lat, lng } = mapCenter;
-
-    setLatitude(lat);
-    setLongitude(lng);
-
-    geocoderRef.current.geocode(
-      { location: { lat, lng } },
-      (results: any, status: string) => {
-        if (status === "OK" && results && results[0]) {
-          const address = results[0].formatted_address;
-          setLocation(address);
-          setLocationConfirmed(true);
-          setMessage("");
-        } else {
-          setLocationConfirmed(false);
-          setMessage("Could not get address from the selected map location.");
-        }
-      }
-    );
+    setLocation(pendingPin.address);
+    setLatitude(pendingPin.lat);
+    setLongitude(pendingPin.lng);
+    setLocationConfirmed(true);
+    setMessage("");
   };
 
   const handleCreatePost = async () => {
@@ -283,7 +282,7 @@ export default function WritePage() {
       !locationConfirmed
     ) {
       setMessage(
-        "Please choose one exact location from the dropdown, current location, or map."
+        "Please choose one exact location from search, current location, or the map."
       );
       return;
     }
@@ -324,7 +323,7 @@ export default function WritePage() {
         </h1>
 
         <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-          Use your current location, search for a place, or move the map and confirm the center point.
+          Use your current location, search for a place, or tap the map and confirm that pin.
         </p>
 
         <div className="mt-8 space-y-4">
@@ -367,27 +366,35 @@ export default function WritePage() {
               <p className="mt-1 text-xs">
                 {locationConfirmed
                   ? "Exact location selected."
-                  : "Select from the dropdown, use current location, or confirm the map location."}
+                  : "Choose from search, current location, or confirm a map pin."}
               </p>
             </div>
           )}
 
           {showMap && (
             <div className="rounded-[1.5rem] border border-[#dccfc2] bg-white p-3">
-              <div
-                ref={mapContainerRef}
-                className="h-72 w-full rounded-[1rem]"
-              />
+              <div ref={mapContainerRef} className="h-72 w-full rounded-[1rem]" />
+
               <p className="mt-3 text-xs text-[#7b7067]">
-                Move the map so your place is in the center, then tap the button below.
+                Tap the map to place a pin. Then confirm that location below.
               </p>
+
+              {pendingPin && (
+                <div className="mt-3 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+                  <p className="font-medium text-[#2f2a26]">Pending location</p>
+                  <p className="mt-1">{pendingPin.address}</p>
+                  <p className="mt-1 text-xs text-[#8b7f74]">
+                    Lat: {pendingPin.lat.toFixed(6)}, Lng: {pendingPin.lng.toFixed(6)}
+                  </p>
+                </div>
+              )}
 
               <button
                 type="button"
-                onClick={handleUseMapLocation}
+                onClick={handleConfirmPendingLocation}
                 className="mt-3 rounded-2xl bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
               >
-                Use This Map Location
+                Select This Location
               </button>
             </div>
           )}
