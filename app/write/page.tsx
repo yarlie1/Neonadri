@@ -19,6 +19,7 @@ export default function WritePage() {
   const geocoderRef = useRef<any>(null);
 
   const [userId, setUserId] = useState("");
+  const [placeName, setPlaceName] = useState("");
   const [location, setLocation] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
   const [targetGender, setTargetGender] = useState("");
@@ -53,11 +54,13 @@ export default function WritePage() {
     if (typeof window === "undefined") return;
 
     const params = new URLSearchParams(window.location.search);
+    const qName = params.get("name");
     const qLocation = params.get("location");
     const qLat = params.get("lat");
     const qLng = params.get("lng");
 
     if (qLocation && qLat && qLng) {
+      setPlaceName(qName || qLocation);
       setLocation(qLocation);
       setLatitude(Number(qLat));
       setLongitude(Number(qLng));
@@ -94,6 +97,7 @@ export default function WritePage() {
 
           const formattedAddress =
             place?.formatted_address || place?.name || "";
+          const selectedName = place?.name || formattedAddress;
           const lat = place?.geometry?.location?.lat?.();
           const lng = place?.geometry?.location?.lng?.();
 
@@ -106,6 +110,7 @@ export default function WritePage() {
             return;
           }
 
+          setPlaceName(selectedName);
           setLocation(formattedAddress);
           setLatitude(lat);
           setLongitude(lng);
@@ -138,6 +143,7 @@ export default function WritePage() {
   const handleLocationInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    setPlaceName("");
     setLocation(e.target.value);
     setLatitude(null);
     setLongitude(null);
@@ -166,6 +172,7 @@ export default function WritePage() {
 
               if (status === "OK" && results && results[0]) {
                 const address = results[0].formatted_address;
+                setPlaceName("Current Location");
                 setLocation(address);
                 setLatitude(lat);
                 setLongitude(lng);
@@ -226,6 +233,7 @@ export default function WritePage() {
 
     const { error } = await supabase.from("posts").insert({
       user_id: userId,
+      place_name: placeName || location,
       location,
       meeting_time: new Date(meetingTime).toISOString(),
       target_gender: targetGender,
@@ -291,13 +299,22 @@ export default function WritePage() {
 
           {location && (
             <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-              <p className="font-medium text-[#2f2a26]">Selected location</p>
-              <p className="mt-1">{location}</p>
+              <p className="font-medium text-[#2f2a26]">Selected place</p>
+
+              <p className="mt-1 text-base font-semibold text-[#2f2a26]">
+                {placeName || location}
+              </p>
+
+              <p className="mt-1 text-sm text-[#6b5f52]">
+                {location}
+              </p>
+
               {latitude !== null && longitude !== null && (
                 <p className="mt-1 text-xs text-[#8b7f74]">
                   Lat: {latitude.toFixed(6)}, Lng: {longitude.toFixed(6)}
                 </p>
               )}
+
               <p className="mt-1 text-xs">
                 {locationConfirmed
                   ? "Exact location selected."
