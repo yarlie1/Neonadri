@@ -7,6 +7,7 @@ import HomePostsMap from "./components/HomePostsMap";
 type Post = {
   id: number;
   created_at: string;
+  place_name: string | null;
   location: string | null;
   meeting_time: string | null;
   target_gender: string | null;
@@ -33,7 +34,7 @@ export default function HomePage() {
       const { data } = await supabase
         .from("posts")
         .select(
-          "id, created_at, location, meeting_time, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
+          "id, created_at, place_name, location, meeting_time, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
         )
         .order("created_at", { ascending: false });
 
@@ -148,18 +149,20 @@ export default function HomePage() {
                   >
                     <a href={`/posts/${post.id}`} className="block">
                       <p className="text-lg font-semibold text-[#2f2a26]">
-                        📍 {post.location || "Location not set"}
+                        📍 {post.place_name || post.location || "Location not set"}
                       </p>
+
+                      {post.location && (
+                        <p className="mt-2 text-sm text-[#6f655c]">
+                          {post.location}
+                        </p>
+                      )}
 
                       <div className="mt-3 space-y-1 text-sm text-[#6f655c]">
                         {post.meeting_time && (
-                          <p>
-                            ⏰ {new Date(post.meeting_time).toLocaleString()}
-                          </p>
+                          <p>⏰ {new Date(post.meeting_time).toLocaleString()}</p>
                         )}
-                        {post.meeting_purpose && (
-                          <p>🎯 {post.meeting_purpose}</p>
-                        )}
+                        {post.meeting_purpose && <p>🎯 {post.meeting_purpose}</p>}
                         {(post.target_gender || post.target_age_group) && (
                           <p>
                             👤 {post.target_gender || "Any"} /{" "}
