@@ -8,12 +8,13 @@ declare global {
   }
 }
 
-type Props = {
+export default function ClientMap({
+  latitude,
+  longitude,
+}: {
   latitude: number;
   longitude: number;
-};
-
-export default function ClientMap({ latitude, longitude }: Props) {
+}) {
   const mapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -29,7 +30,6 @@ export default function ClientMap({ latitude, longitude }: Props) {
       const map = new window.google.maps.Map(mapRef.current, {
         center: position,
         zoom: 16,
-        clickableIcons: false,
       });
 
       new window.google.maps.Marker({
@@ -42,9 +42,7 @@ export default function ClientMap({ latitude, longitude }: Props) {
 
     if (!initMap()) {
       interval = setInterval(() => {
-        if (initMap()) {
-          clearInterval(interval);
-        }
+        if (initMap()) clearInterval(interval);
       }, 500);
     }
 
@@ -53,5 +51,5 @@ export default function ClientMap({ latitude, longitude }: Props) {
     };
   }, [latitude, longitude]);
 
-  return <div ref={mapRef} className="h-[22rem] w-full rounded-[1rem]" />;
+  return <div ref={mapRef} className="h-[22rem] w-full" />;
 }
