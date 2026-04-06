@@ -1,5 +1,6 @@
 import { createClient } from "../../../lib/supabase/server";
 import ClientMap from "./ClientMap";
+import PostDetailClient from "./post-detail-client";
 
 type PageProps = {
   params: {
@@ -9,6 +10,10 @@ type PageProps = {
 
 export default async function MeetupDetailPage({ params }: PageProps) {
   const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data: post } = await supabase
     .from("posts")
@@ -20,8 +25,11 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   if (!post) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] flex items-center justify-center">
-        <div className="text-center text-[#6f655c]">Meetup not found</div>
+      <main className="min-h-screen bg-[#f7f1ea]">
+        <PostDetailClient userEmail={user?.email ?? ""} />
+        <div className="flex items-center justify-center px-6 py-16 text-[#6f655c]">
+          Meetup not found
+        </div>
       </main>
     );
   }
@@ -32,8 +40,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       : "";
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-6 py-16 text-[#2f2a26]">
-      <div className="mx-auto max-w-3xl space-y-6">
+    <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
+      <PostDetailClient userEmail={user?.email ?? ""} />
+
+      <div className="mx-auto max-w-3xl space-y-6 px-6 py-8">
         <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
           <p className="mb-3 text-xs tracking-[0.3em] text-[#a48f7a]">
             MEETUP
@@ -51,14 +61,11 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             {post.meeting_time && (
               <p>⏰ {new Date(post.meeting_time).toLocaleString()}</p>
             )}
-
             {post.meeting_purpose && <p>🎯 {post.meeting_purpose}</p>}
-
             <p>
               👤 {post.target_gender || "Any"} /{" "}
               {post.target_age_group || "Any"}
             </p>
-
             {post.benefit_amount && (
               <p className="font-medium text-[#2f2a26]">
                 🎁 Benefit: {post.benefit_amount}
