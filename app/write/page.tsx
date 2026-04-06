@@ -31,6 +31,7 @@ export default function WritePage() {
   const [benefitAmount, setBenefitAmount] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null);
   const [locationConfirmed, setLocationConfirmed] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -83,35 +84,22 @@ export default function WritePage() {
         markerRef.current = new window.google.maps.Marker({
           map: mapRef.current,
           position: defaultCenter,
-          visible: false,
+          visible: true,
         });
 
         geocoderRef.current = new window.google.maps.Geocoder();
 
-        mapRef.current.addListener("click", (event: any) => {
-          const lat = event.latLng.lat();
-          const lng = event.latLng.lng();
+        mapRef.current.addListener("center_changed", () => {
+          const center = mapRef.current.getCenter();
+          if (!center) return;
 
-          setLatitude(lat);
-          setLongitude(lng);
+          const lat = center.lat();
+          const lng = center.lng();
+
+          setMapCenter({ lat, lng });
 
           markerRef.current.setPosition({ lat, lng });
           markerRef.current.setVisible(true);
-
-          geocoderRef.current.geocode(
-            { location: { lat, lng } },
-            (results: any, status: string) => {
-              if (status === "OK" && results && results[0]) {
-                const address = results[0].formatted_address;
-                setLocation(address);
-                setLocationConfirmed(true);
-                setMessage("");
-              } else {
-                setLocationConfirmed(false);
-                setMessage("Could not get address from the selected point.");
-              }
-            }
-          );
         });
       }
 
@@ -142,6 +130,7 @@ export default function WritePage() {
           setLocation(formattedAddress);
           setLatitude(lat);
           setLongitude(lng);
+          setMapCenter({ lat, lng });
           setLocationConfirmed(true);
           setMessage("");
 
@@ -161,6 +150,7 @@ export default function WritePage() {
         mapRef.current.setZoom(15);
         markerRef.current.setPosition(center);
         markerRef.current.setVisible(true);
+        setMapCenter(center);
       }
 
       return true;
@@ -205,6 +195,7 @@ export default function WritePage() {
 
         setLatitude(lat);
         setLongitude(lng);
+        setMapCenter({ lat, lng });
 
         if (mapRef.current && markerRef.current) {
           mapRef.current.setCenter({ lat, lng });
@@ -240,6 +231,33 @@ export default function WritePage() {
       {
         enableHighAccuracy: true,
         timeout: 10000,
+      }
+    );
+  };
+
+  const handleUseMapLocation = () => {
+    if (!mapCenter || !geocoderRef.current) {
+      setMessage("Move the map first, then try again.");
+      return;
+    }
+
+    const { lat, lng } = mapCenter;
+
+    setLatitude(lat);
+    setLongitude(lng);
+
+    geocoderRef.current.geocode(
+      { location: { lat, lng } },
+      (results: any, status: string) => {
+        if (status === "OK" && results && results[0]) {
+          const address = results[0].formatted_address;
+          setLocation(address);
+          setLocationConfirmed(true);
+          setMessage("");
+        } else {
+          setLocationConfirmed(false);
+          setMessage("Could not get address from the selected map location.");
+        }
       }
     );
   };
@@ -306,7 +324,7 @@ export default function WritePage() {
         </h1>
 
         <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-          Use your current location, or search and select one exact place.
+          Use your current location, search for a place, or move the map and confirm the center point.
         </p>
 
         <div className="mt-8 space-y-4">
@@ -349,7 +367,7 @@ export default function WritePage() {
               <p className="mt-1 text-xs">
                 {locationConfirmed
                   ? "Exact location selected."
-                  : "Please select from the dropdown, use current location, or tap the map."}
+                  : "Select from the dropdown, use current location, or confirm the map location."}
               </p>
             </div>
           )}
@@ -361,8 +379,16 @@ export default function WritePage() {
                 className="h-72 w-full rounded-[1rem]"
               />
               <p className="mt-3 text-xs text-[#7b7067]">
-                Tap the map and the exact address will appear in the text box above.
+                Move the map so your place is in the center, then tap the button below.
               </p>
+
+              <button
+                type="button"
+                onClick={handleUseMapLocation}
+                className="mt-3 rounded-2xl bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+              >
+                Use This Map Location
+              </button>
             </div>
           )}
 
