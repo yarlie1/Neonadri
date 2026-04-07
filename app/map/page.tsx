@@ -7,10 +7,13 @@ type PostRow = {
   place_name: string | null;
   location: string | null;
   meeting_time: string | null;
+  duration_minutes: number | null;
   meeting_purpose: string | null;
   benefit_amount: string | null;
   latitude: number | null;
   longitude: number | null;
+  target_gender: string | null;
+  target_age_group: string | null;
 };
 
 type ProfileRow = {
@@ -34,10 +37,13 @@ export type MapPost = {
   place_name: string | null;
   location: string | null;
   meeting_time: string | null;
+  duration_minutes: number | null;
   meeting_purpose: string | null;
   benefit_amount: string | null;
   latitude: number;
   longitude: number;
+  target_gender: string | null;
+  target_age_group: string | null;
   host_name: string;
   my_match_status: string | null;
   is_my_post: boolean;
@@ -53,7 +59,7 @@ export default async function MapPage() {
   const { data: postsData } = await supabase
     .from("posts")
     .select(
-      "id, user_id, place_name, location, meeting_time, meeting_purpose, benefit_amount, latitude, longitude"
+      "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, latitude, longitude, target_gender, target_age_group"
     )
     .not("latitude", "is", null)
     .not("longitude", "is", null)
@@ -65,7 +71,7 @@ export default async function MapPage() {
 
   const ownerIds = Array.from(new Set(posts.map((post) => post.user_id)));
 
-  let profileMap = new Map<string, string>();
+  const profileMap = new Map<string, string>();
   if (ownerIds.length > 0) {
     const { data: profilesData } = await supabase
       .from("profiles")
@@ -73,11 +79,11 @@ export default async function MapPage() {
       .in("id", ownerIds);
 
     ((profilesData as ProfileRow[]) || []).forEach((profile) => {
-      profileMap.set(profile.id, profile.display_name || "Unknown user");
+      profileMap.set(profile.id, profile.display_name || "Unknown");
     });
   }
 
-  let requestStatusMap = new Map<number, string>();
+  const requestStatusMap = new Map<number, string>();
 
   if (user) {
     const [requestsRes, matchesRes] = await Promise.all([
@@ -107,11 +113,14 @@ export default async function MapPage() {
     place_name: post.place_name,
     location: post.location,
     meeting_time: post.meeting_time,
+    duration_minutes: post.duration_minutes,
     meeting_purpose: post.meeting_purpose,
     benefit_amount: post.benefit_amount,
     latitude: post.latitude as number,
     longitude: post.longitude as number,
-    host_name: profileMap.get(post.user_id) || "Unknown user",
+    target_gender: post.target_gender,
+    target_age_group: post.target_age_group,
+    host_name: profileMap.get(post.user_id) || "Unknown",
     my_match_status:
       user && user.id !== post.user_id
         ? requestStatusMap.get(post.id) || "No request yet"
