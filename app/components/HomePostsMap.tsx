@@ -39,6 +39,47 @@ function milesBetween(
   return earthRadiusMiles * c;
 }
 
+const getPurposeIcon = (purpose: string | null) => {
+  switch (purpose) {
+    case "Coffee Chat":
+      return "☕";
+    case "Casual Chat":
+      return "💬";
+    case "Meal":
+      return "🍽";
+    case "Walk":
+      return "🚶";
+    case "Study":
+      return "📚";
+    case "Make Friends":
+      return "🤝";
+    case "Networking":
+      return "💼";
+    default:
+      return "✨";
+  }
+};
+
+const formatTime = (meetingTime: string | null) => {
+  if (!meetingTime) return null;
+
+  const date = new Date(meetingTime);
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`;
+};
+
+const formatDuration = (minutes: number | null) => {
+  if (!minutes) return null;
+
+  if (minutes === 60) return "1h";
+  if (minutes === 90) return "1.5h";
+  if (minutes === 120) return "2h";
+
+  return `${minutes}m`;
+};
+
 export default function HomePostsMap({ posts }: Props) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<any>(null);
@@ -285,50 +326,62 @@ export default function HomePostsMap({ posts }: Props) {
       <div ref={mapRef} className="h-[30rem] w-full rounded-[1.5rem]" />
 
       {selectedPost && (
-        <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-5 shadow-sm">
-          <div className="text-base font-medium">
-            📍 {selectedPost.place_name || "No place"}
+        <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <div className="text-base font-semibold">
+                {getPurposeIcon(selectedPost.meeting_purpose)}{" "}
+                {selectedPost.meeting_purpose || "Meetup"} ·{" "}
+                {formatDuration(selectedPost.duration_minutes)}
+              </div>
+
+              <div className="mt-1 truncate text-xl font-semibold">
+                {selectedPost.place_name || selectedPost.location}
+              </div>
+            </div>
+
+            {selectedPost.benefit_amount && (
+              <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 shadow text-sm font-semibold text-[#5a4a1f]">
+                🪙 {selectedPost.benefit_amount}
+              </div>
+            )}
           </div>
 
-          {selectedPost.location && (
+          <div className="mt-3">
+            {selectedPost.meeting_time && (
+              <div className="text-sm text-[#6f655c]">
+                ⏰ {formatTime(selectedPost.meeting_time)}
+              </div>
+            )}
+
+            {selectedPost.location && (
+              <div className="mt-1 line-clamp-1 text-sm text-[#6f655c]">
+                📍 {selectedPost.location}
+              </div>
+            )}
+
             <div className="mt-1 text-sm text-[#6f655c]">
-              {selectedPost.location}
+              👤 {selectedPost.target_gender || "Any"} /{" "}
+              {selectedPost.target_age_group || "Any"}
             </div>
-          )}
 
-          <div className="mt-3 space-y-2 text-sm text-[#6f655c]">
-            <div>🧑 Host: {selectedPost.host_name}</div>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-[#6f655c]">
+              <span>🧑 {selectedPost.host_name}</span>
 
-            {selectedPost.is_my_post && <div>📝 This is your meetup post.</div>}
-
-            {!selectedPost.is_my_post && selectedPost.my_match_status && (
-              <div className="flex items-center gap-2">
-                <span>🤝 My Match Status:</span>
+              {selectedPost.is_my_post ? (
+                <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]">
+                  My meetup
+                </span>
+              ) : selectedPost.my_match_status ? (
                 <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${badgeClass(
+                  className={`rounded-full px-3 py-1 text-xs ${badgeClass(
                     selectedPost.my_match_status
                   )}`}
                 >
                   {selectedPost.my_match_status}
                 </span>
-              </div>
-            )}
-
-            {selectedPost.meeting_time && (
-              <div>
-                ⏰ {new Date(selectedPost.meeting_time).toLocaleString()}
-              </div>
-            )}
-
-            {selectedPost.meeting_purpose && (
-              <div>🎯 {selectedPost.meeting_purpose}</div>
-            )}
-
-            {selectedPost.benefit_amount && (
-              <div className="font-medium text-[#2f2a26]">
-                🎁 {selectedPost.benefit_amount}
-              </div>
-            )}
+              ) : null}
+            </div>
           </div>
 
           <div className="mt-4">
