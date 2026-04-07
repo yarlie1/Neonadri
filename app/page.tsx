@@ -20,8 +20,22 @@ type ProfileRow = {
   display_name: string | null;
 };
 
+type MatchRequestRow = {
+  post_id: number;
+  status: string;
+};
+
+type MatchRow = {
+  post_id: number;
+  status: string;
+};
+
 export default async function HomePage() {
   const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data: postsData } = await supabase
     .from("posts")
@@ -47,6 +61,58 @@ export default async function HomePage() {
     });
   }
 
+  const requestStatusMap = new Map<number, string>();
+
+  if (user) {
+    const [requestsRes, matchesRes] = await Promise.all([
+      supabase
+        .from("match_requests")
+        .select("post_id, status")
+        .eq("requester_user_id", user.id),
+
+      supabase
+        .from("matches")
+        .select("post_id, status")
+        .or(`user_a.eq.${user.id},user_b.eq.${user.id}`),
+    ]);
+
+    ((requestsRes.data as MatchRequestRow[]) || []).forEach((item) => {
+      requestStatusMap.set(item.post_id, item.status);
+    });
+
+    ((matchesRes.data as MatchRow[]) || []).forEach((item) => {
+      requestStatusMap.set(item.post_id, "matched");
+    });
+  }
+
+  const getStatusBadge = (status: string) => {
+    const normalized = status.toLowerCase();
+
+    if (normalized === "matched" || normalized === "accepted") {
+      return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
+    }
+
+    if (normalized === "pending") {
+      return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+    }
+
+    if (normalized === "rejected") {
+      return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
+    }
+
+    return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+  };
+
+  const formatTime = (meetingTime: string | null) => {
+    if (!meetingTime) return null;
+
+    const date = new Date(meetingTime);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
+  };
+
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-4xl space-y-6">
@@ -57,12 +123,19 @@ export default async function HomePage() {
             posts.map((post) => {
               const hostName = profileMap.get(post.user_id) || "Unknown";
 
-              const titleParts = [
+              const myStatus =
+                user && user.id !== post.user_id
+                  ? requestStatusMap.get(post.id) || "No request yet"
+                  : null;
+
+              const topLine = [
                 post.meeting_purpose || "Meetup",
-                post.place_name || post.location || "No place",
-                post.duration_minutes ? `${post.duration_minutes}m` : null,
-                post.benefit_amount || null,
-              ].filter(Boolean);
+                formatTime(post.meeting_time),
+              ]
+                .filter(Boolean)
+                .join(" · ");
+
+              const placeLine = post.place_name || post.location || "No place";
 
               return (
                 <Link
@@ -70,17 +143,34 @@ export default async function HomePage() {
                   href={`/posts/${post.id}`}
                   className="block rounded-2xl border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm transition hover:shadow-md active:scale-[0.99]"
                 >
-                  <div className="text-xl font-semibold leading-7">
-                    {titleParts.join(" · ")}
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-base font-semibold leading-6 text-[#2f2a26]">
+                        {topLine}
+                      </div>
+
+                      <div className="mt-1 truncate text-xl font-semibold leading-7 text-[#2f2a26]">
+                        {placeLine}
+                      </div>
+                    </div>
+
+                    {post.benefit_amount && (
+                      <div className="shrink-0 rounded-full bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 shadow-[0_4px_12px_rgba(180,150,80,0.25)]">
+                        <div className="flex items-center gap-2 text-sm font-semibold text-[#5a4a1f]">
+                          <span className="text-base">🪙</span>
+                          <span>{post.benefit_amount}</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-                  {post.location && (
-                    <div className="mt-2 text-sm text-[#6f655c]">
+                  {post.location && post.place_name && (
+                    <div className="mt-2 line-clamp-1 text-sm text-[#6f655c]">
                       📍 {post.location}
                     </div>
                   )}
 
-                  <div className="mt-2 text-sm text-[#6f655c]">
+                  <div className="mt-3 text-sm text-[#6f655c]">
                     👤 {post.target_gender || "Any"} /{" "}
                     {post.target_age_group || "Any"}
                   </div>
@@ -88,13 +178,13 @@ export default async function HomePage() {
                   <div className="mt-3 flex items-center justify-between text-sm text-[#6f655c]">
                     <span>🧑 {hostName}</span>
 
-                    {post.meeting_time && (
-                      <span>
-                        {new Date(post.meeting_time).toLocaleDateString()}{" "}
-                        {new Date(post.meeting_time).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                    {myStatus && (
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadge(
+                          myStatus
+                        )}`}
+                      >
+                        {myStatus}
                       </span>
                     )}
                   </div>
