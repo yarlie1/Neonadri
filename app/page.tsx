@@ -113,6 +113,16 @@ export default async function HomePage() {
     })}`;
   };
 
+  const formatDuration = (minutes: number | null) => {
+    if (!minutes) return null;
+
+    if (minutes === 60) return "1h";
+    if (minutes === 90) return "1.5h";
+    if (minutes === 120) return "2h";
+
+    return `${minutes}m`;
+  };
+
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-4xl space-y-6">
@@ -130,7 +140,7 @@ export default async function HomePage() {
 
               const topLine = [
                 post.meeting_purpose || "Meetup",
-                formatTime(post.meeting_time),
+                formatDuration(post.duration_minutes),
               ]
                 .filter(Boolean)
                 .join(" · ");
@@ -145,15 +155,18 @@ export default async function HomePage() {
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0 flex-1">
+                      {/* 첫 줄 */}
                       <div className="text-base font-semibold leading-6 text-[#2f2a26]">
                         {topLine}
                       </div>
 
+                      {/* 둘째 줄 (제목 느낌) */}
                       <div className="mt-1 truncate text-xl font-semibold leading-7 text-[#2f2a26]">
                         {placeLine}
                       </div>
                     </div>
 
+                    {/* 금액 */}
                     {post.benefit_amount && (
                       <div className="shrink-0 rounded-full bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 shadow-[0_4px_12px_rgba(180,150,80,0.25)]">
                         <div className="flex items-center gap-2 text-sm font-semibold text-[#5a4a1f]">
@@ -164,19 +177,29 @@ export default async function HomePage() {
                     )}
                   </div>
 
+                  {/* 주소 */}
                   {post.location && post.place_name && (
                     <div className="mt-2 line-clamp-1 text-sm text-[#6f655c]">
                       📍 {post.location}
                     </div>
                   )}
 
+                  {/* 타겟 */}
                   <div className="mt-3 text-sm text-[#6f655c]">
                     👤 {post.target_gender || "Any"} /{" "}
                     {post.target_age_group || "Any"}
                   </div>
 
+                  {/* 하단 (시간 여기 유지) */}
                   <div className="mt-3 flex items-center justify-between text-sm text-[#6f655c]">
-                    <span>🧑 {hostName}</span>
+                    <span>
+                      🧑 {hostName}
+                      {post.meeting_time && (
+                        <span className="ml-3">
+                          ⏰ {formatTime(post.meeting_time)}
+                        </span>
+                      )}
+                    </span>
 
                     {myStatus && (
                       <span
