@@ -1,5 +1,6 @@
 import { createClient } from "../../../lib/supabase/server";
 import ClientMap from "./ClientMap";
+import MatchRequestBox from "./MatchRequestBox";
 
 type PageProps = {
   params: {
@@ -13,7 +14,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const { data: post } = await supabase
     .from("posts")
     .select(
-      "id, created_at, place_name, location, meeting_time, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
+      "id, user_id, created_at, place_name, location, meeting_time, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
     )
     .eq("id", params.id)
     .single();
@@ -96,6 +97,13 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               longitude={post.longitude as number}
             />
           </div>
+        )}
+
+        {post.user_id && (
+          <MatchRequestBox
+            postId={post.id}
+            postOwnerUserId={post.user_id}
+          />
         )}
 
         <div className="text-xs text-[#9b8f84]">
