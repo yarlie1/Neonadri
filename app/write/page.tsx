@@ -94,7 +94,6 @@ export default function WritePage() {
   const [locationConfirmed, setLocationConfirmed] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [locating, setLocating] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -224,55 +223,6 @@ export default function WritePage() {
     setLocationConfirmed(false);
   };
 
-  const handleUseCurrentLocation = () => {
-    if (!navigator.geolocation) {
-      setMessage("Geolocation is not supported on this device.");
-      return;
-    }
-
-    setMessage("");
-    setLocating(true);
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-
-        if (geocoderRef.current) {
-          geocoderRef.current.geocode(
-            { location: { lat, lng } },
-            (results: any, status: string) => {
-              setLocating(false);
-
-              if (status === "OK" && results && results[0]) {
-                const address = results[0].formatted_address;
-                setPlaceName("Current Location");
-                setLocation(address);
-                setLatitude(lat);
-                setLongitude(lng);
-                setLocationConfirmed(true);
-                setMessage("");
-              } else {
-                setMessage("Could not convert your location to an address.");
-              }
-            }
-          );
-        } else {
-          setLocating(false);
-          setMessage("Map service is still loading. Please try again.");
-        }
-      },
-      () => {
-        setLocating(false);
-        setMessage("Could not get your current location.");
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-      }
-    );
-  };
-
   const handleOpenMapPicker = () => {
     router.push("/write/location?returnTo=/write");
   };
@@ -299,7 +249,7 @@ export default function WritePage() {
       !locationConfirmed
     ) {
       setMessage(
-        "Please choose one exact location from the dropdown, current location, or map picker."
+        "Please choose one exact location from the dropdown or map picker."
       );
       return;
     }
@@ -338,21 +288,11 @@ export default function WritePage() {
         </h1>
 
         <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-          Search for a place, use your current location, or choose on a separate
-          map page.
+          Search for a place or choose one on a separate map page.
         </p>
 
         <div className="mt-8 space-y-4">
           <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={handleUseCurrentLocation}
-              disabled={locating}
-              className="rounded-2xl bg-[#6b5f52] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046] disabled:opacity-50"
-            >
-              {locating ? "Finding..." : "Use Current Location"}
-            </button>
-
             <button
               type="button"
               onClick={handleOpenMapPicker}
