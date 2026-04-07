@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "../../../lib/supabase/client";
 import { useParams, useRouter } from "next/navigation";
 
@@ -151,7 +151,6 @@ export default function EditWritePage() {
 
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const autocompleteRef = useRef<any>(null);
-  const geocoderRef = useRef<any>(null);
 
   const [meetingPurpose, setMeetingPurpose] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
