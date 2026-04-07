@@ -215,22 +215,20 @@ export default async function HomePage() {
                 className="block rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm hover:shadow-md transition"
               >
                 <div className="flex items-start justify-between gap-3">
-                  {/* LEFT */}
                   <div className="min-w-0 flex-1">
-                    {/* 1줄: 크게 */}
+                    {/* 1줄 */}
                     <div className="truncate text-[24px] font-extrabold text-[#2f2a26] sm:text-[26px]">
                       {getPurposeIcon(post.meeting_purpose)}{" "}
                       {post.meeting_purpose || "Meetup"}
                       {durationText ? ` ⏱ ${durationText}` : ""}
                     </div>
 
-                    {/* 2줄: 작게 */}
-                    <div className="mt-1 truncate text-[15px] text-[#8a7f74] sm:text-[16px]">
+                    {/* 2줄 */}
+                    <div className="mt-[2px] truncate text-[24px] font-extrabold text-[#8a7f74] sm:text-[26px]">
                       📍 {placeText}
                     </div>
                   </div>
 
-                  {/* BENEFIT */}
                   {amount !== null && (
                     <div className="shrink-0 rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
                       🪙 ${amount.toLocaleString()}
@@ -238,7 +236,6 @@ export default async function HomePage() {
                   )}
                 </div>
 
-                {/* INFO */}
                 <div className="mt-4 space-y-1 text-sm text-[#766c62]">
                   <div>⏰ {formatTime(post.meeting_time)}</div>
 
@@ -271,7 +268,6 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Floating Button */}
       <Link
         href="/write"
         className="fixed bottom-8 right-5 rounded-full bg-[#6b5f52] px-6 py-4 text-white shadow-lg"
