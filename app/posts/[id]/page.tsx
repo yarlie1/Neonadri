@@ -26,19 +26,42 @@ type MatchRow = {
 const getPurposeIcon = (purpose: string | null) => {
   switch (purpose) {
     case "Coffee Chat":
+    case "Coffee":
       return "☕";
-    case "Casual Chat":
-      return "💬";
     case "Meal":
       return "🍽";
+    case "Dessert":
+      return "🍰";
     case "Walk":
       return "🚶";
+    case "Jogging":
+      return "🏃";
+    case "Yoga":
+      return "🧘";
+    case "Movie":
+    case "Theater":
+      return "🎬";
+    case "Karaoke":
+      return "🎤";
+    case "Board Games":
+      return "🎲";
+    case "Gaming":
+      return "🎮";
+    case "Bowling":
+      return "🎳";
+    case "Arcade":
+      return "🎯";
     case "Study":
       return "📚";
-    case "Make Friends":
-      return "🤝";
-    case "Networking":
-      return "💼";
+    case "Work Together":
+    case "Work":
+      return "💻";
+    case "Book Talk":
+    case "Book":
+      return "📖";
+    case "Photo Walk":
+    case "Photo":
+      return "📷";
     default:
       return "✨";
   }
@@ -56,11 +79,9 @@ const formatTime = (meetingTime: string | null) => {
 
 const formatDuration = (minutes: number | null) => {
   if (!minutes) return null;
-
   if (minutes === 60) return "1h";
   if (minutes === 90) return "1.5h";
   if (minutes === 120) return "2h";
-
   return `${minutes}m`;
 };
 
@@ -152,8 +173,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
   };
 
-  const hasCoordinates =
-    post.latitude !== null && post.longitude !== null;
+  const hasCoordinates = post.latitude !== null && post.longitude !== null;
 
   const mapUrl = hasCoordinates
     ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
@@ -177,7 +197,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             </div>
 
             {post.benefit_amount && (
-              <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 shadow text-sm font-semibold text-[#5a4a1f]">
+              <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 text-sm font-semibold text-[#5a4a1f] shadow">
                 🪙 {post.benefit_amount}
               </div>
             )}
