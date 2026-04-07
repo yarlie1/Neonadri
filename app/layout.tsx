@@ -22,10 +22,7 @@ export default function RootLayout({
         ) : null}
 
         <TopNav />
-
-        <div className="mx-auto w-full max-w-4xl px-4 pt-4 sm:px-6 sm:pt-6">
-          {children}
-        </div>
+        {children}
       </body>
     </html>
   );
