@@ -33,19 +33,42 @@ type MatchRow = {
 const getPurposeIcon = (purpose: string | null) => {
   switch (purpose) {
     case "Coffee Chat":
+    case "Coffee":
       return "☕";
-    case "Casual Chat":
-      return "💬";
     case "Meal":
       return "🍽";
+    case "Dessert":
+      return "🍰";
     case "Walk":
       return "🚶";
+    case "Jogging":
+      return "🏃";
+    case "Yoga":
+      return "🧘";
+    case "Movie":
+    case "Theater":
+      return "🎬";
+    case "Karaoke":
+      return "🎤";
+    case "Board Games":
+      return "🎲";
+    case "Gaming":
+      return "🎮";
+    case "Bowling":
+      return "🎳";
+    case "Arcade":
+      return "🎯";
     case "Study":
       return "📚";
-    case "Make Friends":
-      return "🤝";
-    case "Networking":
-      return "💼";
+    case "Work Together":
+    case "Work":
+      return "💻";
+    case "Book Talk":
+    case "Book":
+      return "📖";
+    case "Photo Walk":
+    case "Photo":
+      return "📷";
     default:
       return "✨";
   }
@@ -136,11 +159,9 @@ export default async function HomePage() {
 
   const formatDuration = (minutes: number | null) => {
     if (!minutes) return null;
-
     if (minutes === 60) return "1h";
     if (minutes === 90) return "1.5h";
     if (minutes === 120) return "2h";
-
     return `${minutes}m`;
   };
 
@@ -182,12 +203,12 @@ export default async function HomePage() {
                     </div>
 
                     <div className="mt-1 truncate text-xl font-semibold">
-                      {post.place_name || post.location}
+                      {post.placeName || post.place_name || post.location}
                     </div>
                   </div>
 
                   {post.benefit_amount && (
-                    <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 shadow text-sm font-semibold text-[#5a4a1f]">
+                    <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 text-sm font-semibold text-[#5a4a1f] shadow">
                       🪙 {post.benefit_amount}
                     </div>
                   )}
