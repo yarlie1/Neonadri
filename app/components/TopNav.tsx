@@ -3,6 +3,15 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
+import {
+  Menu,
+  X,
+  UserRound,
+  LayoutDashboard,
+  LogOut,
+  LogIn,
+  UserPlus,
+} from "lucide-react";
 
 type SimpleUser = {
   id: string;
@@ -85,31 +94,33 @@ export default function TopNav() {
           </Link>
 
           {loading ? (
-            <div className="h-10 w-10 animate-pulse rounded-full bg-[#f3ebe2] sm:h-10 sm:w-32 sm:rounded-full" />
+            <div className="h-11 w-11 animate-pulse rounded-full bg-[#f3ebe2] sm:h-10 sm:w-32" />
           ) : (
             <>
-              {/* Desktop menu */}
               <div className="hidden items-center gap-2 sm:flex">
                 {user ? (
                   <>
                     <Link
                       href="/account"
-                      className="rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                      className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
                     >
+                      <UserRound className="h-4 w-4" />
                       Account
                     </Link>
 
                     <Link
                       href="/dashboard"
-                      className="rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                      className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
                     >
+                      <LayoutDashboard className="h-4 w-4" />
                       Dashboard
                     </Link>
 
                     <button
                       onClick={handleLogout}
-                      className="rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#927d69]"
+                      className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#927d69]"
                     >
+                      <LogOut className="h-4 w-4" />
                       Logout
                     </button>
                   </>
@@ -117,22 +128,23 @@ export default function TopNav() {
                   <>
                     <Link
                       href="/login"
-                      className="rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                      className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
                     >
+                      <LogIn className="h-4 w-4" />
                       Log In
                     </Link>
 
                     <Link
                       href="/signup"
-                      className="rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#927d69]"
+                      className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#927d69]"
                     >
+                      <UserPlus className="h-4 w-4" />
                       Sign Up
                     </Link>
                   </>
                 )}
               </div>
 
-              {/* Mobile menu */}
               <div className="relative sm:hidden" ref={menuRef}>
                 <button
                   type="button"
@@ -141,34 +153,41 @@ export default function TopNav() {
                   onClick={() => setMenuOpen((prev) => !prev)}
                   className="flex h-11 w-11 items-center justify-center rounded-full border border-[#dccfc2] bg-white text-[#5a5149] shadow-sm transition hover:bg-[#f4ece4]"
                 >
-                  <span className="text-xl leading-none">☰</span>
+                  {menuOpen ? (
+                    <X className="h-5 w-5" />
+                  ) : (
+                    <Menu className="h-5 w-5" />
+                  )}
                 </button>
 
                 {menuOpen && (
-                  <div className="absolute right-0 top-14 w-52 overflow-hidden rounded-2xl border border-[#e7ddd2] bg-white shadow-[0_12px_28px_rgba(80,60,40,0.14)]">
+                  <div className="absolute right-0 top-14 w-56 overflow-hidden rounded-[24px] border border-[#e7ddd2] bg-white shadow-[0_12px_28px_rgba(80,60,40,0.14)]">
                     <div className="flex flex-col p-2">
                       {user ? (
                         <>
                           <Link
                             href="/account"
                             onClick={() => setMenuOpen(false)}
-                            className="rounded-xl px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                            className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
                           >
+                            <UserRound className="h-4 w-4" />
                             Account
                           </Link>
 
                           <Link
                             href="/dashboard"
                             onClick={() => setMenuOpen(false)}
-                            className="rounded-xl px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                            className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
                           >
+                            <LayoutDashboard className="h-4 w-4" />
                             Dashboard
                           </Link>
 
                           <button
                             onClick={handleLogout}
-                            className="rounded-xl px-4 py-3 text-left text-sm font-medium text-[#8b5e3c] transition hover:bg-[#f8efe7]"
+                            className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-left text-sm font-medium text-[#8b5e3c] transition hover:bg-[#f8efe7]"
                           >
+                            <LogOut className="h-4 w-4" />
                             Logout
                           </button>
                         </>
@@ -177,16 +196,18 @@ export default function TopNav() {
                           <Link
                             href="/login"
                             onClick={() => setMenuOpen(false)}
-                            className="rounded-xl px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                            className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
                           >
+                            <LogIn className="h-4 w-4" />
                             Log In
                           </Link>
 
                           <Link
                             href="/signup"
                             onClick={() => setMenuOpen(false)}
-                            className="rounded-xl bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                            className="inline-flex items-center gap-2 rounded-[18px] bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
                           >
+                            <UserPlus className="h-4 w-4" />
                             Sign Up
                           </Link>
                         </>
