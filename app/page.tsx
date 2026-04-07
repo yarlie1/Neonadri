@@ -214,13 +214,13 @@ export default async function HomePage() {
           <div className="space-y-4">
             {posts.map((post) => {
               const hostName = profileMap.get(post.user_id) || "Unknown";
-
               const myStatus =
                 user && user.id !== post.user_id
                   ? requestStatusMap.get(post.id) || "No request yet"
                   : null;
-
               const amount = parseBenefitAmount(post.benefit_amount);
+              const durationText = formatDuration(post.duration_minutes);
+              const placeText = post.place_name || post.location || "No place";
 
               return (
                 <Link
@@ -230,15 +230,14 @@ export default async function HomePage() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-1 text-[22px] font-bold leading-tight text-[#2f2a26]">
-                        <span className="truncate">
-                          {getPurposeIcon(post.meeting_purpose)}{" "}
-                          {post.meeting_purpose || "Meetup"}
-                          {formatDuration(post.duration_minutes)
-                            ? ` · ${formatDuration(post.duration_minutes)}`
-                            : ""}{" "}
-                          · {post.place_name || post.location || "No place"}
-                        </span>
+                      <div className="truncate text-[18px] font-semibold text-[#5f5449] sm:text-[20px]">
+                        {getPurposeIcon(post.meeting_purpose)}{" "}
+                        {post.meeting_purpose || "Meetup"}
+                        {durationText ? ` · ${durationText}` : ""}
+                      </div>
+
+                      <div className="mt-1 truncate text-[24px] font-bold leading-tight text-[#2f2a26] sm:text-[26px]">
+                        📍 {placeText}
                       </div>
                     </div>
 
