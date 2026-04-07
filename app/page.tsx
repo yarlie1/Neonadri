@@ -164,21 +164,19 @@ export default async function HomePage() {
                 href={`/posts/${post.id}`}
                 className="block rounded-2xl border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm hover:shadow-md"
               >
-                {/* 상단 */}
                 <div className="flex items-start justify-between gap-4">
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <div className="text-base font-semibold">
                       {getPurposeIcon(post.meeting_purpose)}{" "}
-                      {post.meeting_purpose} ·{" "}
+                      {post.meeting_purpose || "Meetup"} ·{" "}
                       {formatDuration(post.duration_minutes)}
                     </div>
 
-                    <div className="mt-1 text-xl font-semibold">
+                    <div className="mt-1 truncate text-xl font-semibold">
                       {post.place_name || post.location}
                     </div>
                   </div>
 
-                  {/* 💰 둥근 직사각형 */}
                   {post.benefit_amount && (
                     <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 shadow text-sm font-semibold text-[#5a4a1f]">
                       🪙 {post.benefit_amount}
@@ -186,9 +184,7 @@ export default async function HomePage() {
                   )}
                 </div>
 
-                {/* 하단 */}
                 <div className="mt-3">
-                  {/* ✅ 시간 (여기로 이동) */}
                   {post.meeting_time && (
                     <div className="text-sm text-[#6f655c]">
                       ⏰ {formatTime(post.meeting_time)}
@@ -196,7 +192,7 @@ export default async function HomePage() {
                   )}
 
                   {post.location && (
-                    <div className="mt-1 text-sm text-[#6f655c]">
+                    <div className="mt-1 line-clamp-1 text-sm text-[#6f655c]">
                       📍 {post.location}
                     </div>
                   )}
@@ -211,7 +207,7 @@ export default async function HomePage() {
 
                     {myStatus && (
                       <span
-                        className={`px-3 py-1 rounded-full text-xs ${getStatusBadge(
+                        className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
                           myStatus
                         )}`}
                       >
