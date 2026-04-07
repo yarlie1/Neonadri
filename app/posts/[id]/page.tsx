@@ -8,8 +8,27 @@ type PageProps = {
   };
 };
 
+type ProfileRow = {
+  id: string;
+  display_name: string | null;
+};
+
+type MatchRequestRow = {
+  id: number;
+  status: string;
+};
+
+type MatchRow = {
+  id: number;
+  status: string;
+};
+
 export default async function MeetupDetailPage({ params }: PageProps) {
   const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data: post } = await supabase
     .from("posts")
@@ -27,12 +46,81 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     );
   }
 
+  let ownerName = "Unknown user";
+
+  if (post.user_id) {
+    const { data: ownerProfile } = await supabase
+      .from("profiles")
+      .select("id, display_name")
+      .eq("id", post.user_id)
+      .maybeSingle();
+
+    if ((ownerProfile as ProfileRow | null)?.display_name) {
+      ownerName = (ownerProfile as ProfileRow).display_name as string;
+    }
+  }
+
+  let myRequestStatus = "No request yet";
+  let isMatched = false;
+
+  if (user && post.user_id && user.id !== post.user_id) {
+    const [{ data: requestData }, { data: matchData }] = await Promise.all([
+      supabase
+        .from("match_requests")
+        .select("id, status")
+        .eq("post_id", post.id)
+        .eq("requester_user_id", user.id)
+        .maybeSingle(),
+
+      supabase
+        .from("matches")
+        .select("id, status")
+        .eq("post_id", post.id)
+        .or(`user_a.eq.${user.id},user_b.eq.${user.id}`)
+        .maybeSingle(),
+    ]);
+
+    const request = requestData as MatchRequestRow | null;
+    const match = matchData as MatchRow | null;
+
+    if (request?.status) {
+      myRequestStatus = request.status;
+    }
+
+    if (match?.status) {
+      isMatched = true;
+      myRequestStatus = "matched";
+    }
+  }
+
   const hasCoordinates =
     post.latitude !== null && post.longitude !== null;
 
   const mapUrl = hasCoordinates
     ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
     : "";
+
+  const getStatusBadge = (status: string) => {
+    const normalized = status.toLowerCase();
+
+    if (normalized === "matched") {
+      return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
+    }
+
+    if (normalized === "accepted") {
+      return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
+    }
+
+    if (normalized === "pending") {
+      return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+    }
+
+    if (normalized === "rejected") {
+      return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
+    }
+
+    return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+  };
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
@@ -51,6 +139,25 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           )}
 
           <div className="mt-6 space-y-3 text-sm text-[#6f655c]">
+            <p>🧑 Host: {ownerName}</p>
+
+            {user && user.id !== post.user_id && (
+              <div className="flex items-center gap-2">
+                <span>🤝 My Match Status:</span>
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadge(
+                    myRequestStatus
+                  )}`}
+                >
+                  {myRequestStatus}
+                </span>
+              </div>
+            )}
+
+            {user && user.id === post.user_id && (
+              <p>📝 This is your meetup post.</p>
+            )}
+
             {post.meeting_time && (
               <p>⏰ {new Date(post.meeting_time).toLocaleString()}</p>
             )}
@@ -99,7 +206,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           </div>
         )}
 
-        {post.user_id && (
+        {post.user_id && !isMatched && (
           <MatchRequestBox
             postId={post.id}
             postOwnerUserId={post.user_id}
