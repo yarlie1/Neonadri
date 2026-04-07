@@ -136,9 +136,11 @@ export default async function HomePage() {
 
   const formatDuration = (minutes: number | null) => {
     if (!minutes) return null;
+
     if (minutes === 60) return "1h";
     if (minutes === 90) return "1.5h";
     if (minutes === 120) return "2h";
+
     return `${minutes}m`;
   };
 
@@ -162,7 +164,7 @@ export default async function HomePage() {
                 href={`/posts/${post.id}`}
                 className="block rounded-2xl border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm hover:shadow-md"
               >
-                {/* 🔥 상단 영역 (금액 포함) */}
+                {/* 상단 */}
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="text-base font-semibold">
@@ -174,26 +176,27 @@ export default async function HomePage() {
                     <div className="mt-1 text-xl font-semibold">
                       {post.place_name || post.location}
                     </div>
-
-                    {post.meeting_time && (
-                      <div className="mt-1 text-sm text-[#6f655c]">
-                        ⏰ {formatTime(post.meeting_time)}
-                      </div>
-                    )}
                   </div>
 
-                  {/* ✅ 금액: 상단 영역에만 존재 */}
+                  {/* 💰 둥근 직사각형 */}
                   {post.benefit_amount && (
-                    <div className="shrink-0 w-[64px] h-[64px] flex items-center justify-center rounded-full bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] shadow">
+                    <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 shadow text-sm font-semibold text-[#5a4a1f]">
                       🪙 {post.benefit_amount}
                     </div>
                   )}
                 </div>
 
-                {/* 🔽 하단 영역 (금액 영향 없음) */}
+                {/* 하단 */}
                 <div className="mt-3">
-                  {post.location && (
+                  {/* ✅ 시간 (여기로 이동) */}
+                  {post.meeting_time && (
                     <div className="text-sm text-[#6f655c]">
+                      ⏰ {formatTime(post.meeting_time)}
+                    </div>
+                  )}
+
+                  {post.location && (
+                    <div className="mt-1 text-sm text-[#6f655c]">
                       📍 {post.location}
                     </div>
                   )}
