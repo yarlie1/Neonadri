@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 declare global {
   interface Window {
@@ -9,509 +9,298 @@ declare global {
   }
 }
 
-type PendingLocation = {
-  name: string;
-  address: string;
+type LatLng = {
   lat: number;
   lng: number;
 };
-
-type SearchResultItem = {
-  id: string;
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-};
-
-const PAGE_SIZE = 5;
 
 export default function WriteLocationPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const mapRef = useRef<HTMLDivElement | null>(null);
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const returnTo = searchParams.get("returnTo") || "/write";
 
-  const mapInstanceRef = useRef<any>(null);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
   const geocoderRef = useRef<any>(null);
   const placesServiceRef = useRef<any>(null);
 
-  const [returnTo, setReturnTo] = useState("/write");
-  const [pendingLocation, setPendingLocation] = useState<PendingLocation | null>(
-    null
-  );
-  const [allSearchResults, setAllSearchResults] = useState<SearchResultItem[]>(
+  const [query, setQuery] = useState("");
+  const [selectedLatLng, setSelectedLatLng] = useState<LatLng | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [selectedPlaceName, setSelectedPlaceName] = useState("");
+  const [loadingMap, setLoadingMap] = useState(true);
+  const [searching, setSearching] = useState(false);
+  const [message, setMessage] = useState("");
+  const [results, setResults] = useState<any[]>([]);
+
+  const defaultCenter = useMemo<LatLng>(
+    () => ({ lat: 34.0522, lng: -118.2437 }),
     []
   );
-  const [currentPage, setCurrentPage] = useState(1);
-  const [message, setMessage] = useState("");
-  const [locating, setLocating] = useState(false);
-  const [searching, setSearching] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const params = new URLSearchParams(window.location.search);
-    const value = params.get("returnTo");
-
-    if (value) {
-      setReturnTo(value);
-    }
-  }, []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
     const initMap = () => {
-      if (
-        !window.google ||
-        !window.google.maps ||
-        !window.google.maps.places ||
-        !mapRef.current
-      ) {
+      if (!window.google || !window.google.maps || !mapContainerRef.current) {
         return false;
       }
 
-      if (!mapInstanceRef.current) {
-        const defaultCenter = { lat: 34.0522, lng: -118.2437 };
-
-        mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
+      if (!mapRef.current) {
+        mapRef.current = new window.google.maps.Map(mapContainerRef.current, {
           center: defaultCenter,
           zoom: 12,
           clickableIcons: false,
           gestureHandling: "greedy",
         });
 
-        markerRef.current = new window.google.maps.Marker({
-          map: mapInstanceRef.current,
-          position: defaultCenter,
-          visible: false,
-        });
-
         geocoderRef.current = new window.google.maps.Geocoder();
         placesServiceRef.current = new window.google.maps.places.PlacesService(
-          mapInstanceRef.current
+          mapRef.current
         );
 
-        mapInstanceRef.current.addListener("click", (event: any) => {
-          const lat = event.latLng.lat();
-          const lng = event.latLng.lng();
+        mapRef.current.addListener("click", (e: any) => {
+          const lat = e.latLng.lat();
+          const lng = e.latLng.lng();
 
-          markerRef.current.setPosition({ lat, lng });
-          markerRef.current.setVisible(true);
+          setResults([]);
+          setMessage("");
 
-          geocoderRef.current.geocode(
-            { location: { lat, lng } },
-            (results: any, status: string) => {
-              if (status === "OK" && results && results[0]) {
-                const address = results[0].formatted_address;
-
-                if (placesServiceRef.current) {
-                  placesServiceRef.current.nearbySearch(
-                    {
-                      location: { lat, lng },
-                      radius: 50,
-                    },
-                    (places: any, placesStatus: string) => {
-                      const placeName =
-                        placesStatus === "OK" && places && places[0]?.name
-                          ? places[0].name
-                          : address;
-
-                      setPendingLocation({
-                        name: placeName,
-                        address,
-                        lat,
-                        lng,
-                      });
-                      setAllSearchResults([]);
-                      setCurrentPage(1);
-                      setMessage("");
-                    }
-                  );
-                } else {
-                  setPendingLocation({
-                    name: address,
-                    address,
-                    lat,
-                    lng,
-                  });
-                  setAllSearchResults([]);
-                  setCurrentPage(1);
-                  setMessage("");
-                }
-              } else {
-                setPendingLocation(null);
-                setMessage("Could not get address from that point.");
-              }
-            }
-          );
+          updateMarker({ lat, lng });
+          reverseGeocode(lat, lng);
         });
       }
 
+      setLoadingMap(false);
       return true;
     };
 
     if (!initMap()) {
       interval = setInterval(() => {
         if (initMap()) clearInterval(interval);
-      }, 500);
+      }, 400);
     }
 
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, []);
+  }, [defaultCenter]);
 
-  const totalPages = Math.ceil(allSearchResults.length / PAGE_SIZE);
+  const updateMarker = (position: LatLng) => {
+    setSelectedLatLng(position);
 
-  const pagedResults = useMemo(() => {
-    const start = (currentPage - 1) * PAGE_SIZE;
-    return allSearchResults.slice(start, start + PAGE_SIZE);
-  }, [allSearchResults, currentPage]);
+    if (!window.google || !mapRef.current) return;
 
-  const getVisiblePages = () => {
-    if (totalPages <= 7) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    if (!markerRef.current) {
+      markerRef.current = new window.google.maps.Marker({
+        map: mapRef.current,
+        position,
+        animation: window.google.maps.Animation.DROP,
+      });
+    } else {
+      markerRef.current.setPosition(position);
     }
 
-    if (currentPage <= 3) {
-      return [1, 2, 3, 4, "ellipsis", totalPages] as const;
-    }
-
-    if (currentPage >= totalPages - 2) {
-      return [
-        1,
-        "ellipsis",
-        totalPages - 3,
-        totalPages - 2,
-        totalPages - 1,
-        totalPages,
-      ] as const;
-    }
-
-    return [
-      1,
-      "ellipsis",
-      currentPage - 1,
-      currentPage,
-      currentPage + 1,
-      "ellipsis",
-      totalPages,
-    ] as const;
+    mapRef.current.panTo(position);
   };
 
-  const handleSearchPlace = () => {
-    const query = searchInputRef.current?.value?.trim();
+  const reverseGeocode = (lat: number, lng: number) => {
+    if (!geocoderRef.current) return;
 
-    if (!query) {
-      setMessage("Enter a place or address first.");
+    geocoderRef.current.geocode(
+      { location: { lat, lng } },
+      (geocodeResults: any[], status: string) => {
+        if (status === "OK" && geocodeResults && geocodeResults[0]) {
+          setSelectedAddress(geocodeResults[0].formatted_address || "");
+          setSelectedPlaceName(
+            geocodeResults[0].address_components?.[0]?.long_name ||
+              geocodeResults[0].formatted_address ||
+              "Selected Location"
+          );
+        } else {
+          setSelectedAddress("");
+          setSelectedPlaceName("Selected Location");
+          setMessage("Could not read the address for this point.");
+        }
+      }
+    );
+  };
+
+  const handleSearch = () => {
+    if (!query.trim()) {
+      setMessage("Enter a place or address.");
       return;
     }
 
-    if (!placesServiceRef.current || !mapInstanceRef.current) {
-      setMessage("Map is still loading. Please try again.");
+    if (!placesServiceRef.current || !mapRef.current || !window.google) {
+      setMessage("Map is still loading.");
       return;
     }
 
     setSearching(true);
     setMessage("");
-    setAllSearchResults([]);
-    setCurrentPage(1);
+    setResults([]);
 
-    placesServiceRef.current.textSearch(
-      {
-        query,
-        location: mapInstanceRef.current.getCenter(),
-        radius: 5000,
-      },
-      (results: any, status: string) => {
-        setSearching(false);
+    const request = {
+      query,
+      fields: ["name", "formatted_address", "geometry"],
+    };
 
-        if (status !== "OK" || !results || results.length === 0) {
-          setPendingLocation(null);
-          setAllSearchResults([]);
-          setCurrentPage(1);
-          setMessage("No matching places found.");
-          return;
-        }
+    const service = placesServiceRef.current;
+    service.textSearch(request, (searchResults: any[], status: string) => {
+      setSearching(false);
 
-        const mappedResults: SearchResultItem[] = results
-          .filter((place: any) => {
-            const lat = place.geometry?.location?.lat?.();
-            const lng = place.geometry?.location?.lng?.();
-            return typeof lat === "number" && typeof lng === "number";
-          })
-          .map((place: any, index: number) => ({
-            id: place.place_id || `${place.name}-${index}`,
-            name: place.name || "Unnamed place",
-            address: place.formatted_address || place.name || "No address",
-            lat: place.geometry.location.lat(),
-            lng: place.geometry.location.lng(),
-          }));
-
-        if (mappedResults.length === 0) {
-          setPendingLocation(null);
-          setAllSearchResults([]);
-          setCurrentPage(1);
-          setMessage("Could not get valid search results.");
-          return;
-        }
-
-        setAllSearchResults(mappedResults);
-        setCurrentPage(1);
-        setMessage("Choose one result below.");
+      if (
+        status !== window.google.maps.places.PlacesServiceStatus.OK ||
+        !searchResults ||
+        searchResults.length === 0
+      ) {
+        setMessage("No results found.");
+        return;
       }
-    );
-  };
 
-  const handleSelectSearchResult = (item: SearchResultItem) => {
-    if (!mapInstanceRef.current || !markerRef.current) return;
+      setResults(searchResults);
 
-    mapInstanceRef.current.setCenter({ lat: item.lat, lng: item.lng });
-    mapInstanceRef.current.setZoom(15);
+      const first = searchResults[0];
+      const location = first.geometry?.location;
 
-    markerRef.current.setPosition({ lat: item.lat, lng: item.lng });
-    markerRef.current.setVisible(true);
-
-    setPendingLocation({
-      name: item.name,
-      address: item.address,
-      lat: item.lat,
-      lng: item.lng,
+      if (location) {
+        mapRef.current.panTo(location);
+        mapRef.current.setZoom(14);
+      }
     });
-
-    if (searchInputRef.current) {
-      searchInputRef.current.value = item.address;
-    }
-
-    setMessage("");
   };
 
-  const handleUseCurrentLocation = () => {
-    if (!navigator.geolocation) {
-      setMessage("Geolocation is not supported on this device.");
+  const handleChooseResult = (item: any) => {
+    const lat = item.geometry?.location?.lat?.();
+    const lng = item.geometry?.location?.lng?.();
+
+    if (typeof lat !== "number" || typeof lng !== "number") {
+      setMessage("Could not use this result.");
       return;
     }
 
-    if (!geocoderRef.current || !mapInstanceRef.current || !markerRef.current) {
-      setMessage("Map is still loading. Please try again.");
-      return;
-    }
-
+    updateMarker({ lat, lng });
+    setSelectedPlaceName(item.name || item.formatted_address || "Selected Place");
+    setSelectedAddress(item.formatted_address || "");
+    setResults([]);
+    setQuery(item.formatted_address || item.name || "");
     setMessage("");
-    setLocating(true);
-    setAllSearchResults([]);
-    setCurrentPage(1);
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-
-        mapInstanceRef.current.setCenter({ lat, lng });
-        mapInstanceRef.current.setZoom(15);
-
-        markerRef.current.setPosition({ lat, lng });
-        markerRef.current.setVisible(true);
-
-        geocoderRef.current.geocode(
-          { location: { lat, lng } },
-          (results: any, status: string) => {
-            setLocating(false);
-
-            if (status === "OK" && results && results[0]) {
-              const address = results[0].formatted_address;
-
-              setPendingLocation({
-                name: "Current Location",
-                address,
-                lat,
-                lng,
-              });
-
-              if (searchInputRef.current) {
-                searchInputRef.current.value = address;
-              }
-
-              setMessage("");
-            } else {
-              setPendingLocation(null);
-              setMessage("Could not convert your current location to an address.");
-            }
-          }
-        );
-      },
-      () => {
-        setLocating(false);
-        setMessage("Could not get your current location.");
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-      }
-    );
   };
 
   const handleConfirm = () => {
-    if (!pendingLocation) {
-      setMessage(
-        "Search, choose a result, use current location, or tap the map first."
-      );
+    if (!selectedLatLng || !selectedAddress) {
+      setMessage("Choose one exact location first.");
       return;
     }
 
     const params = new URLSearchParams({
-      name: pendingLocation.name,
-      location: pendingLocation.address,
-      lat: String(pendingLocation.lat),
-      lng: String(pendingLocation.lng),
+      location: selectedAddress,
+      name: selectedPlaceName || selectedAddress,
+      lat: String(selectedLatLng.lat),
+      lng: String(selectedLatLng.lng),
     });
 
     router.push(`${returnTo}?${params.toString()}`);
   };
 
-  const handlePrevPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const handleNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  };
-
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-6 py-10 text-[#2f2a26]">
-      <div className="mx-auto max-w-3xl space-y-6">
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
-          <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
-            Pick on Map
-          </h1>
+    <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
+      <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
+        <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
+          Pick on Map
+        </h1>
 
-          <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-            Search with the button, choose one result, use your current
-            location, or tap the map. Then confirm one exact location.
-          </p>
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={handleUseCurrentLocation}
-              disabled={locating}
-              className="rounded-2xl bg-[#6b5f52] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046] disabled:opacity-50"
-            >
-              {locating ? "Finding..." : "Use Current Location"}
-            </button>
-          </div>
-
-          <div className="mt-4 flex gap-3">
+        <div className="mt-8 space-y-4">
+          <div className="flex gap-3">
             <input
-              ref={searchInputRef}
-              className="flex-1 rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder="Enter place or address"
+              className="flex-1 rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
             />
 
             <button
               type="button"
-              onClick={handleSearchPlace}
+              onClick={handleSearch}
               disabled={searching}
-              className="rounded-2xl bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+              className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
             >
               {searching ? "Searching..." : "Search"}
             </button>
           </div>
 
-          {pagedResults.length > 0 && (
-            <div className="mt-4 space-y-2">
-              {pagedResults.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => handleSelectSearchResult(item)}
-                  className="w-full rounded-2xl border border-[#e7ddd2] bg-white px-4 py-3 text-left transition hover:bg-[#f8f3ee]"
-                >
-                  <p className="text-sm font-medium text-[#2f2a26]">
-                    {item.name}
-                  </p>
-                  <p className="mt-1 text-xs text-[#6f655c]">{item.address}</p>
-                </button>
-              ))}
-
-              {totalPages > 1 && (
-                <div className="flex flex-wrap items-center gap-2 pt-2">
+          {results.length > 0 && (
+            <div className="rounded-2xl border border-[#e7ddd2] bg-white p-2">
+              <div className="max-h-64 overflow-y-auto">
+                {results.map((item, index) => (
                   <button
+                    key={`${item.place_id || item.name}-${index}`}
                     type="button"
-                    onClick={handlePrevPage}
-                    disabled={currentPage === 1}
-                    className="rounded-xl border border-[#dccfc2] bg-[#f4ece4] px-3 py-2 text-sm text-[#5a5149] transition hover:bg-[#ede3da] disabled:opacity-50"
+                    onClick={() => handleChooseResult(item)}
+                    className="block w-full rounded-xl px-3 py-3 text-left transition hover:bg-[#f4ece4]"
                   >
-                    Prev
+                    <div className="text-sm font-medium text-[#2f2a26]">
+                      {item.name || "Unnamed place"}
+                    </div>
+                    <div className="mt-1 text-xs text-[#6f655c]">
+                      {item.formatted_address || ""}
+                    </div>
                   </button>
+                ))}
+              </div>
+            </div>
+          )}
 
-                  {getVisiblePages().map((item, index) =>
-                    item === "ellipsis" ? (
-                      <span
-                        key={`ellipsis-${index}`}
-                        className="px-2 py-2 text-sm text-[#8b7f74]"
-                      >
-                        ...
-                      </span>
-                    ) : (
-                      <button
-                        key={item}
-                        type="button"
-                        onClick={() => setCurrentPage(item)}
-                        className={`min-w-10 rounded-xl px-3 py-2 text-sm transition ${
-                          currentPage === item
-                            ? "bg-[#a48f7a] text-white"
-                            : "border border-[#dccfc2] bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
-                        }`}
-                      >
-                        {item}
-                      </button>
-                    )
-                  )}
+          <div className="overflow-hidden rounded-[2rem] border border-[#e7ddd2] bg-white">
+            <div
+              ref={mapContainerRef}
+              className="h-[28rem] w-full"
+            />
+          </div>
 
-                  <button
-                    type="button"
-                    onClick={handleNextPage}
-                    disabled={currentPage === totalPages}
-                    className="rounded-xl border border-[#dccfc2] bg-[#f4ece4] px-3 py-2 text-sm text-[#5a5149] transition hover:bg-[#ede3da] disabled:opacity-50"
-                  >
-                    Next
-                  </button>
-                </div>
+          {loadingMap && (
+            <p className="text-sm text-[#6f655c]">Loading map...</p>
+          )}
+
+          {(selectedAddress || selectedLatLng) && (
+            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-4 text-sm text-[#6b5f52]">
+              <p className="font-medium text-[#2f2a26]">Selected place</p>
+
+              {selectedPlaceName && (
+                <p className="mt-1 text-base font-semibold text-[#2f2a26]">
+                  {selectedPlaceName}
+                </p>
+              )}
+
+              {selectedAddress && (
+                <p className="mt-1">{selectedAddress}</p>
+              )}
+
+              {selectedLatLng && (
+                <p className="mt-1 text-xs text-[#8b7f74]">
+                  Lat: {selectedLatLng.lat.toFixed(6)}, Lng:{" "}
+                  {selectedLatLng.lng.toFixed(6)}
+                </p>
               )}
             </div>
           )}
 
-          <div className="mt-4 overflow-hidden rounded-[1.5rem] border border-[#dccfc2] bg-white p-3">
-            <div ref={mapRef} className="h-[28rem] w-full rounded-[1rem]" />
-          </div>
-
-          {pendingLocation && (
-            <div className="mt-4 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-              <p className="font-medium text-[#2f2a26]">Selected place</p>
-              <p className="mt-1 text-base font-semibold text-[#2f2a26]">
-                {pendingLocation.name}
-              </p>
-              <p className="mt-1 text-sm text-[#6b5f52]">
-                {pendingLocation.address}
-              </p>
-              <p className="mt-1 text-xs text-[#8b7f74]">
-                Lat: {pendingLocation.lat.toFixed(6)}, Lng:{" "}
-                {pendingLocation.lng.toFixed(6)}
-              </p>
+          {message && (
+            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+              {message}
             </div>
           )}
 
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3">
             <button
               type="button"
               onClick={handleConfirm}
-              className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+              className="rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046]"
             >
-              Select This Location
+              Confirm Location
             </button>
 
             <button
@@ -519,15 +308,9 @@ export default function WriteLocationPage() {
               onClick={() => router.push(returnTo)}
               className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
             >
-              Back
+              Cancel
             </button>
           </div>
-
-          {message && (
-            <p className="mt-4 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-              {message}
-            </p>
-          )}
         </div>
       </div>
     </main>
