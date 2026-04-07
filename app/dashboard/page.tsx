@@ -19,6 +19,24 @@ type Post = {
   longitude: number | null;
 };
 
+type PostSummary = {
+  id: number;
+  place_name: string | null;
+  location: string | null;
+  meeting_time: string | null;
+};
+
+type MatchRequestRow = {
+  id: number;
+  post_id: number;
+  requester_user_id: string;
+  post_owner_user_id: string;
+  status: string;
+  message: string | null;
+  created_at: string;
+  post: PostSummary[] | PostSummary | null;
+};
+
 type MatchRequest = {
   id: number;
   post_id: number;
@@ -27,15 +45,18 @@ type MatchRequest = {
   status: string;
   message: string | null;
   created_at: string;
-  post?: {
-    id: number;
-    place_name: string | null;
-    location: string | null;
-    meeting_time: string | null;
-  };
-  requester_profile?: {
-    display_name: string | null;
-  } | null;
+  post: PostSummary | null;
+  requester_name: string;
+};
+
+type MatchRow = {
+  id: number;
+  post_id: number;
+  user_a: string;
+  user_b: string;
+  status: string;
+  created_at: string;
+  post: PostSummary[] | PostSummary | null;
 };
 
 type Match = {
@@ -45,16 +66,23 @@ type Match = {
   user_b: string;
   status: string;
   created_at: string;
-  post?: {
-    id: number;
-    place_name: string | null;
-    location: string | null;
-    meeting_time: string | null;
-  };
+  post: PostSummary | null;
+};
+
+type ProfileRow = {
+  id: string;
+  display_name: string | null;
 };
 
 type PostFilterType = "all" | "upcoming" | "expired";
 type DashboardTab = "posts" | "received" | "sent" | "matches";
+
+function normalizePost(
+  post: PostSummary[] | PostSummary | null | undefined
+): PostSummary | null {
+  if (!post) return null;
+  return Array.isArray(post) ? (post[0] ?? null) : post;
+}
 
 export default function DashboardPage() {
   const supabase = createClient();
@@ -141,10 +169,72 @@ export default function DashboardPage() {
         return;
       }
 
+      const receivedRaw = (receivedRes.data as MatchRequestRow[]) || [];
+      const sentRaw = (sentRes.data as MatchRequestRow[]) || [];
+      const matchesRaw = (matchesRes.data as MatchRow[]) || [];
+
+      const requesterIds = Array.from(
+        new Set(receivedRaw.map((item) => item.requester_user_id))
+      );
+
+      let profileMap = new Map<string, string>();
+
+      if (requesterIds.length > 0) {
+        const { data: profilesData, error: profilesError } = await supabase
+          .from("profiles")
+          .select("id, display_name")
+          .in("id", requesterIds);
+
+        if (profilesError) {
+          setMessage(profilesError.message);
+          setLoading(false);
+          return;
+        }
+
+        ((profilesData as ProfileRow[]) || []).forEach((profile) => {
+          profileMap.set(profile.id, profile.display_name || "Unknown user");
+        });
+      }
+
+      const normalizedReceived: MatchRequest[] = receivedRaw.map((item) => ({
+        id: item.id,
+        post_id: item.post_id,
+        requester_user_id: item.requester_user_id,
+        post_owner_user_id: item.post_owner_user_id,
+        status: item.status,
+        message: item.message,
+        created_at: item.created_at,
+        post: normalizePost(item.post),
+        requester_name:
+          profileMap.get(item.requester_user_id) || "Unknown user",
+      }));
+
+      const normalizedSent: MatchRequest[] = sentRaw.map((item) => ({
+        id: item.id,
+        post_id: item.post_id,
+        requester_user_id: item.requester_user_id,
+        post_owner_user_id: item.post_owner_user_id,
+        status: item.status,
+        message: item.message,
+        created_at: item.created_at,
+        post: normalizePost(item.post),
+        requester_name: "",
+      }));
+
+      const normalizedMatches: Match[] = matchesRaw.map((item) => ({
+        id: item.id,
+        post_id: item.post_id,
+        user_a: item.user_a,
+        user_b: item.user_b,
+        status: item.status,
+        created_at: item.created_at,
+        post: normalizePost(item.post),
+      }));
+
       setPosts((postsRes.data as Post[]) || []);
-      setReceivedRequests((receivedRes.data as MatchRequest[]) || []);
-      setSentRequests((sentRes.data as MatchRequest[]) || []);
-      setMatches((matchesRes.data as Match[]) || []);
+      setReceivedRequests(normalizedReceived);
+      setSentRequests(normalizedSent);
+      setMatches(normalizedMatches);
       setLoading(false);
     };
 
@@ -502,6 +592,10 @@ export default function DashboardPage() {
                   </p>
 
                   <p className="mt-2 text-sm text-[#6f655c]">
+                    From: {request.requester_name}
+                  </p>
+
+                  <p className="mt-1 text-sm text-[#6f655c]">
                     Status: {request.status}
                   </p>
 
