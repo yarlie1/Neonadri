@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import type { MapPost } from "../map/page";
 
 declare global {
   interface Window {
@@ -8,146 +10,83 @@ declare global {
   }
 }
 
-type MapPost = {
-  id: number;
-  place_name?: string | null;
-  location: string | null;
-  meeting_time: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  meeting_purpose?: string | null;
-  target_gender?: string | null;
-  target_age_group?: string | null;
-  benefit_amount?: string | null;
-};
-
 type Props = {
   posts: MapPost[];
 };
 
 export default function HomePostsMap({ posts }: Props) {
   const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const markersRef = useRef<any[]>([]);
+
+  const [selectedPost, setSelectedPost] = useState<MapPost | null>(null);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
+
+    const getStatusBadgeClass = (status: string | null) => {
+      if (!status) return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+
+      const normalized = status.toLowerCase();
+
+      if (normalized === "matched") {
+        return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
+      }
+
+      if (normalized === "accepted") {
+        return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
+      }
+
+      if (normalized === "pending") {
+        return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+      }
+
+      if (normalized === "rejected") {
+        return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
+      }
+
+      return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+    };
 
     const initMap = () => {
       if (!window.google || !window.google.maps || !mapRef.current) {
         return false;
       }
 
-      const validPosts = posts.filter(
-        (post) =>
-          typeof post.latitude === "number" &&
-          typeof post.longitude === "number"
-      );
+      if (!mapInstanceRef.current) {
+        const center =
+          posts.length > 0
+            ? { lat: posts[0].latitude, lng: posts[0].longitude }
+            : { lat: 34.0522, lng: -118.2437 };
 
-      const defaultCenter = { lat: 34.0522, lng: -118.2437 };
-
-      const map = new window.google.maps.Map(mapRef.current, {
-        center: defaultCenter,
-        zoom: 10,
-        clickableIcons: false,
-      });
-
-      if (validPosts.length === 0) {
-        return true;
+        mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
+          center,
+          zoom: 12,
+          clickableIcons: false,
+          gestureHandling: "greedy",
+        });
       }
 
-      const bounds = new window.google.maps.LatLngBounds();
-      const infoWindow = new window.google.maps.InfoWindow();
+      markersRef.current.forEach((marker) => marker.setMap(null));
+      markersRef.current = [];
 
-      validPosts.forEach((post) => {
-        const position = {
-          lat: post.latitude as number,
-          lng: post.longitude as number,
-        };
-
-        const title = post.place_name || post.location || "Meetup";
-
+      posts.forEach((post) => {
         const marker = new window.google.maps.Marker({
-          position,
-          map,
-          title,
-          icon: {
-            url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-          },
+          position: { lat: post.latitude, lng: post.longitude },
+          map: mapInstanceRef.current,
+          title: post.place_name || post.location || "Meetup",
         });
-
-        bounds.extend(position);
-
-        const timeText = post.meeting_time
-          ? new Date(post.meeting_time).toLocaleString()
-          : "";
-
-        const content = `
-          <div style="
-            width:220px;
-            font-family:Arial,sans-serif;
-            border-radius:12px;
-            padding:12px;
-          ">
-            <div style="font-weight:700; font-size:14px; margin-bottom:6px;">
-              📍 ${title}
-            </div>
-
-            ${
-              post.location && post.location !== title
-                ? `<div style="font-size:12px; color:#666; margin-bottom:6px;">${post.location}</div>`
-                : ""
-            }
-
-            ${
-              timeText
-                ? `<div style="font-size:12px; color:#666; margin-bottom:4px;">⏰ ${timeText}</div>`
-                : ""
-            }
-
-            ${
-              post.meeting_purpose
-                ? `<div style="font-size:12px; color:#555; margin-bottom:4px;">🎯 ${post.meeting_purpose}</div>`
-                : ""
-            }
-
-            ${
-              post.target_gender || post.target_age_group
-                ? `<div style="font-size:12px; color:#555; margin-bottom:4px;">👤 ${post.target_gender || "Any"} / ${post.target_age_group || "Any"}</div>`
-                : ""
-            }
-
-            ${
-              post.benefit_amount
-                ? `<div style="font-size:12px; color:#555; margin-bottom:8px;">🎁 ${post.benefit_amount}</div>`
-                : ""
-            }
-
-            <a href="/posts/${post.id}" style="
-              display:block;
-              margin-top:8px;
-              font-size:12px;
-              color:#8d7763;
-              text-decoration:none;
-              font-weight:600;
-            ">
-              View →
-            </a>
-          </div>
-        `;
 
         marker.addListener("click", () => {
-          infoWindow.setContent(content);
-          infoWindow.open(map, marker);
+          setSelectedPost(post);
+          mapInstanceRef.current.panTo({
+            lat: post.latitude,
+            lng: post.longitude,
+          });
         });
+
+        markersRef.current.push(marker);
       });
-
-      map.fitBounds(bounds);
-
-      if (validPosts.length === 1) {
-        map.setZoom(15);
-      }
-      if (validPosts.length > 1) {
-        map.setZoom(Math.min(map.getZoom() || 13, 13));
-      }
 
       return true;
     };
@@ -162,8 +101,95 @@ export default function HomePostsMap({ posts }: Props) {
 
     return () => {
       if (interval) clearInterval(interval);
+      markersRef.current.forEach((marker) => marker.setMap(null));
     };
   }, [posts]);
 
-  return <div ref={mapRef} className="h-[70vh] w-full rounded-[1.5rem]" />;
+  const badgeClass = (status: string | null) => {
+    if (!status) return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+
+    const normalized = status.toLowerCase();
+
+    if (normalized === "matched") {
+      return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
+    }
+
+    if (normalized === "accepted") {
+      return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
+    }
+
+    if (normalized === "pending") {
+      return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+    }
+
+    if (normalized === "rejected") {
+      return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
+    }
+
+    return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+  };
+
+  return (
+    <div className="space-y-4">
+      <div ref={mapRef} className="h-[30rem] w-full rounded-[1.5rem]" />
+
+      {selectedPost && (
+        <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-5 shadow-sm">
+          <div className="text-base font-medium">
+            📍 {selectedPost.place_name || "No place"}
+          </div>
+
+          {selectedPost.location && (
+            <div className="mt-1 text-sm text-[#6f655c]">
+              {selectedPost.location}
+            </div>
+          )}
+
+          <div className="mt-3 space-y-2 text-sm text-[#6f655c]">
+            <div>🧑 Host: {selectedPost.host_name}</div>
+
+            {selectedPost.is_my_post && <div>📝 This is your meetup post.</div>}
+
+            {!selectedPost.is_my_post && selectedPost.my_match_status && (
+              <div className="flex items-center gap-2">
+                <span>🤝 My Match Status:</span>
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-medium ${badgeClass(
+                    selectedPost.my_match_status
+                  )}`}
+                >
+                  {selectedPost.my_match_status}
+                </span>
+              </div>
+            )}
+
+            {selectedPost.meeting_time && (
+              <div>
+                ⏰ {new Date(selectedPost.meeting_time).toLocaleString()}
+              </div>
+            )}
+
+            {selectedPost.meeting_purpose && (
+              <div>🎯 {selectedPost.meeting_purpose}</div>
+            )}
+
+            {selectedPost.benefit_amount && (
+              <div className="font-medium text-[#2f2a26]">
+                🎁 {selectedPost.benefit_amount}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-4">
+            <Link
+              href={`/posts/${selectedPost.id}`}
+              className="inline-flex rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
+            >
+              View Meetup
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
