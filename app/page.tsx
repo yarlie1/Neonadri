@@ -166,8 +166,8 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26] sm:px-6">
-      <div className="mx-auto max-w-4xl pb-28">
+    <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
+      <div className="pb-32">
         <div className="mb-5 flex items-end justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold tracking-[-0.02em] text-[#2f2a26] sm:text-3xl">
@@ -216,7 +216,7 @@ export default async function HomePage() {
                 <Link
                   key={post.id}
                   href={`/posts/${post.id}`}
-                  className="block rounded-[28px] border border-[#e7ddd2] bg-white p-5 shadow-[0_4px_18px_rgba(80,60,40,0.06)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(80,60,40,0.10)] sm:p-6"
+                  className="block rounded-[28px] border border-[#e7ddd2] bg-white p-5 shadow-[0_6px_18px_rgba(80,60,40,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(80,60,40,0.10)] sm:p-6"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
@@ -237,7 +237,7 @@ export default async function HomePage() {
 
                     {post.benefit_amount && (
                       <div className="shrink-0 rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
-                        🪙 ${post.benefit_amount}
+                        🪙 ${Number(post.benefit_amount).toLocaleString()}
                       </div>
                     )}
                   </div>
