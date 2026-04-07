@@ -19,11 +19,18 @@ const PURPOSE_OPTIONS = [
     selectedClass: "border-[#8b5e3c] bg-[#8b5e3c] text-white",
   },
   {
-    value: "Casual Chat",
-    icon: "💬",
+    value: "Meal",
+    icon: "🍽",
     baseClass:
-      "border-[#cfc6e8] bg-[#f3f0fb] text-[#5d4f8c] hover:bg-[#ebe5f8]",
-    selectedClass: "border-[#6b5aa6] bg-[#6b5aa6] text-white",
+      "border-[#e3c9b6] bg-[#fbf3ec] text-[#7a5a42] hover:bg-[#f5e7dc]",
+    selectedClass: "border-[#9a6a44] bg-[#9a6a44] text-white",
+  },
+  {
+    value: "Dessert",
+    icon: "🍰",
+    baseClass:
+      "border-[#efd2cb] bg-[#fdf2ef] text-[#8a5a52] hover:bg-[#fae7e1]",
+    selectedClass: "border-[#b86b5d] bg-[#b86b5d] text-white",
   },
   {
     value: "Walk",
@@ -33,11 +40,60 @@ const PURPOSE_OPTIONS = [
     selectedClass: "border-[#4f8a5b] bg-[#4f8a5b] text-white",
   },
   {
-    value: "Meal",
-    icon: "🍽",
+    value: "Jogging",
+    icon: "🏃",
     baseClass:
-      "border-[#e3c9b6] bg-[#fbf3ec] text-[#7a5a42] hover:bg-[#f5e7dc]",
-    selectedClass: "border-[#9a6a44] bg-[#9a6a44] text-white",
+      "border-[#c6ddd1] bg-[#eef8f2] text-[#42705d] hover:bg-[#e1f0e7]",
+    selectedClass: "border-[#46856b] bg-[#46856b] text-white",
+  },
+  {
+    value: "Yoga",
+    icon: "🧘",
+    baseClass:
+      "border-[#d8cde8] bg-[#f6f1fb] text-[#6a5687] hover:bg-[#eee6f8]",
+    selectedClass: "border-[#7d65a8] bg-[#7d65a8] text-white",
+  },
+  {
+    value: "Movie",
+    icon: "🎬",
+    baseClass:
+      "border-[#c7cedd] bg-[#f3f5fa] text-[#505c74] hover:bg-[#e8edf6]",
+    selectedClass: "border-[#5c6f94] bg-[#5c6f94] text-white",
+  },
+  {
+    value: "Karaoke",
+    icon: "🎤",
+    baseClass:
+      "border-[#e5c7d4] bg-[#fbf1f5] text-[#8a5167] hover:bg-[#f5e3ea]",
+    selectedClass: "border-[#b45d82] bg-[#b45d82] text-white",
+  },
+  {
+    value: "Board Games",
+    icon: "🎲",
+    baseClass:
+      "border-[#d7d0c5] bg-[#f8f5f1] text-[#6b5f52] hover:bg-[#f1ebe5]",
+    selectedClass: "border-[#8a7a68] bg-[#8a7a68] text-white",
+  },
+  {
+    value: "Gaming",
+    icon: "🎮",
+    baseClass:
+      "border-[#c9cfe6] bg-[#f2f4fb] text-[#535f89] hover:bg-[#e7ebf8]",
+    selectedClass: "border-[#6373ad] bg-[#6373ad] text-white",
+  },
+  {
+    value: "Bowling",
+    icon: "🎳",
+    baseClass:
+      "border-[#d9c9bf] bg-[#faf4ef] text-[#7c5d4f] hover:bg-[#f3e8df]",
+    selectedClass: "border-[#9a6b55] bg-[#9a6b55] text-white",
+  },
+  {
+    value: "Arcade",
+    icon: "🎯",
+    baseClass:
+      "border-[#e7d2bd] bg-[#fcf5ed] text-[#886245] hover:bg-[#f7eadc]",
+    selectedClass: "border-[#b67a47] bg-[#b67a47] text-white",
   },
   {
     value: "Study",
@@ -47,29 +103,45 @@ const PURPOSE_OPTIONS = [
     selectedClass: "border-[#4c78a8] bg-[#4c78a8] text-white",
   },
   {
-    value: "Make Friends",
-    icon: "🤝",
+    value: "Work Together",
+    icon: "💻",
     baseClass:
-      "border-[#e7c4cf] bg-[#fbf0f4] text-[#8a5165] hover:bg-[#f7e4eb]",
-    selectedClass: "border-[#b25d7a] bg-[#b25d7a] text-white",
+      "border-[#c7d6df] bg-[#f1f7fa] text-[#486270] hover:bg-[#e5f0f5]",
+    selectedClass: "border-[#53798d] bg-[#53798d] text-white",
   },
   {
-    value: "Networking",
-    icon: "💼",
+    value: "Book Talk",
+    icon: "📖",
     baseClass:
-      "border-[#c9cfda] bg-[#f4f6fa] text-[#4e596d] hover:bg-[#e9edf5]",
-    selectedClass: "border-[#5a6780] bg-[#5a6780] text-white",
+      "border-[#d8d2c4] bg-[#f8f6f0] text-[#6f6654] hover:bg-[#f0ece2]",
+    selectedClass: "border-[#8f8265] bg-[#8f8265] text-white",
+  },
+  {
+    value: "Photo Walk",
+    icon: "📷",
+    baseClass:
+      "border-[#c8d7d9] bg-[#f1f8f8] text-[#4f6e72] hover:bg-[#e4efef]",
+    selectedClass: "border-[#5e868c] bg-[#5e868c] text-white",
   },
 ] as const;
 
 const PURPOSE_HELP_TEXT: Record<string, string> = {
   "Coffee Chat": "Quick casual conversation over coffee.",
-  "Casual Chat": "Relaxed conversation in a comfortable public place.",
-  Walk: "Light walk and chat outdoors.",
   Meal: "Enjoy food and conversation together.",
+  Dessert: "Meet for dessert, cafe time, and easy conversation.",
+  Walk: "Light walk and chat outdoors.",
+  Jogging: "Go for a jog together and stay active.",
+  Yoga: "Join a calm and healthy yoga session together.",
+  Movie: "Watch a movie together and chat after.",
+  Karaoke: "Sing and have fun together.",
+  "Board Games": "Play board games and enjoy a relaxed meetup.",
+  Gaming: "Play video games together.",
+  Bowling: "Meet and enjoy a bowling game together.",
+  Arcade: "Have fun with arcade games together.",
   Study: "Focus together in a quiet place.",
-  "Make Friends": "Meet new people and build genuine connections.",
-  Networking: "Professional conversation and connection.",
+  "Work Together": "Work side by side in a cafe or shared space.",
+  "Book Talk": "Read or talk about books together.",
+  "Photo Walk": "Walk around and take photos together.",
 };
 
 export default function WritePage() {
