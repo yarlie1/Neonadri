@@ -2,9 +2,9 @@ import { createClient } from "../../../lib/supabase/server";
 import MatchRequestBox from "./MatchRequestBox";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 type ProfileRow = {
@@ -88,21 +88,22 @@ const formatDuration = (minutes: number | null) => {
 };
 
 export default async function MeetupDetailPage({ params }: PageProps) {
-  const supabase = createClient();
+  const { id } = await params;
+  const supabase = await createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: post } = await supabase
+  const { data: post, error: postError } = await supabase
     .from("posts")
     .select(
       "id, user_id, created_at, place_name, location, meeting_time, duration_minutes, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
     )
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
-  if (!post) {
+  if (postError || !post) {
     return (
       <main className="min-h-screen bg-[#f7f1ea] flex items-center justify-center">
         <div className="text-center text-[#6f655c]">Meetup not found</div>
@@ -142,6 +143,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
         .select("id, status")
         .eq("post_id", post.id)
         .eq("requester_user_id", user.id)
+        .eq("post_owner_user_id", post.user_id)
         .maybeSingle(),
 
       supabase
@@ -200,8 +202,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             <div className="min-w-0 flex-1">
               <div className="text-base font-semibold">
                 {getPurposeIcon(post.meeting_purpose)}{" "}
-                {post.meeting_purpose || "Meetup"} ·{" "}
-                {formatDuration(post.duration_minutes)}
+                {post.meeting_purpose || "Meetup"}
+                {formatDuration(post.duration_minutes)
+                  ? ` · ${formatDuration(post.duration_minutes)}`
+                  : ""}
               </div>
 
               <div className="mt-1 truncate text-xl font-semibold">
@@ -300,14 +304,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
             <div className="flex items-start gap-2">
               <span className="mt-[1px] text-base">📝</span>
-              <span>
-                {ownerBio || "No profile introduction yet."}
-              </span>
+              <span>{ownerBio || "No profile introduction yet."}</span>
             </div>
           </div>
         </div>
 
-        {post.user_id && !isMatched && (
+        {post.user_id && user && user.id !== post.user_id && !isMatched && (
           <MatchRequestBox
             postId={post.id}
             postOwnerUserId={post.user_id}
