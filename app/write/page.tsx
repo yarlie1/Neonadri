@@ -3,6 +3,26 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
+import {
+  Coffee,
+  UtensilsCrossed,
+  CakeSlice,
+  Footprints,
+  PersonStanding,
+  Clapperboard,
+  Mic2,
+  Gamepad2,
+  BookOpen,
+  BriefcaseBusiness,
+  Book,
+  Camera,
+  Clock3,
+  MapPin,
+  UserRound,
+  Coins,
+  Map,
+  CheckCircle2,
+} from "lucide-react";
 
 declare global {
   interface Window {
@@ -11,118 +31,22 @@ declare global {
 }
 
 const PURPOSE_OPTIONS = [
-  {
-    value: "Coffee Chat",
-    icon: "☕",
-    baseClass:
-      "border-[#d8c2a8] bg-[#f8efe6] text-[#6b4f3a] hover:bg-[#f3e4d6]",
-    selectedClass: "border-[#8b5e3c] bg-[#8b5e3c] text-white",
-  },
-  {
-    value: "Meal",
-    icon: "🍽",
-    baseClass:
-      "border-[#e3c9b6] bg-[#fbf3ec] text-[#7a5a42] hover:bg-[#f5e7dc]",
-    selectedClass: "border-[#9a6a44] bg-[#9a6a44] text-white",
-  },
-  {
-    value: "Dessert",
-    icon: "🍰",
-    baseClass:
-      "border-[#efd2cb] bg-[#fdf2ef] text-[#8a5a52] hover:bg-[#fae7e1]",
-    selectedClass: "border-[#b86b5d] bg-[#b86b5d] text-white",
-  },
-  {
-    value: "Walk",
-    icon: "🚶",
-    baseClass:
-      "border-[#bfd8c3] bg-[#edf7ef] text-[#466b4d] hover:bg-[#e2f1e5]",
-    selectedClass: "border-[#4f8a5b] bg-[#4f8a5b] text-white",
-  },
-  {
-    value: "Jogging",
-    icon: "🏃",
-    baseClass:
-      "border-[#c6ddd1] bg-[#eef8f2] text-[#42705d] hover:bg-[#e1f0e7]",
-    selectedClass: "border-[#46856b] bg-[#46856b] text-white",
-  },
-  {
-    value: "Yoga",
-    icon: "🧘",
-    baseClass:
-      "border-[#d8cde8] bg-[#f6f1fb] text-[#6a5687] hover:bg-[#eee6f8]",
-    selectedClass: "border-[#7d65a8] bg-[#7d65a8] text-white",
-  },
-  {
-    value: "Movie",
-    icon: "🎬",
-    baseClass:
-      "border-[#c7cedd] bg-[#f3f5fa] text-[#505c74] hover:bg-[#e8edf6]",
-    selectedClass: "border-[#5c6f94] bg-[#5c6f94] text-white",
-  },
-  {
-    value: "Karaoke",
-    icon: "🎤",
-    baseClass:
-      "border-[#e5c7d4] bg-[#fbf1f5] text-[#8a5167] hover:bg-[#f5e3ea]",
-    selectedClass: "border-[#b45d82] bg-[#b45d82] text-white",
-  },
-  {
-    value: "Board Games",
-    icon: "🎲",
-    baseClass:
-      "border-[#d7d0c5] bg-[#f8f5f1] text-[#6b5f52] hover:bg-[#f1ebe5]",
-    selectedClass: "border-[#8a7a68] bg-[#8a7a68] text-white",
-  },
-  {
-    value: "Gaming",
-    icon: "🎮",
-    baseClass:
-      "border-[#c9cfe6] bg-[#f2f4fb] text-[#535f89] hover:bg-[#e7ebf8]",
-    selectedClass: "border-[#6373ad] bg-[#6373ad] text-white",
-  },
-  {
-    value: "Bowling",
-    icon: "🎳",
-    baseClass:
-      "border-[#d9c9bf] bg-[#faf4ef] text-[#7c5d4f] hover:bg-[#f3e8df]",
-    selectedClass: "border-[#9a6b55] bg-[#9a6b55] text-white",
-  },
-  {
-    value: "Arcade",
-    icon: "🎯",
-    baseClass:
-      "border-[#e7d2bd] bg-[#fcf5ed] text-[#886245] hover:bg-[#f7eadc]",
-    selectedClass: "border-[#b67a47] bg-[#b67a47] text-white",
-  },
-  {
-    value: "Study",
-    icon: "📚",
-    baseClass:
-      "border-[#bfd3e8] bg-[#eef5fb] text-[#46627c] hover:bg-[#e2eef8]",
-    selectedClass: "border-[#4c78a8] bg-[#4c78a8] text-white",
-  },
-  {
-    value: "Work Together",
-    icon: "💻",
-    baseClass:
-      "border-[#c7d6df] bg-[#f1f7fa] text-[#486270] hover:bg-[#e5f0f5]",
-    selectedClass: "border-[#53798d] bg-[#53798d] text-white",
-  },
-  {
-    value: "Book Talk",
-    icon: "📖",
-    baseClass:
-      "border-[#d8d2c4] bg-[#f8f6f0] text-[#6f6654] hover:bg-[#f0ece2]",
-    selectedClass: "border-[#8f8265] bg-[#8f8265] text-white",
-  },
-  {
-    value: "Photo Walk",
-    icon: "📷",
-    baseClass:
-      "border-[#c8d7d9] bg-[#f1f8f8] text-[#4f6e72] hover:bg-[#e4efef]",
-    selectedClass: "border-[#5e868c] bg-[#5e868c] text-white",
-  },
+  { value: "Coffee Chat", icon: Coffee },
+  { value: "Meal", icon: UtensilsCrossed },
+  { value: "Dessert", icon: CakeSlice },
+  { value: "Walk", icon: Footprints },
+  { value: "Jogging", icon: PersonStanding },
+  { value: "Yoga", icon: PersonStanding },
+  { value: "Movie", icon: Clapperboard },
+  { value: "Karaoke", icon: Mic2 },
+  { value: "Board Games", icon: Gamepad2 },
+  { value: "Gaming", icon: Gamepad2 },
+  { value: "Bowling", icon: Gamepad2 },
+  { value: "Arcade", icon: Gamepad2 },
+  { value: "Study", icon: BookOpen },
+  { value: "Work Together", icon: BriefcaseBusiness },
+  { value: "Book Talk", icon: Book },
+  { value: "Photo Walk", icon: Camera },
 ] as const;
 
 const PURPOSE_HELP_TEXT: Record<string, string> = {
@@ -290,6 +214,11 @@ export default function WritePage() {
     return PURPOSE_HELP_TEXT[meetingPurpose] || "";
   }, [meetingPurpose]);
 
+  const selectedPurpose = useMemo(
+    () => PURPOSE_OPTIONS.find((item) => item.value === meetingPurpose),
+    [meetingPurpose]
+  );
+
   const handleLocationInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -357,173 +286,234 @@ export default function WritePage() {
     router.push("/");
   };
 
+  const fieldClass =
+    "w-full rounded-[20px] border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#b8a591]";
+
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
-      <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
-        <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
-          Create Meetup
-        </h1>
+    <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
+      <div className="mx-auto max-w-2xl px-4 pb-16 pt-4">
+        <div className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm sm:p-7">
+          <h1 className="text-3xl font-bold tracking-[-0.02em] text-[#2f2a26] sm:text-4xl">
+            Create Meetup
+          </h1>
 
-        <div className="mt-8 space-y-4">
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {PURPOSE_OPTIONS.map((item) => {
-                const isSelected = meetingPurpose === item.value;
+          <p className="mt-2 text-sm text-[#8a7f74]">
+            Pick a purpose, set the time, and choose one exact place.
+          </p>
 
-                return (
-                  <button
-                    key={item.value}
-                    type="button"
-                    onClick={() => setMeetingPurpose(item.value)}
-                    className={`rounded-2xl border px-4 py-3 text-sm font-medium transition ${
-                      isSelected ? item.selectedClass : item.baseClass
-                    }`}
-                  >
-                    <span className="mr-2">{item.icon}</span>
-                    {item.value}
-                  </button>
-                );
-              })}
-            </div>
+          <div className="mt-7 space-y-6">
+            <section>
+              <div className="mb-3 text-sm font-medium text-[#6b5f52]">
+                Purpose
+              </div>
 
-            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-              <p className="mt-1">{purposeHelpText}</p>
-            </div>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {PURPOSE_OPTIONS.map((item) => {
+                  const isSelected = meetingPurpose === item.value;
+                  const Icon = item.icon;
+
+                  return (
+                    <button
+                      key={item.value}
+                      type="button"
+                      onClick={() => setMeetingPurpose(item.value)}
+                      className={`rounded-[20px] border px-4 py-4 text-left transition ${
+                        isSelected
+                          ? "border-[#a48f7a] bg-[#a48f7a] text-white shadow-sm"
+                          : "border-[#e7ddd2] bg-[#fcfaf7] text-[#5f5449] hover:bg-[#f6f1ea]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Icon
+                          className={`h-4 w-4 ${
+                            isSelected ? "text-white" : "text-[#7b7067]"
+                          }`}
+                        />
+                        <span className="text-sm font-medium">{item.value}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="mt-3 rounded-[20px] border border-[#e7ddd2] bg-[#f8f3ed] px-4 py-3 text-sm text-[#6b5f52]">
+                <div className="flex items-start gap-2">
+                  {selectedPurpose ? (
+                    <selectedPurpose.icon className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+                  ) : (
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+                  )}
+                  <span>{purposeHelpText}</span>
+                </div>
+              </div>
+            </section>
+
+            <section className="space-y-4">
+              <div className="text-sm font-medium text-[#6b5f52]">
+                Meetup Details
+              </div>
+
+              <input
+                type="datetime-local"
+                className="sr-only"
+                value={meetingTime}
+                onChange={(e) => setMeetingTime(e.target.value)}
+                id="hidden-datetime-input"
+              />
+
+              <div
+                onClick={() => {
+                  const input = document.getElementById(
+                    "hidden-datetime-input"
+                  ) as HTMLInputElement | null;
+                  if (input) input.showPicker ? input.showPicker() : input.click();
+                }}
+                className={`${fieldClass} flex cursor-pointer items-center gap-2`}
+              >
+                <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                <span>
+                  {meetingTime && new Date(meetingTime).toLocaleString()}
+                </span>
+              </div>
+
+              <div className="relative">
+                <Clock3 className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+                <select
+                  className={`${fieldClass} appearance-none pl-11`}
+                  value={durationMinutes}
+                  onChange={(e) => setDurationMinutes(e.target.value)}
+                >
+                  <option value="">Select meeting duration</option>
+                  <option value="30">30 min</option>
+                  <option value="60">1 hour</option>
+                  <option value="90">1 hour 30 min</option>
+                  <option value="120">2 hours</option>
+                  <option value="180">3 hours</option>
+                  <option value="240">4 hours</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+                  <input
+                    ref={searchInputRef}
+                    className={`${fieldClass} pl-11`}
+                    placeholder="Search exact place or address"
+                    value={location}
+                    onChange={handleLocationInputChange}
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleOpenMapPicker}
+                  aria-label="Pick on map"
+                  title="Pick on map"
+                  className="inline-flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-[20px] border border-[#dccfc2] bg-[#f8f3ed] text-[#5a5149] transition hover:bg-[#f1e8de]"
+                >
+                  <Map className="h-5 w-5" />
+                </button>
+              </div>
+
+              {location && (
+                <div className="rounded-[20px] border border-[#e7ddd2] bg-[#f8f3ed] px-4 py-3 text-sm text-[#6b5f52]">
+                  <div className="flex items-start gap-2">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+                    <div className="min-w-0">
+                      <p className="font-medium text-[#2f2a26]">
+                        {placeName || location}
+                      </p>
+                      <p className="mt-1 break-words">{location}</p>
+
+                      {latitude !== null && longitude !== null && (
+                        <p className="mt-1 text-xs text-[#8b7f74]">
+                          Lat: {latitude.toFixed(6)}, Lng: {longitude.toFixed(6)}
+                        </p>
+                      )}
+
+                      <p className="mt-1 text-xs">
+                        {locationConfirmed
+                          ? "Exact location selected."
+                          : "Select from dropdown or use the map picker."}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </section>
+
+            <section className="space-y-4">
+              <div className="text-sm font-medium text-[#6b5f52]">
+                Target & Benefit
+              </div>
+
+              <div className="relative">
+                <UserRound className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+                <select
+                  className={`${fieldClass} appearance-none pl-11`}
+                  value={targetGender}
+                  onChange={(e) => setTargetGender(e.target.value)}
+                >
+                  <option value="">Select target gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Any">Any</option>
+                </select>
+              </div>
+
+              <div className="relative">
+                <UserRound className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+                <select
+                  className={`${fieldClass} appearance-none pl-11`}
+                  value={targetAgeGroup}
+                  onChange={(e) => setTargetAgeGroup(e.target.value)}
+                >
+                  <option value="">Select target age group</option>
+                  <option value="20s">20s</option>
+                  <option value="30s">30s</option>
+                  <option value="40s">40s</option>
+                  <option value="50s+">50s+</option>
+                  <option value="Any">Any</option>
+                </select>
+              </div>
+
+              <div className="relative">
+                <Coins className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+                <select
+                  className={`${fieldClass} appearance-none pl-11`}
+                  value={benefitAmount}
+                  onChange={(e) => setBenefitAmount(e.target.value)}
+                >
+                  <option value="">Select benefit amount</option>
+                  <option value="$0">$0</option>
+                  <option value="$10">$10</option>
+                  <option value="$20">$20</option>
+                  <option value="$30">$30</option>
+                  <option value="$50">$50</option>
+                  <option value="$100">$100</option>
+                  <option value="$200+">$200+</option>
+                </select>
+              </div>
+            </section>
           </div>
 
-          <input
-            type="datetime-local"
-            className="sr-only"
-            value={meetingTime}
-            onChange={(e) => setMeetingTime(e.target.value)}
-            id="hidden-datetime-input"
-          />
-
-          <div
-            onClick={() => {
-              const input = document.getElementById(
-                "hidden-datetime-input"
-              ) as HTMLInputElement | null;
-              if (input) input.showPicker ? input.showPicker() : input.click();
-            }}
-            className="w-full cursor-pointer rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-          >
-            {meetingTime && new Date(meetingTime).toLocaleString()}
-          </div>
-
-          <select
-            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            value={durationMinutes}
-            onChange={(e) => setDurationMinutes(e.target.value)}
-          >
-            <option value="">Select meeting duration</option>
-            <option value="30">30 min</option>
-            <option value="60">1 hour</option>
-            <option value="90">1 hour 30 min</option>
-            <option value="120">2 hours</option>
-            <option value="180">3 hours</option>
-            <option value="240">4 hours</option>
-          </select>
-
-          <div className="flex items-center gap-2">
-            <input
-              ref={searchInputRef}
-              className="flex-1 rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-              placeholder="Search exact place or address"
-              value={location}
-              onChange={handleLocationInputChange}
-            />
-
+          <div className="mt-7 flex flex-wrap gap-3">
             <button
-              type="button"
-              onClick={handleOpenMapPicker}
-              aria-label="Pick on map"
-              title="Pick on map"
-              className="shrink-0 rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-3 text-lg text-[#5a5149] transition hover:bg-[#ede3da]"
+              onClick={handleCreatePost}
+              disabled={loading || !userId}
+              className="rounded-full bg-[#a48f7a] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
             >
-              🗺️
+              {loading ? "Creating..." : "Create Meetup"}
             </button>
           </div>
 
-          {location && (
-            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-              <p className="font-medium text-[#2f2a26]">Selected place</p>
-
-              <p className="mt-1 text-base font-semibold text-[#2f2a26]">
-                {placeName || location}
-              </p>
-
-              <p className="mt-1 text-sm text-[#6b5f52]">{location}</p>
-
-              {latitude !== null && longitude !== null && (
-                <p className="mt-1 text-xs text-[#8b7f74]">
-                  Lat: {latitude.toFixed(6)}, Lng: {longitude.toFixed(6)}
-                </p>
-              )}
-
-              <p className="mt-1 text-xs">
-                {locationConfirmed
-                  ? "Exact location selected."
-                  : "Select from dropdown or use the map picker."}
-              </p>
-            </div>
+          {message && (
+            <p className="mt-5 rounded-[20px] border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+              {message}
+            </p>
           )}
-
-          <select
-            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            value={targetGender}
-            onChange={(e) => setTargetGender(e.target.value)}
-          >
-            <option value="">Select target gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Any">Any</option>
-          </select>
-
-          <select
-            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            value={targetAgeGroup}
-            onChange={(e) => setTargetAgeGroup(e.target.value)}
-          >
-            <option value="">Select target age group</option>
-            <option value="20s">20s</option>
-            <option value="30s">30s</option>
-            <option value="40s">40s</option>
-            <option value="50s+">50s+</option>
-            <option value="Any">Any</option>
-          </select>
-
-          <select
-            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            value={benefitAmount}
-            onChange={(e) => setBenefitAmount(e.target.value)}
-          >
-            <option value="">Select benefit amount</option>
-            <option value="$0">$0</option>
-            <option value="$10">$10</option>
-            <option value="$20">$20</option>
-            <option value="$30">$30</option>
-            <option value="$50">$50</option>
-            <option value="$100">$100</option>
-            <option value="$200+">$200+</option>
-          </select>
         </div>
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          <button
-            onClick={handleCreatePost}
-            disabled={loading || !userId}
-            className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
-          >
-            {loading ? "Creating..." : "Create Meetup"}
-          </button>
-        </div>
-
-        {message && (
-          <p className="mt-5 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-            {message}
-          </p>
-        )}
       </div>
     </main>
   );
