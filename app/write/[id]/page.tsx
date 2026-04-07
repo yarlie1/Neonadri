@@ -23,6 +23,7 @@ export default function EditMeetupPage() {
   const [placeName, setPlaceName] = useState("");
   const [location, setLocation] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
+  const [durationMinutes, setDurationMinutes] = useState("");
   const [targetGender, setTargetGender] = useState("");
   const [targetAgeGroup, setTargetAgeGroup] = useState("");
   const [meetingPurpose, setMeetingPurpose] = useState("");
@@ -51,7 +52,7 @@ export default function EditMeetupPage() {
       const { data, error } = await supabase
         .from("posts")
         .select(
-          "id, user_id, place_name, location, meeting_time, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
+          "id, user_id, place_name, location, meeting_time, duration_minutes, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
         )
         .eq("id", params.id)
         .eq("user_id", user.id)
@@ -69,6 +70,9 @@ export default function EditMeetupPage() {
         data.meeting_time
           ? new Date(data.meeting_time).toISOString().slice(0, 16)
           : ""
+      );
+      setDurationMinutes(
+        data.duration_minutes ? String(data.duration_minutes) : ""
       );
       setTargetGender(data.target_gender || "");
       setTargetAgeGroup(data.target_age_group || "");
@@ -243,6 +247,7 @@ export default function EditMeetupPage() {
 
     if (
       !meetingTime.trim() ||
+      !durationMinutes.trim() ||
       !targetGender.trim() ||
       !targetAgeGroup.trim() ||
       !meetingPurpose.trim() ||
@@ -272,6 +277,7 @@ export default function EditMeetupPage() {
         place_name: placeName || location,
         location,
         meeting_time: new Date(meetingTime).toISOString(),
+        duration_minutes: Number(durationMinutes),
         target_gender: targetGender,
         target_age_group: targetAgeGroup,
         meeting_purpose: meetingPurpose,
@@ -362,6 +368,20 @@ export default function EditMeetupPage() {
             value={meetingTime}
             onChange={(e) => setMeetingTime(e.target.value)}
           />
+
+          <select
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            value={durationMinutes}
+            onChange={(e) => setDurationMinutes(e.target.value)}
+          >
+            <option value="">Select meeting duration</option>
+            <option value="30">30 min</option>
+            <option value="60">1 hour</option>
+            <option value="90">1 hour 30 min</option>
+            <option value="120">2 hours</option>
+            <option value="180">3 hours</option>
+            <option value="240">4 hours</option>
+          </select>
 
           <select
             className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
