@@ -281,10 +281,6 @@ export default function WritePage() {
     return PURPOSE_HELP_TEXT[meetingPurpose] || "";
   }, [meetingPurpose]);
 
-  const selectedPurpose = PURPOSE_OPTIONS.find(
-    (item) => item.value === meetingPurpose
-  );
-
   const handleLocationInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -359,28 +355,52 @@ export default function WritePage() {
           Create Meetup
         </h1>
 
-        <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-          Search for a place or choose one on a separate map page.
-        </p>
-
         <div className="mt-8 space-y-4">
-          <div className="flex flex-wrap gap-3">
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {PURPOSE_OPTIONS.map((item) => {
+                const isSelected = meetingPurpose === item.value;
+
+                return (
+                  <button
+                    key={item.value}
+                    type="button"
+                    onClick={() => setMeetingPurpose(item.value)}
+                    className={`rounded-2xl border px-4 py-3 text-sm font-medium transition ${
+                      isSelected ? item.selectedClass : item.baseClass
+                    }`}
+                  >
+                    <span className="mr-2">{item.icon}</span>
+                    {item.value}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+              <p className="mt-1">{purposeHelpText}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              ref={searchInputRef}
+              className="flex-1 rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              placeholder="Search exact place or address"
+              value={location}
+              onChange={handleLocationInputChange}
+            />
+
             <button
               type="button"
               onClick={handleOpenMapPicker}
-              className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+              aria-label="Pick on map"
+              title="Pick on map"
+              className="shrink-0 rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-3 text-lg text-[#5a5149] transition hover:bg-[#ede3da]"
             >
-              Pick on Map
+              🗺️
             </button>
           </div>
-
-          <input
-            ref={searchInputRef}
-            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            placeholder="Search exact place or address"
-            value={location}
-            onChange={handleLocationInputChange}
-          />
 
           {location && (
             <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
@@ -406,12 +426,36 @@ export default function WritePage() {
             </div>
           )}
 
-          <input
-            type="datetime-local"
-            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+          <select
+            className={`w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm ${
+              meetingTime ? "text-[#2f2a26]" : "text-[#8b7f74]"
+            }`}
             value={meetingTime}
             onChange={(e) => setMeetingTime(e.target.value)}
+          >
+            <option value="">Select date/time</option>
+          </select>
+
+          <input
+            type="datetime-local"
+            className="sr-only"
+            value={meetingTime}
+            onChange={(e) => setMeetingTime(e.target.value)}
+            id="hidden-datetime-input"
           />
+
+          <button
+            type="button"
+            onClick={() => {
+              const input = document.getElementById(
+                "hidden-datetime-input"
+              ) as HTMLInputElement | null;
+              if (input) input.showPicker ? input.showPicker() : input.click();
+            }}
+            className="hidden"
+          >
+            open
+          </button>
 
           <select
             className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
@@ -427,46 +471,20 @@ export default function WritePage() {
             <option value="240">4 hours</option>
           </select>
 
-          <div className="space-y-3">
-            <label className="block text-sm font-medium text-[#5a5149]">
-              Purpose
-            </label>
-
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {PURPOSE_OPTIONS.map((item) => {
-                const isSelected = meetingPurpose === item.value;
-
-                return (
-                  <button
-                    key={item.value}
-                    type="button"
-                    onClick={() => setMeetingPurpose(item.value)}
-                    className={`rounded-2xl border px-4 py-3 text-sm font-medium transition ${
-                      isSelected ? item.selectedClass : item.baseClass
-                    }`}
-                  >
-                    <span className="mr-2">{item.icon}</span>
-                    {item.value}
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-              <p className="font-medium text-[#2f2a26]">Purpose description</p>
-              <p className="mt-1">{purposeHelpText}</p>
-            </div>
-
-            {selectedPurpose && (
-              <div>
-                <span
-                  className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium ${selectedPurpose.baseClass}`}
-                >
-                  <span className="mr-2">{selectedPurpose.icon}</span>
-                  {selectedPurpose.value}
-                </span>
-              </div>
-            )}
+          <div
+            onClick={() => {
+              const input = document.getElementById(
+                "hidden-datetime-input"
+              ) as HTMLInputElement | null;
+              if (input) input.showPicker ? input.showPicker() : input.click();
+            }}
+            className={`w-full cursor-pointer rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm ${
+              meetingTime ? "text-[#2f2a26]" : "text-[#8b7f74]"
+            }`}
+          >
+            {meetingTime
+              ? new Date(meetingTime).toLocaleString()
+              : "Select date/time"}
           </div>
 
           <select
