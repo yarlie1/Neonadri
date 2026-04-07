@@ -1,52 +1,31 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
 
-type Post = {
+type PostRow = {
   id: number;
   user_id: string;
-  created_at: string;
   place_name: string | null;
   location: string | null;
   meeting_time: string | null;
-  target_gender: string | null;
-  target_age_group: string | null;
+  duration_minutes: number | null;
   meeting_purpose: string | null;
   benefit_amount: string | null;
-  latitude: number | null;
-  longitude: number | null;
-};
-
-type PostSummary = {
-  id: number;
-  place_name: string | null;
-  location: string | null;
-  meeting_time: string | null;
+  target_gender: string | null;
+  target_age_group: string | null;
+  created_at: string;
 };
 
 type MatchRequestRow = {
   id: number;
   post_id: number;
   requester_user_id: string;
-  post_owner_user_id: string;
+  receiver_user_id: string;
   status: string;
-  message: string | null;
   created_at: string;
-  post: PostSummary[] | PostSummary | null;
-};
-
-type MatchRequest = {
-  id: number;
-  post_id: number;
-  requester_user_id: string;
-  post_owner_user_id: string;
-  status: string;
-  message: string | null;
-  created_at: string;
-  post: PostSummary | null;
-  requester_name: string;
 };
 
 type MatchRow = {
@@ -56,17 +35,6 @@ type MatchRow = {
   user_b: string;
   status: string;
   created_at: string;
-  post: PostSummary[] | PostSummary | null;
-};
-
-type Match = {
-  id: number;
-  post_id: number;
-  user_a: string;
-  user_b: string;
-  status: string;
-  created_at: string;
-  post: PostSummary | null;
 };
 
 type ProfileRow = {
@@ -74,29 +42,119 @@ type ProfileRow = {
   display_name: string | null;
 };
 
-type PostFilterType = "all" | "upcoming" | "expired";
 type DashboardTab = "posts" | "received" | "sent" | "matches";
+type PostFilter = "all" | "upcoming" | "expired";
 
-function normalizePost(
-  post: PostSummary[] | PostSummary | null | undefined
-): PostSummary | null {
-  if (!post) return null;
-  return Array.isArray(post) ? (post[0] ?? null) : post;
-}
+const getPurposeIcon = (purpose: string | null) => {
+  switch (purpose) {
+    case "Coffee Chat":
+    case "Coffee":
+      return "☕";
+    case "Meal":
+      return "🍽";
+    case "Dessert":
+      return "🍰";
+    case "Walk":
+      return "🚶";
+    case "Jogging":
+      return "🏃";
+    case "Yoga":
+      return "🧘";
+    case "Movie":
+    case "Theater":
+      return "🎬";
+    case "Karaoke":
+      return "🎤";
+    case "Board Games":
+      return "🎲";
+    case "Gaming":
+      return "🎮";
+    case "Bowling":
+      return "🎳";
+    case "Arcade":
+      return "🎯";
+    case "Study":
+      return "📚";
+    case "Work Together":
+    case "Work":
+      return "💻";
+    case "Book Talk":
+    case "Book":
+      return "📖";
+    case "Photo Walk":
+    case "Photo":
+      return "📷";
+    default:
+      return "✨";
+  }
+};
+
+const formatDuration = (minutes: number | null) => {
+  if (!minutes) return "";
+  if (minutes === 60) return "1h";
+  if (minutes === 90) return "1.5h";
+  if (minutes === 120) return "2h";
+  return `${minutes}m`;
+};
+
+const formatTime = (meetingTime: string | null) => {
+  if (!meetingTime) return "";
+  const date = new Date(meetingTime);
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`;
+};
+
+const getPostStatus = (meetingTime: string | null) => {
+  if (!meetingTime) return "Upcoming";
+  const now = new Date();
+  const target = new Date(meetingTime);
+  return target.getTime() >= now.getTime() ? "Upcoming" : "Expired";
+};
+
+const getStatusBadgeClass = (status: string) => {
+  const normalized = status.toLowerCase();
+
+  if (normalized === "expired") {
+    return "bg-[#f4ece4] text-[#8b7f74]";
+  }
+
+  if (normalized === "upcoming") {
+    return "bg-[#efe7dc] text-[#6b5f52]";
+  }
+
+  if (normalized === "matched" || normalized === "accepted") {
+    return "bg-[#efe7dc] text-[#6b5f52]";
+  }
+
+  if (normalized === "pending") {
+    return "bg-[#f4ece4] text-[#7b7067]";
+  }
+
+  if (normalized === "rejected") {
+    return "bg-[#f7f1ea] text-[#9b8f84]";
+  }
+
+  return "bg-[#f4ece4] text-[#7b7067]";
+};
 
 export default function DashboardPage() {
   const supabase = createClient();
   const router = useRouter();
 
-  const [userId, setUserId] = useState("");
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [receivedRequests, setReceivedRequests] = useState<MatchRequest[]>([]);
-  const [sentRequests, setSentRequests] = useState<MatchRequest[]>([]);
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
-  const [postFilter, setPostFilter] = useState<PostFilterType>("all");
-  const [tab, setTab] = useState<DashboardTab>("posts");
+  const [userId, setUserId] = useState("");
+
+  const [posts, setPosts] = useState<PostRow[]>([]);
+  const [requestsReceived, setRequestsReceived] = useState<MatchRequestRow[]>([]);
+  const [requestsSent, setRequestsSent] = useState<MatchRequestRow[]>([]);
+  const [matches, setMatches] = useState<MatchRow[]>([]);
+  const [profileMap, setProfileMap] = useState<Record<string, string>>({});
+
+  const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
+  const [postFilter, setPostFilter] = useState<PostFilter>("all");
+  const [deletingPostId, setDeletingPostId] = useState<number | null>(null);
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -115,593 +173,531 @@ export default function DashboardPage() {
         supabase
           .from("posts")
           .select(
-            "id, user_id, created_at, place_name, location, meeting_time, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
+            "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
           )
           .eq("user_id", user.id)
           .order("created_at", { ascending: false }),
 
         supabase
           .from("match_requests")
-          .select(
-            "id, post_id, requester_user_id, post_owner_user_id, status, message, created_at, post:posts(id, place_name, location, meeting_time)"
-          )
-          .eq("post_owner_user_id", user.id)
+          .select("id, post_id, requester_user_id, receiver_user_id, status, created_at")
+          .eq("receiver_user_id", user.id)
           .order("created_at", { ascending: false }),
 
         supabase
           .from("match_requests")
-          .select(
-            "id, post_id, requester_user_id, post_owner_user_id, status, message, created_at, post:posts(id, place_name, location, meeting_time)"
-          )
+          .select("id, post_id, requester_user_id, receiver_user_id, status, created_at")
           .eq("requester_user_id", user.id)
           .order("created_at", { ascending: false }),
 
         supabase
           .from("matches")
-          .select(
-            "id, post_id, user_a, user_b, status, created_at, post:posts(id, place_name, location, meeting_time)"
-          )
+          .select("id, post_id, user_a, user_b, status, created_at")
           .or(`user_a.eq.${user.id},user_b.eq.${user.id}`)
           .order("created_at", { ascending: false }),
       ]);
 
-      if (postsRes.error) {
-        setMessage(postsRes.error.message);
-        setLoading(false);
-        return;
-      }
+      const nextPosts = (postsRes.data as PostRow[]) || [];
+      const nextReceived = (receivedRes.data as MatchRequestRow[]) || [];
+      const nextSent = (sentRes.data as MatchRequestRow[]) || [];
+      const nextMatches = (matchesRes.data as MatchRow[]) || [];
 
-      if (receivedRes.error) {
-        setMessage(receivedRes.error.message);
-        setLoading(false);
-        return;
-      }
+      setPosts(nextPosts);
+      setRequestsReceived(nextReceived);
+      setRequestsSent(nextSent);
+      setMatches(nextMatches);
 
-      if (sentRes.error) {
-        setMessage(sentRes.error.message);
-        setLoading(false);
-        return;
-      }
+      const relatedUserIds = Array.from(
+        new Set([
+          ...nextReceived.map((item) => item.requester_user_id),
+          ...nextSent.map((item) => item.receiver_user_id),
+          ...nextMatches.flatMap((item) => [item.user_a, item.user_b]),
+        ])
+      ).filter((id) => id !== user.id);
 
-      if (matchesRes.error) {
-        setMessage(matchesRes.error.message);
-        setLoading(false);
-        return;
-      }
-
-      const receivedRaw = (receivedRes.data as MatchRequestRow[]) || [];
-      const sentRaw = (sentRes.data as MatchRequestRow[]) || [];
-      const matchesRaw = (matchesRes.data as MatchRow[]) || [];
-
-      const requesterIds = Array.from(
-        new Set(receivedRaw.map((item) => item.requester_user_id))
-      );
-
-      let profileMap = new Map<string, string>();
-
-      if (requesterIds.length > 0) {
-        const { data: profilesData, error: profilesError } = await supabase
+      if (relatedUserIds.length > 0) {
+        const { data: profilesData } = await supabase
           .from("profiles")
           .select("id, display_name")
-          .in("id", requesterIds);
+          .in("id", relatedUserIds);
 
-        if (profilesError) {
-          setMessage(profilesError.message);
-          setLoading(false);
-          return;
-        }
-
+        const nextProfileMap: Record<string, string> = {};
         ((profilesData as ProfileRow[]) || []).forEach((profile) => {
-          profileMap.set(profile.id, profile.display_name || "Unknown user");
+          nextProfileMap[profile.id] = profile.display_name || "Unknown";
         });
+        setProfileMap(nextProfileMap);
       }
 
-      const normalizedReceived: MatchRequest[] = receivedRaw.map((item) => ({
-        id: item.id,
-        post_id: item.post_id,
-        requester_user_id: item.requester_user_id,
-        post_owner_user_id: item.post_owner_user_id,
-        status: item.status,
-        message: item.message,
-        created_at: item.created_at,
-        post: normalizePost(item.post),
-        requester_name:
-          profileMap.get(item.requester_user_id) || "Unknown user",
-      }));
-
-      const normalizedSent: MatchRequest[] = sentRaw.map((item) => ({
-        id: item.id,
-        post_id: item.post_id,
-        requester_user_id: item.requester_user_id,
-        post_owner_user_id: item.post_owner_user_id,
-        status: item.status,
-        message: item.message,
-        created_at: item.created_at,
-        post: normalizePost(item.post),
-        requester_name: "",
-      }));
-
-      const normalizedMatches: Match[] = matchesRaw.map((item) => ({
-        id: item.id,
-        post_id: item.post_id,
-        user_a: item.user_a,
-        user_b: item.user_b,
-        status: item.status,
-        created_at: item.created_at,
-        post: normalizePost(item.post),
-      }));
-
-      setPosts((postsRes.data as Post[]) || []);
-      setReceivedRequests(normalizedReceived);
-      setSentRequests(normalizedSent);
-      setMatches(normalizedMatches);
       setLoading(false);
     };
 
     loadDashboard();
   }, [router, supabase]);
 
-  const now = new Date();
-
-  const stats = useMemo(() => {
-    const total = posts.length;
-    const upcoming = posts.filter((post) => {
-      if (!post.meeting_time) return false;
-      return new Date(post.meeting_time) >= now;
-    }).length;
-
-    const expired = posts.filter((post) => {
-      if (!post.meeting_time) return false;
-      return new Date(post.meeting_time) < now;
-    }).length;
-
-    return {
-      total,
-      upcoming,
-      expired,
-      received: receivedRequests.length,
-      sent: sentRequests.length,
-      matches: matches.length,
-    };
-  }, [posts, receivedRequests, sentRequests, matches, now]);
-
   const filteredPosts = useMemo(() => {
     if (postFilter === "all") return posts;
-
     return posts.filter((post) => {
-      if (!post.meeting_time) return postFilter === "expired";
-      const isUpcoming = new Date(post.meeting_time) >= now;
-      return postFilter === "upcoming" ? isUpcoming : !isUpcoming;
+      const status = getPostStatus(post.meeting_time).toLowerCase();
+      return status === postFilter;
     });
-  }, [posts, postFilter, now]);
+  }, [posts, postFilter]);
 
-  const getPostStatus = (meetingTime: string | null) => {
-    if (!meetingTime) {
-      return {
-        label: "No time",
-        className: "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]",
-      };
-    }
+  const pendingReceived = useMemo(
+    () => requestsReceived.filter((item) => item.status === "pending").length,
+    [requestsReceived]
+  );
 
-    const isUpcoming = new Date(meetingTime) >= now;
+  const upcomingPostsCount = useMemo(
+    () =>
+      posts.filter((post) => getPostStatus(post.meeting_time) === "Upcoming")
+        .length,
+    [posts]
+  );
 
-    return isUpcoming
-      ? {
-          label: "Upcoming",
-          className: "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]",
-        }
-      : {
-          label: "Expired",
-          className: "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]",
-        };
-  };
-
-  const handleDeletePost = async (postId: number) => {
+  const deletePost = async (postId: number) => {
     const confirmed = window.confirm("Delete this meetup?");
     if (!confirmed) return;
 
-    const { error } = await supabase
-      .from("posts")
-      .delete()
-      .eq("id", postId)
-      .eq("user_id", userId);
+    setDeletingPostId(postId);
+
+    const { error } = await supabase.from("posts").delete().eq("id", postId);
+
+    setDeletingPostId(null);
 
     if (error) {
-      setMessage(error.message);
+      alert(error.message);
       return;
     }
 
     setPosts((prev) => prev.filter((post) => post.id !== postId));
-    setMessage("Meetup deleted.");
   };
 
-  const handleRequestAction = async (
+  const updateRequestStatus = async (
     requestId: number,
     nextStatus: "accepted" | "rejected"
   ) => {
-    setMessage("");
-
-    const request = receivedRequests.find((item) => item.id === requestId);
-    if (!request) return;
-
-    const { error: updateError } = await supabase
+    const { error } = await supabase
       .from("match_requests")
-      .update({
-        status: nextStatus,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", requestId)
-      .eq("post_owner_user_id", userId);
+      .update({ status: nextStatus })
+      .eq("id", requestId);
 
-    if (updateError) {
-      setMessage(updateError.message);
+    if (error) {
+      alert(error.message);
       return;
     }
 
-    if (nextStatus === "accepted") {
-      const { error: matchError } = await supabase.from("matches").insert({
-        post_id: request.post_id,
-        user_a: request.post_owner_user_id,
-        user_b: request.requester_user_id,
-        status: "active",
-      });
-
-      if (matchError) {
-        setMessage(matchError.message);
-        return;
-      }
-
-      setMatches((prev) => [
-        {
-          id: Date.now(),
-          post_id: request.post_id,
-          user_a: request.post_owner_user_id,
-          user_b: request.requester_user_id,
-          status: "active",
-          created_at: new Date().toISOString(),
-          post: request.post,
-        },
-        ...prev,
-      ]);
-    }
-
-    setReceivedRequests((prev) =>
+    setRequestsReceived((prev) =>
       prev.map((item) =>
         item.id === requestId ? { ...item, status: nextStatus } : item
       )
     );
-
-    setMessage(
-      nextStatus === "accepted" ? "Request accepted." : "Request rejected."
-    );
   };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
+        <div className="mx-auto max-w-4xl rounded-[2rem] border border-[#e7ddd2] bg-white p-8 shadow-sm">
+          Loading...
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
-      <div className="mx-auto max-w-5xl space-y-6">
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-[#a48f7a]">
-                Dashboard
-              </p>
-              <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[#2f2a26]">
-                My Meetups
-              </h1>
-              <p className="mt-2 text-sm text-[#6f655c]">
-                Manage your posts, requests, and matches.
-              </p>
-            </div>
+      <div className="mx-auto max-w-4xl space-y-6">
+        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-sm">
+          <div className="text-xs tracking-[0.35em] text-[#9b8f84]">
+            DASHBOARD
+          </div>
+          <h1 className="mt-3 text-4xl font-semibold">My Meetups</h1>
+          <p className="mt-2 text-[#6f655c]">
+            Manage your posts, requests, and matches.
+          </p>
 
-            <a
+          <div className="mt-6">
+            <Link
               href="/write"
               className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
             >
               Create Meetup
-            </a>
+            </Link>
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-5 shadow-sm">
-            <p className="text-sm text-[#7b7067]">My Posts</p>
-            <p className="mt-2 text-3xl font-semibold">{stats.total}</p>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
+            <div className="text-sm text-[#8b7f74]">My Posts</div>
+            <div className="mt-2 text-4xl font-semibold">{posts.length}</div>
           </div>
 
-          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-5 shadow-sm">
-            <p className="text-sm text-[#7b7067]">Requests Received</p>
-            <p className="mt-2 text-3xl font-semibold">{stats.received}</p>
+          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
+            <div className="text-sm text-[#8b7f74]">Requests</div>
+            <div className="mt-2 text-4xl font-semibold">
+              {requestsReceived.length}
+            </div>
           </div>
 
-          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-5 shadow-sm">
-            <p className="text-sm text-[#7b7067]">Matches</p>
-            <p className="mt-2 text-3xl font-semibold">{stats.matches}</p>
+          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
+            <div className="text-sm text-[#8b7f74]">Matches</div>
+            <div className="mt-2 text-4xl font-semibold">{matches.length}</div>
           </div>
-        </div>
 
-        <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-4 shadow-sm">
-          <div className="flex flex-wrap gap-2">
-            {(["posts", "received", "sent", "matches"] as DashboardTab[]).map(
-              (item) => (
-                <button
-                  key={item}
-                  onClick={() => setTab(item)}
-                  className={`rounded-xl px-4 py-2 text-sm transition ${
-                    tab === item
-                      ? "bg-[#a48f7a] text-white"
-                      : "border border-[#dccfc2] bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
-                  }`}
-                >
-                  {item === "posts" && "My Posts"}
-                  {item === "received" && "Requests Received"}
-                  {item === "sent" && "Requests Sent"}
-                  {item === "matches" && "Matches"}
-                </button>
-              )
-            )}
+          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
+            <div className="text-sm text-[#8b7f74]">Pending</div>
+            <div className="mt-2 text-4xl font-semibold">{pendingReceived}</div>
           </div>
         </div>
 
-        {tab === "posts" && (
-          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-4 shadow-sm">
-            <div className="flex flex-wrap gap-2">
-              {(["all", "upcoming", "expired"] as PostFilterType[]).map(
-                (item) => (
-                  <button
-                    key={item}
-                    onClick={() => setPostFilter(item)}
-                    className={`rounded-xl px-4 py-2 text-sm transition ${
-                      postFilter === item
-                        ? "bg-[#a48f7a] text-white"
-                        : "border border-[#dccfc2] bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
-                    }`}
-                  >
-                    {item === "all"
-                      ? "All"
-                      : item === "upcoming"
-                      ? "Upcoming"
-                      : "Expired"}
-                  </button>
-                )
-              )}
+        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-4 shadow-sm">
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => setActiveTab("posts")}
+              className={`rounded-xl px-4 py-2 text-sm ${
+                activeTab === "posts"
+                  ? "bg-[#a48f7a] text-white"
+                  : "bg-[#f4ece4] text-[#6b5f52]"
+              }`}
+            >
+              My Posts
+            </button>
+
+            <button
+              onClick={() => setActiveTab("received")}
+              className={`rounded-xl px-4 py-2 text-sm ${
+                activeTab === "received"
+                  ? "bg-[#a48f7a] text-white"
+                  : "bg-[#f4ece4] text-[#6b5f52]"
+              }`}
+            >
+              Requests Received
+            </button>
+
+            <button
+              onClick={() => setActiveTab("sent")}
+              className={`rounded-xl px-4 py-2 text-sm ${
+                activeTab === "sent"
+                  ? "bg-[#a48f7a] text-white"
+                  : "bg-[#f4ece4] text-[#6b5f52]"
+              }`}
+            >
+              Requests Sent
+            </button>
+
+            <button
+              onClick={() => setActiveTab("matches")}
+              className={`rounded-xl px-4 py-2 text-sm ${
+                activeTab === "matches"
+                  ? "bg-[#a48f7a] text-white"
+                  : "bg-[#f4ece4] text-[#6b5f52]"
+              }`}
+            >
+              Matches
+            </button>
+          </div>
+        </div>
+
+        {activeTab === "posts" && (
+          <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-4 shadow-sm">
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => setPostFilter("all")}
+                className={`rounded-xl px-4 py-2 text-sm ${
+                  postFilter === "all"
+                    ? "bg-[#a48f7a] text-white"
+                    : "bg-[#f4ece4] text-[#6b5f52]"
+                }`}
+              >
+                All
+              </button>
+
+              <button
+                onClick={() => setPostFilter("upcoming")}
+                className={`rounded-xl px-4 py-2 text-sm ${
+                  postFilter === "upcoming"
+                    ? "bg-[#a48f7a] text-white"
+                    : "bg-[#f4ece4] text-[#6b5f52]"
+                }`}
+              >
+                Upcoming
+              </button>
+
+              <button
+                onClick={() => setPostFilter("expired")}
+                className={`rounded-xl px-4 py-2 text-sm ${
+                  postFilter === "expired"
+                    ? "bg-[#a48f7a] text-white"
+                    : "bg-[#f4ece4] text-[#6b5f52]"
+                }`}
+              >
+                Expired
+              </button>
             </div>
           </div>
         )}
 
-        {message && (
-          <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-            {message}
-          </div>
-        )}
+        {activeTab === "posts" && (
+          <div className="space-y-4">
+            {filteredPosts.map((post) => {
+              const postStatus = getPostStatus(post.meeting_time);
 
-        {loading ? (
-          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 text-center text-[#7b7067] shadow-sm">
-            Loading...
-          </div>
-        ) : null}
+              const mapUrl = post.location
+                ? post.location && post.location.length > 0
+                  ? post.location
+                  : ""
+                : "";
 
-        {!loading && tab === "posts" && (
-          <div className="space-y-5">
-            {filteredPosts.length === 0 ? (
-              <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 text-center text-[#7b7067] shadow-sm">
-                No posts.
-              </div>
-            ) : (
-              filteredPosts.map((post) => {
-                const mapUrl =
-                  post.latitude !== null && post.longitude !== null
-                    ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
-                    : "";
-
-                const status = getPostStatus(post.meeting_time);
-
-                return (
-                  <div
-                    key={post.id}
-                    className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-sm"
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-4">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="text-lg font-semibold text-[#2f2a26]">
-                            📍 {post.place_name || post.location || "Location not set"}
-                          </p>
-                          <span
-                            className={`rounded-full px-3 py-1 text-xs font-medium ${status.className}`}
-                          >
-                            {status.label}
-                          </span>
-                        </div>
-
-                        {post.location && (
-                          <p className="mt-2 line-clamp-1 text-sm text-[#6f655c]">
-                            {post.location}
-                          </p>
-                        )}
-
-                        <div className="mt-3 space-y-1 text-sm text-[#6f655c]">
-                          {post.meeting_time && (
-                            <p>⏰ {new Date(post.meeting_time).toLocaleString()}</p>
-                          )}
-                          {post.meeting_purpose && <p>🎯 {post.meeting_purpose}</p>}
-                          {(post.target_gender || post.target_age_group) && (
-                            <p>
-                              👤 {post.target_gender || "Any"} /{" "}
-                              {post.target_age_group || "Any"}
-                            </p>
-                          )}
-                          {post.benefit_amount && <p>🎁 {post.benefit_amount}</p>}
-                        </div>
+              return (
+                <div
+                  key={post.id}
+                  className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-base font-semibold">
+                        {getPurposeIcon(post.meeting_purpose)}{" "}
+                        {post.meeting_purpose || "Meetup"} ·{" "}
+                        {formatDuration(post.duration_minutes)}
                       </div>
 
-                      <div className="flex flex-wrap gap-2">
-                        <a
-                          href={`/posts/${post.id}`}
-                          className="rounded-xl bg-[#6b5f52] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#5b5046]"
-                        >
-                          View
-                        </a>
-
-                        <a
-                          href={`/write/${post.id}`}
-                          className="rounded-xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
-                        >
-                          Edit
-                        </a>
-
-                        {mapUrl && (
-                          <a
-                            href={mapUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="rounded-xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
-                          >
-                            Map
-                          </a>
-                        )}
-
-                        <button
-                          onClick={() => handleDeletePost(post.id)}
-                          className="rounded-xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
-                        >
-                          Delete
-                        </button>
+                      <div className="mt-1 truncate text-2xl font-semibold">
+                        {post.place_name || post.location || "No place"}
                       </div>
+                    </div>
+
+                    <div className="flex flex-col items-end gap-2">
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                          postStatus
+                        )}`}
+                      >
+                        {postStatus}
+                      </span>
+
+                      {post.benefit_amount && (
+                        <div className="rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 text-sm font-semibold text-[#5a4a1f] shadow">
+                          🪙 {post.benefit_amount}
+                        </div>
+                      )}
                     </div>
                   </div>
-                );
-              })
-            )}
-          </div>
-        )}
 
-        {!loading && tab === "received" && (
-          <div className="space-y-5">
-            {receivedRequests.length === 0 ? (
-              <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 text-center text-[#7b7067] shadow-sm">
-                No received requests.
-              </div>
-            ) : (
-              receivedRequests.map((request) => (
-                <div
-                  key={request.id}
-                  className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-sm"
-                >
-                  <p className="text-lg font-semibold text-[#2f2a26]">
-                    📍 {request.post?.place_name || request.post?.location || "Meetup"}
-                  </p>
+                  <div className="mt-3 space-y-1">
+                    {post.meeting_time && (
+                      <div className="text-sm text-[#6f655c]">
+                        ⏰ {formatTime(post.meeting_time)}
+                      </div>
+                    )}
 
-                  <p className="mt-2 text-sm text-[#6f655c]">
-                    From: {request.requester_name}
-                  </p>
+                    {post.location && (
+                      <div className="line-clamp-1 text-sm text-[#6f655c]">
+                        📍 {post.location}
+                      </div>
+                    )}
 
-                  <p className="mt-1 text-sm text-[#6f655c]">
-                    Status: {request.status}
-                  </p>
-
-                  {request.post?.meeting_time && (
-                    <p className="mt-1 text-sm text-[#6f655c]">
-                      ⏰ {new Date(request.post.meeting_time).toLocaleString()}
-                    </p>
-                  )}
-
-                  {request.message && (
-                    <p className="mt-3 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#5a5149]">
-                      {request.message}
-                    </p>
-                  )}
-
-                  {request.status === "pending" && (
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      <button
-                        onClick={() => handleRequestAction(request.id, "accepted")}
-                        className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#927d69]"
-                      >
-                        Accept
-                      </button>
-
-                      <button
-                        onClick={() => handleRequestAction(request.id, "rejected")}
-                        className="rounded-xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
-                      >
-                        Reject
-                      </button>
+                    <div className="text-sm text-[#6f655c]">
+                      👤 {post.target_gender || "Any"} /{" "}
+                      {post.target_age_group || "Any"}
                     </div>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        )}
+                  </div>
 
-        {!loading && tab === "sent" && (
-          <div className="space-y-5">
-            {sentRequests.length === 0 ? (
-              <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 text-center text-[#7b7067] shadow-sm">
-                No sent requests.
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <Link
+                      href={`/posts/${post.id}`}
+                      className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
+                    >
+                      View
+                    </Link>
+
+                    <Link
+                      href={`/write/${post.id}`}
+                      className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
+                    >
+                      Edit
+                    </Link>
+
+                    {mapUrl && (
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                          post.location || ""
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
+                      >
+                        Map
+                      </a>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => deletePost(post.id)}
+                      disabled={deletingPostId === post.id}
+                      className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4] disabled:opacity-50"
+                    >
+                      {deletingPostId === post.id ? "Deleting..." : "Delete"}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+
+            {filteredPosts.length === 0 && (
+              <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+                {postFilter === "all"
+                  ? "No meetups yet."
+                  : postFilter === "upcoming"
+                  ? "No upcoming meetups."
+                  : "No expired meetups."}
               </div>
-            ) : (
-              sentRequests.map((request) => (
-                <div
-                  key={request.id}
-                  className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-sm"
-                >
-                  <p className="text-lg font-semibold text-[#2f2a26]">
-                    📍 {request.post?.place_name || request.post?.location || "Meetup"}
-                  </p>
-
-                  <p className="mt-2 text-sm text-[#6f655c]">
-                    Status: {request.status}
-                  </p>
-
-                  {request.post?.meeting_time && (
-                    <p className="mt-1 text-sm text-[#6f655c]">
-                      ⏰ {new Date(request.post.meeting_time).toLocaleString()}
-                    </p>
-                  )}
-
-                  {request.message && (
-                    <p className="mt-3 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#5a5149]">
-                      {request.message}
-                    </p>
-                  )}
-                </div>
-              ))
             )}
           </div>
         )}
 
-        {!loading && tab === "matches" && (
-          <div className="space-y-5">
-            {matches.length === 0 ? (
-              <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 text-center text-[#7b7067] shadow-sm">
+        {activeTab === "received" && (
+          <div className="space-y-4">
+            {requestsReceived.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <div className="text-lg font-semibold text-[#2f2a26]">
+                      Request for post #{item.post_id}
+                    </div>
+                    <div className="mt-1 text-sm text-[#6f655c]">
+                      From: {profileMap[item.requester_user_id] || "Unknown"}
+                    </div>
+                    <div className="mt-1 text-sm text-[#6f655c]">
+                      Status: {item.status}
+                    </div>
+                    <div className="mt-1 text-sm text-[#6f655c]">
+                      {new Date(item.created_at).toLocaleString()}
+                    </div>
+                  </div>
+
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                      item.status
+                    )}`}
+                  >
+                    {item.status}
+                  </span>
+                </div>
+
+                {item.status === "pending" && (
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <button
+                      onClick={() => updateRequestStatus(item.id, "accepted")}
+                      className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => updateRequestStatus(item.id, "rejected")}
+                      className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {requestsReceived.length === 0 && (
+              <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+                No requests received.
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === "sent" && (
+          <div className="space-y-4">
+            {requestsSent.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <div className="text-lg font-semibold text-[#2f2a26]">
+                      Request for post #{item.post_id}
+                    </div>
+                    <div className="mt-1 text-sm text-[#6f655c]">
+                      To: {profileMap[item.receiver_user_id] || "Unknown"}
+                    </div>
+                    <div className="mt-1 text-sm text-[#6f655c]">
+                      Status: {item.status}
+                    </div>
+                    <div className="mt-1 text-sm text-[#6f655c]">
+                      {new Date(item.created_at).toLocaleString()}
+                    </div>
+                  </div>
+
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                      item.status
+                    )}`}
+                  >
+                    {item.status}
+                  </span>
+                </div>
+              </div>
+            ))}
+
+            {requestsSent.length === 0 && (
+              <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+                No requests sent.
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === "matches" && (
+          <div className="space-y-4">
+            {matches.map((item) => {
+              const otherUserId =
+                item.user_a === userId ? item.user_b : item.user_a;
+
+              return (
+                <div
+                  key={item.id}
+                  className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <div className="text-lg font-semibold text-[#2f2a26]">
+                        Match for post #{item.post_id}
+                      </div>
+                      <div className="mt-1 text-sm text-[#6f655c]">
+                        With: {profileMap[otherUserId] || "Unknown"}
+                      </div>
+                      <div className="mt-1 text-sm text-[#6f655c]">
+                        Status: {item.status}
+                      </div>
+                      <div className="mt-1 text-sm text-[#6f655c]">
+                        {new Date(item.created_at).toLocaleString()}
+                      </div>
+                    </div>
+
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                        item.status
+                      )}`}
+                    >
+                      {item.status}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+
+            {matches.length === 0 && (
+              <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
                 No matches yet.
               </div>
-            ) : (
-              matches.map((match) => (
-                <div
-                  key={match.id}
-                  className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-sm"
-                >
-                  <p className="text-lg font-semibold text-[#2f2a26]">
-                    📍 {match.post?.place_name || match.post?.location || "Meetup"}
-                  </p>
-
-                  <p className="mt-2 text-sm text-[#6f655c]">
-                    Status: {match.status}
-                  </p>
-
-                  {match.post?.meeting_time && (
-                    <p className="mt-1 text-sm text-[#6f655c]">
-                      ⏰ {new Date(match.post.meeting_time).toLocaleString()}
-                    </p>
-                  )}
-
-                  <p className="mt-3 text-xs text-[#9b8f84]">
-                    Matched at {new Date(match.created_at).toLocaleString()}
-                  </p>
-                </div>
-              ))
             )}
           </div>
         )}
