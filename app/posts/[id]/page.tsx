@@ -23,6 +23,47 @@ type MatchRow = {
   status: string;
 };
 
+const getPurposeIcon = (purpose: string | null) => {
+  switch (purpose) {
+    case "Coffee Chat":
+      return "☕";
+    case "Casual Chat":
+      return "💬";
+    case "Meal":
+      return "🍽";
+    case "Walk":
+      return "🚶";
+    case "Study":
+      return "📚";
+    case "Make Friends":
+      return "🤝";
+    case "Networking":
+      return "💼";
+    default:
+      return "✨";
+  }
+};
+
+const formatTime = (meetingTime: string | null) => {
+  if (!meetingTime) return null;
+
+  const date = new Date(meetingTime);
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`;
+};
+
+const formatDuration = (minutes: number | null) => {
+  if (!minutes) return null;
+
+  if (minutes === 60) return "1h";
+  if (minutes === 90) return "1.5h";
+  if (minutes === 120) return "2h";
+
+  return `${minutes}m`;
+};
+
 export default async function MeetupDetailPage({ params }: PageProps) {
   const supabase = createClient();
 
@@ -33,7 +74,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const { data: post } = await supabase
     .from("posts")
     .select(
-      "id, user_id, created_at, place_name, location, meeting_time, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
+      "id, user_id, created_at, place_name, location, meeting_time, duration_minutes, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
     )
     .eq("id", params.id)
     .single();
@@ -46,7 +87,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     );
   }
 
-  let ownerName = "Unknown user";
+  let ownerName = "Unknown";
 
   if (post.user_id) {
     const { data: ownerProfile } = await supabase
@@ -93,21 +134,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     }
   }
 
-  const hasCoordinates =
-    post.latitude !== null && post.longitude !== null;
-
-  const mapUrl = hasCoordinates
-    ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
-    : "";
-
   const getStatusBadge = (status: string) => {
     const normalized = status.toLowerCase();
 
-    if (normalized === "matched") {
-      return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
-    }
-
-    if (normalized === "accepted") {
+    if (normalized === "matched" || normalized === "accepted") {
       return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
     }
 
@@ -122,61 +152,77 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
   };
 
+  const hasCoordinates =
+    post.latitude !== null && post.longitude !== null;
+
+  const mapUrl = hasCoordinates
+    ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
+    : "";
+
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
       <div className="mx-auto max-w-3xl space-y-6">
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
-          <p className="mb-3 text-xs tracking-[0.3em] text-[#a48f7a]">
-            MEETUP
-          </p>
+        <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <div className="text-base font-semibold">
+                {getPurposeIcon(post.meeting_purpose)}{" "}
+                {post.meeting_purpose || "Meetup"} ·{" "}
+                {formatDuration(post.duration_minutes)}
+              </div>
 
-          <h1 className="text-2xl font-semibold leading-snug">
-            📍 {post.place_name || post.location || "Location not set"}
-          </h1>
+              <div className="mt-1 truncate text-xl font-semibold">
+                {post.place_name || post.location || "No place"}
+              </div>
+            </div>
 
-          {post.location && (
-            <p className="mt-3 text-sm text-[#6f655c]">{post.location}</p>
-          )}
+            {post.benefit_amount && (
+              <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 shadow text-sm font-semibold text-[#5a4a1f]">
+                🪙 {post.benefit_amount}
+              </div>
+            )}
+          </div>
 
-          <div className="mt-6 space-y-3 text-sm text-[#6f655c]">
-            <p>🧑 Host: {ownerName}</p>
+          <div className="mt-3">
+            {post.meeting_time && (
+              <div className="text-sm text-[#6f655c]">
+                ⏰ {formatTime(post.meeting_time)}
+              </div>
+            )}
 
-            {user && user.id !== post.user_id && (
-              <div className="flex items-center gap-2">
-                <span>🤝 My Match Status:</span>
+            {post.location && (
+              <div className="mt-1 line-clamp-1 text-sm text-[#6f655c]">
+                📍 {post.location}
+              </div>
+            )}
+
+            <div className="mt-1 text-sm text-[#6f655c]">
+              👤 {post.target_gender || "Any"} /{" "}
+              {post.target_age_group || "Any"}
+            </div>
+
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-[#6f655c]">
+              <span>🧑 {ownerName}</span>
+
+              {user && user.id !== post.user_id && (
                 <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadge(
+                  className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
                     myRequestStatus
                   )}`}
                 >
                   {myRequestStatus}
                 </span>
-              </div>
-            )}
+              )}
 
-            {user && user.id === post.user_id && (
-              <p>📝 This is your meetup post.</p>
-            )}
-
-            {post.meeting_time && (
-              <p>⏰ {new Date(post.meeting_time).toLocaleString()}</p>
-            )}
-
-            {post.meeting_purpose && <p>🎯 {post.meeting_purpose}</p>}
-
-            <p>
-              👤 {post.target_gender || "Any"} /{" "}
-              {post.target_age_group || "Any"}
-            </p>
-
-            {post.benefit_amount && (
-              <p className="font-medium text-[#2f2a26]">
-                🎁 Benefit: {post.benefit_amount}
-              </p>
-            )}
+              {user && user.id === post.user_id && (
+                <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]">
+                  My meetup
+                </span>
+              )}
+            </div>
           </div>
 
-          <div className="mt-6 flex gap-3">
+          <div className="mt-5 flex gap-3">
             {mapUrl && (
               <a
                 href={mapUrl}
