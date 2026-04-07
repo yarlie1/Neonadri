@@ -1,5 +1,4 @@
 import { createClient } from "../../../lib/supabase/server";
-import ClientMap from "./ClientMap";
 import MatchRequestBox from "./MatchRequestBox";
 
 type PageProps = {
@@ -173,11 +172,14 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
   };
 
-  const hasCoordinates = post.latitude !== null && post.longitude !== null;
-
-  const mapUrl = hasCoordinates
-    ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
-    : "";
+  const mapUrl =
+    post.latitude !== null && post.longitude !== null
+      ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
+      : post.location
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+          post.location
+        )}`
+      : "";
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
@@ -262,15 +264,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             </a>
           </div>
         </div>
-
-        {hasCoordinates && (
-          <div className="overflow-hidden rounded-[1.5rem] border border-[#e7ddd2] bg-white p-3">
-            <ClientMap
-              latitude={post.latitude as number}
-              longitude={post.longitude as number}
-            />
-          </div>
-        )}
 
         {post.user_id && !isMatched && (
           <MatchRequestBox
