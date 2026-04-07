@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "../../../lib/supabase/client";
 import { useParams, useRouter } from "next/navigation";
 
@@ -9,6 +9,26 @@ declare global {
     google: any;
   }
 }
+
+const PURPOSE_OPTIONS = [
+  "Coffee Chat",
+  "Casual Chat",
+  "Meal",
+  "Walk",
+  "Study",
+  "Make Friends",
+  "Networking",
+] as const;
+
+const PURPOSE_HELP_TEXT: Record<string, string> = {
+  "Coffee Chat": "A relaxed meetup over coffee for light conversation.",
+  "Casual Chat": "A simple, comfortable conversation in a public place.",
+  Meal: "Meet up for a meal and easy conversation.",
+  Walk: "A casual walk together in a safe public area.",
+  Study: "Meet for studying, reading, or focused work time.",
+  "Make Friends": "A friendly meetup for getting to know new people.",
+  Networking: "A professional meetup for career or business conversation.",
+};
 
 export default function EditMeetupPage() {
   const supabase = createClient();
@@ -178,6 +198,13 @@ export default function EditMeetupPage() {
       }
     };
   }, []);
+
+  const purposeHelpText = useMemo(() => {
+    if (!meetingPurpose) {
+      return "Choose the kind of meetup you want, and a short description will appear here.";
+    }
+    return PURPOSE_HELP_TEXT[meetingPurpose] || "";
+  }, [meetingPurpose]);
 
   const handleLocationInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -383,23 +410,25 @@ export default function EditMeetupPage() {
             <option value="240">4 hours</option>
           </select>
 
-          <select
-            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            value={meetingPurpose}
-            onChange={(e) => setMeetingPurpose(e.target.value)}
-          >
-            <option value="">Select meeting purpose</option>
-            <option value="Coffee">Coffee</option>
-            <option value="Meal">Meal</option>
-            <option value="Conversation">Conversation</option>
-            <option value="Dating">Dating</option>
-            <option value="Friendship">Friendship</option>
-            <option value="Networking">Networking</option>
-            <option value="Study">Study</option>
-            <option value="Walk">Walk</option>
-            <option value="Drinks">Drinks</option>
-            <option value="Other">Other</option>
-          </select>
+          <div className="space-y-2">
+            <select
+              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              value={meetingPurpose}
+              onChange={(e) => setMeetingPurpose(e.target.value)}
+            >
+              <option value="">Select meeting purpose</option>
+              {PURPOSE_OPTIONS.map((purpose) => (
+                <option key={purpose} value={purpose}>
+                  {purpose}
+                </option>
+              ))}
+            </select>
+
+            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+              <p className="font-medium text-[#2f2a26]">Purpose description</p>
+              <p className="mt-1">{purposeHelpText}</p>
+            </div>
+          </div>
 
           <select
             className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
