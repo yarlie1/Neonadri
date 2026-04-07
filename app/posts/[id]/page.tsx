@@ -10,6 +10,9 @@ type PageProps = {
 type ProfileRow = {
   id: string;
   display_name: string | null;
+  bio: string | null;
+  gender: string | null;
+  age_group: string | null;
 };
 
 type MatchRequestRow = {
@@ -108,16 +111,24 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }
 
   let ownerName = "Unknown";
+  let ownerBio = "";
+  let ownerGender = "";
+  let ownerAgeGroup = "";
 
   if (post.user_id) {
     const { data: ownerProfile } = await supabase
       .from("profiles")
-      .select("id, display_name")
+      .select("id, display_name, bio, gender, age_group")
       .eq("id", post.user_id)
       .maybeSingle();
 
-    if ((ownerProfile as ProfileRow | null)?.display_name) {
-      ownerName = (ownerProfile as ProfileRow).display_name as string;
+    const profile = ownerProfile as ProfileRow | null;
+
+    if (profile) {
+      ownerName = profile.display_name || "Unknown";
+      ownerBio = profile.bio || "";
+      ownerGender = profile.gender || "";
+      ownerAgeGroup = profile.age_group || "";
     }
   }
 
@@ -262,6 +273,37 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             >
               Back
             </a>
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-6 shadow-sm">
+          <h2 className="text-2xl font-semibold text-[#2f2a26]">
+            Host Information
+          </h2>
+
+          <div className="mt-4 space-y-3 text-sm text-[#6f655c]">
+            <div className="flex items-center gap-2">
+              <span className="text-base">🧑</span>
+              <span className="font-medium text-[#2f2a26]">{ownerName}</span>
+            </div>
+
+            {(ownerGender || ownerAgeGroup) && (
+              <div className="flex items-center gap-2">
+                <span className="text-base">👤</span>
+                <span>
+                  {ownerGender || "Unknown"}{" "}
+                  {ownerGender && ownerAgeGroup ? "/" : ""}
+                  {ownerAgeGroup || ""}
+                </span>
+              </div>
+            )}
+
+            <div className="flex items-start gap-2">
+              <span className="mt-[1px] text-base">📝</span>
+              <span>
+                {ownerBio || "No profile introduction yet."}
+              </span>
+            </div>
           </div>
         </div>
 
