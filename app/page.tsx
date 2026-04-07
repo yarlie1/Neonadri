@@ -164,21 +164,18 @@ export default async function HomePage() {
                 href={`/posts/${post.id}`}
                 className="block rounded-2xl border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm transition hover:shadow-md"
               >
-                <div className="flex justify-between gap-4">
-                  <div className="flex-1">
-                    {/* 1️⃣ 목적 + duration */}
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1">
                     <div className="text-base font-semibold">
                       {getPurposeIcon(post.meeting_purpose)}{" "}
-                      {post.meeting_purpose} ·{" "}
+                      {post.meeting_purpose || "Meetup"} ·{" "}
                       {formatDuration(post.duration_minutes)}
                     </div>
 
-                    {/* 2️⃣ 장소 */}
                     <div className="mt-1 text-xl font-semibold">
                       {post.place_name || post.location}
                     </div>
 
-                    {/* 3️⃣ 날짜시간 */}
                     {post.meeting_time && (
                       <div className="mt-1 text-sm text-[#6f655c]">
                         ⏰ {formatTime(post.meeting_time)}
@@ -186,34 +183,35 @@ export default async function HomePage() {
                     )}
                   </div>
 
-                  {/* 금액 */}
                   {post.benefit_amount && (
-                    <div className="shrink-0 rounded-full bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 shadow">
-                      🪙 {post.benefit_amount}
+                    <div className="shrink-0 w-[72px] h-[72px] flex items-center justify-center rounded-full bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] shadow-[0_4px_12px_rgba(180,150,80,0.25)]">
+                      <div className="flex flex-col items-center text-[#5a4a1f]">
+                        <span className="text-base leading-none">🪙</span>
+                        <span className="mt-1 text-sm font-semibold leading-none">
+                          {post.benefit_amount}
+                        </span>
+                      </div>
                     </div>
                   )}
                 </div>
 
-                {/* 주소 */}
                 {post.location && (
                   <div className="mt-2 text-sm text-[#6f655c]">
                     📍 {post.location}
                   </div>
                 )}
 
-                {/* 타겟 */}
                 <div className="mt-2 text-sm text-[#6f655c]">
                   👤 {post.target_gender || "Any"} /{" "}
                   {post.target_age_group || "Any"}
                 </div>
 
-                {/* 하단 */}
                 <div className="mt-3 flex justify-between text-sm text-[#6f655c]">
                   <span>🧑 {hostName}</span>
 
                   {myStatus && (
                     <span
-                      className={`px-3 py-1 rounded-full text-xs ${getStatusBadge(
+                      className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
                         myStatus
                       )}`}
                     >
