@@ -1,5 +1,23 @@
 import Link from "next/link";
 import { createClient } from "../lib/supabase/server";
+import {
+  Coffee,
+  UtensilsCrossed,
+  CakeSlice,
+  Footprints,
+  PersonStanding,
+  Clapperboard,
+  Mic2,
+  Gamepad2,
+  BookOpen,
+  BriefcaseBusiness,
+  Book,
+  Camera,
+  Clock3,
+  MapPin,
+  UserRound,
+  Coins,
+} from "lucide-react";
 
 type PostRow = {
   id: number;
@@ -31,46 +49,44 @@ type MatchRow = {
 };
 
 const getPurposeIcon = (purpose: string | null) => {
+  const className = "h-5 w-5 shrink-0 text-[#7b7067]";
+
   switch (purpose) {
     case "Coffee":
     case "Coffee Chat":
-      return "☕";
+      return <Coffee className={className} />;
     case "Meal":
-      return "🍽";
+      return <UtensilsCrossed className={className} />;
     case "Dessert":
-      return "🍰";
+      return <CakeSlice className={className} />;
     case "Walk":
-      return "🚶";
+      return <Footprints className={className} />;
     case "Jogging":
-      return "🏃";
     case "Yoga":
-      return "🧘";
+      return <PersonStanding className={className} />;
     case "Movie":
     case "Theater":
-      return "🎬";
+      return <Clapperboard className={className} />;
     case "Karaoke":
-      return "🎤";
+      return <Mic2 className={className} />;
     case "Board Games":
-      return "🎲";
     case "Gaming":
-      return "🎮";
     case "Bowling":
-      return "🎳";
     case "Arcade":
-      return "🎯";
+      return <Gamepad2 className={className} />;
     case "Study":
-      return "📚";
+      return <BookOpen className={className} />;
     case "Work Together":
     case "Work":
-      return "💻";
+      return <BriefcaseBusiness className={className} />;
     case "Book Talk":
     case "Book":
-      return "📖";
+      return <Book className={className} />;
     case "Photo Walk":
     case "Photo":
-      return "📷";
+      return <Camera className={className} />;
     default:
-      return "✨";
+      return <MapPin className={className} />;
   }
 };
 
@@ -178,94 +194,121 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
       <div className="mx-auto max-w-2xl px-4 pb-40 pt-4">
-        {/* Header */}
-        <div className="mb-5 flex items-end justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold sm:text-3xl">Recent Meetup</h1>
-            <p className="mt-1 text-sm text-[#8a7f74]">
-              Find nearby meetups that match your vibe
-            </p>
-          </div>
-
+        <div className="mb-5 flex justify-end">
           <Link
             href="/map"
-            className="rounded-full border border-[#dccfc2] bg-white px-5 py-2 text-sm text-[#5a5149]"
+            className="inline-flex items-center whitespace-nowrap rounded-full border border-[#dccfc2] bg-white px-5 py-2.5 text-sm font-medium text-[#5a5149]"
           >
             Map View
           </Link>
         </div>
 
-        {/* List */}
-        <div className="space-y-4">
-          {posts.map((post) => {
-            const hostName = profileMap.get(post.user_id) || "Unknown";
-            const myStatus =
-              user && user.id !== post.user_id
-                ? requestStatusMap.get(post.id) || "No request yet"
-                : null;
+        {posts.length === 0 ? (
+          <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center shadow-sm">
+            <div className="text-lg font-semibold text-[#2f2a26]">
+              No meetups yet
+            </div>
+            <p className="mt-2 text-sm text-[#8a7f74]">
+              Be the first to create one.
+            </p>
 
-            const amount = parseBenefitAmount(post.benefit_amount);
-            const durationText = formatDuration(post.duration_minutes);
-            const placeText = post.place_name || post.location || "No place";
+            <Link
+              href="/write"
+              className="mt-5 inline-flex rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+            >
+              + Create Meetup
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {posts.map((post) => {
+              const hostName = profileMap.get(post.user_id) || "Unknown";
+              const myStatus =
+                user && user.id !== post.user_id
+                  ? requestStatusMap.get(post.id) || "No request yet"
+                  : null;
 
-            return (
-              <Link
-                key={post.id}
-                href={`/posts/${post.id}`}
-                className="block rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm hover:shadow-md transition"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    {/* 1줄 */}
-                    <div className="truncate text-[24px] font-extrabold text-[#2f2a26] sm:text-[26px]">
-                      {getPurposeIcon(post.meeting_purpose)}{" "}
-                      {post.meeting_purpose || "Meetup"}
-                      {durationText ? ` ⏱ ${durationText}` : ""}
+              const amount = parseBenefitAmount(post.benefit_amount);
+              const durationText = formatDuration(post.duration_minutes);
+              const placeText = post.place_name || post.location || "No place";
+
+              return (
+                <Link
+                  key={post.id}
+                  href={`/posts/${post.id}`}
+                  className="block rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm transition hover:shadow-md"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 truncate text-[24px] font-extrabold text-[#2f2a26] sm:text-[26px]">
+                        {getPurposeIcon(post.meeting_purpose)}
+                        <span className="truncate">
+                          {post.meeting_purpose || "Meetup"}
+                        </span>
+                        {durationText ? (
+                          <span className="inline-flex shrink-0 items-center gap-1 text-[#2f2a26]">
+                            <Clock3 className="h-5 w-5" />
+                            {durationText}
+                          </span>
+                        ) : null}
+                      </div>
+
+                      <div className="mt-[2px] flex items-center gap-2 truncate text-[24px] font-extrabold text-[#8a7f74] sm:text-[26px]">
+                        <MapPin className="h-5 w-5 shrink-0 text-[#8a7f74]" />
+                        <span className="truncate">{placeText}</span>
+                      </div>
                     </div>
 
-                    {/* 2줄 */}
-                    <div className="mt-[2px] truncate text-[24px] font-extrabold text-[#8a7f74] sm:text-[26px]">
-                      📍 {placeText}
-                    </div>
-                  </div>
-
-                  {amount !== null && (
-                    <div className="shrink-0 rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
-                      🪙 ${amount.toLocaleString()}
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-4 space-y-1 text-sm text-[#766c62]">
-                  <div>⏰ {formatTime(post.meeting_time)}</div>
-
-                  <div className="line-clamp-1">
-                    📍 {post.location || "No address"}
-                  </div>
-
-                  <div>
-                    👤 {post.target_gender || "Any"} /{" "}
-                    {post.target_age_group || "Any"}
-                  </div>
-
-                  <div className="flex justify-between pt-2">
-                    <span className="truncate">🧑 {hostName}</span>
-
-                    {myStatus && (
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
-                          myStatus
-                        )}`}
-                      >
-                        {myStatus}
-                      </span>
+                    {amount !== null && (
+                      <div className="shrink-0 rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
+                        <span className="inline-flex items-center gap-1.5">
+                          <Coins className="h-4 w-4" />
+                          ${amount.toLocaleString()}
+                        </span>
+                      </div>
                     )}
                   </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+
+                  <div className="mt-4 space-y-2 text-sm text-[#766c62]">
+                    <div className="flex items-center gap-2">
+                      <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                      <span>{formatTime(post.meeting_time)}</span>
+                    </div>
+
+                    <div className="flex items-start gap-2">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+                      <span className="line-clamp-1">
+                        {post.location || "No address"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                      <span>
+                        {post.target_gender || "Any"} /{" "}
+                        {post.target_age_group || "Any"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-3 pt-2">
+                      <span className="truncate">🧑 {hostName}</span>
+
+                      {myStatus && (
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
+                            myStatus
+                          )}`}
+                        >
+                          {myStatus}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <Link
