@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "../../../lib/supabase/client";
 import { useParams, useRouter } from "next/navigation";
 
@@ -144,7 +144,7 @@ const PURPOSE_HELP_TEXT: Record<string, string> = {
   "Photo Walk": "Walk around and take photos together.",
 };
 
-export default function EditMeetupPage() {
+export default function EditWritePage() {
   const supabase = createClient();
   const router = useRouter();
   const params = useParams();
@@ -153,24 +153,25 @@ export default function EditMeetupPage() {
   const autocompleteRef = useRef<any>(null);
   const geocoderRef = useRef<any>(null);
 
-  const [userId, setUserId] = useState("");
-  const [placeName, setPlaceName] = useState("");
-  const [location, setLocation] = useState("");
+  const [meetingPurpose, setMeetingPurpose] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
   const [durationMinutes, setDurationMinutes] = useState("");
+  const [location, setLocation] = useState("");
+  const [placeName, setPlaceName] = useState("");
   const [targetGender, setTargetGender] = useState("");
   const [targetAgeGroup, setTargetAgeGroup] = useState("");
-  const [meetingPurpose, setMeetingPurpose] = useState("");
   const [benefitAmount, setBenefitAmount] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [locationConfirmed, setLocationConfirmed] = useState(false);
+
+  const [userId, setUserId] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const loadPost = async () => {
+    const loadUserAndPost = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -185,53 +186,87 @@ export default function EditMeetupPage() {
       const { data, error } = await supabase
         .from("posts")
         .select(
-          "id, user_id, place_name, location, meeting_time, duration_minutes, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
+          "id, user_id, meeting_purpose, meeting_time, duration_minutes, location, place_name, latitude, longitude, target_gender, target_age_group, benefit_amount"
         )
         .eq("id", params.id)
         .eq("user_id", user.id)
         .single();
 
       if (error || !data) {
-        setMessage("Could not load this meetup.");
-        setLoading(false);
+        router.push("/dashboard");
         return;
       }
 
-      setPlaceName(data.place_name || "");
-      setLocation(data.location || "");
-      setMeetingTime(
-        data.meeting_time
-          ? new Date(data.meeting_time).toISOString().slice(0, 16)
-          : ""
-      );
+      setMeetingPurpose(data.meeting_purpose || "");
+
+      if (data.meeting_time) {
+        setMeetingTime(new Date(data.meeting_time).toISOString().slice(0, 16));
+      } else {
+        const now = new Date();
+        now.setHours(now.getHours() + 3);
+        now.setSeconds(0, 0);
+        setMeetingTime(now.toISOString().slice(0, 16));
+      }
+
       setDurationMinutes(
         data.duration_minutes ? String(data.duration_minutes) : ""
       );
+      setLocation(data.location || "");
+      setPlaceName(data.place_name || "");
+      setLatitude(data.latitude ?? null);
+      setLongitude(data.longitude ?? null);
+      setLocationConfirmed(
+        !!data.location && data.latitude !== null && data.longitude !== null
+      );
       setTargetGender(data.target_gender || "");
       setTargetAgeGroup(data.target_age_group || "");
-      setMeetingPurpose(data.meeting_purpose || "");
       setBenefitAmount(data.benefit_amount || "");
-      setLatitude(data.latitude);
-      setLongitude(data.longitude);
-      setLocationConfirmed(
-        data.location !== null &&
-          data.latitude !== null &&
-          data.longitude !== null
-      );
       setLoading(false);
     };
 
-    loadPost();
+    loadUserAndPost();
   }, [params.id, router, supabase]);
+
+  useEffect(() => {
+    if (!window.google || !searchInputRef.current) return;
+
+    autocompleteRef.current = new window.google.maps.places.Autocomplete(
+      searchInputRef.current,
+      {
+        fields: ["formatted_address", "name", "geometry"],
+      }
+    );
+
+    autocompleteRef.current.addListener("place_changed", () => {
+      const place = autocompleteRef.current.getPlace();
+
+      const address = place?.formatted_address || "";
+      const name = place?.name || address;
+      const nextLat = place?.geometry?.location?.lat?.();
+      const nextLng = place?.geometry?.location?.lng?.();
+
+      if (nextLat == null || nextLng == null) {
+        setLocationConfirmed(false);
+        return;
+      }
+
+      setPlaceName(name);
+      setLocation(address);
+      setLatitude(nextLat);
+      setLongitude(nextLng);
+      setLocationConfirmed(true);
+      setMessage("");
+    });
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const qName = urlParams.get("name");
-    const qLocation = urlParams.get("location");
-    const qLat = urlParams.get("lat");
-    const qLng = urlParams.get("lng");
+    const query = new URLSearchParams(window.location.search);
+    const qName = query.get("name");
+    const qLocation = query.get("location");
+    const qLat = query.get("lat");
+    const qLng = query.get("lng");
 
     if (qLocation && qLat && qLng) {
       setPlaceName(qName || qLocation);
@@ -241,75 +276,6 @@ export default function EditMeetupPage() {
       setLocationConfirmed(true);
       setMessage("");
     }
-  }, []);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    const initAutocomplete = () => {
-      if (
-        !window.google ||
-        !window.google.maps ||
-        !window.google.maps.places ||
-        !searchInputRef.current
-      ) {
-        return false;
-      }
-
-      if (!geocoderRef.current) {
-        geocoderRef.current = new window.google.maps.Geocoder();
-      }
-
-      if (!autocompleteRef.current) {
-        autocompleteRef.current =
-          new window.google.maps.places.Autocomplete(searchInputRef.current, {
-            fields: ["formatted_address", "name", "geometry"],
-          });
-
-        autocompleteRef.current.addListener("place_changed", () => {
-          const place = autocompleteRef.current.getPlace();
-
-          const formattedAddress =
-            place?.formatted_address || place?.name || "";
-          const selectedName = place?.name || formattedAddress;
-          const lat = place?.geometry?.location?.lat?.();
-          const lng = place?.geometry?.location?.lng?.();
-
-          if (
-            !formattedAddress ||
-            typeof lat !== "number" ||
-            typeof lng !== "number"
-          ) {
-            setLocationConfirmed(false);
-            return;
-          }
-
-          setPlaceName(selectedName);
-          setLocation(formattedAddress);
-          setLatitude(lat);
-          setLongitude(lng);
-          setLocationConfirmed(true);
-          setMessage("");
-        });
-      }
-
-      return true;
-    };
-
-    if (!initAutocomplete()) {
-      interval = setInterval(() => {
-        if (initAutocomplete()) clearInterval(interval);
-      }, 500);
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-      if (autocompleteRef.current && window.google?.maps?.event) {
-        window.google.maps.event.clearInstanceListeners(
-          autocompleteRef.current
-        );
-      }
-    };
   }, []);
 
   const purposeHelpText = useMemo(() => {
@@ -365,16 +331,16 @@ export default function EditMeetupPage() {
     const { error } = await supabase
       .from("posts")
       .update({
-        place_name: placeName || location,
-        location,
+        meeting_purpose: meetingPurpose,
         meeting_time: new Date(meetingTime).toISOString(),
         duration_minutes: Number(durationMinutes),
-        target_gender: targetGender,
-        target_age_group: targetAgeGroup,
-        meeting_purpose: meetingPurpose,
-        benefit_amount: benefitAmount,
+        location,
+        place_name: placeName || location,
         latitude,
         longitude,
+        target_gender: targetGender,
+        target_age_group: targetAgeGroup,
+        benefit_amount: benefitAmount,
       })
       .eq("id", params.id)
       .eq("user_id", userId);
@@ -391,8 +357,8 @@ export default function EditMeetupPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
-        <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 text-center shadow-sm">
+      <main className="min-h-screen bg-[#f7f1ea] px-6 py-8">
+        <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-sm">
           Loading...
         </div>
       </main>
@@ -433,6 +399,42 @@ export default function EditMeetupPage() {
             </div>
           </div>
 
+          <input
+            type="datetime-local"
+            className="sr-only"
+            value={meetingTime}
+            onChange={(e) => setMeetingTime(e.target.value)}
+            id="hidden-edit-datetime-input"
+          />
+
+          <div
+            onClick={() => {
+              const input = document.getElementById(
+                "hidden-edit-datetime-input"
+              ) as HTMLInputElement | null;
+              if (input) {
+                input.showPicker ? input.showPicker() : input.click();
+              }
+            }}
+            className="w-full cursor-pointer rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+          >
+            {meetingTime && new Date(meetingTime).toLocaleString()}
+          </div>
+
+          <select
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            value={durationMinutes}
+            onChange={(e) => setDurationMinutes(e.target.value)}
+          >
+            <option value="">Select meeting duration</option>
+            <option value="30">30 min</option>
+            <option value="60">1 hour</option>
+            <option value="90">1 hour 30 min</option>
+            <option value="120">2 hours</option>
+            <option value="180">3 hours</option>
+            <option value="240">4 hours</option>
+          </select>
+
           <div className="flex items-center gap-2">
             <input
               ref={searchInputRef}
@@ -460,61 +462,20 @@ export default function EditMeetupPage() {
                 {placeName || location}
               </p>
               <p className="mt-1 text-sm text-[#6b5f52]">{location}</p>
+
               {latitude !== null && longitude !== null && (
                 <p className="mt-1 text-xs text-[#8b7f74]">
                   Lat: {latitude.toFixed(6)}, Lng: {longitude.toFixed(6)}
                 </p>
               )}
+
+              <p className="mt-1 text-xs">
+                {locationConfirmed
+                  ? "Exact location selected."
+                  : "Select from dropdown or use the map picker."}
+              </p>
             </div>
           )}
-
-          <select
-            className={`w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm ${
-              meetingTime ? "text-[#2f2a26]" : "text-[#8b7f74]"
-            }`}
-            value={meetingTime}
-            onChange={(e) => setMeetingTime(e.target.value)}
-          >
-            <option value="">Select date/time</option>
-          </select>
-
-          <input
-            type="datetime-local"
-            className="sr-only"
-            value={meetingTime}
-            onChange={(e) => setMeetingTime(e.target.value)}
-            id="hidden-edit-datetime-input"
-          />
-
-          <div
-            onClick={() => {
-              const input = document.getElementById(
-                "hidden-edit-datetime-input"
-              ) as HTMLInputElement | null;
-              if (input) input.showPicker ? input.showPicker() : input.click();
-            }}
-            className={`w-full cursor-pointer rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm ${
-              meetingTime ? "text-[#2f2a26]" : "text-[#8b7f74]"
-            }`}
-          >
-            {meetingTime
-              ? new Date(meetingTime).toLocaleString()
-              : "Select date/time"}
-          </div>
-
-          <select
-            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-            value={durationMinutes}
-            onChange={(e) => setDurationMinutes(e.target.value)}
-          >
-            <option value="">Select meeting duration</option>
-            <option value="30">30 min</option>
-            <option value="60">1 hour</option>
-            <option value="90">1 hour 30 min</option>
-            <option value="120">2 hours</option>
-            <option value="180">3 hours</option>
-            <option value="240">4 hours</option>
-          </select>
 
           <select
             className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
@@ -562,15 +523,16 @@ export default function EditMeetupPage() {
             disabled={saving}
             className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
           >
-            {saving ? "Saving..." : "Save Changes"}
+            {saving ? "Saving..." : "Save Meetup"}
           </button>
 
-          <a
-            href="/dashboard"
+          <button
+            type="button"
+            onClick={() => router.push("/dashboard")}
             className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
           >
             Cancel
-          </a>
+          </button>
         </div>
 
         {message && (
