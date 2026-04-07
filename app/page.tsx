@@ -203,7 +203,7 @@ export default async function HomePage() {
                     </div>
 
                     <div className="mt-1 truncate text-xl font-semibold">
-                      {post.placeName || post.place_name || post.location}
+                      {post.place_name || post.location}
                     </div>
                   </div>
 
