@@ -14,14 +14,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-[#f7f1ea] text-[#2f2a26]">
-        {mapsKey ? (
+        {mapsKey && (
           <Script
             src={`https://maps.googleapis.com/maps/api/js?key=${mapsKey}&libraries=places`}
             strategy="beforeInteractive"
           />
-        ) : null}
+        )}
+
         <TopNav />
-        {children}
+
+        {/* 🔥 핵심 wrapper */}
+        <div className="mx-auto w-full max-w-4xl px-4 pt-4 sm:px-6 sm:pt-6">
+          {children}
+        </div>
       </body>
     </html>
   );
