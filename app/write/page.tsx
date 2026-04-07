@@ -1,6 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createClient } from "../../lib/supabase/client";
+import { useRouter } from "next/navigation";
+
+declare global {
+  interface Window {
+    google: any;
+  }
+}
 
 const PURPOSE_OPTIONS = [
   {
@@ -8,60 +16,53 @@ const PURPOSE_OPTIONS = [
     icon: "☕",
     baseClass:
       "border-[#d8c2a8] bg-[#f8efe6] text-[#6b4f3a] hover:bg-[#f3e4d6]",
-    selectedClass:
-      "border-[#8b5e3c] bg-[#8b5e3c] text-white",
+    selectedClass: "border-[#8b5e3c] bg-[#8b5e3c] text-white",
   },
   {
     value: "Casual Chat",
     icon: "💬",
     baseClass:
       "border-[#cfc6e8] bg-[#f3f0fb] text-[#5d4f8c] hover:bg-[#ebe5f8]",
-    selectedClass:
-      "border-[#6b5aa6] bg-[#6b5aa6] text-white",
+    selectedClass: "border-[#6b5aa6] bg-[#6b5aa6] text-white",
   },
   {
     value: "Walk",
     icon: "🚶",
     baseClass:
       "border-[#bfd8c3] bg-[#edf7ef] text-[#466b4d] hover:bg-[#e2f1e5]",
-    selectedClass:
-      "border-[#4f8a5b] bg-[#4f8a5b] text-white",
+    selectedClass: "border-[#4f8a5b] bg-[#4f8a5b] text-white",
   },
   {
     value: "Meal",
     icon: "🍽",
     baseClass:
       "border-[#e3c9b6] bg-[#fbf3ec] text-[#7a5a42] hover:bg-[#f5e7dc]",
-    selectedClass:
-      "border-[#9a6a44] bg-[#9a6a44] text-white",
+    selectedClass: "border-[#9a6a44] bg-[#9a6a44] text-white",
   },
   {
     value: "Study",
     icon: "📚",
     baseClass:
       "border-[#bfd3e8] bg-[#eef5fb] text-[#46627c] hover:bg-[#e2eef8]",
-    selectedClass:
-      "border-[#4c78a8] bg-[#4c78a8] text-white",
+    selectedClass: "border-[#4c78a8] bg-[#4c78a8] text-white",
   },
   {
     value: "Make Friends",
     icon: "🤝",
     baseClass:
       "border-[#e7c4cf] bg-[#fbf0f4] text-[#8a5165] hover:bg-[#f7e4eb]",
-    selectedClass:
-      "border-[#b25d7a] bg-[#b25d7a] text-white",
+    selectedClass: "border-[#b25d7a] bg-[#b25d7a] text-white",
   },
   {
     value: "Networking",
     icon: "💼",
     baseClass:
       "border-[#c9cfda] bg-[#f4f6fa] text-[#4e596d] hover:bg-[#e9edf5]",
-    selectedClass:
-      "border-[#5a6780] bg-[#5a6780] text-white",
+    selectedClass: "border-[#5a6780] bg-[#5a6780] text-white",
   },
 ] as const;
 
-const PURPOSE_DESCRIPTIONS: Record<string, string> = {
+const PURPOSE_HELP_TEXT: Record<string, string> = {
   "Coffee Chat": "Quick casual conversation over coffee.",
   "Casual Chat": "Relaxed conversation in a comfortable public place.",
   Walk: "Light walk and chat outdoors.",
@@ -72,62 +73,445 @@ const PURPOSE_DESCRIPTIONS: Record<string, string> = {
 };
 
 export default function WritePage() {
+  const supabase = createClient();
+  const router = useRouter();
+
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const autocompleteRef = useRef<any>(null);
+  const geocoderRef = useRef<any>(null);
+
+  const [userId, setUserId] = useState("");
+  const [placeName, setPlaceName] = useState("");
+  const [location, setLocation] = useState("");
+  const [meetingTime, setMeetingTime] = useState("");
+  const [durationMinutes, setDurationMinutes] = useState("");
+  const [targetGender, setTargetGender] = useState("");
+  const [targetAgeGroup, setTargetAgeGroup] = useState("");
   const [meetingPurpose, setMeetingPurpose] = useState("");
+  const [benefitAmount, setBenefitAmount] = useState("");
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+  const [locationConfirmed, setLocationConfirmed] = useState(false);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [locating, setLocating] = useState(false);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        router.push("/");
+        return;
+      }
+
+      setUserId(user.id);
+    };
+
+    checkUser();
+  }, [router, supabase]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    const qName = params.get("name");
+    const qLocation = params.get("location");
+    const qLat = params.get("lat");
+    const qLng = params.get("lng");
+
+    if (qLocation && qLat && qLng) {
+      setPlaceName(qName || qLocation);
+      setLocation(qLocation);
+      setLatitude(Number(qLat));
+      setLongitude(Number(qLng));
+      setLocationConfirmed(true);
+      setMessage("");
+    }
+  }, []);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    const initAutocomplete = () => {
+      if (
+        !window.google ||
+        !window.google.maps ||
+        !window.google.maps.places ||
+        !searchInputRef.current
+      ) {
+        return false;
+      }
+
+      if (!geocoderRef.current) {
+        geocoderRef.current = new window.google.maps.Geocoder();
+      }
+
+      if (!autocompleteRef.current) {
+        autocompleteRef.current =
+          new window.google.maps.places.Autocomplete(searchInputRef.current, {
+            fields: ["formatted_address", "name", "geometry"],
+          });
+
+        autocompleteRef.current.addListener("place_changed", () => {
+          const place = autocompleteRef.current.getPlace();
+
+          const formattedAddress =
+            place?.formatted_address || place?.name || "";
+          const selectedName = place?.name || formattedAddress;
+          const lat = place?.geometry?.location?.lat?.();
+          const lng = place?.geometry?.location?.lng?.();
+
+          if (
+            !formattedAddress ||
+            typeof lat !== "number" ||
+            typeof lng !== "number"
+          ) {
+            setLocationConfirmed(false);
+            return;
+          }
+
+          setPlaceName(selectedName);
+          setLocation(formattedAddress);
+          setLatitude(lat);
+          setLongitude(lng);
+          setLocationConfirmed(true);
+          setMessage("");
+        });
+      }
+
+      return true;
+    };
+
+    if (!initAutocomplete()) {
+      interval = setInterval(() => {
+        if (initAutocomplete()) {
+          clearInterval(interval);
+        }
+      }, 500);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+      if (autocompleteRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(
+          autocompleteRef.current
+        );
+      }
+    };
+  }, []);
+
+  const purposeHelpText = useMemo(() => {
+    if (!meetingPurpose) {
+      return "Choose the kind of meetup you want, and a short description will appear here.";
+    }
+    return PURPOSE_HELP_TEXT[meetingPurpose] || "";
+  }, [meetingPurpose]);
 
   const selectedPurpose = PURPOSE_OPTIONS.find(
     (item) => item.value === meetingPurpose
   );
 
+  const handleLocationInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setPlaceName("");
+    setLocation(e.target.value);
+    setLatitude(null);
+    setLongitude(null);
+    setLocationConfirmed(false);
+  };
+
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setMessage("Geolocation is not supported on this device.");
+      return;
+    }
+
+    setMessage("");
+    setLocating(true);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        if (geocoderRef.current) {
+          geocoderRef.current.geocode(
+            { location: { lat, lng } },
+            (results: any, status: string) => {
+              setLocating(false);
+
+              if (status === "OK" && results && results[0]) {
+                const address = results[0].formatted_address;
+                setPlaceName("Current Location");
+                setLocation(address);
+                setLatitude(lat);
+                setLongitude(lng);
+                setLocationConfirmed(true);
+                setMessage("");
+              } else {
+                setMessage("Could not convert your location to an address.");
+              }
+            }
+          );
+        } else {
+          setLocating(false);
+          setMessage("Map service is still loading. Please try again.");
+        }
+      },
+      () => {
+        setLocating(false);
+        setMessage("Could not get your current location.");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+      }
+    );
+  };
+
+  const handleOpenMapPicker = () => {
+    router.push("/write/location?returnTo=/write");
+  };
+
+  const handleCreatePost = async () => {
+    setMessage("");
+
+    if (
+      !meetingTime.trim() ||
+      !durationMinutes.trim() ||
+      !targetGender.trim() ||
+      !targetAgeGroup.trim() ||
+      !meetingPurpose.trim() ||
+      !benefitAmount.trim()
+    ) {
+      setMessage("Please fill in all required fields.");
+      return;
+    }
+
+    if (
+      !location.trim() ||
+      latitude === null ||
+      longitude === null ||
+      !locationConfirmed
+    ) {
+      setMessage(
+        "Please choose one exact location from the dropdown, current location, or map picker."
+      );
+      return;
+    }
+
+    setLoading(true);
+
+    const { error } = await supabase.from("posts").insert({
+      user_id: userId,
+      place_name: placeName || location,
+      location,
+      meeting_time: new Date(meetingTime).toISOString(),
+      duration_minutes: Number(durationMinutes),
+      target_gender: targetGender,
+      target_age_group: targetAgeGroup,
+      meeting_purpose: meetingPurpose,
+      benefit_amount: benefitAmount,
+      latitude,
+      longitude,
+    });
+
+    setLoading(false);
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    router.push("/");
+  };
+
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-sm">
-        <h1 className="text-3xl font-semibold">Create Meetup</h1>
+      <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
+        <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
+          Create Meetup
+        </h1>
 
-        <div className="mt-8">
-          <label className="mb-3 block text-sm font-medium text-[#5a5149]">
-            Purpose
-          </label>
+        <p className="mt-3 text-sm leading-7 text-[#6f655c]">
+          Search for a place, use your current location, or choose on a separate
+          map page.
+        </p>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {PURPOSE_OPTIONS.map((item) => {
-              const isSelected = meetingPurpose === item.value;
+        <div className="mt-8 space-y-4">
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={handleUseCurrentLocation}
+              disabled={locating}
+              className="rounded-2xl bg-[#6b5f52] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046] disabled:opacity-50"
+            >
+              {locating ? "Finding..." : "Use Current Location"}
+            </button>
 
-              return (
-                <button
-                  key={item.value}
-                  type="button"
-                  onClick={() => setMeetingPurpose(item.value)}
-                  className={`rounded-2xl border px-4 py-3 text-sm font-medium transition ${
-                    isSelected ? item.selectedClass : item.baseClass
-                  }`}
-                >
-                  <span className="mr-2">{item.icon}</span>
-                  {item.value}
-                </button>
-              );
-            })}
+            <button
+              type="button"
+              onClick={handleOpenMapPicker}
+              className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+            >
+              Pick on Map
+            </button>
           </div>
 
-          <div className="mt-4 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-            <p className="font-medium text-[#2f2a26]">Purpose description</p>
-            <p className="mt-1">
-              {meetingPurpose
-                ? PURPOSE_DESCRIPTIONS[meetingPurpose]
-                : "Choose the kind of meetup you want, and a short description will appear here."}
-            </p>
-          </div>
+          <input
+            ref={searchInputRef}
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            placeholder="Search exact place or address"
+            value={location}
+            onChange={handleLocationInputChange}
+          />
 
-          {selectedPurpose && (
-            <div className="mt-4">
-              <span
-                className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium ${selectedPurpose.baseClass}`}
-              >
-                <span className="mr-2">{selectedPurpose.icon}</span>
-                {selectedPurpose.value}
-              </span>
+          {location && (
+            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+              <p className="font-medium text-[#2f2a26]">Selected place</p>
+
+              <p className="mt-1 text-base font-semibold text-[#2f2a26]">
+                {placeName || location}
+              </p>
+
+              <p className="mt-1 text-sm text-[#6b5f52]">{location}</p>
+
+              {latitude !== null && longitude !== null && (
+                <p className="mt-1 text-xs text-[#8b7f74]">
+                  Lat: {latitude.toFixed(6)}, Lng: {longitude.toFixed(6)}
+                </p>
+              )}
+
+              <p className="mt-1 text-xs">
+                {locationConfirmed
+                  ? "Exact location selected."
+                  : "Select from dropdown or use the map picker."}
+              </p>
             </div>
           )}
+
+          <input
+            type="datetime-local"
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            value={meetingTime}
+            onChange={(e) => setMeetingTime(e.target.value)}
+          />
+
+          <select
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            value={durationMinutes}
+            onChange={(e) => setDurationMinutes(e.target.value)}
+          >
+            <option value="">Select meeting duration</option>
+            <option value="30">30 min</option>
+            <option value="60">1 hour</option>
+            <option value="90">1 hour 30 min</option>
+            <option value="120">2 hours</option>
+            <option value="180">3 hours</option>
+            <option value="240">4 hours</option>
+          </select>
+
+          <div className="space-y-3">
+            <label className="block text-sm font-medium text-[#5a5149]">
+              Purpose
+            </label>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {PURPOSE_OPTIONS.map((item) => {
+                const isSelected = meetingPurpose === item.value;
+
+                return (
+                  <button
+                    key={item.value}
+                    type="button"
+                    onClick={() => setMeetingPurpose(item.value)}
+                    className={`rounded-2xl border px-4 py-3 text-sm font-medium transition ${
+                      isSelected ? item.selectedClass : item.baseClass
+                    }`}
+                  >
+                    <span className="mr-2">{item.icon}</span>
+                    {item.value}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+              <p className="font-medium text-[#2f2a26]">Purpose description</p>
+              <p className="mt-1">{purposeHelpText}</p>
+            </div>
+
+            {selectedPurpose && (
+              <div>
+                <span
+                  className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium ${selectedPurpose.baseClass}`}
+                >
+                  <span className="mr-2">{selectedPurpose.icon}</span>
+                  {selectedPurpose.value}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <select
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            value={targetGender}
+            onChange={(e) => setTargetGender(e.target.value)}
+          >
+            <option value="">Select target gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Any">Any</option>
+          </select>
+
+          <select
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            value={targetAgeGroup}
+            onChange={(e) => setTargetAgeGroup(e.target.value)}
+          >
+            <option value="">Select target age group</option>
+            <option value="20s">20s</option>
+            <option value="30s">30s</option>
+            <option value="40s">40s</option>
+            <option value="50s+">50s+</option>
+            <option value="Any">Any</option>
+          </select>
+
+          <select
+            className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+            value={benefitAmount}
+            onChange={(e) => setBenefitAmount(e.target.value)}
+          >
+            <option value="">Select benefit amount</option>
+            <option value="$0">$0</option>
+            <option value="$10">$10</option>
+            <option value="$20">$20</option>
+            <option value="$30">$30</option>
+            <option value="$50">$50</option>
+            <option value="$100">$100</option>
+            <option value="$200+">$200+</option>
+          </select>
         </div>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          <button
+            onClick={handleCreatePost}
+            disabled={loading || !userId}
+            className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+          >
+            {loading ? "Creating..." : "Create Meetup"}
+          </button>
+        </div>
+
+        {message && (
+          <p className="mt-5 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+            {message}
+          </p>
+        )}
       </div>
     </main>
   );
