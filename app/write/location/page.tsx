@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 declare global {
   interface Window {
@@ -16,9 +16,6 @@ type LatLng = {
 
 export default function WriteLocationPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const returnTo = searchParams.get("returnTo") || "/write";
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<any>(null);
@@ -26,6 +23,7 @@ export default function WriteLocationPage() {
   const geocoderRef = useRef<any>(null);
   const placesServiceRef = useRef<any>(null);
 
+  const [returnTo, setReturnTo] = useState("/write");
   const [query, setQuery] = useState("");
   const [selectedLatLng, setSelectedLatLng] = useState<LatLng | null>(null);
   const [selectedAddress, setSelectedAddress] = useState("");
@@ -39,6 +37,12 @@ export default function WriteLocationPage() {
     () => ({ lat: 34.0522, lng: -118.2437 }),
     []
   );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    setReturnTo(params.get("returnTo") || "/write");
+  }, []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -255,10 +259,7 @@ export default function WriteLocationPage() {
           )}
 
           <div className="overflow-hidden rounded-[2rem] border border-[#e7ddd2] bg-white">
-            <div
-              ref={mapContainerRef}
-              className="h-[28rem] w-full"
-            />
+            <div ref={mapContainerRef} className="h-[28rem] w-full" />
           </div>
 
           {loadingMap && (
@@ -275,9 +276,7 @@ export default function WriteLocationPage() {
                 </p>
               )}
 
-              {selectedAddress && (
-                <p className="mt-1">{selectedAddress}</p>
-              )}
+              {selectedAddress && <p className="mt-1">{selectedAddress}</p>}
 
               {selectedLatLng && (
                 <p className="mt-1 text-xs text-[#8b7f74]">
