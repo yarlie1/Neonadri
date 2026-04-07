@@ -147,7 +147,16 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-6 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-4xl space-y-6">
-        <h2 className="text-lg font-semibold">Recent Meetup</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Recent Meetup</h2>
+
+          <Link
+            href="/map"
+            className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
+          >
+            Map View
+          </Link>
+        </div>
 
         <div className="space-y-4">
           {posts.map((post) => {
