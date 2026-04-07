@@ -57,9 +57,9 @@ export default function TopNav() {
         </Link>
 
         {loading ? (
-          <div className="h-10 w-32 rounded-full bg-[#f3ebe2] animate-pulse" />
+          <div className="h-10 w-32 animate-pulse rounded-full bg-[#f3ebe2]" />
         ) : user ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto">
             <Link
               href="/account"
               className="rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
@@ -82,7 +82,7 @@ export default function TopNav() {
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto">
             <Link
               href="/login"
               className="rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
