@@ -136,11 +136,9 @@ export default async function HomePage() {
 
   const formatDuration = (minutes: number | null) => {
     if (!minutes) return null;
-
     if (minutes === 60) return "1h";
     if (minutes === 90) return "1.5h";
     if (minutes === 120) return "2h";
-
     return `${minutes}m`;
   };
 
@@ -162,13 +160,14 @@ export default async function HomePage() {
               <Link
                 key={post.id}
                 href={`/posts/${post.id}`}
-                className="block rounded-2xl border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm transition hover:shadow-md"
+                className="block rounded-2xl border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm hover:shadow-md"
               >
+                {/* 🔥 상단 영역 (금액 포함) */}
                 <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
+                  <div>
                     <div className="text-base font-semibold">
                       {getPurposeIcon(post.meeting_purpose)}{" "}
-                      {post.meeting_purpose || "Meetup"} ·{" "}
+                      {post.meeting_purpose} ·{" "}
                       {formatDuration(post.duration_minutes)}
                     </div>
 
@@ -183,41 +182,40 @@ export default async function HomePage() {
                     )}
                   </div>
 
+                  {/* ✅ 금액: 상단 영역에만 존재 */}
                   {post.benefit_amount && (
-                    <div className="shrink-0 w-[72px] h-[72px] flex items-center justify-center rounded-full bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] shadow-[0_4px_12px_rgba(180,150,80,0.25)]">
-                      <div className="flex flex-col items-center text-[#5a4a1f]">
-                        <span className="text-base leading-none">🪙</span>
-                        <span className="mt-1 text-sm font-semibold leading-none">
-                          {post.benefit_amount}
-                        </span>
-                      </div>
+                    <div className="shrink-0 w-[64px] h-[64px] flex items-center justify-center rounded-full bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] shadow">
+                      🪙 {post.benefit_amount}
                     </div>
                   )}
                 </div>
 
-                {post.location && (
-                  <div className="mt-2 text-sm text-[#6f655c]">
-                    📍 {post.location}
-                  </div>
-                )}
-
-                <div className="mt-2 text-sm text-[#6f655c]">
-                  👤 {post.target_gender || "Any"} /{" "}
-                  {post.target_age_group || "Any"}
-                </div>
-
-                <div className="mt-3 flex justify-between text-sm text-[#6f655c]">
-                  <span>🧑 {hostName}</span>
-
-                  {myStatus && (
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
-                        myStatus
-                      )}`}
-                    >
-                      {myStatus}
-                    </span>
+                {/* 🔽 하단 영역 (금액 영향 없음) */}
+                <div className="mt-3">
+                  {post.location && (
+                    <div className="text-sm text-[#6f655c]">
+                      📍 {post.location}
+                    </div>
                   )}
+
+                  <div className="mt-1 text-sm text-[#6f655c]">
+                    👤 {post.target_gender || "Any"} /{" "}
+                    {post.target_age_group || "Any"}
+                  </div>
+
+                  <div className="mt-2 flex justify-between text-sm text-[#6f655c]">
+                    <span>🧑 {hostName}</span>
+
+                    {myStatus && (
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs ${getStatusBadge(
+                          myStatus
+                        )}`}
+                      >
+                        {myStatus}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </Link>
             );
