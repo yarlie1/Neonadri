@@ -42,19 +42,42 @@ function milesBetween(
 const getPurposeIcon = (purpose: string | null) => {
   switch (purpose) {
     case "Coffee Chat":
+    case "Coffee":
       return "☕";
-    case "Casual Chat":
-      return "💬";
     case "Meal":
       return "🍽";
+    case "Dessert":
+      return "🍰";
     case "Walk":
       return "🚶";
+    case "Jogging":
+      return "🏃";
+    case "Yoga":
+      return "🧘";
+    case "Movie":
+    case "Theater":
+      return "🎬";
+    case "Karaoke":
+      return "🎤";
+    case "Board Games":
+      return "🎲";
+    case "Gaming":
+      return "🎮";
+    case "Bowling":
+      return "🎳";
+    case "Arcade":
+      return "🎯";
     case "Study":
       return "📚";
-    case "Make Friends":
-      return "🤝";
-    case "Networking":
-      return "💼";
+    case "Work Together":
+    case "Work":
+      return "💻";
+    case "Book Talk":
+    case "Book":
+      return "📖";
+    case "Photo Walk":
+    case "Photo":
+      return "📷";
     default:
       return "✨";
   }
@@ -72,11 +95,9 @@ const formatTime = (meetingTime: string | null) => {
 
 const formatDuration = (minutes: number | null) => {
   if (!minutes) return null;
-
   if (minutes === 60) return "1h";
   if (minutes === 90) return "1.5h";
   if (minutes === 120) return "2h";
-
   return `${minutes}m`;
 };
 
