@@ -37,10 +37,38 @@ const getPurposeIcon = (purpose: string | null) => {
       return "☕";
     case "Meal":
       return "🍽";
-    case "Study":
-      return "📚";
+    case "Dessert":
+      return "🍰";
     case "Walk":
       return "🚶";
+    case "Jogging":
+      return "🏃";
+    case "Yoga":
+      return "🧘";
+    case "Movie":
+    case "Theater":
+      return "🎬";
+    case "Karaoke":
+      return "🎤";
+    case "Board Games":
+      return "🎲";
+    case "Gaming":
+      return "🎮";
+    case "Bowling":
+      return "🎳";
+    case "Arcade":
+      return "🎯";
+    case "Study":
+      return "📚";
+    case "Work Together":
+    case "Work":
+      return "💻";
+    case "Book Talk":
+    case "Book":
+      return "📖";
+    case "Photo Walk":
+    case "Photo":
+      return "📷";
     default:
       return "✨";
   }
@@ -80,6 +108,16 @@ const formatDuration = (minutes: number | null) => {
   if (minutes === 90) return "1.5h";
   if (minutes === 120) return "2h";
   return `${minutes}m`;
+};
+
+const parseBenefitAmount = (value: string | null) => {
+  if (!value) return null;
+
+  const cleaned = String(value).replace(/[^0-9.-]/g, "");
+  const amount = Number(cleaned);
+
+  if (Number.isNaN(amount) || amount <= 0) return null;
+  return amount;
 };
 
 export default async function HomePage() {
@@ -139,13 +177,10 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
-      <div className="pb-32">
-        {/* 🔥 베이지 박스 제거된 헤더 */}
+      <div className="mx-auto max-w-2xl px-4 pb-40">
         <div className="mb-5 flex items-end justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold sm:text-3xl">
-              Recent Meetup
-            </h1>
+            <h1 className="text-2xl font-bold sm:text-3xl">Recent Meetup</h1>
             <p className="mt-1 text-sm text-[#8a7f74]">
               Find nearby meetups that match your vibe
             </p>
@@ -153,83 +188,104 @@ export default async function HomePage() {
 
           <Link
             href="/map"
-            className="rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm text-white shadow-sm"
+            className="shrink-0 whitespace-nowrap rounded-full border border-[#dccfc2] bg-white px-5 py-2 text-sm font-medium text-[#5a5149]"
           >
             Map View
           </Link>
         </div>
 
-        {/* 🔥 리스트 */}
-        <div className="space-y-5">
-          {posts.map((post) => {
-            const hostName = profileMap.get(post.user_id) || "Unknown";
+        {posts.length === 0 ? (
+          <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center shadow-sm">
+            <div className="text-lg font-semibold text-[#2f2a26]">
+              No meetups yet
+            </div>
+            <p className="mt-2 text-sm text-[#8a7f74]">
+              Be the first to create one.
+            </p>
 
-            const myStatus =
-              user && user.id !== post.user_id
-                ? requestStatusMap.get(post.id) || "No request yet"
-                : null;
+            <Link
+              href="/write"
+              className="mt-5 inline-flex rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+            >
+              + Create Meetup
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {posts.map((post) => {
+              const hostName = profileMap.get(post.user_id) || "Unknown";
 
-            const amount = Number(post.benefit_amount);
+              const myStatus =
+                user && user.id !== post.user_id
+                  ? requestStatusMap.get(post.id) || "No request yet"
+                  : null;
 
-            return (
-              <Link
-                key={post.id}
-                href={`/posts/${post.id}`}
-                className="block rounded-[28px] border border-[#e7ddd2] bg-white p-5 shadow-[0_6px_18px_rgba(80,60,40,0.08)] hover:shadow-[0_8px_22px_rgba(80,60,40,0.10)]"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <div className="text-sm font-semibold text-[#5f5449]">
-                      {getPurposeIcon(post.meeting_purpose)}{" "}
-                      {post.meeting_purpose || "Meetup"} ·{" "}
-                      {formatDuration(post.duration_minutes)}
+              const amount = parseBenefitAmount(post.benefit_amount);
+
+              return (
+                <Link
+                  key={post.id}
+                  href={`/posts/${post.id}`}
+                  className="block rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-[0_6px_18px_rgba(80,60,40,0.08)] transition hover:shadow-[0_8px_22px_rgba(80,60,40,0.10)]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-[#5f5449]">
+                        {getPurposeIcon(post.meeting_purpose)}{" "}
+                        {post.meeting_purpose || "Meetup"}
+                        {formatDuration(post.duration_minutes)
+                          ? ` · ${formatDuration(post.duration_minutes)}`
+                          : ""}
+                      </div>
+
+                      <div className="mt-2 text-[26px] font-bold leading-tight text-[#2f2a26]">
+                        {post.place_name || post.location || "No place"}
+                      </div>
                     </div>
 
-                    <div className="mt-2 text-2xl font-bold">
-                      {post.place_name || post.location || "No place"}
-                    </div>
-                  </div>
-
-                  {/* 🔥 NaN 방지 완료 */}
-                  {!isNaN(amount) && amount > 0 && (
-                    <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d]">
-                      🪙 ${amount.toLocaleString()}
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-4 text-sm text-[#766c62] space-y-1">
-                  <div>⏰ {formatTime(post.meeting_time)}</div>
-                  <div>📍 {post.location || "No address"}</div>
-                  <div>
-                    👤 {post.target_gender || "Any"} /{" "}
-                    {post.target_age_group || "Any"}
-                  </div>
-
-                  <div className="flex justify-between pt-1">
-                    <span>🧑 {hostName}</span>
-
-                    {myStatus && (
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
-                          myStatus
-                        )}`}
-                      >
-                        {myStatus}
-                      </span>
+                    {amount !== null && (
+                      <div className="shrink-0 rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
+                        🪙 ${amount.toLocaleString()}
+                      </div>
                     )}
                   </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+
+                  <div className="mt-4 space-y-1 text-sm text-[#766c62]">
+                    <div>⏰ {formatTime(post.meeting_time)}</div>
+
+                    <div className="line-clamp-1">
+                      📍 {post.location || "No address"}
+                    </div>
+
+                    <div>
+                      👤 {post.target_gender || "Any"} /{" "}
+                      {post.target_age_group || "Any"}
+                    </div>
+
+                    <div className="flex items-center justify-between gap-3 pt-2">
+                      <span className="truncate">🧑 {hostName}</span>
+
+                      {myStatus && (
+                        <span
+                          className={`shrink-0 rounded-full px-3 py-1 text-xs ${getStatusBadge(
+                            myStatus
+                          )}`}
+                        >
+                          {myStatus}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
 
-      {/* 🔥 Create 버튼 */}
       <Link
         href="/write"
-        className="fixed bottom-6 right-5 rounded-full bg-[#6b5f52] px-6 py-4 text-white shadow-lg"
+        className="fixed bottom-8 right-5 z-40 rounded-full bg-[#6b5f52] px-6 py-4 text-white shadow-lg"
       >
         + Create
       </Link>
