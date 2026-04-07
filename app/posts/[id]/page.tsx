@@ -1,5 +1,27 @@
 import { createClient } from "../../../lib/supabase/server";
 import MatchRequestBox from "./MatchRequestBox";
+import Link from "next/link";
+import {
+  Coffee,
+  UtensilsCrossed,
+  CakeSlice,
+  Footprints,
+  PersonStanding,
+  Clapperboard,
+  Mic2,
+  Gamepad2,
+  BookOpen,
+  BriefcaseBusiness,
+  Book,
+  Camera,
+  Clock3,
+  MapPin,
+  UserRound,
+  Coins,
+  FileText,
+  ArrowLeft,
+  Map,
+} from "lucide-react";
 
 type PageProps = {
   params: Promise<{
@@ -26,46 +48,44 @@ type MatchRow = {
 };
 
 const getPurposeIcon = (purpose: string | null) => {
+  const className = "h-5 w-5 shrink-0 text-[#7b7067]";
+
   switch (purpose) {
     case "Coffee Chat":
     case "Coffee":
-      return "☕";
+      return <Coffee className={className} />;
     case "Meal":
-      return "🍽";
+      return <UtensilsCrossed className={className} />;
     case "Dessert":
-      return "🍰";
+      return <CakeSlice className={className} />;
     case "Walk":
-      return "🚶";
+      return <Footprints className={className} />;
     case "Jogging":
-      return "🏃";
     case "Yoga":
-      return "🧘";
+      return <PersonStanding className={className} />;
     case "Movie":
     case "Theater":
-      return "🎬";
+      return <Clapperboard className={className} />;
     case "Karaoke":
-      return "🎤";
+      return <Mic2 className={className} />;
     case "Board Games":
-      return "🎲";
     case "Gaming":
-      return "🎮";
     case "Bowling":
-      return "🎳";
     case "Arcade":
-      return "🎯";
+      return <Gamepad2 className={className} />;
     case "Study":
-      return "📚";
+      return <BookOpen className={className} />;
     case "Work Together":
     case "Work":
-      return "💻";
+      return <BriefcaseBusiness className={className} />;
     case "Book Talk":
     case "Book":
-      return "📖";
+      return <Book className={className} />;
     case "Photo Walk":
     case "Photo":
-      return "📷";
+      return <Camera className={className} />;
     default:
-      return "✨";
+      return <MapPin className={className} />;
   }
 };
 
@@ -87,6 +107,16 @@ const formatDuration = (minutes: number | null) => {
   return `${minutes}m`;
 };
 
+const parseBenefitAmount = (value: string | null) => {
+  if (!value) return null;
+
+  const cleaned = String(value).replace(/[^0-9.-]/g, "");
+  const amount = Number(cleaned);
+
+  if (Number.isNaN(amount) || amount <= 0) return null;
+  return amount;
+};
+
 export default async function MeetupDetailPage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
@@ -105,8 +135,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   if (postError || !post) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] flex items-center justify-center">
-        <div className="text-center text-[#6f655c]">Meetup not found</div>
+      <main className="min-h-screen bg-[#f7f1ea] px-4 py-10 text-[#2f2a26]">
+        <div className="mx-auto max-w-2xl rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center shadow-sm">
+          <div className="text-lg font-semibold">Meetup not found</div>
+        </div>
       </main>
     );
   }
@@ -194,52 +226,69 @@ export default async function MeetupDetailPage({ params }: PageProps) {
         )}`
       : "";
 
+  const amount = parseBenefitAmount(post.benefit_amount);
+  const durationText = formatDuration(post.duration_minutes);
+  const placeText = post.place_name || post.location || "No place";
+
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
-      <div className="mx-auto max-w-3xl space-y-6">
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
-          <div className="flex items-start justify-between gap-4">
+    <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
+      <div className="mx-auto max-w-2xl px-4 pb-16 pt-4 space-y-4">
+        <div className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
+          <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <div className="text-base font-semibold">
-                {getPurposeIcon(post.meeting_purpose)}{" "}
-                {post.meeting_purpose || "Meetup"}
-                {formatDuration(post.duration_minutes)
-                  ? ` · ${formatDuration(post.duration_minutes)}`
-                  : ""}
+              <div className="flex items-center gap-2 truncate text-[24px] font-extrabold text-[#2f2a26] sm:text-[26px]">
+                {getPurposeIcon(post.meeting_purpose)}
+                <span className="truncate">
+                  {post.meeting_purpose || "Meetup"}
+                </span>
+                {durationText ? (
+                  <span className="inline-flex shrink-0 items-center gap-1 text-[#2f2a26]">
+                    <Clock3 className="h-5 w-5" />
+                    {durationText}
+                  </span>
+                ) : null}
               </div>
 
-              <div className="mt-1 truncate text-xl font-semibold">
-                {post.place_name || post.location || "No place"}
+              <div className="mt-[2px] flex items-center gap-2 truncate text-[24px] font-extrabold text-[#8a7f74] sm:text-[26px]">
+                <MapPin className="h-5 w-5 shrink-0 text-[#8a7f74]" />
+                <span className="truncate">{placeText}</span>
               </div>
             </div>
 
-            {post.benefit_amount && (
-              <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 text-sm font-semibold text-[#5a4a1f] shadow">
-                🪙 {post.benefit_amount}
+            {amount !== null && (
+              <div className="shrink-0 rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
+                <span className="inline-flex items-center gap-1.5">
+                  <Coins className="h-4 w-4" />
+                  ${amount.toLocaleString()}
+                </span>
               </div>
             )}
           </div>
 
-          <div className="mt-3">
+          <div className="mt-4 space-y-2 text-sm text-[#766c62]">
             {post.meeting_time && (
-              <div className="text-sm text-[#6f655c]">
-                ⏰ {formatTime(post.meeting_time)}
+              <div className="flex items-center gap-2">
+                <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                <span>{formatTime(post.meeting_time)}</span>
               </div>
             )}
 
             {post.location && (
-              <div className="mt-1 line-clamp-1 text-sm text-[#6f655c]">
-                📍 {post.location}
+              <div className="flex items-start gap-2">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+                <span className="line-clamp-1">{post.location}</span>
               </div>
             )}
 
-            <div className="mt-1 text-sm text-[#6f655c]">
-              👤 {post.target_gender || "Any"} /{" "}
-              {post.target_age_group || "Any"}
+            <div className="flex items-center gap-2">
+              <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+              <span>
+                {post.target_gender || "Any"} / {post.target_age_group || "Any"}
+              </span>
             </div>
 
-            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-[#6f655c]">
-              <span>🧑 {ownerName}</span>
+            <div className="flex items-center justify-between gap-3 pt-2">
+              <span className="truncate">🧑 {ownerName}</span>
 
               {user && user.id !== post.user_id && (
                 <span
@@ -265,35 +314,35 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 href={mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
+                className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#927d69]"
               >
+                <Map className="h-4 w-4" />
                 Open Map
               </a>
             )}
 
-            <a
+            <Link
               href="/"
-              className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
+              className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-5 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
             >
+              <ArrowLeft className="h-4 w-4" />
               Back
-            </a>
+            </Link>
           </div>
         </div>
 
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-6 shadow-sm">
-          <h2 className="text-2xl font-semibold text-[#2f2a26]">
-            Host Information
-          </h2>
+        <div className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
+          <h2 className="text-2xl font-bold text-[#2f2a26]">Host Information</h2>
 
           <div className="mt-4 space-y-3 text-sm text-[#6f655c]">
             <div className="flex items-center gap-2">
-              <span className="text-base">🧑</span>
+              <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
               <span className="font-medium text-[#2f2a26]">{ownerName}</span>
             </div>
 
             {(ownerGender || ownerAgeGroup) && (
               <div className="flex items-center gap-2">
-                <span className="text-base">👤</span>
+                <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
                 <span>
                   {ownerGender || "Unknown"}{" "}
                   {ownerGender && ownerAgeGroup ? "/" : ""}
@@ -303,17 +352,14 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             )}
 
             <div className="flex items-start gap-2">
-              <span className="mt-[1px] text-base">📝</span>
+              <FileText className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
               <span>{ownerBio || "No profile introduction yet."}</span>
             </div>
           </div>
         </div>
 
         {post.user_id && user && user.id !== post.user_id && !isMatched && (
-          <MatchRequestBox
-            postId={post.id}
-            postOwnerUserId={post.user_id}
-          />
+          <MatchRequestBox postId={post.id} postOwnerUserId={post.user_id} />
         )}
 
         <div className="text-xs text-[#9b8f84]">
