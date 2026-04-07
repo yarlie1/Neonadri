@@ -10,6 +10,8 @@ type PostRow = {
   duration_minutes: number | null;
   meeting_purpose: string | null;
   benefit_amount: string | null;
+  target_gender: string | null;
+  target_age_group: string | null;
   created_at: string;
 };
 
@@ -21,14 +23,10 @@ type ProfileRow = {
 export default async function HomePage() {
   const supabase = createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   const { data: postsData } = await supabase
     .from("posts")
     .select(
-      "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, created_at"
+      "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
     )
     .order("created_at", { ascending: false })
     .limit(10);
@@ -72,12 +70,21 @@ export default async function HomePage() {
                   href={`/posts/${post.id}`}
                   className="block rounded-2xl border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm transition hover:shadow-md active:scale-[0.99]"
                 >
-                  {/* 🔥 핵심 제목 */}
                   <div className="text-xl font-semibold leading-7">
                     {titleParts.join(" · ")}
                   </div>
 
-                  {/* 최소 정보 */}
+                  {post.location && (
+                    <div className="mt-2 text-sm text-[#6f655c]">
+                      📍 {post.location}
+                    </div>
+                  )}
+
+                  <div className="mt-2 text-sm text-[#6f655c]">
+                    👤 {post.target_gender || "Any"} /{" "}
+                    {post.target_age_group || "Any"}
+                  </div>
+
                   <div className="mt-3 flex items-center justify-between text-sm text-[#6f655c]">
                     <span>🧑 {hostName}</span>
 
@@ -102,7 +109,6 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Floating 버튼 */}
       <Link
         href="/write"
         className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white shadow-[0_10px_25px_rgba(60,45,35,0.28)] transition hover:bg-[#5b5046] active:scale-95"
