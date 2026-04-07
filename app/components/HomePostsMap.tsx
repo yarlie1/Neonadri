@@ -323,77 +323,87 @@ export default function HomePostsMap({ posts }: Props) {
         </div>
       )}
 
-      <div ref={mapRef} className="h-[30rem] w-full rounded-[1.5rem]" />
+      <div className="relative">
+        <div ref={mapRef} className="h-[30rem] w-full rounded-[1.5rem]" />
 
-      {selectedPost && (
-        <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0 flex-1">
-              <div className="text-base font-semibold">
-                {getPurposeIcon(selectedPost.meeting_purpose)}{" "}
-                {selectedPost.meeting_purpose || "Meetup"} ·{" "}
-                {formatDuration(selectedPost.duration_minutes)}
-              </div>
-
-              <div className="mt-1 truncate text-xl font-semibold">
-                {selectedPost.place_name || selectedPost.location}
-              </div>
-            </div>
-
-            {selectedPost.benefit_amount && (
-              <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 shadow text-sm font-semibold text-[#5a4a1f]">
-                🪙 {selectedPost.benefit_amount}
-              </div>
-            )}
-          </div>
-
-          <div className="mt-3">
-            {selectedPost.meeting_time && (
-              <div className="text-sm text-[#6f655c]">
-                ⏰ {formatTime(selectedPost.meeting_time)}
-              </div>
-            )}
-
-            {selectedPost.location && (
-              <div className="mt-1 line-clamp-1 text-sm text-[#6f655c]">
-                📍 {selectedPost.location}
-              </div>
-            )}
-
-            <div className="mt-1 text-sm text-[#6f655c]">
-              👤 {selectedPost.target_gender || "Any"} /{" "}
-              {selectedPost.target_age_group || "Any"}
-            </div>
-
-            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-[#6f655c]">
-              <span>🧑 {selectedPost.host_name}</span>
-
-              {selectedPost.is_my_post ? (
-                <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]">
-                  My meetup
-                </span>
-              ) : selectedPost.my_match_status ? (
-                <span
-                  className={`rounded-full px-3 py-1 text-xs ${badgeClass(
-                    selectedPost.my_match_status
-                  )}`}
-                >
-                  {selectedPost.my_match_status}
-                </span>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <Link
-              href={`/posts/${selectedPost.id}`}
-              className="inline-flex rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
+        {selectedPost && (
+          <div className="absolute bottom-4 left-4 right-4 z-10 rounded-[1.25rem] border border-[#e7ddd2] bg-white/95 px-5 py-4 shadow-[0_12px_28px_rgba(60,45,35,0.18)] backdrop-blur">
+            <button
+              type="button"
+              onClick={() => setSelectedPost(null)}
+              className="absolute right-3 top-3 text-sm text-[#8a7d71]"
             >
-              View Meetup
-            </Link>
+              ✕
+            </button>
+
+            <div className="flex items-start justify-between gap-4 pr-6">
+              <div className="min-w-0 flex-1">
+                <div className="text-base font-semibold">
+                  {getPurposeIcon(selectedPost.meeting_purpose)}{" "}
+                  {selectedPost.meeting_purpose || "Meetup"} ·{" "}
+                  {formatDuration(selectedPost.duration_minutes)}
+                </div>
+
+                <div className="mt-1 truncate text-lg font-semibold">
+                  {selectedPost.place_name || selectedPost.location}
+                </div>
+              </div>
+
+              {selectedPost.benefit_amount && (
+                <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 text-sm font-semibold text-[#5a4a1f] shadow">
+                  🪙 {selectedPost.benefit_amount}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-3">
+              {selectedPost.meeting_time && (
+                <div className="text-sm text-[#6f655c]">
+                  ⏰ {formatTime(selectedPost.meeting_time)}
+                </div>
+              )}
+
+              {selectedPost.location && (
+                <div className="mt-1 line-clamp-1 text-sm text-[#6f655c]">
+                  📍 {selectedPost.location}
+                </div>
+              )}
+
+              <div className="mt-1 text-sm text-[#6f655c]">
+                👤 {selectedPost.target_gender || "Any"} /{" "}
+                {selectedPost.target_age_group || "Any"}
+              </div>
+
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-[#6f655c]">
+                <span>🧑 {selectedPost.host_name}</span>
+
+                {selectedPost.is_my_post ? (
+                  <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]">
+                    My meetup
+                  </span>
+                ) : selectedPost.my_match_status ? (
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs ${badgeClass(
+                      selectedPost.my_match_status
+                    )}`}
+                  >
+                    {selectedPost.my_match_status}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <Link
+                href={`/posts/${selectedPost.id}`}
+                className="inline-flex rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
+              >
+                View Meetup
+              </Link>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
