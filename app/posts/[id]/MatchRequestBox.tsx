@@ -20,37 +20,56 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
     setLoading(true);
     setMessage("");
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    if (!user) {
+      if (!user) {
+        setMessage("Please sign in first.");
+        return;
+      }
+
+      if (user.id === postOwnerUserId) {
+        setMessage("You cannot request your own meetup.");
+        return;
+      }
+
+      const { data: existing, error: existingError } = await supabase
+        .from("match_requests")
+        .select("id, status")
+        .eq("post_id", postId)
+        .eq("requester_user_id", user.id)
+        .eq("post_owner_user_id", postOwnerUserId)
+        .maybeSingle();
+
+      if (existingError) {
+        setMessage(existingError.message);
+        return;
+      }
+
+      if (existing) {
+        setMessage(`Request already exists: ${existing.status}`);
+        return;
+      }
+
+      const { error } = await supabase.from("match_requests").insert({
+        post_id: postId,
+        requester_user_id: user.id,
+        post_owner_user_id: postOwnerUserId,
+        status: "pending",
+      });
+
+      if (error) {
+        setMessage(error.message);
+        return;
+      }
+
+      setMessage("Match request sent.");
+      router.refresh();
+    } finally {
       setLoading(false);
-      setMessage("Please sign in first.");
-      return;
     }
-
-    if (user.id === postOwnerUserId) {
-      setLoading(false);
-      setMessage("You cannot request your own meetup.");
-      return;
-    }
-
-    const { error } = await supabase.from("match_requests").insert({
-      post_id: postId,
-      requester_user_id: user.id,
-      receiver_user_id: postOwnerUserId,
-      status: "pending",
-    });
-
-    setLoading(false);
-
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    router.refresh();
   };
 
   return (
