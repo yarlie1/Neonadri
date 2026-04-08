@@ -18,7 +18,7 @@ import {
   UserRound,
   Coins,
   Plus,
-  Map,
+  Map as MapIcon,
 } from "lucide-react";
 
 type PostRow = {
@@ -201,7 +201,7 @@ export default async function HomePage() {
             href="/map"
             className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] shadow-sm transition hover:bg-[#f4ece4]"
           >
-            <Map className="h-4 w-4" />
+            <MapIcon className="h-4 w-4" />
             Map View
           </Link>
         </div>
