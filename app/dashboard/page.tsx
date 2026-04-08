@@ -338,7 +338,9 @@ export default function DashboardPage() {
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
   const [matchFilter, setMatchFilter] = useState<PostFilter>("all");
   const [deletingPostId, setDeletingPostId] = useState<number | null>(null);
-  const [showSuccess, setShowSuccess] = useState(false);
+
+  const [showMatchSuccess, setShowMatchSuccess] = useState(false);
+  const [showReviewSuccess, setShowReviewSuccess] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -346,14 +348,21 @@ export default function DashboardPage() {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
     const success = params.get("success");
+    const review = params.get("review");
 
     if (tab === "posts" || tab === "received" || tab === "sent" || tab === "matches") {
       setActiveTab(tab);
     }
 
     if (success === "1") {
-      setShowSuccess(true);
-      const timer = setTimeout(() => setShowSuccess(false), 3000);
+      setShowMatchSuccess(true);
+      const timer = setTimeout(() => setShowMatchSuccess(false), 3000);
+      return () => clearTimeout(timer);
+    }
+
+    if (review === "1") {
+      setShowReviewSuccess(true);
+      const timer = setTimeout(() => setShowReviewSuccess(false), 3000);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -558,9 +567,15 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-5">
-        {showSuccess && (
+        {showMatchSuccess && (
           <div className="rounded-[20px] border border-[#dccfc2] bg-[#efe7dc] px-4 py-3 text-sm font-medium text-[#5f5347] shadow-sm">
             Match created successfully 🎉
+          </div>
+        )}
+
+        {showReviewSuccess && (
+          <div className="rounded-[20px] border border-[#dccfc2] bg-[#efe7dc] px-4 py-3 text-sm font-medium text-[#5f5347] shadow-sm">
+            Review submitted successfully ⭐
           </div>
         )}
 
