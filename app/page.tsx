@@ -17,6 +17,8 @@ import {
   MapPin,
   UserRound,
   Coins,
+  Plus,
+  Map,
 } from "lucide-react";
 
 type PostRow = {
@@ -197,8 +199,9 @@ export default async function HomePage() {
         <div className="mb-5 flex justify-end">
           <Link
             href="/map"
-            className="inline-flex items-center whitespace-nowrap rounded-full border border-[#dccfc2] bg-white px-5 py-2.5 text-sm font-medium text-[#5a5149]"
+            className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] shadow-sm transition hover:bg-[#f4ece4]"
           >
+            <Map className="h-4 w-4" />
             Map View
           </Link>
         </div>
@@ -214,9 +217,10 @@ export default async function HomePage() {
 
             <Link
               href="/write"
-              className="mt-5 inline-flex rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
             >
-              + Create Meetup
+              <Plus className="h-4 w-4" />
+              Create Meetup
             </Link>
           </div>
         ) : (
@@ -240,7 +244,6 @@ export default async function HomePage() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      {/* 1줄: 종류 + duration */}
                       <div className="flex items-center gap-2 truncate text-[18px] font-semibold text-[#5f5449] sm:text-[19px]">
                         {getPurposeIcon(post.meeting_purpose)}
                         <span className="truncate">
@@ -254,7 +257,6 @@ export default async function HomePage() {
                         ) : null}
                       </div>
 
-                      {/* 2줄: 장소 */}
                       <div className="mt-1 truncate text-[28px] font-extrabold leading-tight text-[#2f2a26] sm:text-[30px]">
                         {placeText}
                       </div>
@@ -317,9 +319,10 @@ export default async function HomePage() {
 
       <Link
         href="/write"
-        className="fixed bottom-8 right-5 z-40 rounded-full bg-[#6b5f52] px-6 py-4 text-white shadow-lg"
+        className="fixed bottom-7 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-[#6b5f52] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(80,60,40,0.22)] transition hover:bg-[#5f5449]"
       >
-        + Create
+        <Plus className="h-4 w-4" />
+        Create
       </Link>
     </main>
   );
