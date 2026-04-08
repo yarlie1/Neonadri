@@ -665,16 +665,28 @@ export default function DashboardPage() {
 
         {activeTab === "posts" && (
           <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] p-4 shadow-sm">
-            <div className="flex flex-wrap gap-2">
-              <FilterPill active={postFilter === "all"} onClick={() => setPostFilter("all")}>
-                All
-              </FilterPill>
-              <FilterPill active={postFilter === "upcoming"} onClick={() => setPostFilter("upcoming")}>
-                Upcoming
-              </FilterPill>
-              <FilterPill active={postFilter === "expired"} onClick={() => setPostFilter("expired")}>
-                Expired
-              </FilterPill>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap gap-2">
+                <FilterPill active={postFilter === "all"} onClick={() => setPostFilter("all")}>
+                  All
+                </FilterPill>
+                <FilterPill active={postFilter === "upcoming"} onClick={() => setPostFilter("upcoming")}>
+                  Upcoming
+                </FilterPill>
+                <FilterPill active={postFilter === "expired"} onClick={() => setPostFilter("expired")}>
+                  Expired
+                </FilterPill>
+              </div>
+
+              {userId && (
+                <Link
+                  href={`/profile/${userId}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                >
+                  <UserCircle2 className="h-4 w-4" />
+                  My Profile
+                </Link>
+              )}
             </div>
           </div>
         )}
@@ -860,8 +872,13 @@ export default function DashboardPage() {
 
                 <MiniPostPreview post={postMap[item.post_id]} />
 
-                {item.status === "pending" && (
+                {item.status === "pending" ? (
                   <div className="mt-5 flex flex-wrap gap-2">
+                    <CompactActionButton href={`/profile/${item.requester_user_id}`}>
+                      <UserCircle2 className="h-3.5 w-3.5" />
+                      View Profile
+                    </CompactActionButton>
+
                     <CompactActionButton
                       onClick={() => updateRequestStatus(item.id, "accepted")}
                       primary
@@ -875,6 +892,13 @@ export default function DashboardPage() {
                     >
                       <XCircle className="h-3.5 w-3.5" />
                       Reject
+                    </CompactActionButton>
+                  </div>
+                ) : (
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    <CompactActionButton href={`/profile/${item.requester_user_id}`}>
+                      <UserCircle2 className="h-3.5 w-3.5" />
+                      View Profile
                     </CompactActionButton>
                   </div>
                 )}
@@ -923,6 +947,13 @@ export default function DashboardPage() {
                 </div>
 
                 <MiniPostPreview post={postMap[item.post_id]} />
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <CompactActionButton href={`/profile/${item.post_owner_user_id}`}>
+                    <UserCircle2 className="h-3.5 w-3.5" />
+                    View Profile
+                  </CompactActionButton>
+                </div>
               </div>
             ))}
 
