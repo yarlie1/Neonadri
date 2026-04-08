@@ -4,6 +4,35 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
+import {
+  Coffee,
+  UtensilsCrossed,
+  CakeSlice,
+  Footprints,
+  PersonStanding,
+  Clapperboard,
+  Mic2,
+  Gamepad2,
+  BookOpen,
+  BriefcaseBusiness,
+  Book,
+  Camera,
+  Clock3,
+  MapPin,
+  UserRound,
+  Coins,
+  LayoutDashboard,
+  FileText,
+  Inbox,
+  Send,
+  HeartHandshake,
+  CheckCircle2,
+  XCircle,
+  Trash2,
+  Pencil,
+  Eye,
+  Map,
+} from "lucide-react";
 
 type PostRow = {
   id: number;
@@ -23,7 +52,7 @@ type MatchRequestRow = {
   id: number;
   post_id: number;
   requester_user_id: string;
-  receiver_user_id: string;
+  post_owner_user_id: string;
   status: string;
   created_at: string;
 };
@@ -46,46 +75,44 @@ type DashboardTab = "posts" | "received" | "sent" | "matches";
 type PostFilter = "all" | "upcoming" | "expired";
 
 const getPurposeIcon = (purpose: string | null) => {
+  const className = "h-5 w-5 shrink-0 text-[#7b7067]";
+
   switch (purpose) {
     case "Coffee Chat":
     case "Coffee":
-      return "☕";
+      return <Coffee className={className} />;
     case "Meal":
-      return "🍽";
+      return <UtensilsCrossed className={className} />;
     case "Dessert":
-      return "🍰";
+      return <CakeSlice className={className} />;
     case "Walk":
-      return "🚶";
+      return <Footprints className={className} />;
     case "Jogging":
-      return "🏃";
     case "Yoga":
-      return "🧘";
+      return <PersonStanding className={className} />;
     case "Movie":
     case "Theater":
-      return "🎬";
+      return <Clapperboard className={className} />;
     case "Karaoke":
-      return "🎤";
+      return <Mic2 className={className} />;
     case "Board Games":
-      return "🎲";
     case "Gaming":
-      return "🎮";
     case "Bowling":
-      return "🎳";
     case "Arcade":
-      return "🎯";
+      return <Gamepad2 className={className} />;
     case "Study":
-      return "📚";
+      return <BookOpen className={className} />;
     case "Work Together":
     case "Work":
-      return "💻";
+      return <BriefcaseBusiness className={className} />;
     case "Book Talk":
     case "Book":
-      return "📖";
+      return <Book className={className} />;
     case "Photo Walk":
     case "Photo":
-      return "📷";
+      return <Camera className={className} />;
     default:
-      return "✨";
+      return <MapPin className={className} />;
   }
 };
 
@@ -117,27 +144,144 @@ const getStatusBadgeClass = (status: string) => {
   const normalized = status.toLowerCase();
 
   if (normalized === "expired") {
-    return "bg-[#f4ece4] text-[#8b7f74]";
+    return "bg-[#f4ece4] text-[#8b7f74] border border-[#e7ddd2]";
   }
 
   if (normalized === "upcoming") {
-    return "bg-[#efe7dc] text-[#6b5f52]";
+    return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
   }
 
   if (normalized === "matched" || normalized === "accepted") {
-    return "bg-[#efe7dc] text-[#6b5f52]";
+    return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
   }
 
   if (normalized === "pending") {
-    return "bg-[#f4ece4] text-[#7b7067]";
+    return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
   }
 
   if (normalized === "rejected") {
-    return "bg-[#f7f1ea] text-[#9b8f84]";
+    return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
   }
 
-  return "bg-[#f4ece4] text-[#7b7067]";
+  return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
 };
+
+const parseBenefitAmount = (value: string | null) => {
+  if (!value) return null;
+  const cleaned = String(value).replace(/[^0-9.-]/g, "");
+  const amount = Number(cleaned);
+  if (Number.isNaN(amount) || amount <= 0) return null;
+  return amount;
+};
+
+function SummaryCard({
+  label,
+  value,
+}: {
+  label: string;
+  value: number;
+}) {
+  return (
+    <div className="rounded-[24px] border border-[#e7ddd2] bg-white px-5 py-4 shadow-sm">
+      <div className="text-sm text-[#8b7f74]">{label}</div>
+      <div className="mt-2 text-3xl font-bold text-[#2f2a26]">{value}</div>
+    </div>
+  );
+}
+
+function FilterPill({
+  active,
+  children,
+  onClick,
+}: {
+  active: boolean;
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+        active
+          ? "bg-[#a48f7a] text-white"
+          : "bg-[#f4ece4] text-[#6b5f52] hover:bg-[#ede3da]"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function CompactActionButton({
+  href,
+  onClick,
+  disabled,
+  primary = false,
+  children,
+}: {
+  href?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  primary?: boolean;
+  children: React.ReactNode;
+}) {
+  const className = `inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition ${
+    primary
+      ? "bg-[#a48f7a] text-white hover:bg-[#927d69]"
+      : "border border-[#dccfc2] bg-white text-[#5a5149] hover:bg-[#f4ece4]"
+  } ${disabled ? "opacity-50" : ""}`;
+
+  if (href) {
+    return (
+      <Link href={href} className={className}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <button type="button" onClick={onClick} disabled={disabled} className={className}>
+      {children}
+    </button>
+  );
+}
+
+function MiniPostPreview({ post }: { post?: PostRow }) {
+  if (!post) {
+    return (
+      <div className="mt-3 rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-3 text-sm text-[#8b7f74]">
+        Post details unavailable
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-3 rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-3">
+      <div className="flex items-center gap-2 truncate text-base font-semibold text-[#2f2a26]">
+        {getPurposeIcon(post.meeting_purpose)}
+        <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
+        {formatDuration(post.duration_minutes) ? (
+          <span className="inline-flex shrink-0 items-center gap-1">
+            <Clock3 className="h-4 w-4" />
+            {formatDuration(post.duration_minutes)}
+          </span>
+        ) : null}
+      </div>
+
+      <div className="mt-1 flex items-center gap-2 truncate text-sm text-[#8a7f74]">
+        <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+        <span className="truncate">{post.place_name || post.location || "No place"}</span>
+      </div>
+
+      {post.meeting_time && (
+        <div className="mt-1 flex items-center gap-2 text-sm text-[#8a7f74]">
+          <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+          <span>{formatTime(post.meeting_time)}</span>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const supabase = createClient();
@@ -151,6 +295,7 @@ export default function DashboardPage() {
   const [requestsSent, setRequestsSent] = useState<MatchRequestRow[]>([]);
   const [matches, setMatches] = useState<MatchRow[]>([]);
   const [profileMap, setProfileMap] = useState<Record<string, string>>({});
+  const [postMap, setPostMap] = useState<Record<number, PostRow>>({});
 
   const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
@@ -180,13 +325,17 @@ export default function DashboardPage() {
 
         supabase
           .from("match_requests")
-          .select("id, post_id, requester_user_id, receiver_user_id, status, created_at")
-          .eq("receiver_user_id", user.id)
+          .select(
+            "id, post_id, requester_user_id, post_owner_user_id, status, created_at"
+          )
+          .eq("post_owner_user_id", user.id)
           .order("created_at", { ascending: false }),
 
         supabase
           .from("match_requests")
-          .select("id, post_id, requester_user_id, receiver_user_id, status, created_at")
+          .select(
+            "id, post_id, requester_user_id, post_owner_user_id, status, created_at"
+          )
           .eq("requester_user_id", user.id)
           .order("created_at", { ascending: false }),
 
@@ -210,7 +359,7 @@ export default function DashboardPage() {
       const relatedUserIds = Array.from(
         new Set([
           ...nextReceived.map((item) => item.requester_user_id),
-          ...nextSent.map((item) => item.receiver_user_id),
+          ...nextSent.map((item) => item.post_owner_user_id),
           ...nextMatches.flatMap((item) => [item.user_a, item.user_b]),
         ])
       ).filter((id) => id !== user.id);
@@ -226,6 +375,30 @@ export default function DashboardPage() {
           nextProfileMap[profile.id] = profile.display_name || "Unknown";
         });
         setProfileMap(nextProfileMap);
+      }
+
+      const relatedPostIds = Array.from(
+        new Set([
+          ...nextReceived.map((item) => item.post_id),
+          ...nextSent.map((item) => item.post_id),
+          ...nextMatches.map((item) => item.post_id),
+        ])
+      );
+
+      if (relatedPostIds.length > 0) {
+        const { data: relatedPostsData } = await supabase
+          .from("posts")
+          .select(
+            "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
+          )
+          .in("id", relatedPostIds);
+
+        const nextPostMap: Record<number, PostRow> = {};
+        ((relatedPostsData as PostRow[]) || []).forEach((post) => {
+          nextPostMap[post.id] = post;
+        });
+
+        setPostMap(nextPostMap);
       }
 
       setLoading(false);
@@ -245,13 +418,6 @@ export default function DashboardPage() {
   const pendingReceived = useMemo(
     () => requestsReceived.filter((item) => item.status === "pending").length,
     [requestsReceived]
-  );
-
-  const upcomingPostsCount = useMemo(
-    () =>
-      posts.filter((post) => getPostStatus(post.meeting_time) === "Upcoming")
-        .length,
-    [posts]
   );
 
   const deletePost = async (postId: number) => {
@@ -295,8 +461,8 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
-        <div className="mx-auto max-w-4xl rounded-[2rem] border border-[#e7ddd2] bg-white p-8 shadow-sm">
+      <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
+        <div className="mx-auto max-w-2xl rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
           Loading...
         </div>
       </main>
@@ -304,13 +470,17 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
-      <div className="mx-auto max-w-4xl space-y-6">
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-sm">
+    <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
+      <div className="mx-auto max-w-2xl space-y-4">
+        <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-sm">
           <div className="text-xs tracking-[0.35em] text-[#9b8f84]">
             DASHBOARD
           </div>
-          <h1 className="mt-3 text-4xl font-semibold">My Meetups</h1>
+
+          <h1 className="mt-3 text-4xl font-bold tracking-[-0.03em] text-[#2f2a26]">
+            My Meetups
+          </h1>
+
           <p className="mt-2 text-[#6f655c]">
             Manage your posts, requests, and matches.
           </p>
@@ -318,120 +488,65 @@ export default function DashboardPage() {
           <div className="mt-6">
             <Link
               href="/write"
-              className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+              className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
             >
+              <LayoutDashboard className="h-4 w-4" />
               Create Meetup
             </Link>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
-            <div className="text-sm text-[#8b7f74]">My Posts</div>
-            <div className="mt-2 text-4xl font-semibold">{posts.length}</div>
-          </div>
-
-          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
-            <div className="text-sm text-[#8b7f74]">Requests</div>
-            <div className="mt-2 text-4xl font-semibold">
-              {requestsReceived.length}
-            </div>
-          </div>
-
-          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
-            <div className="text-sm text-[#8b7f74]">Matches</div>
-            <div className="mt-2 text-4xl font-semibold">{matches.length}</div>
-          </div>
-
-          <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
-            <div className="text-sm text-[#8b7f74]">Pending</div>
-            <div className="mt-2 text-4xl font-semibold">{pendingReceived}</div>
-          </div>
+        <div className="grid grid-cols-2 gap-3">
+          <SummaryCard label="My Posts" value={posts.length} />
+          <SummaryCard label="Requests" value={requestsReceived.length} />
+          <SummaryCard label="Matches" value={matches.length} />
+          <SummaryCard label="Pending" value={pendingReceived} />
         </div>
 
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-4 shadow-sm">
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => setActiveTab("posts")}
-              className={`rounded-xl px-4 py-2 text-sm ${
-                activeTab === "posts"
-                  ? "bg-[#a48f7a] text-white"
-                  : "bg-[#f4ece4] text-[#6b5f52]"
-              }`}
-            >
-              My Posts
-            </button>
+        <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] p-4 shadow-sm">
+          <div className="flex flex-wrap gap-2">
+            <FilterPill active={activeTab === "posts"} onClick={() => setActiveTab("posts")}>
+              <span className="inline-flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                My Posts
+              </span>
+            </FilterPill>
 
-            <button
-              onClick={() => setActiveTab("received")}
-              className={`rounded-xl px-4 py-2 text-sm ${
-                activeTab === "received"
-                  ? "bg-[#a48f7a] text-white"
-                  : "bg-[#f4ece4] text-[#6b5f52]"
-              }`}
-            >
-              Requests Received
-            </button>
+            <FilterPill active={activeTab === "received"} onClick={() => setActiveTab("received")}>
+              <span className="inline-flex items-center gap-2">
+                <Inbox className="h-4 w-4" />
+                Requests Received
+              </span>
+            </FilterPill>
 
-            <button
-              onClick={() => setActiveTab("sent")}
-              className={`rounded-xl px-4 py-2 text-sm ${
-                activeTab === "sent"
-                  ? "bg-[#a48f7a] text-white"
-                  : "bg-[#f4ece4] text-[#6b5f52]"
-              }`}
-            >
-              Requests Sent
-            </button>
+            <FilterPill active={activeTab === "sent"} onClick={() => setActiveTab("sent")}>
+              <span className="inline-flex items-center gap-2">
+                <Send className="h-4 w-4" />
+                Requests Sent
+              </span>
+            </FilterPill>
 
-            <button
-              onClick={() => setActiveTab("matches")}
-              className={`rounded-xl px-4 py-2 text-sm ${
-                activeTab === "matches"
-                  ? "bg-[#a48f7a] text-white"
-                  : "bg-[#f4ece4] text-[#6b5f52]"
-              }`}
-            >
-              Matches
-            </button>
+            <FilterPill active={activeTab === "matches"} onClick={() => setActiveTab("matches")}>
+              <span className="inline-flex items-center gap-2">
+                <HeartHandshake className="h-4 w-4" />
+                Matches
+              </span>
+            </FilterPill>
           </div>
         </div>
 
         {activeTab === "posts" && (
-          <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-4 shadow-sm">
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={() => setPostFilter("all")}
-                className={`rounded-xl px-4 py-2 text-sm ${
-                  postFilter === "all"
-                    ? "bg-[#a48f7a] text-white"
-                    : "bg-[#f4ece4] text-[#6b5f52]"
-                }`}
-              >
+          <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] p-4 shadow-sm">
+            <div className="flex flex-wrap gap-2">
+              <FilterPill active={postFilter === "all"} onClick={() => setPostFilter("all")}>
                 All
-              </button>
-
-              <button
-                onClick={() => setPostFilter("upcoming")}
-                className={`rounded-xl px-4 py-2 text-sm ${
-                  postFilter === "upcoming"
-                    ? "bg-[#a48f7a] text-white"
-                    : "bg-[#f4ece4] text-[#6b5f52]"
-                }`}
-              >
+              </FilterPill>
+              <FilterPill active={postFilter === "upcoming"} onClick={() => setPostFilter("upcoming")}>
                 Upcoming
-              </button>
-
-              <button
-                onClick={() => setPostFilter("expired")}
-                className={`rounded-xl px-4 py-2 text-sm ${
-                  postFilter === "expired"
-                    ? "bg-[#a48f7a] text-white"
-                    : "bg-[#f4ece4] text-[#6b5f52]"
-                }`}
-              >
+              </FilterPill>
+              <FilterPill active={postFilter === "expired"} onClick={() => setPostFilter("expired")}>
                 Expired
-              </button>
+              </FilterPill>
             </div>
           </div>
         )}
@@ -440,32 +555,35 @@ export default function DashboardPage() {
           <div className="space-y-4">
             {filteredPosts.map((post) => {
               const postStatus = getPostStatus(post.meeting_time);
-
-              const mapUrl = post.location
-                ? post.location && post.location.length > 0
-                  ? post.location
-                  : ""
-                : "";
+              const amount = parseBenefitAmount(post.benefit_amount);
 
               return (
                 <div
                   key={post.id}
-                  className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm"
+                  className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm"
                 >
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <div className="text-base font-semibold">
-                        {getPurposeIcon(post.meeting_purpose)}{" "}
-                        {post.meeting_purpose || "Meetup"} ·{" "}
-                        {formatDuration(post.duration_minutes)}
+                      <div className="flex items-center gap-2 truncate text-[24px] font-extrabold text-[#2f2a26] sm:text-[26px]">
+                        {getPurposeIcon(post.meeting_purpose)}
+                        <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
+                        {formatDuration(post.duration_minutes) ? (
+                          <span className="inline-flex shrink-0 items-center gap-1 text-[#2f2a26]">
+                            <Clock3 className="h-5 w-5" />
+                            {formatDuration(post.duration_minutes)}
+                          </span>
+                        ) : null}
                       </div>
 
-                      <div className="mt-1 truncate text-2xl font-semibold">
-                        {post.place_name || post.location || "No place"}
+                      <div className="mt-[2px] flex items-center gap-2 truncate text-[24px] font-extrabold text-[#8a7f74] sm:text-[26px]">
+                        <MapPin className="h-5 w-5 shrink-0 text-[#8a7f74]" />
+                        <span className="truncate">
+                          {post.place_name || post.location || "No place"}
+                        </span>
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-end gap-2">
+                    <div className="flex shrink-0 flex-col items-end gap-2">
                       <span
                         className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
                           postStatus
@@ -474,76 +592,79 @@ export default function DashboardPage() {
                         {postStatus}
                       </span>
 
-                      {post.benefit_amount && (
-                        <div className="rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 text-sm font-semibold text-[#5a4a1f] shadow">
-                          🪙 {post.benefit_amount}
+                      {amount !== null && (
+                        <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
+                          <span className="inline-flex items-center gap-1.5">
+                            <Coins className="h-4 w-4" />
+                            ${amount.toLocaleString()}
+                          </span>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <div className="mt-3 space-y-1">
+                  <div className="mt-4 space-y-2 text-sm text-[#766c62]">
                     {post.meeting_time && (
-                      <div className="text-sm text-[#6f655c]">
-                        ⏰ {formatTime(post.meeting_time)}
+                      <div className="flex items-center gap-2">
+                        <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                        <span>{formatTime(post.meeting_time)}</span>
                       </div>
                     )}
 
                     {post.location && (
-                      <div className="line-clamp-1 text-sm text-[#6f655c]">
-                        📍 {post.location}
+                      <div className="flex items-start gap-2">
+                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+                        <span className="line-clamp-1">{post.location}</span>
                       </div>
                     )}
 
-                    <div className="text-sm text-[#6f655c]">
-                      👤 {post.target_gender || "Any"} /{" "}
-                      {post.target_age_group || "Any"}
+                    <div className="flex items-center gap-2">
+                      <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                      <span>
+                        {post.target_gender || "Any"} / {post.target_age_group || "Any"}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="mt-5 flex flex-wrap gap-3">
-                    <Link
-                      href={`/posts/${post.id}`}
-                      className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
-                    >
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    <CompactActionButton href={`/posts/${post.id}`} primary>
+                      <Eye className="h-3.5 w-3.5" />
                       View
-                    </Link>
+                    </CompactActionButton>
 
-                    <Link
-                      href={`/write/${post.id}`}
-                      className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
-                    >
+                    <CompactActionButton href={`/write/${post.id}`}>
+                      <Pencil className="h-3.5 w-3.5" />
                       Edit
-                    </Link>
+                    </CompactActionButton>
 
-                    {mapUrl && (
+                    {post.location && (
                       <a
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                          post.location || ""
+                          post.location
                         )}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
                       >
+                        <Map className="h-3.5 w-3.5" />
                         Map
                       </a>
                     )}
 
-                    <button
-                      type="button"
+                    <CompactActionButton
                       onClick={() => deletePost(post.id)}
                       disabled={deletingPostId === post.id}
-                      className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4] disabled:opacity-50"
                     >
+                      <Trash2 className="h-3.5 w-3.5" />
                       {deletingPostId === post.id ? "Deleting..." : "Delete"}
-                    </button>
+                    </CompactActionButton>
                   </div>
                 </div>
               );
             })}
 
             {filteredPosts.length === 0 && (
-              <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+              <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
                 {postFilter === "all"
                   ? "No meetups yet."
                   : postFilter === "upcoming"
@@ -559,18 +680,15 @@ export default function DashboardPage() {
             {requestsReceived.map((item) => (
               <div
                 key={item.id}
-                className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm"
+                className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm"
               >
-                <div className="flex items-center justify-between gap-4">
-                  <div>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
                     <div className="text-lg font-semibold text-[#2f2a26]">
-                      Request for post #{item.post_id}
+                      Request received
                     </div>
                     <div className="mt-1 text-sm text-[#6f655c]">
                       From: {profileMap[item.requester_user_id] || "Unknown"}
-                    </div>
-                    <div className="mt-1 text-sm text-[#6f655c]">
-                      Status: {item.status}
                     </div>
                     <div className="mt-1 text-sm text-[#6f655c]">
                       {new Date(item.created_at).toLocaleString()}
@@ -578,7 +696,7 @@ export default function DashboardPage() {
                   </div>
 
                   <span
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                    className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
                       item.status
                     )}`}
                   >
@@ -586,27 +704,26 @@ export default function DashboardPage() {
                   </span>
                 </div>
 
+                <MiniPostPreview post={postMap[item.post_id]} />
+
                 {item.status === "pending" && (
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    <button
-                      onClick={() => updateRequestStatus(item.id, "accepted")}
-                      className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
-                    >
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    <CompactActionButton onClick={() => updateRequestStatus(item.id, "accepted")} primary>
+                      <CheckCircle2 className="h-3.5 w-3.5" />
                       Accept
-                    </button>
-                    <button
-                      onClick={() => updateRequestStatus(item.id, "rejected")}
-                      className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
-                    >
+                    </CompactActionButton>
+
+                    <CompactActionButton onClick={() => updateRequestStatus(item.id, "rejected")}>
+                      <XCircle className="h-3.5 w-3.5" />
                       Reject
-                    </button>
+                    </CompactActionButton>
                   </div>
                 )}
               </div>
             ))}
 
             {requestsReceived.length === 0 && (
-              <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+              <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
                 No requests received.
               </div>
             )}
@@ -618,18 +735,15 @@ export default function DashboardPage() {
             {requestsSent.map((item) => (
               <div
                 key={item.id}
-                className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm"
+                className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm"
               >
-                <div className="flex items-center justify-between gap-4">
-                  <div>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
                     <div className="text-lg font-semibold text-[#2f2a26]">
-                      Request for post #{item.post_id}
+                      Request sent
                     </div>
                     <div className="mt-1 text-sm text-[#6f655c]">
-                      To: {profileMap[item.receiver_user_id] || "Unknown"}
-                    </div>
-                    <div className="mt-1 text-sm text-[#6f655c]">
-                      Status: {item.status}
+                      To: {profileMap[item.post_owner_user_id] || "Unknown"}
                     </div>
                     <div className="mt-1 text-sm text-[#6f655c]">
                       {new Date(item.created_at).toLocaleString()}
@@ -637,18 +751,20 @@ export default function DashboardPage() {
                   </div>
 
                   <span
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                    className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
                       item.status
                     )}`}
                   >
                     {item.status}
                   </span>
                 </div>
+
+                <MiniPostPreview post={postMap[item.post_id]} />
               </div>
             ))}
 
             {requestsSent.length === 0 && (
-              <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+              <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
                 No requests sent.
               </div>
             )}
@@ -658,24 +774,20 @@ export default function DashboardPage() {
         {activeTab === "matches" && (
           <div className="space-y-4">
             {matches.map((item) => {
-              const otherUserId =
-                item.user_a === userId ? item.user_b : item.user_a;
+              const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
 
               return (
                 <div
                   key={item.id}
-                  className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm"
+                  className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm"
                 >
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
                       <div className="text-lg font-semibold text-[#2f2a26]">
-                        Match for post #{item.post_id}
+                        Matched meetup
                       </div>
                       <div className="mt-1 text-sm text-[#6f655c]">
                         With: {profileMap[otherUserId] || "Unknown"}
-                      </div>
-                      <div className="mt-1 text-sm text-[#6f655c]">
-                        Status: {item.status}
                       </div>
                       <div className="mt-1 text-sm text-[#6f655c]">
                         {new Date(item.created_at).toLocaleString()}
@@ -683,19 +795,21 @@ export default function DashboardPage() {
                     </div>
 
                     <span
-                      className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                      className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
                         item.status
                       )}`}
                     >
                       {item.status}
                     </span>
                   </div>
+
+                  <MiniPostPreview post={postMap[item.post_id]} />
                 </div>
               );
             })}
 
             {matches.length === 0 && (
-              <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+              <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
                 No matches yet.
               </div>
             )}
