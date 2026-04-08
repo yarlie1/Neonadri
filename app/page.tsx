@@ -48,6 +48,8 @@ type MatchRequestRow = {
 type MatchRow = {
   post_id: number;
   status: string;
+  user_a: string;
+  user_b: string;
 };
 
 const getPurposeIcon = (purpose: string | null) => {
@@ -107,6 +109,10 @@ const getStatusBadge = (status: string) => {
     return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
   }
 
+  if (normalized === "closed") {
+    return "bg-[#f4ece4] text-[#8b7f74] border border-[#e7ddd2]";
+  }
+
   return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
 };
 
@@ -155,6 +161,7 @@ export default async function HomePage() {
 
   const posts = (postsData as PostRow[]) || [];
   const ownerIds = Array.from(new Set(posts.map((post) => post.user_id)));
+  const postIds = posts.map((post) => post.id);
 
   const profileMap = new Map<string, string>();
 
@@ -170,26 +177,28 @@ export default async function HomePage() {
   }
 
   const requestStatusMap = new Map<number, string>();
+  const anyMatchMap = new Map<number, MatchRow>();
+
+  if (postIds.length > 0) {
+    const { data: allMatchesData } = await supabase
+      .from("matches")
+      .select("post_id, status, user_a, user_b")
+      .in("post_id", postIds);
+
+    ((allMatchesData as MatchRow[]) || []).forEach((item) => {
+      anyMatchMap.set(item.post_id, item);
+    });
+  }
 
   if (user) {
-    const [requestsRes, matchesRes] = await Promise.all([
-      supabase
-        .from("match_requests")
-        .select("post_id, status")
-        .eq("requester_user_id", user.id),
+    const { data: requestsData } = await supabase
+      .from("match_requests")
+      .select("post_id, status")
+      .eq("requester_user_id", user.id)
+      .in("post_id", postIds);
 
-      supabase
-        .from("matches")
-        .select("post_id, status")
-        .or(`user_a.eq.${user.id},user_b.eq.${user.id}`),
-    ]);
-
-    ((requestsRes.data as MatchRequestRow[]) || []).forEach((item) => {
+    ((requestsData as MatchRequestRow[]) || []).forEach((item) => {
       requestStatusMap.set(item.post_id, item.status);
-    });
-
-    ((matchesRes.data as MatchRow[]) || []).forEach((item) => {
-      requestStatusMap.set(item.post_id, "matched");
     });
   }
 
@@ -227,14 +236,35 @@ export default async function HomePage() {
           <div className="space-y-4">
             {posts.map((post) => {
               const hostName = profileMap.get(post.user_id) || "Unknown";
-              const myStatus =
-                user && user.id !== post.user_id
-                  ? requestStatusMap.get(post.id) || "No request yet"
-                  : null;
-
               const amount = parseBenefitAmount(post.benefit_amount);
               const durationText = formatDuration(post.duration_minutes);
               const placeText = post.place_name || post.location || "No place";
+
+              const anyMatch = anyMatchMap.get(post.id);
+              const hasAnyMatchForPost = !!anyMatch;
+
+              const isMyMatch =
+                !!user &&
+                !!anyMatch &&
+                (anyMatch.user_a === user.id || anyMatch.user_b === user.id);
+
+              let myStatus: string | null = null;
+
+              if (user && user.id !== post.user_id) {
+                if (isMyMatch) {
+                  myStatus = "matched";
+                } else {
+                  const requestStatus = requestStatusMap.get(post.id);
+
+                  if (requestStatus) {
+                    myStatus = requestStatus;
+                  } else if (hasAnyMatchForPost) {
+                    myStatus = "closed";
+                  } else {
+                    myStatus = null;
+                  }
+                }
+              }
 
               return (
                 <Link
@@ -265,7 +295,7 @@ export default async function HomePage() {
                     <div className="flex shrink-0 flex-col items-end gap-2">
                       {myStatus && (
                         <span
-                          className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadge(
                             myStatus
                           )}`}
                         >
