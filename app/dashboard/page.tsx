@@ -336,6 +336,7 @@ export default function DashboardPage() {
 
   const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
+  const [matchFilter, setMatchFilter] = useState<PostFilter>("all");
   const [deletingPostId, setDeletingPostId] = useState<number | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -477,6 +478,16 @@ export default function DashboardPage() {
       return status === postFilter;
     });
   }, [posts, postFilter]);
+
+  const filteredMatches = useMemo(() => {
+    if (matchFilter === "all") return matches;
+
+    return matches.filter((match) => {
+      const post = postMap[match.post_id];
+      const status = getPostStatus(post?.meeting_time || null).toLowerCase();
+      return status === matchFilter;
+    });
+  }, [matches, matchFilter, postMap]);
 
   const pendingReceived = useMemo(
     () => requestsReceived.filter((item) => item.status === "pending").length,
@@ -623,6 +634,28 @@ export default function DashboardPage() {
                 Upcoming
               </FilterPill>
               <FilterPill active={postFilter === "expired"} onClick={() => setPostFilter("expired")}>
+                Expired
+              </FilterPill>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "matches" && (
+          <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] p-4 shadow-sm">
+            <div className="flex flex-wrap gap-2">
+              <FilterPill active={matchFilter === "all"} onClick={() => setMatchFilter("all")}>
+                All
+              </FilterPill>
+              <FilterPill
+                active={matchFilter === "upcoming"}
+                onClick={() => setMatchFilter("upcoming")}
+              >
+                Upcoming
+              </FilterPill>
+              <FilterPill
+                active={matchFilter === "expired"}
+                onClick={() => setMatchFilter("expired")}
+              >
                 Expired
               </FilterPill>
             </div>
@@ -856,7 +889,7 @@ export default function DashboardPage() {
 
         {activeTab === "matches" && (
           <div className="space-y-4">
-            {matches.map((item) => {
+            {filteredMatches.map((item) => {
               const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
               const post = postMap[item.post_id];
               const amount = post ? parseBenefitAmount(post.benefit_amount) : null;
@@ -866,6 +899,8 @@ export default function DashboardPage() {
                   )}`
                 : "";
               const alreadyReviewed = reviewedMatchIds.includes(item.id);
+              const meetupStatus = getPostStatus(post?.meeting_time || null).toLowerCase();
+              const canLeaveReview = meetupStatus === "expired" && !alreadyReviewed;
 
               return (
                 <div
@@ -888,8 +923,12 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <span className="shrink-0 rounded-full border border-[#dccfc2] bg-[#efe7dc] px-3 py-1 text-xs font-medium text-[#6b5f52]">
-                      Confirmed
+                    <span
+                      className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                        meetupStatus
+                      )}`}
+                    >
+                      {meetupStatus === "upcoming" ? "Upcoming" : "Expired"}
                     </span>
                   </div>
 
@@ -979,7 +1018,12 @@ export default function DashboardPage() {
                       </a>
                     )}
 
-                    {alreadyReviewed ? (
+                    {canLeaveReview ? (
+                      <CompactActionButton href={`/reviews/write/${item.id}`}>
+                        <Star className="h-3.5 w-3.5" />
+                        Leave Review
+                      </CompactActionButton>
+                    ) : alreadyReviewed ? (
                       <button
                         type="button"
                         className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#b0a59a]"
@@ -989,10 +1033,14 @@ export default function DashboardPage() {
                         Review submitted
                       </button>
                     ) : (
-                      <CompactActionButton href={`/reviews/write/${item.id}`}>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#b0a59a]"
+                        disabled
+                      >
                         <Star className="h-3.5 w-3.5" />
-                        Leave Review
-                      </CompactActionButton>
+                        Review after meetup
+                      </button>
                     )}
 
                     <button
@@ -1008,9 +1056,13 @@ export default function DashboardPage() {
               );
             })}
 
-            {matches.length === 0 && (
+            {filteredMatches.length === 0 && (
               <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
-                No matches yet.
+                {matchFilter === "all"
+                  ? "No matches yet."
+                  : matchFilter === "upcoming"
+                  ? "No upcoming matches."
+                  : "No expired matches."}
               </div>
             )}
           </div>
