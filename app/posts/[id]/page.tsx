@@ -20,7 +20,7 @@ import {
   Coins,
   FileText,
   ArrowLeft,
-  Map,
+  Map as MapIcon,
 } from "lucide-react";
 
 type PageProps = {
@@ -45,6 +45,8 @@ type MatchRequestRow = {
 type MatchRow = {
   id: number;
   status: string;
+  user_a: string;
+  user_b: string;
 };
 
 const getPurposeIcon = (purpose: string | null) => {
@@ -166,38 +168,55 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }
 
   let myRequestStatus = "No request yet";
-  let isMatched = false;
+  let hasAnyMatchForPost = false;
+  let isMyMatch = false;
 
-  if (user && post.user_id && user.id !== post.user_id) {
-    const [{ data: requestData }, { data: matchData }] = await Promise.all([
-      supabase
-        .from("match_requests")
-        .select("id, status")
-        .eq("post_id", post.id)
-        .eq("requester_user_id", user.id)
-        .eq("post_owner_user_id", post.user_id)
-        .maybeSingle(),
+  const { data: anyMatchData } = await supabase
+    .from("matches")
+    .select("id, status, user_a, user_b")
+    .eq("post_id", post.id)
+    .maybeSingle();
 
-      supabase
-        .from("matches")
-        .select("id, status")
-        .eq("post_id", post.id)
-        .or(`user_a.eq.${user.id},user_b.eq.${user.id}`)
-        .maybeSingle(),
-    ]);
+  const anyMatch = anyMatchData as MatchRow | null;
+
+  if (anyMatch?.status) {
+    hasAnyMatchForPost = true;
+
+    if (
+      user &&
+      (anyMatch.user_a === user.id || anyMatch.user_b === user.id)
+    ) {
+      isMyMatch = true;
+      myRequestStatus = "matched";
+    }
+  }
+
+  if (user && post.user_id && user.id !== post.user_id && !isMyMatch) {
+    const { data: requestData } = await supabase
+      .from("match_requests")
+      .select("id, status")
+      .eq("post_id", post.id)
+      .eq("requester_user_id", user.id)
+      .eq("post_owner_user_id", post.user_id)
+      .maybeSingle();
 
     const request = requestData as MatchRequestRow | null;
-    const match = matchData as MatchRow | null;
 
     if (request?.status) {
       myRequestStatus = request.status;
     }
-
-    if (match?.status) {
-      isMatched = true;
-      myRequestStatus = "matched";
-    }
   }
+
+  const canRequestMatch =
+    !!user &&
+    user.id !== post.user_id &&
+    !hasAnyMatchForPost &&
+    myRequestStatus === "No request yet";
+
+  const displayStatus =
+    hasAnyMatchForPost && !isMyMatch && myRequestStatus === "No request yet"
+      ? "closed"
+      : myRequestStatus;
 
   const getStatusBadge = (status: string) => {
     const normalized = status.toLowerCase();
@@ -212,6 +231,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
     if (normalized === "rejected") {
       return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
+    }
+
+    if (normalized === "closed") {
+      return "bg-[#f4ece4] text-[#8b7f74] border border-[#e7ddd2]";
     }
 
     return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
@@ -232,7 +255,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl px-4 pb-16 pt-4 space-y-4">
+      <div className="mx-auto max-w-2xl space-y-4 px-4 pb-16 pt-4">
         <div className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
@@ -255,14 +278,16 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            {amount !== null && (
-              <div className="shrink-0 rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
-                <span className="inline-flex items-center gap-1.5">
-                  <Coins className="h-4 w-4" />
-                  ${amount.toLocaleString()}
-                </span>
-              </div>
-            )}
+            <div className="flex shrink-0 flex-col items-end gap-2">
+              {amount !== null && (
+                <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Coins className="h-4 w-4" />
+                    ${amount.toLocaleString()}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="mt-4 space-y-2 text-sm text-[#766c62]">
@@ -288,20 +313,23 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             </div>
 
             <div className="flex items-center justify-between gap-3 pt-2">
-              <span className="truncate">🧑 {ownerName}</span>
+              <span className="inline-flex min-w-0 items-center gap-2 truncate">
+                <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                <span className="truncate">{ownerName}</span>
+              </span>
 
               {user && user.id !== post.user_id && (
                 <span
-                  className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
-                    myRequestStatus
+                  className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadge(
+                    displayStatus
                   )}`}
                 >
-                  {myRequestStatus}
+                  {displayStatus}
                 </span>
               )}
 
               {user && user.id === post.user_id && (
-                <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]">
+                <span className="shrink-0 rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]">
                   My meetup
                 </span>
               )}
@@ -316,7 +344,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#927d69]"
               >
-                <Map className="h-4 w-4" />
+                <MapIcon className="h-4 w-4" />
                 Open Map
               </a>
             )}
@@ -332,7 +360,9 @@ export default async function MeetupDetailPage({ params }: PageProps) {
         </div>
 
         <div className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
-          <h2 className="text-2xl font-bold text-[#2f2a26]">Host Information</h2>
+          <h2 className="text-2xl font-bold text-[#2f2a26]">
+            Host Information
+          </h2>
 
           <div className="mt-4 space-y-3 text-sm text-[#6f655c]">
             <div className="flex items-center gap-2">
@@ -358,7 +388,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        {post.user_id && user && user.id !== post.user_id && !isMatched && (
+        {canRequestMatch && (
           <MatchRequestBox postId={post.id} postOwnerUserId={post.user_id} />
         )}
 
