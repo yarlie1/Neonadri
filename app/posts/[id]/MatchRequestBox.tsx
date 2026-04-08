@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Send, CheckCircle2 } from "lucide-react";
+import { Send, CheckCircle2, AlertCircle } from "lucide-react";
 import { createClient } from "../../../lib/supabase/client";
 
 type Props = {
@@ -16,10 +16,12 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState<"success" | "info">("info");
 
   const handleRequestMatch = async () => {
     setLoading(true);
     setMessage("");
+    setMessageType("info");
 
     try {
       const {
@@ -28,11 +30,13 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
 
       if (!user) {
         setMessage("Please sign in first.");
+        setMessageType("info");
         return;
       }
 
       if (user.id === postOwnerUserId) {
         setMessage("You cannot request your own meetup.");
+        setMessageType("info");
         return;
       }
 
@@ -46,11 +50,24 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
 
       if (existingError) {
         setMessage(existingError.message);
+        setMessageType("info");
         return;
       }
 
       if (existing) {
-        setMessage(`Request already exists: ${existing.status}`);
+        const status = String(existing.status || "").toLowerCase();
+
+        if (status === "pending") {
+          setMessage("Your request has already been sent.");
+        } else if (status === "accepted") {
+          setMessage("Your request was already accepted.");
+        } else if (status === "rejected") {
+          setMessage("This request was previously declined.");
+        } else {
+          setMessage(`Request already exists: ${existing.status}`);
+        }
+
+        setMessageType("info");
         return;
       }
 
@@ -63,10 +80,12 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
 
       if (error) {
         setMessage(error.message);
+        setMessageType("info");
         return;
       }
 
-      setMessage("Match request sent.");
+      setMessage("Match request sent successfully.");
+      setMessageType("success");
       router.refresh();
     } finally {
       setLoading(false);
@@ -85,7 +104,7 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
             Request Match
           </h2>
           <p className="mt-1 text-sm leading-6 text-[#6f655c]">
-            Send a match request to the host if you want to join this meetup.
+            Send a request to the host if you want to join this meetup.
           </p>
         </div>
       </div>
@@ -98,14 +117,24 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
           className="inline-flex items-center gap-2 rounded-[1rem] bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
         >
           <Send className="h-4 w-4" />
-          {loading ? "Requesting..." : "Send Request"}
+          {loading ? "Sending..." : "Send Request"}
         </button>
       </div>
 
       {message && (
-        <div className="mt-5 rounded-[1.25rem] border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+        <div
+          className={`mt-5 rounded-[1.25rem] border px-4 py-3 text-sm ${
+            messageType === "success"
+              ? "border-[#dccfc2] bg-[#efe7dc] text-[#5f5347]"
+              : "border-[#e7ddd2] bg-[#f4ece4] text-[#6b5f52]"
+          }`}
+        >
           <div className="flex items-start gap-2">
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+            {messageType === "success" ? (
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+            ) : (
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+            )}
             <span>{message}</span>
           </div>
         </div>
