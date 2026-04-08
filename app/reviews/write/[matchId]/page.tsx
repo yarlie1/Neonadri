@@ -152,7 +152,7 @@ export default function WriteReviewPage({ params }: PageProps) {
       return;
     }
 
-    window.location.href = "/dashboard?tab=matches";
+    window.location.href = "/dashboard?tab=matches&review=1";
   };
 
   if (loading) {
