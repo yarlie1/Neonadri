@@ -302,6 +302,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
   const [deletingPostId, setDeletingPostId] = useState<number | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -316,6 +317,23 @@ export default function DashboardPage() {
       tab === "matches"
     ) {
       setActiveTab(tab);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    const success = params.get("success");
+
+    if (success === "1") {
+      setShowSuccess(true);
+
+      const timer = setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -480,7 +498,7 @@ export default function DashboardPage() {
     }
 
     if (nextStatus === "accepted") {
-      router.push("/dashboard?tab=matches");
+      router.push("/dashboard?tab=matches&success=1");
       return;
     }
 
@@ -500,6 +518,12 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-4">
+        {showSuccess && (
+          <div className="rounded-[20px] border border-[#dccfc2] bg-[#efe7dc] px-4 py-3 text-sm font-medium text-[#5f5347] shadow-sm">
+            Match created successfully 🎉
+          </div>
+        )}
+
         <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] px-6 py-5 shadow-sm">
           <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">
             DASHBOARD
