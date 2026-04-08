@@ -120,10 +120,21 @@ export default function WritePage() {
   }, [meetingTime]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!window.google || !searchInputRef.current) return;
+    let interval: ReturnType<typeof setInterval> | null = null;
 
-    if (!autocompleteRef.current) {
+    const initAutocomplete = () => {
+      if (
+        typeof window === "undefined" ||
+        !window.google ||
+        !window.google.maps ||
+        !window.google.maps.places ||
+        !searchInputRef.current
+      ) {
+        return false;
+      }
+
+      if (autocompleteRef.current) return true;
+
       autocompleteRef.current = new window.google.maps.places.Autocomplete(
         searchInputRef.current,
         {
@@ -139,7 +150,7 @@ export default function WritePage() {
         const nextLat = place?.geometry?.location?.lat?.();
         const nextLng = place?.geometry?.location?.lng?.();
 
-        if (nextLat == null || nextLng == null) {
+        if (!address || nextLat == null || nextLng == null) {
           setLocationConfirmed(false);
           return;
         }
@@ -151,7 +162,21 @@ export default function WritePage() {
         setLocationConfirmed(true);
         setMessage("");
       });
+
+      return true;
+    };
+
+    if (!initAutocomplete()) {
+      interval = setInterval(() => {
+        if (initAutocomplete() && interval) {
+          clearInterval(interval);
+        }
+      }, 500);
     }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -340,6 +365,7 @@ export default function WritePage() {
                 placeholder="Search exact place or address"
                 value={location}
                 onChange={handleLocationInputChange}
+                autoComplete="off"
               />
             </div>
 
