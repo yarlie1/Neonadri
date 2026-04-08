@@ -31,7 +31,7 @@ import {
   Trash2,
   Pencil,
   Eye,
-  Map,
+  Map as MapIcon,
   Plus,
 } from "lucide-react";
 
@@ -445,21 +445,26 @@ export default function DashboardPage() {
     requestId: number,
     nextStatus: "accepted" | "rejected"
   ) => {
-    const { error } = await supabase
-      .from("match_requests")
-      .update({ status: nextStatus })
-      .eq("id", requestId);
+    const rpcName =
+      nextStatus === "accepted"
+        ? "accept_match_request"
+        : "reject_match_request";
+
+    const { data, error } = await supabase.rpc(rpcName, {
+      p_request_id: requestId,
+    });
 
     if (error) {
       alert(error.message);
       return;
     }
 
-    setRequestsReceived((prev) =>
-      prev.map((item) =>
-        item.id === requestId ? { ...item, status: nextStatus } : item
-      )
-    );
+    if (!data?.ok) {
+      alert(data?.error || "Failed to update request");
+      return;
+    }
+
+    window.location.reload();
   };
 
   if (loading) {
@@ -650,7 +655,7 @@ export default function DashboardPage() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
                       >
-                        <Map className="h-3.5 w-3.5" />
+                        <MapIcon className="h-3.5 w-3.5" />
                         Map
                       </a>
                     )}
@@ -712,12 +717,17 @@ export default function DashboardPage() {
 
                 {item.status === "pending" && (
                   <div className="mt-5 flex flex-wrap gap-2">
-                    <CompactActionButton onClick={() => updateRequestStatus(item.id, "accepted")} primary>
+                    <CompactActionButton
+                      onClick={() => updateRequestStatus(item.id, "accepted")}
+                      primary
+                    >
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       Accept
                     </CompactActionButton>
 
-                    <CompactActionButton onClick={() => updateRequestStatus(item.id, "rejected")}>
+                    <CompactActionButton
+                      onClick={() => updateRequestStatus(item.id, "rejected")}
+                    >
                       <XCircle className="h-3.5 w-3.5" />
                       Reject
                     </CompactActionButton>
