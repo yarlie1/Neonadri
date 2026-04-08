@@ -1,27 +1,6 @@
+import Link from "next/link";
 import { createClient } from "../../../lib/supabase/server";
 import MatchRequestBox from "./MatchRequestBox";
-import Link from "next/link";
-import {
-  Coffee,
-  UtensilsCrossed,
-  CakeSlice,
-  Footprints,
-  PersonStanding,
-  Clapperboard,
-  Mic2,
-  Gamepad2,
-  BookOpen,
-  BriefcaseBusiness,
-  Book,
-  Camera,
-  Clock3,
-  MapPin,
-  UserRound,
-  Coins,
-  FileText,
-  ArrowLeft,
-  Map as MapIcon,
-} from "lucide-react";
 
 type PageProps = {
   params: Promise<{
@@ -45,49 +24,49 @@ type MatchRequestRow = {
 type MatchRow = {
   id: number;
   status: string;
-  user_a: string;
-  user_b: string;
 };
 
 const getPurposeIcon = (purpose: string | null) => {
-  const className = "h-5 w-5 shrink-0 text-[#7b7067]";
-
   switch (purpose) {
     case "Coffee Chat":
     case "Coffee":
-      return <Coffee className={className} />;
+      return "☕";
     case "Meal":
-      return <UtensilsCrossed className={className} />;
+      return "🍽";
     case "Dessert":
-      return <CakeSlice className={className} />;
+      return "🍰";
     case "Walk":
-      return <Footprints className={className} />;
+      return "🚶";
     case "Jogging":
+      return "🏃";
     case "Yoga":
-      return <PersonStanding className={className} />;
+      return "🧘";
     case "Movie":
     case "Theater":
-      return <Clapperboard className={className} />;
+      return "🎬";
     case "Karaoke":
-      return <Mic2 className={className} />;
+      return "🎤";
     case "Board Games":
+      return "🎲";
     case "Gaming":
+      return "🎮";
     case "Bowling":
+      return "🎳";
     case "Arcade":
-      return <Gamepad2 className={className} />;
+      return "🎯";
     case "Study":
-      return <BookOpen className={className} />;
+      return "📚";
     case "Work Together":
     case "Work":
-      return <BriefcaseBusiness className={className} />;
+      return "💻";
     case "Book Talk":
     case "Book":
-      return <Book className={className} />;
+      return "📖";
     case "Photo Walk":
     case "Photo":
-      return <Camera className={className} />;
+      return "📷";
     default:
-      return <MapPin className={className} />;
+      return "✨";
   }
 };
 
@@ -109,16 +88,6 @@ const formatDuration = (minutes: number | null) => {
   return `${minutes}m`;
 };
 
-const parseBenefitAmount = (value: string | null) => {
-  if (!value) return null;
-
-  const cleaned = String(value).replace(/[^0-9.-]/g, "");
-  const amount = Number(cleaned);
-
-  if (Number.isNaN(amount) || amount <= 0) return null;
-  return amount;
-};
-
 export default async function MeetupDetailPage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
@@ -137,10 +106,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   if (postError || !post) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] px-4 py-10 text-[#2f2a26]">
-        <div className="mx-auto max-w-2xl rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center shadow-sm">
-          <div className="text-lg font-semibold">Meetup not found</div>
-        </div>
+      <main className="min-h-screen bg-[#f7f1ea] flex items-center justify-center">
+        <div className="text-center text-[#6f655c]">Meetup not found</div>
       </main>
     );
   }
@@ -168,55 +135,38 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }
 
   let myRequestStatus = "No request yet";
-  let hasAnyMatchForPost = false;
-  let isMyMatch = false;
+  let isMatched = false;
 
-  const { data: anyMatchData } = await supabase
-    .from("matches")
-    .select("id, status, user_a, user_b")
-    .eq("post_id", post.id)
-    .maybeSingle();
+  if (user && post.user_id && user.id !== post.user_id) {
+    const [{ data: requestData }, { data: matchData }] = await Promise.all([
+      supabase
+        .from("match_requests")
+        .select("id, status")
+        .eq("post_id", post.id)
+        .eq("requester_user_id", user.id)
+        .eq("post_owner_user_id", post.user_id)
+        .maybeSingle(),
 
-  const anyMatch = anyMatchData as MatchRow | null;
-
-  if (anyMatch?.status) {
-    hasAnyMatchForPost = true;
-
-    if (
-      user &&
-      (anyMatch.user_a === user.id || anyMatch.user_b === user.id)
-    ) {
-      isMyMatch = true;
-      myRequestStatus = "matched";
-    }
-  }
-
-  if (user && post.user_id && user.id !== post.user_id && !isMyMatch) {
-    const { data: requestData } = await supabase
-      .from("match_requests")
-      .select("id, status")
-      .eq("post_id", post.id)
-      .eq("requester_user_id", user.id)
-      .eq("post_owner_user_id", post.user_id)
-      .maybeSingle();
+      supabase
+        .from("matches")
+        .select("id, status")
+        .eq("post_id", post.id)
+        .or(`user_a.eq.${user.id},user_b.eq.${user.id}`)
+        .maybeSingle(),
+    ]);
 
     const request = requestData as MatchRequestRow | null;
+    const match = matchData as MatchRow | null;
 
     if (request?.status) {
       myRequestStatus = request.status;
     }
+
+    if (match?.status) {
+      isMatched = true;
+      myRequestStatus = "matched";
+    }
   }
-
-  const canRequestMatch =
-    !!user &&
-    user.id !== post.user_id &&
-    !hasAnyMatchForPost &&
-    myRequestStatus === "No request yet";
-
-  const displayStatus =
-    hasAnyMatchForPost && !isMyMatch && myRequestStatus === "No request yet"
-      ? "closed"
-      : myRequestStatus;
 
   const getStatusBadge = (status: string) => {
     const normalized = status.toLowerCase();
@@ -233,10 +183,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
     }
 
-    if (normalized === "closed") {
-      return "bg-[#f4ece4] text-[#8b7f74] border border-[#e7ddd2]";
-    }
-
     return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
   };
 
@@ -249,87 +195,77 @@ export default async function MeetupDetailPage({ params }: PageProps) {
         )}`
       : "";
 
-  const amount = parseBenefitAmount(post.benefit_amount);
-  const durationText = formatDuration(post.duration_minutes);
-  const placeText = post.place_name || post.location || "No place";
+  const ownerProfileHref = post.user_id ? `/profile/${post.user_id}` : "#";
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl space-y-4 px-4 pb-16 pt-4">
-        <div className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
-          <div className="flex items-start justify-between gap-3">
+    <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
+      <div className="mx-auto max-w-3xl space-y-6">
+        <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
+          <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2 truncate text-[24px] font-extrabold text-[#2f2a26] sm:text-[26px]">
-                {getPurposeIcon(post.meeting_purpose)}
-                <span className="truncate">
-                  {post.meeting_purpose || "Meetup"}
-                </span>
-                {durationText ? (
-                  <span className="inline-flex shrink-0 items-center gap-1 text-[#2f2a26]">
-                    <Clock3 className="h-5 w-5" />
-                    {durationText}
-                  </span>
-                ) : null}
+              <div className="text-base font-semibold">
+                {getPurposeIcon(post.meeting_purpose)}{" "}
+                {post.meeting_purpose || "Meetup"}
+                {formatDuration(post.duration_minutes)
+                  ? ` · ${formatDuration(post.duration_minutes)}`
+                  : ""}
               </div>
 
-              <div className="mt-[2px] flex items-center gap-2 truncate text-[24px] font-extrabold text-[#8a7f74] sm:text-[26px]">
-                <MapPin className="h-5 w-5 shrink-0 text-[#8a7f74]" />
-                <span className="truncate">{placeText}</span>
+              <div className="mt-1 truncate text-xl font-semibold">
+                {post.place_name || post.location || "No place"}
               </div>
             </div>
 
-            <div className="flex shrink-0 flex-col items-end gap-2">
-              {amount !== null && (
-                <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Coins className="h-4 w-4" />
-                    ${amount.toLocaleString()}
-                  </span>
-                </div>
-              )}
-            </div>
+            {post.benefit_amount && (
+              <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 text-sm font-semibold text-[#5a4a1f] shadow">
+                🪙 {post.benefit_amount}
+              </div>
+            )}
           </div>
 
-          <div className="mt-4 space-y-2 text-sm text-[#766c62]">
+          <div className="mt-3">
             {post.meeting_time && (
-              <div className="flex items-center gap-2">
-                <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                <span>{formatTime(post.meeting_time)}</span>
+              <div className="text-sm text-[#6f655c]">
+                ⏰ {formatTime(post.meeting_time)}
               </div>
             )}
 
             {post.location && (
-              <div className="flex items-start gap-2">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                <span className="line-clamp-1">{post.location}</span>
+              <div className="mt-1 line-clamp-1 text-sm text-[#6f655c]">
+                📍 {post.location}
               </div>
             )}
 
-            <div className="flex items-center gap-2">
-              <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-              <span>
-                {post.target_gender || "Any"} / {post.target_age_group || "Any"}
-              </span>
+            <div className="mt-1 text-sm text-[#6f655c]">
+              👤 {post.target_gender || "Any"} /{" "}
+              {post.target_age_group || "Any"}
             </div>
 
-            <div className="flex items-center justify-between gap-3 pt-2">
-              <span className="inline-flex min-w-0 items-center gap-2 truncate">
-                <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                <span className="truncate">{ownerName}</span>
-              </span>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-[#6f655c]">
+              {post.user_id ? (
+                <Link
+                  href={ownerProfileHref}
+                  className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-[#5a5149] transition hover:bg-[#f4ece4] hover:text-[#2f2a26]"
+                >
+                  <span>🧑</span>
+                  <span>{ownerName}</span>
+                </Link>
+              ) : (
+                <span>🧑 {ownerName}</span>
+              )}
 
               {user && user.id !== post.user_id && (
                 <span
-                  className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadge(
-                    displayStatus
+                  className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
+                    myRequestStatus
                   )}`}
                 >
-                  {displayStatus}
+                  {myRequestStatus}
                 </span>
               )}
 
               {user && user.id === post.user_id && (
-                <span className="shrink-0 rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]">
+                <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]">
                   My meetup
                 </span>
               )}
@@ -342,37 +278,55 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 href={mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
               >
-                <MapIcon className="h-4 w-4" />
                 Open Map
               </a>
             )}
 
-            <Link
+            <a
               href="/"
-              className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-5 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+              className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
             >
-              <ArrowLeft className="h-4 w-4" />
               Back
-            </Link>
+            </a>
           </div>
         </div>
 
-        <div className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
-          <h2 className="text-2xl font-bold text-[#2f2a26]">
-            Host Information
-          </h2>
+        <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-6 shadow-sm">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-2xl font-semibold text-[#2f2a26]">
+              Host Information
+            </h2>
+
+            {post.user_id && (
+              <Link
+                href={ownerProfileHref}
+                className="rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+              >
+                View Profile
+              </Link>
+            )}
+          </div>
 
           <div className="mt-4 space-y-3 text-sm text-[#6f655c]">
             <div className="flex items-center gap-2">
-              <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-              <span className="font-medium text-[#2f2a26]">{ownerName}</span>
+              <span className="text-base">🧑</span>
+              {post.user_id ? (
+                <Link
+                  href={ownerProfileHref}
+                  className="font-medium text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
+                >
+                  {ownerName}
+                </Link>
+              ) : (
+                <span className="font-medium text-[#2f2a26]">{ownerName}</span>
+              )}
             </div>
 
             {(ownerGender || ownerAgeGroup) && (
               <div className="flex items-center gap-2">
-                <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                <span className="text-base">👤</span>
                 <span>
                   {ownerGender || "Unknown"}{" "}
                   {ownerGender && ownerAgeGroup ? "/" : ""}
@@ -382,14 +336,17 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             )}
 
             <div className="flex items-start gap-2">
-              <FileText className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+              <span className="mt-[1px] text-base">📝</span>
               <span>{ownerBio || "No profile introduction yet."}</span>
             </div>
           </div>
         </div>
 
-        {canRequestMatch && (
-          <MatchRequestBox postId={post.id} postOwnerUserId={post.user_id} />
+        {post.user_id && user && user.id !== post.user_id && !isMatched && (
+          <MatchRequestBox
+            postId={post.id}
+            postOwnerUserId={post.user_id}
+          />
         )}
 
         <div className="text-xs text-[#9b8f84]">
