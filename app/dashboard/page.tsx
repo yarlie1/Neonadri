@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Coffee,
   UtensilsCrossed,
@@ -288,9 +288,6 @@ function MiniPostPreview({ post }: { post?: PostRow }) {
 export default function DashboardPage() {
   const supabase = createClient();
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const initialTab = (searchParams.get("tab") as DashboardTab) || "posts";
 
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState("");
@@ -302,14 +299,25 @@ export default function DashboardPage() {
   const [profileMap, setProfileMap] = useState<Record<string, string>>({});
   const [postMap, setPostMap] = useState<Record<number, PostRow>>({});
 
-  const [activeTab, setActiveTab] = useState<DashboardTab>(initialTab);
+  const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
   const [deletingPostId, setDeletingPostId] = useState<number | null>(null);
 
   useEffect(() => {
-    const nextTab = (searchParams.get("tab") as DashboardTab) || "posts";
-    setActiveTab(nextTab);
-  }, [searchParams]);
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+
+    if (
+      tab === "posts" ||
+      tab === "received" ||
+      tab === "sent" ||
+      tab === "matches"
+    ) {
+      setActiveTab(tab);
+    }
+  }, []);
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -473,7 +481,6 @@ export default function DashboardPage() {
 
     if (nextStatus === "accepted") {
       router.push("/dashboard?tab=matches");
-      router.refresh();
       return;
     }
 
