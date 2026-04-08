@@ -32,6 +32,7 @@ import {
   Map as MapIcon,
   Plus,
   Star,
+  UserCircle2,
 } from "lucide-react";
 
 type PostRow = {
@@ -316,6 +317,29 @@ function MiniPostPreview({ post }: { post?: PostRow }) {
           <span>{formatTime(post.meeting_time)}</span>
         </div>
       )}
+    </div>
+  );
+}
+
+function ProfileInlineLink({
+  userId,
+  name,
+  prefix,
+}: {
+  userId: string;
+  name: string;
+  prefix: string;
+}) {
+  return (
+    <div className="mt-1 flex items-center gap-2 text-sm text-[#6f655c]">
+      <span>{prefix}</span>
+      <Link
+        href={`/profile/${userId}`}
+        className="inline-flex items-center gap-1 rounded-full px-1 py-0.5 font-medium text-[#5a5149] transition hover:bg-[#f4ece4] hover:text-[#2f2a26]"
+      >
+        <UserCircle2 className="h-4 w-4 text-[#8a7f74]" />
+        <span>{name || "Unknown"}</span>
+      </Link>
     </div>
   );
 }
@@ -813,9 +837,13 @@ export default function DashboardPage() {
                     <div className="text-lg font-semibold text-[#2f2a26]">
                       Request received
                     </div>
-                    <div className="mt-1 text-sm text-[#6f655c]">
-                      From: {profileMap[item.requester_user_id] || "Unknown"}
-                    </div>
+
+                    <ProfileInlineLink
+                      userId={item.requester_user_id}
+                      name={profileMap[item.requester_user_id] || "Unknown"}
+                      prefix="From:"
+                    />
+
                     <div className="mt-1 text-sm text-[#6f655c]">
                       {new Date(item.created_at).toLocaleString()}
                     </div>
@@ -873,9 +901,13 @@ export default function DashboardPage() {
                     <div className="text-lg font-semibold text-[#2f2a26]">
                       Request sent
                     </div>
-                    <div className="mt-1 text-sm text-[#6f655c]">
-                      To: {profileMap[item.post_owner_user_id] || "Unknown"}
-                    </div>
+
+                    <ProfileInlineLink
+                      userId={item.post_owner_user_id}
+                      name={profileMap[item.post_owner_user_id] || "Unknown"}
+                      prefix="To:"
+                    />
+
                     <div className="mt-1 text-sm text-[#6f655c]">
                       {new Date(item.created_at).toLocaleString()}
                     </div>
