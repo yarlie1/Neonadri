@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "../../../lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { HeartHandshake } from "lucide-react";
+import { Send, CheckCircle2 } from "lucide-react";
+import { createClient } from "../../../lib/supabase/client";
 
 type Props = {
   postId: number;
@@ -50,21 +50,6 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
       }
 
       if (existing) {
-        if (existing.status === "pending") {
-          setMessage("You already requested this meetup.");
-          return;
-        }
-
-        if (existing.status === "accepted") {
-          setMessage("This meetup is already matched.");
-          return;
-        }
-
-        if (existing.status === "rejected") {
-          setMessage("This request was already rejected.");
-          return;
-        }
-
         setMessage(`Request already exists: ${existing.status}`);
         return;
       }
@@ -77,17 +62,6 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
       });
 
       if (error) {
-        const errorText = error.message.toLowerCase();
-
-        if (
-          errorText.includes("duplicate") ||
-          errorText.includes("unique") ||
-          errorText.includes("already exists")
-        ) {
-          setMessage("You already requested this meetup.");
-          return;
-        }
-
         setMessage(error.message);
         return;
       }
@@ -100,25 +74,41 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
   };
 
   return (
-    <div className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
-      <h2 className="text-2xl font-bold text-[#2f2a26]">Request Match</h2>
+    <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-6 shadow-sm">
+      <div className="flex items-start gap-3">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f4ece4]">
+          <Send className="h-5 w-5 text-[#8a7f74]" />
+        </div>
 
-      <div className="mt-5">
+        <div className="min-w-0 flex-1">
+          <h2 className="text-[1.5rem] font-bold text-[#2f2a26]">
+            Request Match
+          </h2>
+          <p className="mt-1 text-sm leading-6 text-[#6f655c]">
+            Send a match request to the host if you want to join this meetup.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-5 flex flex-wrap gap-3">
         <button
           type="button"
           onClick={handleRequestMatch}
           disabled={loading}
-          className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-[1rem] bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
         >
-          <HeartHandshake className="h-4 w-4" />
-          {loading ? "Requesting..." : "Request Match"}
+          <Send className="h-4 w-4" />
+          {loading ? "Requesting..." : "Send Request"}
         </button>
       </div>
 
       {message && (
-        <p className="mt-4 rounded-[20px] border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-          {message}
-        </p>
+        <div className="mt-5 rounded-[1.25rem] border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+          <div className="flex items-start gap-2">
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+            <span>{message}</span>
+          </div>
+        </div>
       )}
     </div>
   );
