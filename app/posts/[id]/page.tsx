@@ -96,6 +96,35 @@ const formatDuration = (minutes: number | null) => {
   return `${minutes}m`;
 };
 
+const getFriendlyStatusLabel = (status: string) => {
+  const normalized = status.toLowerCase();
+
+  if (normalized === "matched") return "Matched";
+  if (normalized === "accepted") return "Accepted";
+  if (normalized === "pending") return "Pending";
+  if (normalized === "rejected") return "Declined";
+
+  return "No request yet";
+};
+
+const getStatusBadge = (status: string) => {
+  const normalized = status.toLowerCase();
+
+  if (normalized === "matched" || normalized === "accepted") {
+    return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
+  }
+
+  if (normalized === "pending") {
+    return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+  }
+
+  if (normalized === "rejected") {
+    return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
+  }
+
+  return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+};
+
 export default async function MeetupDetailPage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
@@ -176,24 +205,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     }
   }
 
-  const getStatusBadge = (status: string) => {
-    const normalized = status.toLowerCase();
-
-    if (normalized === "matched" || normalized === "accepted") {
-      return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
-    }
-
-    if (normalized === "pending") {
-      return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
-    }
-
-    if (normalized === "rejected") {
-      return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
-    }
-
-    return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
-  };
-
   const mapUrl =
     post.latitude !== null && post.longitude !== null
       ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
@@ -273,13 +284,13 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </span>
             )}
 
-            {user && user.id !== post.user_id && (
+            {user && user.id !== post.user_id && myRequestStatus !== "No request yet" && (
               <span
                 className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
                   myRequestStatus
                 )}`}
               >
-                {myRequestStatus}
+                {getFriendlyStatusLabel(myRequestStatus)}
               </span>
             )}
 
