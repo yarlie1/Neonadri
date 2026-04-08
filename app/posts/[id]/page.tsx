@@ -6,6 +6,9 @@ import {
   UserCircle2,
   MessageSquareText,
   Coins,
+  Languages,
+  Star,
+  HeartHandshake,
 } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import MatchRequestBox from "./MatchRequestBox";
@@ -20,8 +23,13 @@ type ProfileRow = {
   id: string;
   display_name: string | null;
   bio: string | null;
+  about_me: string | null;
   gender: string | null;
   age_group: string | null;
+  preferred_area: string | null;
+  languages: string[] | null;
+  meeting_style: string | null;
+  interests: string[] | null;
 };
 
 type MatchRequestRow = {
@@ -32,6 +40,19 @@ type MatchRequestRow = {
 type MatchRow = {
   id: number;
   status: string;
+};
+
+type ReviewRow = {
+  id: number;
+  rating: number;
+  review_text: string | null;
+  created_at: string;
+};
+
+type ProfileStats = {
+  average_rating?: number | null;
+  review_count?: number | null;
+  completed_meetups?: number | null;
 };
 
 const getPurposeIcon = (purpose: string | null) => {
@@ -125,6 +146,35 @@ const getStatusBadge = (status: string) => {
   return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
 };
 
+function StarRating({
+  value,
+  size = "sm",
+}: {
+  value: number;
+  size?: "sm" | "md";
+}) {
+  const iconClass = size === "md" ? "h-4 w-4" : "h-3.5 w-3.5";
+
+  return (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((n) => {
+        const filled = n <= value;
+
+        return (
+          <Star
+            key={n}
+            className={`${iconClass} ${
+              filled
+                ? "fill-[#a48f7a] text-[#a48f7a]"
+                : "text-[#d8cec3]"
+            }`}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 export default async function MeetupDetailPage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
@@ -151,24 +201,61 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   let ownerName = "Unknown";
   let ownerBio = "";
+  let ownerAboutMe = "";
   let ownerGender = "";
   let ownerAgeGroup = "";
+  let ownerPreferredArea = "";
+  let ownerLanguages: string[] = [];
+  let ownerMeetingStyle = "";
+  let ownerInterests: string[] = [];
+
+  let ownerAverageRating = 0;
+  let ownerReviewCount = 0;
+  let ownerCompletedMeetups = 0;
+  let ownerRecentReviews: ReviewRow[] = [];
 
   if (post.user_id) {
-    const { data: ownerProfile } = await supabase
-      .from("profiles")
-      .select("id, display_name, bio, gender, age_group")
-      .eq("id", post.user_id)
-      .maybeSingle();
+    const [ownerProfileRes, ownerStatsRes, ownerReviewsRes] = await Promise.all([
+      supabase
+        .from("profiles")
+        .select(
+          "id, display_name, bio, about_me, gender, age_group, preferred_area, languages, meeting_style, interests"
+        )
+        .eq("id", post.user_id)
+        .maybeSingle(),
 
-    const profile = ownerProfile as ProfileRow | null;
+      supabase.rpc("get_profile_stats", {
+        p_user_id: post.user_id,
+      }),
+
+      supabase
+        .from("match_reviews")
+        .select("id, rating, review_text, created_at")
+        .eq("reviewee_user_id", post.user_id)
+        .order("created_at", { ascending: false })
+        .limit(2),
+    ]);
+
+    const profile = ownerProfileRes.data as ProfileRow | null;
+    const stats = ownerStatsRes.data as ProfileStats | null;
+    const reviews = (ownerReviewsRes.data as ReviewRow[]) || [];
 
     if (profile) {
       ownerName = profile.display_name || "Unknown";
       ownerBio = profile.bio || "";
+      ownerAboutMe = profile.about_me || "";
       ownerGender = profile.gender || "";
       ownerAgeGroup = profile.age_group || "";
+      ownerPreferredArea = profile.preferred_area || "";
+      ownerLanguages = profile.languages || [];
+      ownerMeetingStyle = profile.meeting_style || "";
+      ownerInterests = profile.interests || [];
     }
+
+    ownerAverageRating = Number(stats?.average_rating ?? 0);
+    ownerReviewCount = Number(stats?.review_count ?? 0);
+    ownerCompletedMeetups = Number(stats?.completed_meetups ?? 0);
+    ownerRecentReviews = reviews;
   }
 
   let myRequestStatus = "No request yet";
@@ -215,6 +302,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       : "";
 
   const ownerProfileHref = post.user_id ? `/profile/${post.user_id}` : "#";
+  const roundedAverage = Math.round(ownerAverageRating);
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
@@ -324,8 +412,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
         <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-6 shadow-sm">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-[1.9rem] font-bold text-[#2f2a26]">
-              Host Information
+            <h2 className="text-[1.75rem] font-bold text-[#2f2a26]">
+              About the Host
             </h2>
 
             {post.user_id && (
@@ -333,43 +421,141 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 href={ownerProfileHref}
                 className="rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
               >
-                View Profile
+                View Full Profile
               </Link>
             )}
           </div>
 
-          <div className="mt-5 space-y-4 text-[15px] text-[#6f655c]">
-            <div className="flex items-center gap-3">
-              <UserCircle2 className="h-5 w-5 shrink-0 text-[#8a7f74]" />
-              {post.user_id ? (
-                <Link
-                  href={ownerProfileHref}
-                  className="font-medium text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
-                >
-                  {ownerName}
-                </Link>
-              ) : (
-                <span className="font-medium text-[#2f2a26]">{ownerName}</span>
+          <div className="mt-5 grid gap-4 md:grid-cols-[1.3fr_0.9fr]">
+            <div className="space-y-4">
+              <div className="space-y-3 text-[15px] text-[#6f655c]">
+                <div className="flex items-center gap-3">
+                  <UserCircle2 className="h-5 w-5 shrink-0 text-[#8a7f74]" />
+                  {post.user_id ? (
+                    <Link
+                      href={ownerProfileHref}
+                      className="font-medium text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
+                    >
+                      {ownerName}
+                    </Link>
+                  ) : (
+                    <span className="font-medium text-[#2f2a26]">{ownerName}</span>
+                  )}
+                </div>
+
+                {(ownerGender || ownerAgeGroup) && (
+                  <div className="flex items-center gap-3">
+                    <UserRound className="h-5 w-5 shrink-0 text-[#8a7f74]" />
+                    <span>
+                      {ownerGender || "Unknown"}
+                      {ownerGender && ownerAgeGroup ? " / " : ""}
+                      {ownerAgeGroup || ""}
+                    </span>
+                  </div>
+                )}
+
+                {ownerPreferredArea && (
+                  <div className="flex items-center gap-3">
+                    <MapPin className="h-5 w-5 shrink-0 text-[#8a7f74]" />
+                    <span>{ownerPreferredArea}</span>
+                  </div>
+                )}
+
+                {ownerLanguages.length > 0 && (
+                  <div className="flex items-center gap-3">
+                    <Languages className="h-5 w-5 shrink-0 text-[#8a7f74]" />
+                    <span>{ownerLanguages.join(", ")}</span>
+                  </div>
+                )}
+
+                {ownerMeetingStyle && (
+                  <div className="flex items-center gap-3">
+                    <HeartHandshake className="h-5 w-5 shrink-0 text-[#8a7f74]" />
+                    <span>{ownerMeetingStyle}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
+                <div className="flex items-start gap-3">
+                  <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
+                  <span className="leading-6 text-[#6f655c]">
+                    {ownerAboutMe || ownerBio || "No profile introduction yet."}
+                  </span>
+                </div>
+              </div>
+
+              {ownerInterests.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {ownerInterests.slice(0, 8).map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
               )}
             </div>
 
-            {(ownerGender || ownerAgeGroup) && (
-              <div className="flex items-center gap-3">
-                <UserRound className="h-5 w-5 shrink-0 text-[#8a7f74]" />
-                <span>
-                  {ownerGender || "Unknown"}{" "}
-                  {ownerGender && ownerAgeGroup ? "/" : ""}
-                  {ownerAgeGroup || ""}
-                </span>
-              </div>
-            )}
+            <div className="space-y-4">
+              <div className="grid grid-cols-3 gap-3">
+                <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
+                  <div className="text-xs text-[#8b7f74]">Rating</div>
+                  <div className="mt-1 text-xl font-bold text-[#2f2a26]">
+                    {ownerAverageRating.toFixed(1)}
+                  </div>
+                  <div className="mt-1 flex justify-center">
+                    <StarRating value={roundedAverage} size="sm" />
+                  </div>
+                </div>
 
-            <div className="rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
-              <div className="flex items-start gap-3">
-                <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
-                <span className="leading-6">
-                  {ownerBio || "No profile introduction yet."}
-                </span>
+                <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
+                  <div className="text-xs text-[#8b7f74]">Reviews</div>
+                  <div className="mt-2 text-xl font-bold text-[#2f2a26]">
+                    {ownerReviewCount}
+                  </div>
+                </div>
+
+                <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
+                  <div className="text-xs text-[#8b7f74]">Meetups</div>
+                  <div className="mt-2 text-xl font-bold text-[#2f2a26]">
+                    {ownerCompletedMeetups}
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
+                <div className="text-sm font-semibold text-[#2f2a26]">
+                  Recent Reviews
+                </div>
+
+                <div className="mt-3 space-y-3">
+                  {ownerRecentReviews.length === 0 ? (
+                    <div className="text-sm text-[#8b7f74]">
+                      No reviews yet.
+                    </div>
+                  ) : (
+                    ownerRecentReviews.map((review) => (
+                      <div
+                        key={review.id}
+                        className="rounded-[1rem] border border-[#eee4d9] bg-white px-3 py-3"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <StarRating value={review.rating} size="md" />
+                          <div className="text-[11px] text-[#9b8f84]">
+                            {new Date(review.created_at).toLocaleDateString()}
+                          </div>
+                        </div>
+
+                        <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#5f5347]">
+                          {review.review_text || "No comment."}
+                        </p>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           </div>
