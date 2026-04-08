@@ -50,6 +50,21 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
       }
 
       if (existing) {
+        if (existing.status === "pending") {
+          setMessage("You already requested this meetup.");
+          return;
+        }
+
+        if (existing.status === "accepted") {
+          setMessage("This meetup is already matched.");
+          return;
+        }
+
+        if (existing.status === "rejected") {
+          setMessage("This request was already rejected.");
+          return;
+        }
+
         setMessage(`Request already exists: ${existing.status}`);
         return;
       }
@@ -62,6 +77,17 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
       });
 
       if (error) {
+        const errorText = error.message.toLowerCase();
+
+        if (
+          errorText.includes("duplicate") ||
+          errorText.includes("unique") ||
+          errorText.includes("already exists")
+        ) {
+          setMessage("You already requested this meetup.");
+          return;
+        }
+
         setMessage(error.message);
         return;
       }
