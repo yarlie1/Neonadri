@@ -91,7 +91,7 @@ export default function EditWritePage() {
   const [saving, setSaving] = useState(false);
 
   const fieldClass =
-    "w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 pl-14 text-sm text-[#2f2a26] focus:outline-none focus:ring-2 focus:ring-[#a48f7a]/40";
+    "w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 pl-16 text-sm text-[#2f2a26] focus:outline-none focus:ring-2 focus:ring-[#a48f7a]/40";
 
   useEffect(() => {
     const loadUserAndPost = async () => {
@@ -209,11 +209,6 @@ export default function EditWritePage() {
     }
     return PURPOSE_HELP_TEXT[meetingPurpose] || "";
   }, [meetingPurpose]);
-
-  const selectedPurpose = useMemo(
-    () => PURPOSE_OPTIONS.find((item) => item.value === meetingPurpose),
-    [meetingPurpose]
-  );
 
   const handleLocationInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -340,7 +335,7 @@ export default function EditWritePage() {
 
         <div className="mt-3 space-y-3">
           <div className="relative">
-            <Clock className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <Clock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
             <input
               type="datetime-local"
               className={fieldClass}
@@ -350,7 +345,7 @@ export default function EditWritePage() {
           </div>
 
           <div className="relative">
-            <Clock className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <Clock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
             <select
               className={`${fieldClass} pr-10`}
               value={durationMinutes}
@@ -368,10 +363,10 @@ export default function EditWritePage() {
 
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
-              <MapPin className="pointer-events-none absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+              <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
               <input
                 ref={searchInputRef}
-                className={`${fieldClass} pr-4`}
+                className={`${fieldClass} pr-5`}
                 placeholder="Search exact place or address"
                 value={location}
                 onChange={handleLocationInputChange}
@@ -417,7 +412,7 @@ export default function EditWritePage() {
 
         <div className="mt-3 space-y-3">
           <div className="relative">
-            <User className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
             <select
               className={`${fieldClass} pr-10`}
               value={targetGender}
@@ -431,7 +426,7 @@ export default function EditWritePage() {
           </div>
 
           <div className="relative">
-            <User className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
             <select
               className={`${fieldClass} pr-10`}
               value={targetAgeGroup}
@@ -447,7 +442,7 @@ export default function EditWritePage() {
           </div>
 
           <div className="relative">
-            <Coins className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <Coins className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
             <select
               className={`${fieldClass} pr-10`}
               value={benefitAmount}
