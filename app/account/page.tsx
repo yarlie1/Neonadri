@@ -11,6 +11,12 @@ type Profile = {
   gender: string | null;
   age_group: string | null;
   is_public: boolean | null;
+  about_me: string | null;
+  preferred_area: string | null;
+  meeting_style: string | null;
+  languages: string[] | null;
+  interests: string[] | null;
+  response_time_note: string | null;
 };
 
 export default function AccountPage() {
@@ -19,11 +25,19 @@ export default function AccountPage() {
 
   const [userId, setUserId] = useState("");
   const [email, setEmail] = useState("");
+
   const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
   const [isPublic, setIsPublic] = useState(true);
+
+  const [aboutMe, setAboutMe] = useState("");
+  const [preferredArea, setPreferredArea] = useState("");
+  const [meetingStyle, setMeetingStyle] = useState("");
+  const [languages, setLanguages] = useState("");
+  const [interests, setInterests] = useState("");
+  const [responseTimeNote, setResponseTimeNote] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -45,7 +59,22 @@ export default function AccountPage() {
 
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, display_name, bio, gender, age_group, is_public")
+        .select(
+          `
+            id,
+            display_name,
+            bio,
+            gender,
+            age_group,
+            is_public,
+            about_me,
+            preferred_area,
+            meeting_style,
+            languages,
+            interests,
+            response_time_note
+          `
+        )
         .eq("id", user.id)
         .maybeSingle();
 
@@ -63,6 +92,12 @@ export default function AccountPage() {
           gender: "",
           age_group: "",
           is_public: true,
+          about_me: "",
+          preferred_area: "",
+          meeting_style: "",
+          languages: [],
+          interests: [],
+          response_time_note: "",
         });
 
         if (insertError) {
@@ -72,11 +107,19 @@ export default function AccountPage() {
         }
       } else {
         const profile = data as Profile;
+
         setDisplayName(profile.display_name || "");
         setBio(profile.bio || "");
         setGender(profile.gender || "");
         setAgeGroup(profile.age_group || "");
         setIsPublic(profile.is_public ?? true);
+
+        setAboutMe(profile.about_me || "");
+        setPreferredArea(profile.preferred_area || "");
+        setMeetingStyle(profile.meeting_style || "");
+        setLanguages((profile.languages || []).join(", "));
+        setInterests((profile.interests || []).join(", "));
+        setResponseTimeNote(profile.response_time_note || "");
       }
 
       setLoading(false);
@@ -91,13 +134,29 @@ export default function AccountPage() {
     setMessage("");
     setSaving(true);
 
+    const parsedLanguages = languages
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    const parsedInterests = interests
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+
     const { error } = await supabase.from("profiles").upsert({
       id: userId,
-      display_name: displayName,
-      bio,
-      gender,
-      age_group: ageGroup,
+      display_name: displayName.trim() || null,
+      bio: bio.trim() || null,
+      gender: gender || null,
+      age_group: ageGroup || null,
       is_public: isPublic,
+      about_me: aboutMe.trim() || null,
+      preferred_area: preferredArea.trim() || null,
+      meeting_style: meetingStyle.trim() || null,
+      languages: parsedLanguages.length > 0 ? parsedLanguages : null,
+      interests: parsedInterests.length > 0 ? parsedInterests : null,
+      response_time_note: responseTimeNote.trim() || null,
       updated_at: new Date().toISOString(),
     });
 
@@ -165,7 +224,20 @@ export default function AccountPage() {
               onChange={(e) => setBio(e.target.value)}
               rows={4}
               className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-              placeholder="Tell people a little about yourself"
+              placeholder="Short intro shown in your profile"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+              About Me
+            </label>
+            <textarea
+              value={aboutMe}
+              onChange={(e) => setAboutMe(e.target.value)}
+              rows={5}
+              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              placeholder="Tell people more about your personality, interests, and meetup style"
             />
           </div>
 
@@ -201,6 +273,72 @@ export default function AccountPage() {
               <option value="40s">40s</option>
               <option value="50s+">50s+</option>
             </select>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+              Preferred Area
+            </label>
+            <input
+              value={preferredArea}
+              onChange={(e) => setPreferredArea(e.target.value)}
+              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              placeholder="Koreatown, Pasadena, DTLA..."
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+              Meeting Style
+            </label>
+            <input
+              value={meetingStyle}
+              onChange={(e) => setMeetingStyle(e.target.value)}
+              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              placeholder="Friendly, casual, thoughtful..."
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+              Languages
+            </label>
+            <input
+              value={languages}
+              onChange={(e) => setLanguages(e.target.value)}
+              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              placeholder="English, Korean"
+            />
+            <p className="mt-1 text-xs text-[#9b8f84]">
+              Separate with commas.
+            </p>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+              Interests
+            </label>
+            <input
+              value={interests}
+              onChange={(e) => setInterests(e.target.value)}
+              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              placeholder="Coffee, Walk, Study, Board Games"
+            />
+            <p className="mt-1 text-xs text-[#9b8f84]">
+              Separate with commas.
+            </p>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+              Response Note
+            </label>
+            <input
+              value={responseTimeNote}
+              onChange={(e) => setResponseTimeNote(e.target.value)}
+              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              placeholder="Usually replies within a day"
+            />
           </div>
 
           <label className="flex items-center gap-3 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#5a5149]">
