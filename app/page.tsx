@@ -193,7 +193,7 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl px-4 pb-40 pt-4">
+      <div className="mx-auto max-w-2xl px-4 pb-32 pt-4">
         <div className="mb-5 flex justify-end">
           <Link
             href="/map"
@@ -236,37 +236,50 @@ export default async function HomePage() {
                 <Link
                   key={post.id}
                   href={`/posts/${post.id}`}
-                  className="block rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm transition hover:shadow-md"
+                  className="block rounded-[28px] border border-[#e7ddd2] bg-white p-5 shadow-[0_6px_18px_rgba(80,60,40,0.08)] transition hover:shadow-[0_8px_22px_rgba(80,60,40,0.10)]"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 truncate text-[24px] font-extrabold text-[#2f2a26] sm:text-[26px]">
+                      {/* 1줄: 종류 + duration */}
+                      <div className="flex items-center gap-2 truncate text-[18px] font-semibold text-[#5f5449] sm:text-[19px]">
                         {getPurposeIcon(post.meeting_purpose)}
                         <span className="truncate">
                           {post.meeting_purpose || "Meetup"}
                         </span>
                         {durationText ? (
-                          <span className="inline-flex shrink-0 items-center gap-1 text-[#2f2a26]">
-                            <Clock3 className="h-5 w-5" />
+                          <span className="inline-flex shrink-0 items-center gap-1 text-[#5f5449]">
+                            <Clock3 className="h-4 w-4" />
                             {durationText}
                           </span>
                         ) : null}
                       </div>
 
-                      <div className="mt-[2px] flex items-center gap-2 truncate text-[24px] font-extrabold text-[#8a7f74] sm:text-[26px]">
-                        <MapPin className="h-5 w-5 shrink-0 text-[#8a7f74]" />
-                        <span className="truncate">{placeText}</span>
+                      {/* 2줄: 장소 */}
+                      <div className="mt-1 truncate text-[28px] font-extrabold leading-tight text-[#2f2a26] sm:text-[30px]">
+                        {placeText}
                       </div>
                     </div>
 
-                    {amount !== null && (
-                      <div className="shrink-0 rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
-                        <span className="inline-flex items-center gap-1.5">
-                          <Coins className="h-4 w-4" />
-                          ${amount.toLocaleString()}
+                    <div className="flex shrink-0 flex-col items-end gap-2">
+                      {myStatus && (
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
+                            myStatus
+                          )}`}
+                        >
+                          {myStatus}
                         </span>
-                      </div>
-                    )}
+                      )}
+
+                      {amount !== null && (
+                        <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
+                          <span className="inline-flex items-center gap-1.5">
+                            <Coins className="h-4 w-4" />
+                            ${amount.toLocaleString()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="mt-4 space-y-2 text-sm text-[#766c62]">
@@ -290,18 +303,9 @@ export default async function HomePage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between gap-3 pt-2">
-                      <span className="truncate">🧑 {hostName}</span>
-
-                      {myStatus && (
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
-                            myStatus
-                          )}`}
-                        >
-                          {myStatus}
-                        </span>
-                      )}
+                    <div className="flex items-center gap-2 pt-1">
+                      <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                      <span className="truncate">{hostName}</span>
                     </div>
                   </div>
                 </Link>
@@ -313,7 +317,7 @@ export default async function HomePage() {
 
       <Link
         href="/write"
-        className="fixed bottom-8 right-5 rounded-full bg-[#6b5f52] px-6 py-4 text-white shadow-lg"
+        className="fixed bottom-8 right-5 z-40 rounded-full bg-[#6b5f52] px-6 py-4 text-white shadow-lg"
       >
         + Create
       </Link>
