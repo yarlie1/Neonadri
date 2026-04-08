@@ -31,6 +31,7 @@ import {
   Eye,
   Map as MapIcon,
   Plus,
+  Star,
 } from "lucide-react";
 
 type PostRow = {
@@ -68,6 +69,16 @@ type MatchRow = {
 type ProfileRow = {
   id: string;
   display_name: string | null;
+};
+
+type MatchReviewRow = {
+  id: number;
+  match_id: number;
+  reviewer_user_id: string;
+  reviewee_user_id: string;
+  rating: number;
+  review_text: string | null;
+  created_at: string;
 };
 
 type DashboardTab = "posts" | "received" | "sent" | "matches";
@@ -321,6 +332,7 @@ export default function DashboardPage() {
   const [matches, setMatches] = useState<MatchRow[]>([]);
   const [profileMap, setProfileMap] = useState<Record<string, string>>({});
   const [postMap, setPostMap] = useState<Record<number, PostRow>>({});
+  const [reviewedMatchIds, setReviewedMatchIds] = useState<number[]>([]);
 
   const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
@@ -358,7 +370,7 @@ export default function DashboardPage() {
 
       setUserId(user.id);
 
-      const [postsRes, receivedRes, sentRes, matchesRes] = await Promise.all([
+      const [postsRes, receivedRes, sentRes, matchesRes, reviewsRes] = await Promise.all([
         supabase
           .from("posts")
           .select(
@@ -388,17 +400,24 @@ export default function DashboardPage() {
           .select("id, post_id, user_a, user_b, status, created_at")
           .or(`user_a.eq.${user.id},user_b.eq.${user.id}`)
           .order("created_at", { ascending: false }),
+
+        supabase
+          .from("match_reviews")
+          .select("id, match_id, reviewer_user_id, reviewee_user_id, rating, review_text, created_at")
+          .eq("reviewer_user_id", user.id),
       ]);
 
       const nextPosts = (postsRes.data as PostRow[]) || [];
       const nextReceived = (receivedRes.data as MatchRequestRow[]) || [];
       const nextSent = (sentRes.data as MatchRequestRow[]) || [];
       const nextMatches = (matchesRes.data as MatchRow[]) || [];
+      const nextReviews = (reviewsRes.data as MatchReviewRow[]) || [];
 
       setPosts(nextPosts);
       setRequestsReceived(nextReceived);
       setRequestsSent(nextSent);
       setMatches(nextMatches);
+      setReviewedMatchIds(nextReviews.map((r) => r.match_id));
 
       const relatedUserIds = Array.from(
         new Set([
@@ -449,7 +468,7 @@ export default function DashboardPage() {
     };
 
     loadDashboard();
-  }, []);
+  }, [supabase]);
 
   const filteredPosts = useMemo(() => {
     if (postFilter === "all") return posts;
@@ -500,8 +519,10 @@ export default function DashboardPage() {
       return;
     }
 
-    if (!data?.ok) {
-      alert(data?.error || "Failed to update request");
+    const result = data as { ok?: boolean; error?: string } | null;
+
+    if (!result?.ok) {
+      alert(result?.error || "Failed to update request");
       return;
     }
 
@@ -543,7 +564,7 @@ export default function DashboardPage() {
                 My Meetups
               </h1>
               <p className="mt-1 text-sm text-[#6f655c]">
-                Manage posts, requests, and matches.
+                Manage posts, requests, matches, and reviews.
               </p>
             </div>
 
@@ -844,6 +865,7 @@ export default function DashboardPage() {
                     post.location
                   )}`
                 : "";
+              const alreadyReviewed = reviewedMatchIds.includes(item.id);
 
               return (
                 <div
@@ -940,6 +962,11 @@ export default function DashboardPage() {
                       View Meetup
                     </CompactActionButton>
 
+                    <CompactActionButton href={`/profile/${otherUserId}`}>
+                      <UserRound className="h-3.5 w-3.5" />
+                      View Profile
+                    </CompactActionButton>
+
                     {mapHref && (
                       <a
                         href={mapHref}
@@ -950,6 +977,22 @@ export default function DashboardPage() {
                         <MapIcon className="h-3.5 w-3.5" />
                         Open Map
                       </a>
+                    )}
+
+                    {alreadyReviewed ? (
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#b0a59a]"
+                        disabled
+                      >
+                        <Star className="h-3.5 w-3.5" />
+                        Review submitted
+                      </button>
+                    ) : (
+                      <CompactActionButton href={`/reviews/write/${item.id}`}>
+                        <Star className="h-3.5 w-3.5" />
+                        Leave Review
+                      </CompactActionButton>
                     )}
 
                     <button
