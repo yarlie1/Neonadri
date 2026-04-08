@@ -1,4 +1,12 @@
 import Link from "next/link";
+import {
+  Clock3,
+  MapPin,
+  UserRound,
+  UserCircle2,
+  MessageSquareText,
+  Coins,
+} from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import MatchRequestBox from "./MatchRequestBox";
 
@@ -106,7 +114,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   if (postError || !post) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] flex items-center justify-center">
+      <main className="flex min-h-screen items-center justify-center bg-[#f7f1ea]">
         <div className="text-center text-[#6f655c]">Meetup not found</div>
       </main>
     );
@@ -198,12 +206,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const ownerProfileHref = post.user_id ? `/profile/${post.user_id}` : "#";
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
-      <div className="mx-auto max-w-3xl space-y-6">
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-5 shadow-sm">
+    <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
+      <div className="mx-auto max-w-3xl space-y-5">
+        <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-6 shadow-sm">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <div className="text-base font-semibold">
+              <div className="text-base font-semibold text-[#5f5347]">
                 {getPurposeIcon(post.meeting_purpose)}{" "}
                 {post.meeting_purpose || "Meetup"}
                 {formatDuration(post.duration_minutes)
@@ -211,74 +219,84 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                   : ""}
               </div>
 
-              <div className="mt-1 truncate text-xl font-semibold">
+              <div className="mt-2 truncate text-[2rem] font-bold leading-tight text-[#2f2a26]">
                 {post.place_name || post.location || "No place"}
               </div>
             </div>
 
             {post.benefit_amount && (
-              <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 text-sm font-semibold text-[#5a4a1f] shadow">
-                🪙 {post.benefit_amount}
+              <div className="shrink-0 rounded-[1.4rem] bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-3 text-base font-bold text-[#5a4a1f] shadow">
+                <span className="inline-flex items-center gap-2">
+                  <Coins className="h-4 w-4" />
+                  {post.benefit_amount}
+                </span>
               </div>
             )}
           </div>
 
-          <div className="mt-3">
+          <div className="mt-5 space-y-2 text-[15px] text-[#6f655c]">
             {post.meeting_time && (
-              <div className="text-sm text-[#6f655c]">
-                ⏰ {formatTime(post.meeting_time)}
+              <div className="flex items-center gap-2">
+                <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                <span>{formatTime(post.meeting_time)}</span>
               </div>
             )}
 
             {post.location && (
-              <div className="mt-1 line-clamp-1 text-sm text-[#6f655c]">
-                📍 {post.location}
+              <div className="flex items-start gap-2">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+                <span className="line-clamp-1">{post.location}</span>
               </div>
             )}
 
-            <div className="mt-1 text-sm text-[#6f655c]">
-              👤 {post.target_gender || "Any"} /{" "}
-              {post.target_age_group || "Any"}
-            </div>
-
-            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-[#6f655c]">
-              {post.user_id ? (
-                <Link
-                  href={ownerProfileHref}
-                  className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-[#5a5149] transition hover:bg-[#f4ece4] hover:text-[#2f2a26]"
-                >
-                  <span>🧑</span>
-                  <span>{ownerName}</span>
-                </Link>
-              ) : (
-                <span>🧑 {ownerName}</span>
-              )}
-
-              {user && user.id !== post.user_id && (
-                <span
-                  className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
-                    myRequestStatus
-                  )}`}
-                >
-                  {myRequestStatus}
-                </span>
-              )}
-
-              {user && user.id === post.user_id && (
-                <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]">
-                  My meetup
-                </span>
-              )}
+            <div className="flex items-center gap-2">
+              <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+              <span>
+                {post.target_gender || "Any"} / {post.target_age_group || "Any"}
+              </span>
             </div>
           </div>
 
-          <div className="mt-5 flex gap-3">
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[#f0e8de] pt-4">
+            {post.user_id ? (
+              <Link
+                href={ownerProfileHref}
+                className="inline-flex items-center gap-2 rounded-full px-2 py-1 text-[#5a5149] transition hover:bg-[#f4ece4] hover:text-[#2f2a26]"
+              >
+                <UserCircle2 className="h-5 w-5 text-[#8a7f74]" />
+                <span className="font-medium">{ownerName}</span>
+              </Link>
+            ) : (
+              <span className="inline-flex items-center gap-2 text-[#5a5149]">
+                <UserCircle2 className="h-5 w-5 text-[#8a7f74]" />
+                <span className="font-medium">{ownerName}</span>
+              </span>
+            )}
+
+            {user && user.id !== post.user_id && (
+              <span
+                className={`rounded-full px-3 py-1 text-xs ${getStatusBadge(
+                  myRequestStatus
+                )}`}
+              >
+                {myRequestStatus}
+              </span>
+            )}
+
+            {user && user.id === post.user_id && (
+              <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]">
+                My meetup
+              </span>
+            )}
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-3">
             {mapUrl && (
               <a
                 href={mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
+                className="rounded-[1rem] bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
               >
                 Open Map
               </a>
@@ -286,7 +304,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
             <a
               href="/"
-              className="rounded-xl border border-[#dccfc2] px-4 py-2 text-sm text-[#5a5149] transition hover:bg-[#f4ece4]"
+              className="rounded-[1rem] border border-[#dccfc2] bg-white px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
             >
               Back
             </a>
@@ -295,7 +313,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
         <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-6 shadow-sm">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-2xl font-semibold text-[#2f2a26]">
+            <h2 className="text-[1.9rem] font-bold text-[#2f2a26]">
               Host Information
             </h2>
 
@@ -309,9 +327,9 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             )}
           </div>
 
-          <div className="mt-4 space-y-3 text-sm text-[#6f655c]">
-            <div className="flex items-center gap-2">
-              <span className="text-base">🧑</span>
+          <div className="mt-5 space-y-4 text-[15px] text-[#6f655c]">
+            <div className="flex items-center gap-3">
+              <UserCircle2 className="h-5 w-5 shrink-0 text-[#8a7f74]" />
               {post.user_id ? (
                 <Link
                   href={ownerProfileHref}
@@ -325,8 +343,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             </div>
 
             {(ownerGender || ownerAgeGroup) && (
-              <div className="flex items-center gap-2">
-                <span className="text-base">👤</span>
+              <div className="flex items-center gap-3">
+                <UserRound className="h-5 w-5 shrink-0 text-[#8a7f74]" />
                 <span>
                   {ownerGender || "Unknown"}{" "}
                   {ownerGender && ownerAgeGroup ? "/" : ""}
@@ -335,9 +353,13 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </div>
             )}
 
-            <div className="flex items-start gap-2">
-              <span className="mt-[1px] text-base">📝</span>
-              <span>{ownerBio || "No profile introduction yet."}</span>
+            <div className="rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
+              <div className="flex items-start gap-3">
+                <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
+                <span className="leading-6">
+                  {ownerBio || "No profile introduction yet."}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -349,7 +371,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           />
         )}
 
-        <div className="text-xs text-[#9b8f84]">
+        <div className="px-1 text-xs text-[#9b8f84]">
           Created at {new Date(post.created_at).toLocaleString()}
         </div>
       </div>
