@@ -1,5 +1,11 @@
 import { createClient } from "../../../lib/supabase/server";
-import { Star, MapPin, UserRound, Languages, MessageSquare } from "lucide-react";
+import {
+  Star,
+  MapPin,
+  UserRound,
+  Languages,
+  MessageSquare,
+} from "lucide-react";
 
 type PageProps = {
   params: {
