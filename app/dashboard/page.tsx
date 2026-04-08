@@ -32,6 +32,7 @@ import {
   Pencil,
   Eye,
   Map,
+  Plus,
 } from "lucide-react";
 
 type PostRow = {
@@ -182,9 +183,11 @@ function SummaryCard({
   value: number;
 }) {
   return (
-    <div className="rounded-[24px] border border-[#e7ddd2] bg-white px-5 py-4 shadow-sm">
-      <div className="text-sm text-[#8b7f74]">{label}</div>
-      <div className="mt-2 text-3xl font-bold text-[#2f2a26]">{value}</div>
+    <div className="rounded-[22px] border border-[#e7ddd2] bg-white px-4 py-4 shadow-sm">
+      <div className="text-xs font-medium text-[#8b7f74]">{label}</div>
+      <div className="mt-1.5 text-2xl font-bold tracking-[-0.02em] text-[#2f2a26]">
+        {value}
+      </div>
     </div>
   );
 }
@@ -472,26 +475,27 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-4">
-        <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-sm">
-          <div className="text-xs tracking-[0.35em] text-[#9b8f84]">
+        <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] px-6 py-5 shadow-sm">
+          <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">
             DASHBOARD
           </div>
 
-          <h1 className="mt-3 text-4xl font-bold tracking-[-0.03em] text-[#2f2a26]">
-            My Meetups
-          </h1>
+          <div className="mt-2 flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold tracking-[-0.03em] text-[#2f2a26] sm:text-[34px]">
+                My Meetups
+              </h1>
+              <p className="mt-1 text-sm text-[#6f655c]">
+                Manage posts, requests, and matches.
+              </p>
+            </div>
 
-          <p className="mt-2 text-[#6f655c]">
-            Manage your posts, requests, and matches.
-          </p>
-
-          <div className="mt-6">
             <Link
               href="/write"
-              className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#927d69]"
             >
-              <LayoutDashboard className="h-4 w-4" />
-              Create Meetup
+              <Plus className="h-4 w-4" />
+              Create
             </Link>
           </div>
         </div>
@@ -564,19 +568,19 @@ export default function DashboardPage() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 truncate text-[24px] font-extrabold text-[#2f2a26] sm:text-[26px]">
+                      <div className="flex items-center gap-2 truncate text-[22px] font-extrabold text-[#2f2a26] sm:text-[24px]">
                         {getPurposeIcon(post.meeting_purpose)}
                         <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
                         {formatDuration(post.duration_minutes) ? (
                           <span className="inline-flex shrink-0 items-center gap-1 text-[#2f2a26]">
-                            <Clock3 className="h-5 w-5" />
+                            <Clock3 className="h-4 w-4" />
                             {formatDuration(post.duration_minutes)}
                           </span>
                         ) : null}
                       </div>
 
-                      <div className="mt-[2px] flex items-center gap-2 truncate text-[24px] font-extrabold text-[#8a7f74] sm:text-[26px]">
-                        <MapPin className="h-5 w-5 shrink-0 text-[#8a7f74]" />
+                      <div className="mt-[2px] flex items-center gap-2 truncate text-[22px] font-extrabold text-[#8a7f74] sm:text-[24px]">
+                        <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
                         <span className="truncate">
                           {post.place_name || post.location || "No place"}
                         </span>
