@@ -194,8 +194,8 @@ function DashboardTabCard({
       onClick={onClick}
       className={`w-full rounded-[26px] border px-4 py-5 text-left transition ${
         active
-          ? "bg-[#b7a38f] text-white border-[#b7a38f] shadow-md"
-          : "bg-[#fcfaf7] border-[#e7ddd2] hover:bg-[#f6efe7]"
+          ? "bg-[#b7a38f] border-[#b7a38f] text-white shadow-md"
+          : "bg-[#fcfaf7] border-[#e7ddd2] text-[#2f2a26] hover:bg-[#f6efe7]"
       }`}
     >
       <div className="flex min-h-[120px] flex-col">
@@ -837,6 +837,13 @@ export default function DashboardPage() {
           <div className="space-y-4">
             {matches.map((item) => {
               const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
+              const post = postMap[item.post_id];
+              const amount = post ? parseBenefitAmount(post.benefit_amount) : null;
+              const mapHref = post?.location
+                ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                    post.location
+                  )}`
+                : "";
 
               return (
                 <div
@@ -845,27 +852,115 @@ export default function DashboardPage() {
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <div className="text-lg font-semibold text-[#2f2a26]">
-                        Matched meetup
+                      <div className="flex items-center gap-2 text-lg font-semibold text-[#2f2a26]">
+                        <HeartHandshake className="h-5 w-5 text-[#a48f7a]" />
+                        <span>Match confirmed</span>
                       </div>
+
                       <div className="mt-1 text-sm text-[#6f655c]">
                         With: {profileMap[otherUserId] || "Unknown"}
                       </div>
-                      <div className="mt-1 text-sm text-[#6f655c]">
-                        {new Date(item.created_at).toLocaleString()}
+
+                      <div className="mt-1 text-sm text-[#8b7f74]">
+                        Matched on {new Date(item.created_at).toLocaleString()}
                       </div>
                     </div>
 
-                    <span
-                      className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
-                        item.status
-                      )}`}
-                    >
-                      {item.status}
+                    <span className="shrink-0 rounded-full border border-[#dccfc2] bg-[#efe7dc] px-3 py-1 text-xs font-medium text-[#6b5f52]">
+                      Confirmed
                     </span>
                   </div>
 
-                  <MiniPostPreview post={postMap[item.post_id]} />
+                  {post ? (
+                    <div className="mt-4 rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 truncate text-base font-semibold text-[#2f2a26]">
+                            {getPurposeIcon(post.meeting_purpose)}
+                            <span className="truncate">
+                              {post.meeting_purpose || "Meetup"}
+                            </span>
+                            {formatDuration(post.duration_minutes) ? (
+                              <span className="inline-flex shrink-0 items-center gap-1">
+                                <Clock3 className="h-4 w-4" />
+                                {formatDuration(post.duration_minutes)}
+                              </span>
+                            ) : null}
+                          </div>
+
+                          <div className="mt-1 flex items-center gap-2 truncate text-lg font-bold text-[#2f2a26]">
+                            <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                            <span className="truncate">
+                              {post.place_name || post.location || "No place"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {amount !== null && (
+                          <div className="shrink-0 rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
+                            <span className="inline-flex items-center gap-1.5">
+                              <Coins className="h-4 w-4" />
+                              ${amount.toLocaleString()}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-3 space-y-2 text-sm text-[#766c62]">
+                        {post.meeting_time && (
+                          <div className="flex items-center gap-2">
+                            <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                            <span>{formatTime(post.meeting_time)}</span>
+                          </div>
+                        )}
+
+                        {post.location && (
+                          <div className="flex items-start gap-2">
+                            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+                            <span className="line-clamp-1">{post.location}</span>
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-2">
+                          <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                          <span>
+                            {post.target_gender || "Any"} /{" "}
+                            {post.target_age_group || "Any"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <MiniPostPreview post={post} />
+                  )}
+
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    <CompactActionButton href={`/posts/${item.post_id}`} primary>
+                      <Eye className="h-3.5 w-3.5" />
+                      View Meetup
+                    </CompactActionButton>
+
+                    {mapHref && (
+                      <a
+                        href={mapHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                      >
+                        <MapIcon className="h-3.5 w-3.5" />
+                        Open Map
+                      </a>
+                    )}
+
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#b0a59a]"
+                      disabled
+                    >
+                      <Send className="h-3.5 w-3.5" />
+                      Chat soon
+                    </button>
+                  </div>
                 </div>
               );
             })}
