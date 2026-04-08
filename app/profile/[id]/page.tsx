@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "../../../lib/supabase/server";
 import {
   Star,
@@ -5,6 +6,7 @@ import {
   UserRound,
   Languages,
   MessageSquare,
+  Pencil,
 } from "lucide-react";
 
 type PageProps = {
@@ -41,8 +43,7 @@ function StarRating({
   value: number;
   size?: "sm" | "md";
 }) {
-  const iconClass =
-    size === "md" ? "h-5 w-5" : "h-4 w-4";
+  const iconClass = size === "md" ? "h-5 w-5" : "h-4 w-4";
 
   return (
     <div className="flex items-center gap-1">
@@ -67,6 +68,12 @@ function StarRating({
 export default async function ProfilePage({ params }: PageProps) {
   const supabase = await createClient();
   const userId = params.id;
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const isMyProfile = user?.id === userId;
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -109,13 +116,29 @@ export default async function ProfilePage({ params }: PageProps) {
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-4">
         <div className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
-          <h1 className="text-3xl font-bold">
-            {typedProfile.display_name || "Unknown"}
-          </h1>
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <h1 className="text-3xl font-bold">
+                {typedProfile.display_name || "Unknown"}
+              </h1>
 
-          <p className="mt-2 text-sm leading-6 text-[#6f655c]">
-            {typedProfile.about_me || typedProfile.bio || "No introduction yet."}
-          </p>
+              <p className="mt-2 text-sm leading-6 text-[#6f655c]">
+                {typedProfile.about_me ||
+                  typedProfile.bio ||
+                  "No introduction yet."}
+              </p>
+            </div>
+
+            {isMyProfile && (
+              <Link
+                href="/account"
+                className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+              >
+                <Pencil className="h-4 w-4" />
+                Edit Profile
+              </Link>
+            )}
+          </div>
 
           <div className="mt-4 space-y-2 text-sm text-[#6f655c]">
             {(typedProfile.gender || typedProfile.age_group) && (
