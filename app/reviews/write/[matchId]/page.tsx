@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "../../../../lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { Star } from "lucide-react";
 
 type MatchRow = {
@@ -19,7 +18,6 @@ type PageProps = {
 
 export default function WriteReviewPage({ params }: PageProps) {
   const supabase = createClient();
-  const router = useRouter();
 
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
@@ -52,8 +50,8 @@ export default function WriteReviewPage({ params }: PageProps) {
       }
 
       const match = matchData as MatchRow;
-
       const otherUserId = match.user_a === user.id ? match.user_b : match.user_a;
+
       setRevieweeUserId(otherUserId);
       setLoading(false);
     };
