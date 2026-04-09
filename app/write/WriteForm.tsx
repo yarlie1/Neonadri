@@ -224,31 +224,47 @@ export default function WriteForm({ userId }: { userId: string }) {
       return;
     }
 
-    setSaving(true);
+    try {
+      setSaving(true);
 
-    const { error } = await supabase.from("posts").insert({
-      user_id: userId,
-      place_name: placeName || location,
-      location,
-      meeting_time: new Date(meetingTime).toISOString(),
-      duration_minutes: Number(durationMinutes),
-      target_gender: targetGender,
-      target_age_group: targetAgeGroup,
-      meeting_purpose: meetingPurpose,
-      benefit_amount: benefitAmount,
-      latitude,
-      longitude,
-    });
+      const payload = {
+        user_id: userId,
+        place_name: placeName || location,
+        location,
+        meeting_time: new Date(meetingTime).toISOString(),
+        duration_minutes: Number(durationMinutes),
+        target_gender: targetGender,
+        target_age_group: targetAgeGroup,
+        meeting_purpose: meetingPurpose,
+        benefit_amount: benefitAmount,
+        latitude,
+        longitude,
+      };
 
-    setSaving(false);
+      console.log("insert payload:", payload);
 
-    if (error) {
-      setMessage(error.message);
-      return;
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          reject(new Error("Insert timed out after 15 seconds."));
+        }, 15000);
+      });
+
+      const insertPromise = supabase.from("posts").insert(payload);
+
+      const result = await Promise.race([insertPromise, timeoutPromise]);
+
+      if ("error" in result && result.error) {
+        setSaving(false);
+        setMessage(result.error.message || "Failed to create meetup.");
+        return;
+      }
+
+      window.location.href = "/dashboard";
+    } catch (e) {
+      console.error("Create meetup error:", e);
+      setSaving(false);
+      setMessage(e instanceof Error ? e.message : "Something went wrong.");
     }
-
-    router.push("/dashboard");
-    router.refresh();
   };
 
   return (
