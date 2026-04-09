@@ -4,7 +4,6 @@ import {
   Star,
   UserCircle2,
   UserRound,
-  MapPin,
   Languages,
   MessageSquareText,
   HeartHandshake,
@@ -174,7 +173,6 @@ export default async function ProfilePage({ params }: PageProps) {
 
   const hasBio = !!profile.bio?.trim();
   const hasAboutMe = !!profile.about_me?.trim();
-  const hasPreferredArea = !!profile.preferred_area?.trim();
   const hasLanguages = !!profile.languages && profile.languages.length > 0;
   const hasMeetingStyle = !!profile.meeting_style?.trim();
   const hasInterests = !!profile.interests && profile.interests.length > 0;
@@ -225,13 +223,6 @@ export default async function ProfilePage({ params }: PageProps) {
               </div>
             )}
 
-            {hasPreferredArea && (
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                <span>{profile.preferred_area}</span>
-              </div>
-            )}
-
             {hasLanguages && (
               <div className="flex items-center gap-2">
                 <Languages className="h-4 w-4 shrink-0 text-[#8a7f74]" />
@@ -270,16 +261,8 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
           </div>
 
-          {(hasPreferredArea || hasLanguages || hasMeetingStyle || hasResponseNote) && (
+          {(hasLanguages || hasMeetingStyle || hasResponseNote) && (
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {hasPreferredArea && (
-                <InfoItem
-                  icon={<MapPin className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                  label="Preferred Area"
-                  value={profile.preferred_area!}
-                />
-              )}
-
               {hasLanguages && (
                 <InfoItem
                   icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
