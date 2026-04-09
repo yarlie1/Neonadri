@@ -30,6 +30,7 @@ function PendingBadge({ count }: { count: number }) {
   );
 }
 
+/* ✅ A/B 테스트 + 위치 조정된 태그라인 */
 function BrandTagline() {
   const [variant, setVariant] = useState<"A" | "B" | "C">("A");
 
@@ -58,7 +59,7 @@ function BrandTagline() {
   }[variant];
 
   return (
-    <div className="ml-2 pt-[2px] text-left leading-tight">
+    <div className="ml-2 mt-[6px] text-left leading-tight">
       <div className="text-[11px] font-medium text-[#6f655c] sm:text-[12px]">
         {content[0]}
       </div>
@@ -187,16 +188,15 @@ export default function TopNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-[#e7ddd2] bg-[#fffaf5]/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+        
+        {/* ✅ 로고 + 태그라인 */}
         <div className="flex items-start">
           <Link
             href="/"
-            className="group inline-flex items-center text-[28px] font-extrabold tracking-[-0.04em] text-[#1f1b18] transition duration-200 hover:scale-[1.02] hover:text-[#8f7762] sm:text-[32px]"
+            className="text-[26px] font-extrabold tracking-[-0.04em] text-[#1f1b18] sm:text-[28px]"
           >
-            <span className="bg-gradient-to-r from-[#1f1b18] to-[#8f7762] bg-clip-text text-transparent transition duration-200 group-hover:from-[#2a2420] group-hover:to-[#a48f7a]">
-              Neonadri
-            </span>
+            Neonadri
           </Link>
-
           <BrandTagline />
         </div>
 
@@ -248,93 +248,11 @@ export default function TopNav() {
           <div className="relative sm:hidden" ref={menuRef}>
             <button
               type="button"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
               onClick={() => setMenuOpen((prev) => !prev)}
               className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#dccfc2] bg-white text-[#5a5149] shadow-sm transition hover:bg-[#f4ece4]"
             >
-              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {menuOpen ? <X /> : <Menu />}
             </button>
-
-            {menuOpen && (
-              <div className="absolute right-0 top-14 w-64 overflow-hidden rounded-[24px] border border-[#e7ddd2] bg-white shadow-[0_12px_28px_rgba(80,60,40,0.14)]">
-                <div className="flex flex-col p-2">
-                  <Link
-                    href="/"
-                    onClick={() => setMenuOpen(false)}
-                    className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                  >
-                    <House className="h-4 w-4" />
-                    Home
-                  </Link>
-
-                  {user ? (
-                    <>
-                      <Link
-                        href="/dashboard"
-                        onClick={() => setMenuOpen(false)}
-                        className="inline-flex items-center justify-between gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                      >
-                        <span className="inline-flex items-center gap-2">
-                          <LayoutDashboard className="h-4 w-4" />
-                          Dashboard
-                        </span>
-                        <PendingBadge count={pendingCount} />
-                      </Link>
-
-                      <Link
-                        href={`/profile/${user.id}`}
-                        onClick={() => setMenuOpen(false)}
-                        className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                      >
-                        <UserCircle2 className="h-4 w-4" />
-                        Profile
-                      </Link>
-
-                      <Link
-                        href="/write"
-                        onClick={() => setMenuOpen(false)}
-                        className="inline-flex items-center gap-2 rounded-[18px] bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
-                      >
-                        <Plus className="h-4 w-4" />
-                        Create Meetup
-                      </Link>
-
-                      <div className="my-2 border-t border-[#f0e8de]" />
-
-                      <button
-                        type="button"
-                        onClick={handleLogout}
-                        className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-left text-sm font-medium text-[#8b5e3c] transition hover:bg-[#f8efe7]"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        Logout
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link
-                        href="/login"
-                        onClick={() => setMenuOpen(false)}
-                        className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                      >
-                        <LogIn className="h-4 w-4" />
-                        Log In
-                      </Link>
-
-                      <Link
-                        href="/signup"
-                        onClick={() => setMenuOpen(false)}
-                        className="inline-flex items-center gap-2 rounded-[18px] bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
-                      >
-                        <UserPlus className="h-4 w-4" />
-                        Sign Up
-                      </Link>
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         </>
       </div>
