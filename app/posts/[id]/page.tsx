@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import {
   Clock3,
   MapPin,
@@ -14,9 +15,9 @@ import { createClient } from "../../../lib/supabase/server";
 import MatchRequestBox from "./MatchRequestBox";
 
 type PageProps = {
-  params: Promise<{
+  params: {
     id: string;
-  }>;
+  };
 };
 
 type ProfileRow = {
@@ -53,6 +54,22 @@ type ProfileStats = {
   average_rating?: number | null;
   review_count?: number | null;
   completed_meetups?: number | null;
+};
+
+type PostRow = {
+  id: number;
+  user_id: string;
+  created_at: string;
+  place_name: string | null;
+  location: string | null;
+  meeting_time: string | null;
+  duration_minutes: number | null;
+  target_gender: string | null;
+  target_age_group: string | null;
+  meeting_purpose: string | null;
+  benefit_amount: string | null;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 const getPurposeIcon = (purpose: string | null) => {
@@ -153,7 +170,7 @@ function StarRating({
   value: number;
   size?: "sm" | "md";
 }) {
-  const iconClass = size === "md" ? "h-4 w-4" : "h-3.5 w-3.5";
+  const iconClass = size === "md" ? "h-5 w-5" : "h-4 w-4";
 
   return (
     <div className="flex items-center gap-0.5">
@@ -176,28 +193,26 @@ function StarRating({
 }
 
 export default async function MeetupDetailPage({ params }: PageProps) {
-  const { id } = await params;
   const supabase = await createClient();
+  const id = params.id;
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: post, error: postError } = await supabase
+  const { data: postData, error: postError } = await supabase
     .from("posts")
     .select(
       "id, user_id, created_at, place_name, location, meeting_time, duration_minutes, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
     )
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
-  if (postError || !post) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f7f1ea]">
-        <div className="text-center text-[#6f655c]">Meetup not found</div>
-      </main>
-    );
+  if (postError || !postData) {
+    notFound();
   }
+
+  const post = postData as PostRow;
 
   let ownerName = "Unknown";
   let ownerBio = "";
@@ -238,7 +253,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
     const profile = ownerProfileRes.data as ProfileRow | null;
     const stats = ownerStatsRes.data as ProfileStats | null;
-    const reviews = (ownerReviewsRes.data as ReviewRow[]) || [];
+    const reviews = (ownerReviewsRes.data || []) as ReviewRow[];
 
     if (profile) {
       ownerName = profile.display_name || "Unknown";
@@ -303,6 +318,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   const ownerProfileHref = post.user_id ? `/profile/${post.user_id}` : "#";
   const roundedAverage = Math.round(ownerAverageRating);
+  const introText = ownerAboutMe || ownerBio || "No profile introduction yet.";
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
@@ -401,12 +417,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </a>
             )}
 
-            <a
+            <Link
               href="/"
               className="rounded-[1rem] border border-[#dccfc2] bg-white px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
             >
               Back
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -479,9 +495,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               <div className="rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
                 <div className="flex items-start gap-3">
                   <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
-                  <span className="leading-6 text-[#6f655c]">
-                    {ownerAboutMe || ownerBio || "No profile introduction yet."}
-                  </span>
+                  <span className="leading-6 text-[#6f655c]">{introText}</span>
                 </div>
               </div>
 
