@@ -46,7 +46,6 @@ type ProfileRow = {
 type ProfileStatsRow = {
   average_rating?: number | null;
   review_count?: number | null;
-  completed_meetups?: number | null;
 };
 
 type HostStatMap = Record<
@@ -67,7 +66,7 @@ type HostProfileMap = Record<
 >;
 
 const getPurposeIcon = (purpose: string | null) => {
-  const className = "h-[17px] w-[17px] shrink-0 text-[#7e746b]";
+  const className = "h-[18px] w-[18px] shrink-0 text-[#7e746b]";
 
   switch (purpose) {
     case "Coffee Chat":
@@ -179,7 +178,7 @@ export default async function HomePage() {
 
   if (postsError) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] px-4 py-5 text-[#2f2a26]">
+      <main className="min-h-screen bg-[#f7f1ea] px-4 py-4 text-[#2f2a26]">
         <div className="mx-auto max-w-2xl rounded-[24px] border border-[#e7ddd2] bg-white p-5 shadow-sm">
           <div className="text-base font-semibold">Could not load home</div>
           <div className="mt-2 text-sm text-[#8b7f74]">{postsError.message}</div>
@@ -261,15 +260,15 @@ export default async function HomePage() {
             <Link
               key={post.id}
               href={`/posts/${post.id}`}
-              className="block rounded-[24px] border border-[#e7ddd2] bg-white p-4 shadow-sm transition hover:bg-[#fcfaf7]"
+              className="block rounded-[24px] border border-[#e7ddd2] bg-white p-4 shadow-sm transition hover:bg-[#fcfaf7] active:scale-[0.995]"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 text-[18px] font-bold text-[#5f5347]">
+                  <div className="flex items-center gap-2 text-[20px] font-extrabold tracking-[-0.01em] text-[#2f2a26]">
                     {getPurposeIcon(post.meeting_purpose)}
                     <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
                     {formatDuration(post.duration_minutes) ? (
-                      <span className="inline-flex shrink-0 items-center gap-1 text-[16px] font-semibold text-[#5f5347]">
+                      <span className="inline-flex shrink-0 items-center gap-1 text-[18px] font-bold text-[#2f2a26]">
                         <Clock3 className="h-4 w-4" />
                         {formatDuration(post.duration_minutes)}
                       </span>
