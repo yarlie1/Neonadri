@@ -1,24 +1,16 @@
+"use client";
+
 import Link from "next/link";
-import { createClient } from "../lib/supabase/server";
+import { useEffect, useMemo, useState } from "react";
+import { createClient } from "../lib/supabase/client";
 import {
-  Coffee,
-  UtensilsCrossed,
-  CakeSlice,
-  Footprints,
-  PersonStanding,
-  Clapperboard,
-  Mic2,
-  Gamepad2,
-  BookOpen,
-  BriefcaseBusiness,
-  Book,
-  Camera,
   Clock3,
   MapPin,
   UserRound,
+  UserCircle2,
   Coins,
+  Star,
   Plus,
-  Map as MapIcon,
 } from "lucide-react";
 
 type PostRow = {
@@ -40,85 +32,75 @@ type ProfileRow = {
   display_name: string | null;
 };
 
-type MatchRequestRow = {
-  post_id: number;
-  status: string;
+type ProfileStatsRow = {
+  average_rating?: number | null;
+  review_count?: number | null;
+  completed_meetups?: number | null;
 };
 
-type MatchRow = {
-  post_id: number;
-  status: string;
-  user_a: string;
-  user_b: string;
-};
+type HostStatMap = Record<
+  string,
+  {
+    averageRating: number;
+    reviewCount: number;
+    completedMeetups: number;
+  }
+>;
 
 const getPurposeIcon = (purpose: string | null) => {
-  const className = "h-5 w-5 shrink-0 text-[#7b7067]";
-
   switch (purpose) {
-    case "Coffee":
     case "Coffee Chat":
-      return <Coffee className={className} />;
+    case "Coffee":
+      return "☕";
     case "Meal":
-      return <UtensilsCrossed className={className} />;
+      return "🍽";
     case "Dessert":
-      return <CakeSlice className={className} />;
+      return "🍰";
     case "Walk":
-      return <Footprints className={className} />;
+      return "🚶";
     case "Jogging":
+      return "🏃";
     case "Yoga":
-      return <PersonStanding className={className} />;
+      return "🧘";
     case "Movie":
     case "Theater":
-      return <Clapperboard className={className} />;
+      return "🎬";
     case "Karaoke":
-      return <Mic2 className={className} />;
+      return "🎤";
     case "Board Games":
+      return "🎲";
     case "Gaming":
+      return "🎮";
     case "Bowling":
+      return "🎳";
     case "Arcade":
-      return <Gamepad2 className={className} />;
+      return "🎯";
     case "Study":
-      return <BookOpen className={className} />;
+      return "📚";
     case "Work Together":
     case "Work":
-      return <BriefcaseBusiness className={className} />;
+      return "💻";
     case "Book Talk":
     case "Book":
-      return <Book className={className} />;
+      return "📖";
     case "Photo Walk":
     case "Photo":
-      return <Camera className={className} />;
+      return "📷";
     default:
-      return <MapPin className={className} />;
+      return "✨";
   }
 };
 
-const getStatusBadge = (status: string) => {
-  const normalized = status.toLowerCase();
-
-  if (normalized === "matched" || normalized === "accepted") {
-    return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
-  }
-
-  if (normalized === "pending") {
-    return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
-  }
-
-  if (normalized === "rejected") {
-    return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
-  }
-
-  if (normalized === "closed") {
-    return "bg-[#f4ece4] text-[#8b7f74] border border-[#e7ddd2]";
-  }
-
-  return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+const formatDuration = (minutes: number | null) => {
+  if (!minutes) return "";
+  if (minutes === 60) return "1h";
+  if (minutes === 90) return "1.5h";
+  if (minutes === 120) return "2h";
+  return `${minutes}m`;
 };
 
 const formatTime = (meetingTime: string | null) => {
-  if (!meetingTime) return "No time set";
-
+  if (!meetingTime) return "";
   const date = new Date(meetingTime);
   return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
     hour: "2-digit",
@@ -126,234 +108,316 @@ const formatTime = (meetingTime: string | null) => {
   })}`;
 };
 
-const formatDuration = (minutes: number | null) => {
-  if (!minutes) return null;
-  if (minutes === 60) return "1h";
-  if (minutes === 90) return "1.5h";
-  if (minutes === 120) return "2h";
-  return `${minutes}m`;
+const getPostStatus = (meetingTime: string | null) => {
+  if (!meetingTime) return "Upcoming";
+  return new Date(meetingTime).getTime() >= Date.now() ? "Upcoming" : "Expired";
 };
 
 const parseBenefitAmount = (value: string | null) => {
   if (!value) return null;
-
   const cleaned = String(value).replace(/[^0-9.-]/g, "");
   const amount = Number(cleaned);
-
   if (Number.isNaN(amount) || amount <= 0) return null;
   return amount;
 };
 
-export default async function HomePage() {
-  const supabase = await createClient();
+function StarRatingInline({
+  value,
+  count,
+}: {
+  value: number;
+  count: number;
+}) {
+  const rounded = Math.round(value);
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  return (
+    <div className="inline-flex items-center gap-1.5 rounded-full bg-[#f4ece4] px-2.5 py-1 text-xs text-[#6b5f52]">
+      <div className="flex items-center gap-0.5">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <Star
+            key={n}
+            className={`h-3.5 w-3.5 ${
+              n <= rounded
+                ? "fill-[#a48f7a] text-[#a48f7a]"
+                : "text-[#d8cec3]"
+            }`}
+          />
+        ))}
+      </div>
+      <span className="font-medium">{value.toFixed(1)}</span>
+      <span className="text-[#8b7f74]">({count})</span>
+    </div>
+  );
+}
 
-  const { data: postsData } = await supabase
-    .from("posts")
-    .select(
-      "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
-    )
-    .order("created_at", { ascending: false })
-    .limit(10);
+export default function HomePage() {
+  const supabase = createClient();
 
-  const posts = (postsData as PostRow[]) || [];
-  const ownerIds = Array.from(new Set(posts.map((post) => post.user_id)));
-  const postIds = posts.map((post) => post.id);
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<PostRow[]>([]);
+  const [profileMap, setProfileMap] = useState<Record<string, string>>({});
+  const [hostStatsMap, setHostStatsMap] = useState<HostStatMap>({});
 
-  const profileMap = new Map<string, string>();
+  useEffect(() => {
+    const loadHome = async () => {
+      const { data: postsData, error: postsError } = await supabase
+        .from("posts")
+        .select(
+          "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
+        )
+        .order("meeting_time", { ascending: true });
 
-  if (ownerIds.length > 0) {
-    const { data: profilesData } = await supabase
-      .from("profiles")
-      .select("id, display_name")
-      .in("id", ownerIds);
+      if (postsError) {
+        setLoading(false);
+        return;
+      }
 
-    ((profilesData as ProfileRow[]) || []).forEach((profile) => {
-      profileMap.set(profile.id, profile.display_name || "Unknown");
-    });
-  }
+      const nextPosts = ((postsData as PostRow[]) || []).sort((a, b) => {
+        const aUpcoming = getPostStatus(a.meeting_time) === "Upcoming" ? 0 : 1;
+        const bUpcoming = getPostStatus(b.meeting_time) === "Upcoming" ? 0 : 1;
 
-  const requestStatusMap = new Map<number, string>();
-  const anyMatchMap = new Map<number, MatchRow>();
+        if (aUpcoming !== bUpcoming) return aUpcoming - bUpcoming;
 
-  if (postIds.length > 0) {
-    const { data: allMatchesData } = await supabase
-      .from("matches")
-      .select("post_id, status, user_a, user_b")
-      .in("post_id", postIds);
+        const aTime = a.meeting_time ? new Date(a.meeting_time).getTime() : 0;
+        const bTime = b.meeting_time ? new Date(b.meeting_time).getTime() : 0;
+        return aTime - bTime;
+      });
 
-    ((allMatchesData as MatchRow[]) || []).forEach((item) => {
-      anyMatchMap.set(item.post_id, item);
-    });
-  }
+      setPosts(nextPosts);
 
-  if (user) {
-    const { data: requestsData } = await supabase
-      .from("match_requests")
-      .select("post_id, status")
-      .eq("requester_user_id", user.id)
-      .in("post_id", postIds);
+      const ownerIds = Array.from(new Set(nextPosts.map((post) => post.user_id))).filter(Boolean);
 
-    ((requestsData as MatchRequestRow[]) || []).forEach((item) => {
-      requestStatusMap.set(item.post_id, item.status);
-    });
+      if (ownerIds.length > 0) {
+        const { data: profilesData } = await supabase
+          .from("profiles")
+          .select("id, display_name")
+          .in("id", ownerIds);
+
+        const nextProfileMap: Record<string, string> = {};
+        ((profilesData as ProfileRow[]) || []).forEach((profile) => {
+          nextProfileMap[profile.id] = profile.display_name || "Unknown";
+        });
+        setProfileMap(nextProfileMap);
+
+        const statsResults = await Promise.all(
+          ownerIds.map(async (ownerId) => {
+            const { data } = await supabase.rpc("get_profile_stats", {
+              p_user_id: ownerId,
+            });
+
+            return {
+              ownerId,
+              stats: (data || {}) as ProfileStatsRow,
+            };
+          })
+        );
+
+        const nextHostStatsMap: HostStatMap = {};
+        statsResults.forEach(({ ownerId, stats }) => {
+          nextHostStatsMap[ownerId] = {
+            averageRating: Number(stats.average_rating ?? 0),
+            reviewCount: Number(stats.review_count ?? 0),
+            completedMeetups: Number(stats.completed_meetups ?? 0),
+          };
+        });
+
+        setHostStatsMap(nextHostStatsMap);
+      }
+
+      setLoading(false);
+    };
+
+    loadHome();
+  }, [supabase]);
+
+  const upcomingCount = useMemo(
+    () => posts.filter((post) => getPostStatus(post.meeting_time) === "Upcoming").length,
+    [posts]
+  );
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
+        <div className="mx-auto max-w-2xl rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
+          Loading...
+        </div>
+      </main>
+    );
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl px-4 pb-32 pt-4">
-        <div className="mb-5 flex justify-end">
-          <Link
-            href="/map"
-            className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] shadow-sm transition hover:bg-[#f4ece4]"
-          >
-            <MapIcon className="h-4 w-4" />
-            Map View
-          </Link>
-        </div>
+    <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
+      <div className="mx-auto max-w-2xl space-y-5">
+        <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] px-6 py-5 shadow-sm">
+          <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">
+            NEONADRI
+          </div>
 
-        {posts.length === 0 ? (
-          <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center shadow-sm">
-            <div className="text-lg font-semibold text-[#2f2a26]">
-              No meetups yet
+          <div className="mt-2 flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold tracking-[-0.03em] text-[#2f2a26] sm:text-[34px]">
+                Discover Meetups
+              </h1>
+              <p className="mt-1 text-sm text-[#6f655c]">
+                Browse upcoming meetups and see host trust signals before you join.
+              </p>
             </div>
-            <p className="mt-2 text-sm text-[#8a7f74]">
-              Be the first to create one.
-            </p>
 
             <Link
               href="/write"
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#927d69]"
             >
               <Plus className="h-4 w-4" />
-              Create Meetup
+              Create
             </Link>
           </div>
-        ) : (
-          <div className="space-y-4">
-            {posts.map((post) => {
-              const hostName = profileMap.get(post.user_id) || "Unknown";
-              const amount = parseBenefitAmount(post.benefit_amount);
-              const durationText = formatDuration(post.duration_minutes);
-              const placeText = post.place_name || post.location || "No place";
+        </div>
 
-              const anyMatch = anyMatchMap.get(post.id);
-              const hasAnyMatchForPost = !!anyMatch;
+        <div className="grid grid-cols-2 gap-4">
+          <div className="rounded-[24px] border border-[#e7ddd2] bg-white p-5 shadow-sm">
+            <div className="text-sm text-[#8b7f74]">All Meetups</div>
+            <div className="mt-2 text-[34px] font-extrabold leading-none">
+              {posts.length}
+            </div>
+          </div>
 
-              const isMyMatch =
-                !!user &&
-                !!anyMatch &&
-                (anyMatch.user_a === user.id || anyMatch.user_b === user.id);
+          <div className="rounded-[24px] border border-[#e7ddd2] bg-white p-5 shadow-sm">
+            <div className="text-sm text-[#8b7f74]">Upcoming</div>
+            <div className="mt-2 text-[34px] font-extrabold leading-none">
+              {upcomingCount}
+            </div>
+          </div>
+        </div>
 
-              let myStatus: string | null = null;
+        <div className="space-y-4">
+          {posts.map((post) => {
+            const amount = parseBenefitAmount(post.benefit_amount);
+            const ownerName = profileMap[post.user_id] || "Unknown";
+            const hostStats = hostStatsMap[post.user_id] || {
+              averageRating: 0,
+              reviewCount: 0,
+              completedMeetups: 0,
+            };
+            const status = getPostStatus(post.meeting_time);
 
-              if (user && user.id !== post.user_id) {
-                if (isMyMatch) {
-                  myStatus = "matched";
-                } else {
-                  const requestStatus = requestStatusMap.get(post.id);
-
-                  if (requestStatus) {
-                    myStatus = requestStatus;
-                  } else if (hasAnyMatchForPost) {
-                    myStatus = "closed";
-                  } else {
-                    myStatus = null;
-                  }
-                }
-              }
-
-              return (
-                <Link
-                  key={post.id}
-                  href={`/posts/${post.id}`}
-                  className="block rounded-[28px] border border-[#e7ddd2] bg-white p-5 shadow-[0_6px_18px_rgba(80,60,40,0.08)] transition hover:shadow-[0_8px_22px_rgba(80,60,40,0.10)]"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 truncate text-[18px] font-semibold text-[#5f5449] sm:text-[19px]">
-                        {getPurposeIcon(post.meeting_purpose)}
-                        <span className="truncate">
-                          {post.meeting_purpose || "Meetup"}
+            return (
+              <div
+                key={post.id}
+                className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 truncate text-[22px] font-extrabold text-[#2f2a26] sm:text-[24px]">
+                      <span>{getPurposeIcon(post.meeting_purpose)}</span>
+                      <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
+                      {formatDuration(post.duration_minutes) ? (
+                        <span className="inline-flex shrink-0 items-center gap-1 text-[#2f2a26]">
+                          <Clock3 className="h-4 w-4" />
+                          {formatDuration(post.duration_minutes)}
                         </span>
-                        {durationText ? (
-                          <span className="inline-flex shrink-0 items-center gap-1 text-[#5f5449]">
-                            <Clock3 className="h-4 w-4" />
-                            {durationText}
-                          </span>
-                        ) : null}
-                      </div>
-
-                      <div className="mt-1 truncate text-[28px] font-extrabold leading-tight text-[#2f2a26] sm:text-[30px]">
-                        {placeText}
-                      </div>
+                      ) : null}
                     </div>
 
-                    <div className="flex shrink-0 flex-col items-end gap-2">
-                      {myStatus && (
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusBadge(
-                            myStatus
-                          )}`}
-                        >
-                          {myStatus}
-                        </span>
-                      )}
-
-                      {amount !== null && (
-                        <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
-                          <span className="inline-flex items-center gap-1.5">
-                            <Coins className="h-4 w-4" />
-                            ${amount.toLocaleString()}
-                          </span>
-                        </div>
-                      )}
+                    <div className="mt-[2px] flex items-center gap-2 truncate text-[22px] font-extrabold text-[#8a7f74] sm:text-[24px]">
+                      <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                      <span className="truncate">
+                        {post.place_name || post.location || "No place"}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="mt-4 space-y-2 text-sm text-[#766c62]">
+                  <div className="flex shrink-0 flex-col items-end gap-2">
+                    <span className="rounded-full border border-[#dccfc2] bg-[#efe7dc] px-3 py-1 text-xs font-medium text-[#6b5f52]">
+                      {status}
+                    </span>
+
+                    {amount !== null && (
+                      <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
+                        <span className="inline-flex items-center gap-1.5">
+                          <Coins className="h-4 w-4" />
+                          ${amount.toLocaleString()}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-4 space-y-2 text-sm text-[#766c62]">
+                  {post.meeting_time && (
                     <div className="flex items-center gap-2">
                       <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
                       <span>{formatTime(post.meeting_time)}</span>
                     </div>
+                  )}
 
+                  {post.location && (
                     <div className="flex items-start gap-2">
                       <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <span className="line-clamp-1">
-                        {post.location || "No address"}
-                      </span>
+                      <span className="line-clamp-1">{post.location}</span>
                     </div>
+                  )}
 
-                    <div className="flex items-center gap-2">
-                      <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <span>
-                        {post.target_gender || "Any"} /{" "}
-                        {post.target_age_group || "Any"}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2 pt-1">
-                      <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <span className="truncate">{hostName}</span>
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                    <span>
+                      {post.target_gender || "Any"} / {post.target_age_group || "Any"}
+                    </span>
                   </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-      </div>
+                </div>
 
-      <Link
-        href="/write"
-        className="fixed bottom-7 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-[#6b5f52] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(80,60,40,0.22)] transition hover:bg-[#5f5449]"
-      >
-        <Plus className="h-4 w-4" />
-        Create
-      </Link>
+                <div className="mt-5 rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <Link
+                      href={`/profile/${post.user_id}`}
+                      className="inline-flex items-center gap-2 rounded-full px-1 py-1 font-medium text-[#5a5149] transition hover:bg-[#f4ece4] hover:text-[#2f2a26]"
+                    >
+                      <UserCircle2 className="h-5 w-5 text-[#8a7f74]" />
+                      <span>{ownerName}</span>
+                    </Link>
+
+                    {hostStats.reviewCount > 0 ? (
+                      <StarRatingInline
+                        value={hostStats.averageRating}
+                        count={hostStats.reviewCount}
+                      />
+                    ) : (
+                      <div className="rounded-full bg-[#f4ece4] px-2.5 py-1 text-xs text-[#8b7f74]">
+                        No reviews yet
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-2 text-xs text-[#8b7f74]">
+                    {hostStats.completedMeetups} completed meetups
+                  </div>
+                </div>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <Link
+                    href={`/posts/${post.id}`}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[#a48f7a] px-3 py-2 text-xs font-medium text-white transition hover:bg-[#927d69]"
+                  >
+                    View Meetup
+                  </Link>
+
+                  <Link
+                    href={`/profile/${post.user_id}`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                  >
+                    View Host
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
+
+          {posts.length === 0 && (
+            <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+              No meetups yet.
+            </div>
+          )}
+        </div>
+      </div>
     </main>
   );
 }
