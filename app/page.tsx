@@ -33,7 +33,7 @@ type SearchParams = {
 };
 
 type PageProps = {
-  searchParams?: Promise<SearchParams>;
+  searchParams?: SearchParams;
 };
 
 type PostRow = {
@@ -272,7 +272,7 @@ function SummaryChip({ label, value }: { label: string; value: string }) {
 }
 
 export default async function HomePage({ searchParams }: PageProps) {
-  const resolved = (await searchParams) || {};
+  const resolved = searchParams || {};
 
   const selectedPurpose = resolved.purpose || "All";
   const selectedGender = resolved.gender || "All";
@@ -406,12 +406,14 @@ export default async function HomePage({ searchParams }: PageProps) {
                 <SummaryChip label="Age" value={selectedAgeGroup} />
                 <SummaryChip
                   label="Sort"
-                  value={SORT_OPTIONS.find((s) => s.value === selectedSort)?.label || "Soonest"}
+                  value={
+                    SORT_OPTIONS.find((s) => s.value === selectedSort)?.label || "Soonest"
+                  }
                 />
               </div>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex shrink-0 items-center gap-2">
               <Link
                 href="/"
                 className="inline-flex items-center gap-1 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
