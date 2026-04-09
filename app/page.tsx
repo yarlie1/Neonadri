@@ -54,7 +54,6 @@ type HostStatMap = Record<
   {
     averageRating: number;
     reviewCount: number;
-    completedMeetups: number;
   }
 >;
 
@@ -68,7 +67,7 @@ type HostProfileMap = Record<
 >;
 
 const getPurposeIcon = (purpose: string | null) => {
-  const className = "h-[18px] w-[18px] shrink-0 text-[#7e746b]";
+  const className = "h-[17px] w-[17px] shrink-0 text-[#7e746b]";
 
   switch (purpose) {
     case "Coffee Chat":
@@ -149,12 +148,12 @@ function StarRatingInline({
   const rounded = Math.round(value);
 
   return (
-    <div className="inline-flex items-center gap-1.5 rounded-full bg-[#f4ece4] px-2.5 py-1 text-xs text-[#6b5f52]">
+    <div className="inline-flex items-center gap-1 rounded-full bg-[#f4ece4] px-2 py-1 text-[11px] text-[#6b5f52]">
       <div className="flex items-center gap-0.5">
         {[1, 2, 3, 4, 5].map((n) => (
           <Star
             key={n}
-            className={`h-3.5 w-3.5 ${
+            className={`h-3 w-3 ${
               n <= rounded
                 ? "fill-[#a48f7a] text-[#a48f7a]"
                 : "text-[#d8cec3]"
@@ -181,8 +180,8 @@ export default async function HomePage() {
   if (postsError) {
     return (
       <main className="min-h-screen bg-[#f7f1ea] px-4 py-5 text-[#2f2a26]">
-        <div className="mx-auto max-w-2xl rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
-          <div className="text-lg font-semibold">Could not load home</div>
+        <div className="mx-auto max-w-2xl rounded-[24px] border border-[#e7ddd2] bg-white p-5 shadow-sm">
+          <div className="text-base font-semibold">Could not load home</div>
           <div className="mt-2 text-sm text-[#8b7f74]">{postsError.message}</div>
         </div>
       </main>
@@ -232,7 +231,6 @@ export default async function HomePage() {
           stats: {
             averageRating: Number(stats.average_rating ?? 0),
             reviewCount: Number(stats.review_count ?? 0),
-            completedMeetups: Number(stats.completed_meetups ?? 0),
           },
         };
       })
@@ -244,142 +242,133 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-4 py-5 text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl space-y-4 pb-24">
-        <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] px-5 py-4 shadow-sm">
-          <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">NEONADRI</div>
-        </div>
+    <main className="min-h-screen bg-[#f7f1ea] px-4 py-4 text-[#2f2a26]">
+      <div className="mx-auto max-w-2xl space-y-3 pb-24">
+        {posts.map((post) => {
+          const amount = parseBenefitAmount(post.benefit_amount);
+          const host = hostProfileMap[post.user_id] || {
+            displayName: "Unknown",
+            gender: "",
+            ageGroup: "",
+          };
+          const hostStats = hostStatsMap[post.user_id] || {
+            averageRating: 0,
+            reviewCount: 0,
+          };
+          const status = getPostStatus(post.meeting_time);
 
-        <div className="space-y-3">
-          {posts.map((post) => {
-            const amount = parseBenefitAmount(post.benefit_amount);
-            const host = hostProfileMap[post.user_id] || {
-              displayName: "Unknown",
-              gender: "",
-              ageGroup: "",
-            };
-            const hostStats = hostStatsMap[post.user_id] || {
-              averageRating: 0,
-              reviewCount: 0,
-              completedMeetups: 0,
-            };
-            const status = getPostStatus(post.meeting_time);
-
-            return (
-              <Link
-                key={post.id}
-                href={`/posts/${post.id}`}
-                className="block rounded-[26px] border border-[#e7ddd2] bg-white p-4 shadow-sm transition hover:bg-[#fcfaf7]"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 text-[22px] font-extrabold tracking-[-0.03em] text-[#2f2a26]">
-                      {getPurposeIcon(post.meeting_purpose)}
-                      <span className="truncate">
-                        {post.meeting_purpose || "Meetup"}
+          return (
+            <Link
+              key={post.id}
+              href={`/posts/${post.id}`}
+              className="block rounded-[24px] border border-[#e7ddd2] bg-white p-4 shadow-sm transition hover:bg-[#fcfaf7]"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 text-[18px] font-bold text-[#5f5347]">
+                    {getPurposeIcon(post.meeting_purpose)}
+                    <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
+                    {formatDuration(post.duration_minutes) ? (
+                      <span className="inline-flex shrink-0 items-center gap-1 text-[16px] font-semibold text-[#5f5347]">
+                        <Clock3 className="h-4 w-4" />
+                        {formatDuration(post.duration_minutes)}
                       </span>
-                      {formatDuration(post.duration_minutes) ? (
-                        <span className="inline-flex shrink-0 items-center gap-1 text-[18px] font-bold text-[#2f2a26]">
-                          <Clock3 className="h-4 w-4" />
-                          {formatDuration(post.duration_minutes)}
-                        </span>
-                      ) : null}
-                    </div>
-
-                    <div className="mt-1 flex items-center gap-2 text-[18px] font-bold text-[#3f3833]">
-                      <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <span className="truncate">
-                        {post.place_name || post.location || "No place"}
-                      </span>
-                    </div>
+                    ) : null}
                   </div>
 
-                  <div className="flex shrink-0 flex-col items-end gap-2">
-                    {amount !== null && (
-                      <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
-                        <span className="inline-flex items-center gap-1.5">
-                          <Coins className="h-4 w-4" />
-                          ${amount.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-
-                    <span className="rounded-full border border-[#dccfc2] bg-[#efe7dc] px-3 py-1 text-xs font-medium text-[#6b5f52]">
-                      {status}
+                  <div className="mt-1 flex items-center gap-2 text-[16px] font-bold text-[#2f2a26]">
+                    <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                    <span className="truncate">
+                      {post.place_name || post.location || "No place"}
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-3 space-y-2 text-sm text-[#766c62]">
-                  {post.meeting_time && (
-                    <div className="flex items-center gap-2">
-                      <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <span>{formatTime(post.meeting_time)}</span>
+                <div className="flex shrink-0 flex-col items-end gap-2">
+                  {amount !== null && (
+                    <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-3.5 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
+                      <span className="inline-flex items-center gap-1.5">
+                        <Coins className="h-4 w-4" />
+                        ${amount.toLocaleString()}
+                      </span>
                     </div>
                   )}
 
-                  {post.location && (
-                    <div className="flex items-start gap-2">
-                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <span className="line-clamp-1">{post.location}</span>
-                    </div>
-                  )}
+                  <span className="rounded-full border border-[#dccfc2] bg-[#efe7dc] px-3 py-1 text-[11px] font-medium text-[#6b5f52]">
+                    {status}
+                  </span>
+                </div>
+              </div>
 
+              <div className="mt-3 space-y-1.5 text-[13px] text-[#766c62]">
+                {post.meeting_time && (
                   <div className="flex items-center gap-2">
-                    <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                    <span>
-                      {post.target_gender || "Any"} / {post.target_age_group || "Any"}
-                    </span>
+                    <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                    <span>{formatTime(post.meeting_time)}</span>
                   </div>
+                )}
+
+                {post.location && (
+                  <div className="flex items-start gap-2">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+                    <span className="line-clamp-1">{post.location}</span>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2">
+                  <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                  <span>
+                    {post.target_gender || "Any"} / {post.target_age_group || "Any"}
+                  </span>
                 </div>
+              </div>
 
-                <div className="mt-3 rounded-[18px] border border-[#e7ddd2] bg-[#fcfaf7] px-3.5 py-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="inline-flex items-center gap-2 font-medium text-[#5a5149]">
-                        <UserCircle2 className="h-5 w-5 text-[#8a7f74]" />
-                        <span className="truncate">{host.displayName}</span>
-                      </div>
-
-                      {(host.gender || host.ageGroup) && (
-                        <div className="mt-1 text-xs text-[#8b7f74]">
-                          {host.gender || "Unknown"}
-                          {host.gender && host.ageGroup ? " / " : ""}
-                          {host.ageGroup || ""}
-                        </div>
-                      )}
+              <div className="mt-3 rounded-[16px] border border-[#e7ddd2] bg-[#fcfaf7] px-3 py-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="inline-flex items-center gap-2 text-sm font-medium text-[#5a5149]">
+                      <UserCircle2 className="h-4.5 w-4.5 text-[#8a7f74]" />
+                      <span className="truncate">{host.displayName}</span>
                     </div>
 
-                    {hostStats.reviewCount > 0 ? (
-                      <StarRatingInline
-                        value={hostStats.averageRating}
-                        count={hostStats.reviewCount}
-                      />
-                    ) : (
-                      <div className="rounded-full bg-[#f4ece4] px-2.5 py-1 text-xs text-[#8b7f74]">
-                        No reviews yet
+                    {(host.gender || host.ageGroup) && (
+                      <div className="mt-0.5 text-[12px] text-[#8b7f74]">
+                        {host.gender || "Unknown"}
+                        {host.gender && host.ageGroup ? " / " : ""}
+                        {host.ageGroup || ""}
                       </div>
                     )}
                   </div>
-                </div>
-              </Link>
-            );
-          })}
 
-          {posts.length === 0 && (
-            <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
-              No meetups yet.
-            </div>
-          )}
-        </div>
+                  {hostStats.reviewCount > 0 ? (
+                    <StarRatingInline
+                      value={hostStats.averageRating}
+                      count={hostStats.reviewCount}
+                    />
+                  ) : (
+                    <div className="rounded-full bg-[#f4ece4] px-2 py-1 text-[11px] text-[#8b7f74]">
+                      No reviews
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Link>
+          );
+        })}
+
+        {posts.length === 0 && (
+          <div className="rounded-[24px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+            No meetups yet.
+          </div>
+        )}
       </div>
 
       <Link
         href="/write"
-        className="fixed bottom-6 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white shadow-[0_10px_25px_rgba(80,60,40,0.18)] transition hover:bg-[#927d69]"
+        className="fixed bottom-6 right-5 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#a48f7a] text-white shadow-[0_10px_25px_rgba(80,60,40,0.18)] transition hover:bg-[#927d69]"
+        aria-label="Create meetup"
       >
-        <Plus className="h-4 w-4" />
-        Create
+        <Plus className="h-6 w-6" />
       </Link>
     </main>
   );
