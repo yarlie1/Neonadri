@@ -66,9 +66,10 @@ type HostProfileMap = Record<
 >;
 
 const getPurposeIcon = (purpose: string | null) => {
-  const className = "h-[20px] w-[20px] shrink-0 text-[#7e746b]";
+  const className = "h-[19px] w-[19px] shrink-0 text-[#7e746b]";
 
   switch (purpose) {
+    case "Coffee Chat":
     case "Coffee":
       return <Coffee className={className} />;
     case "Meal":
@@ -77,49 +78,90 @@ const getPurposeIcon = (purpose: string | null) => {
       return <CakeSlice className={className} />;
     case "Walk":
       return <Footprints className={className} />;
+    case "Jogging":
+    case "Yoga":
+      return <PersonStanding className={className} />;
     case "Movie":
+    case "Theater":
       return <Clapperboard className={className} />;
     case "Karaoke":
       return <Mic2 className={className} />;
+    case "Board Games":
+    case "Gaming":
+    case "Bowling":
+    case "Arcade":
+      return <Gamepad2 className={className} />;
     case "Study":
       return <BookOpen className={className} />;
+    case "Work Together":
+    case "Work":
+      return <BriefcaseBusiness className={className} />;
+    case "Book Talk":
+    case "Book":
+      return <Book className={className} />;
+    case "Photo Walk":
+    case "Photo":
+      return <Camera className={className} />;
     default:
       return <MapPin className={className} />;
   }
 };
 
-const formatDuration = (m: number | null) => {
-  if (!m) return "";
-  if (m === 60) return "1h";
-  if (m === 90) return "1.5h";
-  if (m === 120) return "2h";
-  return `${m}m`;
+const formatDuration = (minutes: number | null) => {
+  if (!minutes) return "";
+  if (minutes === 60) return "1h";
+  if (minutes === 90) return "1.5h";
+  if (minutes === 120) return "2h";
+  return `${minutes}m`;
 };
 
-const formatTime = (t: string | null) => {
-  if (!t) return "";
-  const d = new Date(t);
-  return `${d.toLocaleDateString()} ${d.toLocaleTimeString([], {
+const formatTime = (meetingTime: string | null) => {
+  if (!meetingTime) return "";
+  const date = new Date(meetingTime);
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
   })}`;
 };
 
-const getStatus = (t: string | null) => {
-  if (!t) return "Upcoming";
-  return new Date(t).getTime() >= Date.now() ? "Upcoming" : "Expired";
+const getPostStatus = (meetingTime: string | null) => {
+  if (!meetingTime) return "Upcoming";
+  return new Date(meetingTime).getTime() >= Date.now() ? "Upcoming" : "Expired";
 };
 
-const parseAmount = (v: string | null) => {
-  if (!v) return null;
-  const num = Number(v.replace(/[^0-9]/g, ""));
-  return Number.isNaN(num) ? null : num;
+const parseBenefitAmount = (value: string | null) => {
+  if (!value) return null;
+  const cleaned = String(value).replace(/[^0-9.-]/g, "");
+  const amount = Number(cleaned);
+  if (Number.isNaN(amount) || amount <= 0) return null;
+  return amount;
 };
 
-function StarInline({ v, c }: { v: number; c: number }) {
+function StarRatingInline({
+  value,
+  count,
+}: {
+  value: number;
+  count: number;
+}) {
+  const rounded = Math.round(value);
+
   return (
-    <div className="flex items-center gap-1 text-[12px] text-[#6b5f52]">
-      ★ {v.toFixed(1)} ({c})
+    <div className="inline-flex items-center gap-1 rounded-full bg-[#f4ece4] px-2 py-1 text-[11px] text-[#6b5f52]">
+      <div className="flex items-center gap-0.5">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <Star
+            key={n}
+            className={`h-3 w-3 ${
+              n <= rounded
+                ? "fill-[#a48f7a] text-[#a48f7a]"
+                : "text-[#d8cec3]"
+            }`}
+          />
+        ))}
+      </div>
+      <span className="font-medium">{value.toFixed(1)}</span>
+      <span className="text-[#8b7f74]">({count})</span>
     </div>
   );
 }
@@ -127,75 +169,205 @@ function StarInline({ v, c }: { v: number; c: number }) {
 export default async function HomePage() {
   const supabase = await createClient();
 
-  const { data } = await supabase.from("posts").select("*");
+  const { data: postsData, error: postsError } = await supabase
+    .from("posts")
+    .select(
+      "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
+    )
+    .order("meeting_time", { ascending: true });
 
-  const posts = (data || []) as PostRow[];
+  if (postsError) {
+    return (
+      <main className="min-h-screen bg-[#f7f1ea] px-4 py-4 text-[#2f2a26]">
+        <div className="mx-auto max-w-2xl rounded-[24px] border border-[#e7ddd2] bg-white p-5 shadow-sm">
+          <div className="text-base font-semibold">Could not load home</div>
+          <div className="mt-2 text-sm text-[#8b7f74]">{postsError.message}</div>
+        </div>
+      </main>
+    );
+  }
+
+  const posts = ((postsData as PostRow[]) || []).sort((a, b) => {
+    const aUpcoming = getPostStatus(a.meeting_time) === "Upcoming" ? 0 : 1;
+    const bUpcoming = getPostStatus(b.meeting_time) === "Upcoming" ? 0 : 1;
+
+    if (aUpcoming !== bUpcoming) return aUpcoming - bUpcoming;
+
+    const aTime = a.meeting_time ? new Date(a.meeting_time).getTime() : 0;
+    const bTime = b.meeting_time ? new Date(b.meeting_time).getTime() : 0;
+    return aTime - bTime;
+  });
+
+  const ownerIds = Array.from(new Set(posts.map((post) => post.user_id))).filter(Boolean);
+
+  let hostProfileMap: HostProfileMap = {};
+  let hostStatsMap: HostStatMap = {};
+
+  if (ownerIds.length > 0) {
+    const { data: profilesData } = await supabase
+      .from("profiles")
+      .select("id, display_name, gender, age_group")
+      .in("id", ownerIds);
+
+    ((profilesData as ProfileRow[]) || []).forEach((profile) => {
+      hostProfileMap[profile.id] = {
+        displayName: profile.display_name || "Unknown",
+        gender: profile.gender || "",
+        ageGroup: profile.age_group || "",
+      };
+    });
+
+    const statsResults = await Promise.all(
+      ownerIds.map(async (ownerId) => {
+        const { data } = await supabase.rpc("get_profile_stats", {
+          p_user_id: ownerId,
+        });
+
+        const stats = (data || {}) as ProfileStatsRow;
+
+        return {
+          ownerId,
+          stats: {
+            averageRating: Number(stats.average_rating ?? 0),
+            reviewCount: Number(stats.review_count ?? 0),
+          },
+        };
+      })
+    );
+
+    statsResults.forEach(({ ownerId, stats }) => {
+      hostStatsMap[ownerId] = stats;
+    });
+  }
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-4 py-4">
+    <main className="min-h-screen bg-[#f7f1ea] px-4 py-4 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-3 pb-24">
         {posts.map((post) => {
-          const amount = parseAmount(post.benefit_amount);
-          const status = getStatus(post.meeting_time);
+          const amount = parseBenefitAmount(post.benefit_amount);
+          const host = hostProfileMap[post.user_id] || {
+            displayName: "Unknown",
+            gender: "",
+            ageGroup: "",
+          };
+          const hostStats = hostStatsMap[post.user_id] || {
+            averageRating: 0,
+            reviewCount: 0,
+          };
+          const status = getPostStatus(post.meeting_time);
 
           return (
             <Link
               key={post.id}
               href={`/posts/${post.id}`}
-              className="block rounded-[24px] border border-[#e7ddd2] bg-white p-4 shadow-sm active:scale-[0.99]"
+              className="block rounded-[24px] border border-[#e7ddd2] bg-white p-4 shadow-sm transition hover:bg-[#fcfaf7] active:scale-[0.995]"
             >
-              <div className="flex justify-between gap-3">
-                <div className="flex-1">
-
-                  {/* 🔥 첫째줄 (확대) */}
-                  <div className="flex items-center gap-2 text-[28px] leading-[1.15] font-extrabold text-[#2f2a26]">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 text-[24px] leading-[1.18] font-extrabold tracking-[-0.01em] text-[#2f2a26]">
                     {getPurposeIcon(post.meeting_purpose)}
-                    <span>{post.meeting_purpose}</span>
-                    <span className="flex items-center gap-1 text-[24px] font-bold">
-                      <Clock3 className="h-5 w-5" />
-                      {formatDuration(post.duration_minutes)}
+                    <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
+                    {formatDuration(post.duration_minutes) ? (
+                      <span className="inline-flex shrink-0 items-center gap-1 text-[21px] font-bold text-[#2f2a26]">
+                        <Clock3 className="h-4 w-4" />
+                        {formatDuration(post.duration_minutes)}
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <div className="mt-2 flex items-center gap-2 text-[21px] font-bold leading-[1.22] text-[#2f2a26]">
+                    <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                    <span className="truncate">
+                      {post.place_name || post.location || "No place"}
                     </span>
                   </div>
-
-                  {/* 🔥 둘째줄 (확대) */}
-                  <div className="mt-2 flex items-center gap-2 text-[24px] font-bold text-[#2f2a26]">
-                    <MapPin className="h-5 w-5 text-[#8a7f74]" />
-                    <span>{post.place_name}</span>
-                  </div>
                 </div>
 
-                <div className="flex flex-col items-end gap-2">
-                  {amount && (
-                    <div className="rounded-full bg-yellow-300 px-3 py-1 font-bold">
-                      ${amount}
+                <div className="flex shrink-0 flex-col items-end gap-2">
+                  {amount !== null && (
+                    <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-3.5 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
+                      <span className="inline-flex items-center gap-1.5">
+                        <Coins className="h-4 w-4" />
+                        ${amount.toLocaleString()}
+                      </span>
                     </div>
                   )}
-                  <div className="text-sm">{status}</div>
+
+                  <span className="rounded-full border border-[#dccfc2] bg-[#efe7dc] px-3 py-1 text-[11px] font-medium text-[#6b5f52]">
+                    {status}
+                  </span>
                 </div>
               </div>
 
-              <div className="mt-3 text-sm text-gray-500 space-y-1">
-                <div>{formatTime(post.meeting_time)}</div>
-                <div>{post.location}</div>
-                <div>
-                  {post.target_gender} / {post.target_age_group}
+              <div className="mt-3.5 space-y-1.5 text-[13px] text-[#766c62]">
+                {post.meeting_time && (
+                  <div className="flex items-center gap-2">
+                    <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                    <span>{formatTime(post.meeting_time)}</span>
+                  </div>
+                )}
+
+                {post.location && (
+                  <div className="flex items-start gap-2">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+                    <span className="line-clamp-1">{post.location}</span>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2">
+                  <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                  <span>
+                    {post.target_gender || "Any"} / {post.target_age_group || "Any"}
+                  </span>
                 </div>
               </div>
 
-              <div className="mt-3 border rounded-lg p-3 flex justify-between">
-                <div>{post.user_id}</div>
-                <StarInline v={5} c={2} />
+              <div className="mt-3.5 rounded-[16px] border border-[#e7ddd2] bg-[#fcfaf7] px-3 py-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="inline-flex items-center gap-2 text-sm font-medium text-[#5a5149]">
+                      <UserCircle2 className="h-4.5 w-4.5 text-[#8a7f74]" />
+                      <span className="truncate">{host.displayName}</span>
+                    </div>
+
+                    {(host.gender || host.ageGroup) && (
+                      <div className="mt-0.5 text-[12px] text-[#8b7f74]">
+                        {host.gender || "Unknown"}
+                        {host.gender && host.ageGroup ? " / " : ""}
+                        {host.ageGroup || ""}
+                      </div>
+                    )}
+                  </div>
+
+                  {hostStats.reviewCount > 0 ? (
+                    <StarRatingInline
+                      value={hostStats.averageRating}
+                      count={hostStats.reviewCount}
+                    />
+                  ) : (
+                    <div className="rounded-full bg-[#f4ece4] px-2 py-1 text-[11px] text-[#8b7f74]">
+                      No reviews
+                    </div>
+                  )}
+                </div>
               </div>
             </Link>
           );
         })}
+
+        {posts.length === 0 && (
+          <div className="rounded-[24px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+            No meetups yet.
+          </div>
+        )}
       </div>
 
       <Link
         href="/write"
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-[#a48f7a] text-white flex items-center justify-center text-2xl"
+        className="fixed bottom-6 right-5 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#a48f7a] text-white shadow-[0_10px_25px_rgba(80,60,40,0.18)] transition hover:bg-[#927d69]"
+        aria-label="Create meetup"
       >
-        <Plus />
+        <Plus className="h-6 w-6" />
       </Link>
     </main>
   );
