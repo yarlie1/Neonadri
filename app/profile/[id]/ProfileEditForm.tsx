@@ -129,6 +129,7 @@ export default function ProfileEditForm({
     if (isPending) return;
 
     setMessage("");
+    console.log("save clicked");
 
     const { error } = await supabase.from("profiles").upsert({
       id: profile.id,
@@ -173,9 +174,17 @@ export default function ProfileEditForm({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/30">
-      <div className="flex h-full items-end justify-center sm:items-center">
-        <div className="flex h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[28px] border border-[#e7ddd2] bg-white shadow-xl sm:h-auto sm:max-h-[90vh] sm:rounded-[28px]">
+    <div className="fixed inset-0 z-[100]">
+      <div
+        className="absolute inset-0 bg-black/30"
+        onClick={() => setOpen(false)}
+      />
+
+      <div className="absolute inset-0 flex items-end justify-center sm:items-center">
+        <div
+          className="relative z-[101] pointer-events-auto flex h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[28px] border border-[#e7ddd2] bg-white shadow-xl sm:h-auto sm:max-h-[90vh] sm:rounded-[28px]"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="flex items-center justify-between gap-3 border-b border-[#efe6db] px-6 py-5">
             <h2 className="text-xl font-bold text-[#2f2a26]">Edit Profile</h2>
 
@@ -340,22 +349,22 @@ export default function ProfileEditForm({
                 />
                 Make my profile public
               </label>
-            </div>
 
-            {message && (
-              <p className="mt-4 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-                {message}
-              </p>
-            )}
+              {message && (
+                <p className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+                  {message}
+                </p>
+              )}
+            </div>
           </div>
 
-          <div className="sticky bottom-0 border-t border-[#efe6db] bg-white px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
+          <div className="relative z-[102] border-t border-[#efe6db] bg-white px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"
                 onClick={handleSave}
                 disabled={isPending}
-                className="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+                className="touch-manipulation inline-flex min-h-[48px] items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
               >
                 <Save className="h-4 w-4" />
                 {isPending ? "Saving..." : "Save"}
@@ -364,7 +373,7 @@ export default function ProfileEditForm({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="inline-flex min-h-[48px] items-center rounded-full border border-[#dccfc2] bg-white px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                className="touch-manipulation inline-flex min-h-[48px] items-center rounded-full border border-[#dccfc2] bg-white px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
               >
                 Cancel
               </button>
