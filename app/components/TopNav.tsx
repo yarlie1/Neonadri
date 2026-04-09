@@ -190,9 +190,11 @@ export default function TopNav() {
         <div className="flex items-center">
           <Link
             href="/"
-            className="text-[26px] font-extrabold tracking-[-0.04em] text-[#1f1b18] sm:text-[28px]"
+            className="group inline-flex items-center text-[28px] font-extrabold tracking-[-0.04em] text-[#1f1b18] transition duration-200 hover:scale-[1.02] hover:text-[#8f7762] sm:text-[32px]"
           >
-            Neonadri
+            <span className="bg-gradient-to-r from-[#1f1b18] to-[#8f7762] bg-clip-text text-transparent transition duration-200 group-hover:from-[#2a2420] group-hover:to-[#a48f7a]">
+              Neonadri
+            </span>
           </Link>
 
           <BrandTagline />
