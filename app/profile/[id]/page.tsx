@@ -86,11 +86,13 @@ function InfoItem({
 }) {
   return (
     <div className="rounded-[18px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-3">
-      <div className="flex items-center gap-2 text-xs font-medium text-[#8b7f74]">
+      <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
         {icon}
         <span>{label}</span>
       </div>
-      <div className="mt-1 text-sm font-medium text-[#4f443b]">{value}</div>
+      <div className="mt-1 text-sm font-medium leading-6 text-[#4f443b]">
+        {value}
+      </div>
     </div>
   );
 }
@@ -172,12 +174,11 @@ export default async function ProfilePage({ params }: PageProps) {
 
   const hasBio = !!profile.bio?.trim();
   const hasAboutMe = !!profile.about_me?.trim();
+  const hasPreferredArea = !!profile.preferred_area?.trim();
+  const hasLanguages = !!profile.languages && profile.languages.length > 0;
+  const hasMeetingStyle = !!profile.meeting_style?.trim();
   const hasInterests = !!profile.interests && profile.interests.length > 0;
-  const hasDetails =
-    !!profile.preferred_area ||
-    (!!profile.languages && profile.languages.length > 0) ||
-    !!profile.meeting_style ||
-    !!profile.response_time_note;
+  const hasResponseNote = !!profile.response_time_note?.trim();
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
@@ -224,17 +225,17 @@ export default async function ProfilePage({ params }: PageProps) {
               </div>
             )}
 
-            {profile.preferred_area && (
+            {hasPreferredArea && (
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
                 <span>{profile.preferred_area}</span>
               </div>
             )}
 
-            {profile.languages && profile.languages.length > 0 && (
+            {hasLanguages && (
               <div className="flex items-center gap-2">
                 <Languages className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                <span>{profile.languages.join(", ")}</span>
+                <span>{profile.languages!.join(", ")}</span>
               </div>
             )}
           </div>
@@ -247,7 +248,9 @@ export default async function ProfilePage({ params }: PageProps) {
                   <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
                     Bio
                   </div>
-                  <div className="mt-1 leading-7 text-[#5f5347]">{profile.bio}</div>
+                  <div className="mt-1 leading-7 text-[#5f5347]">
+                    {profile.bio}
+                  </div>
                 </div>
               </div>
             </div>
@@ -267,37 +270,37 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
           </div>
 
-          {hasDetails && (
+          {(hasPreferredArea || hasLanguages || hasMeetingStyle || hasResponseNote) && (
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {profile.preferred_area && (
+              {hasPreferredArea && (
                 <InfoItem
                   icon={<MapPin className="h-3.5 w-3.5 text-[#8a7f74]" />}
                   label="Preferred Area"
-                  value={profile.preferred_area}
+                  value={profile.preferred_area!}
                 />
               )}
 
-              {profile.languages && profile.languages.length > 0 && (
+              {hasLanguages && (
                 <InfoItem
                   icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
                   label="Languages"
-                  value={profile.languages.join(", ")}
+                  value={profile.languages!.join(", ")}
                 />
               )}
 
-              {profile.meeting_style && (
+              {hasMeetingStyle && (
                 <InfoItem
                   icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
                   label="Meeting Style"
-                  value={profile.meeting_style}
+                  value={profile.meeting_style!}
                 />
               )}
 
-              {profile.response_time_note && (
+              {hasResponseNote && (
                 <InfoItem
                   icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
                   label="Response Note"
-                  value={profile.response_time_note}
+                  value={profile.response_time_note!}
                 />
               )}
             </div>
@@ -327,7 +330,9 @@ export default async function ProfilePage({ params }: PageProps) {
         <div className="grid grid-cols-3 gap-3">
           <div className="rounded-[22px] border border-[#e7ddd2] bg-white p-4 text-center shadow-sm">
             <div className="text-xs text-[#8b7f74]">Rating</div>
-            <div className="mt-2 text-2xl font-bold">{averageRating.toFixed(1)}</div>
+            <div className="mt-2 text-2xl font-bold">
+              {averageRating.toFixed(1)}
+            </div>
             <div className="mt-2 flex justify-center">
               <StarRating value={roundedAverage} size="sm" />
             </div>
