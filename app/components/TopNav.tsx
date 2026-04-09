@@ -11,6 +11,10 @@ import {
   LogOut,
   LogIn,
   UserPlus,
+  House,
+  UserCircle2,
+  Settings,
+  Plus,
 } from "lucide-react";
 
 type SimpleUser = {
@@ -85,9 +89,12 @@ export default function TopNav() {
   const desktopButtonClass =
     "inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
 
+  const desktopPrimaryButtonClass =
+    "inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#927d69]";
+
   return (
     <header className="sticky top-0 z-50 border-b border-[#e7ddd2] bg-[#fffaf5]/90 backdrop-blur">
-      <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <Link
           href="/"
           className="text-[26px] font-extrabold tracking-[-0.04em] text-[#1f1b18] sm:text-[28px]"
@@ -100,22 +107,34 @@ export default function TopNav() {
         ) : (
           <>
             <div className="hidden items-center gap-2 sm:flex">
+              <Link href="/" className={desktopButtonClass}>
+                <House className="h-4 w-4" />
+                Home
+              </Link>
+
               {user ? (
                 <>
-                  <Link href="/account" className={desktopButtonClass}>
-                    <UserRound className="h-4 w-4" />
-                    Account
-                  </Link>
-
                   <Link href="/dashboard" className={desktopButtonClass}>
                     <LayoutDashboard className="h-4 w-4" />
                     Dashboard
                   </Link>
 
-                  <button
-                    onClick={handleLogout}
-                    className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#927d69]"
-                  >
+                  <Link href={`/profile/${user.id}`} className={desktopButtonClass}>
+                    <UserCircle2 className="h-4 w-4" />
+                    My Profile
+                  </Link>
+
+                  <Link href="/account" className={desktopButtonClass}>
+                    <Settings className="h-4 w-4" />
+                    My Account
+                  </Link>
+
+                  <Link href="/write" className={desktopPrimaryButtonClass}>
+                    <Plus className="h-4 w-4" />
+                    Create Meetup
+                  </Link>
+
+                  <button onClick={handleLogout} className={desktopButtonClass}>
                     <LogOut className="h-4 w-4" />
                     Logout
                   </button>
@@ -127,10 +146,7 @@ export default function TopNav() {
                     Log In
                   </Link>
 
-                  <Link
-                    href="/signup"
-                    className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#927d69]"
-                  >
+                  <Link href="/signup" className={desktopPrimaryButtonClass}>
                     <UserPlus className="h-4 w-4" />
                     Sign Up
                   </Link>
@@ -154,19 +170,19 @@ export default function TopNav() {
               </button>
 
               {menuOpen && (
-                <div className="absolute right-0 top-14 w-56 overflow-hidden rounded-[24px] border border-[#e7ddd2] bg-white shadow-[0_12px_28px_rgba(80,60,40,0.14)]">
+                <div className="absolute right-0 top-14 w-64 overflow-hidden rounded-[24px] border border-[#e7ddd2] bg-white shadow-[0_12px_28px_rgba(80,60,40,0.14)]">
                   <div className="flex flex-col p-2">
+                    <Link
+                      href="/"
+                      onClick={() => setMenuOpen(false)}
+                      className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                    >
+                      <House className="h-4 w-4" />
+                      Home
+                    </Link>
+
                     {user ? (
                       <>
-                        <Link
-                          href="/account"
-                          onClick={() => setMenuOpen(false)}
-                          className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                        >
-                          <UserRound className="h-4 w-4" />
-                          Account
-                        </Link>
-
                         <Link
                           href="/dashboard"
                           onClick={() => setMenuOpen(false)}
@@ -175,6 +191,35 @@ export default function TopNav() {
                           <LayoutDashboard className="h-4 w-4" />
                           Dashboard
                         </Link>
+
+                        <Link
+                          href={`/profile/${user.id}`}
+                          onClick={() => setMenuOpen(false)}
+                          className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                        >
+                          <UserCircle2 className="h-4 w-4" />
+                          My Profile
+                        </Link>
+
+                        <Link
+                          href="/account"
+                          onClick={() => setMenuOpen(false)}
+                          className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                        >
+                          <Settings className="h-4 w-4" />
+                          My Account
+                        </Link>
+
+                        <Link
+                          href="/write"
+                          onClick={() => setMenuOpen(false)}
+                          className="inline-flex items-center gap-2 rounded-[18px] bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                        >
+                          <Plus className="h-4 w-4" />
+                          Create Meetup
+                        </Link>
+
+                        <div className="my-2 border-t border-[#f0e8de]" />
 
                         <button
                           onClick={handleLogout}
