@@ -91,6 +91,16 @@ export default function WriteForm({ userId }: { userId: string }) {
     "w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 pl-16 text-sm text-[#2f2a26] focus:outline-none focus:ring-2 focus:ring-[#a48f7a]/40";
 
   useEffect(() => {
+    console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+    console.log(
+      "KEY:",
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+    );
+    console.log("userId:", userId);
+    console.log("supabase client:", supabase);
+  }, [supabase, userId]);
+
+  useEffect(() => {
     if (!meetingTime) {
       const now = new Date();
       now.setHours(now.getHours() + 3);
@@ -252,6 +262,8 @@ export default function WriteForm({ userId }: { userId: string }) {
       const insertPromise = supabase.from("posts").insert(payload);
 
       const result = await Promise.race([insertPromise, timeoutPromise]);
+
+      console.log("insert result:", result);
 
       if ("error" in result && result.error) {
         setSaving(false);
