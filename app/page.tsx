@@ -1,8 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { createClient } from "../lib/supabase/client";
 import {
   Clock3,
   MapPin,
@@ -12,6 +8,7 @@ import {
   Star,
   Plus,
 } from "lucide-react";
+import { createClient } from "../lib/supabase/server";
 
 type PostRow = {
   id: number;
@@ -150,139 +147,82 @@ function StarRatingInline({
   );
 }
 
-export default function HomePage() {
-  const supabase = useMemo(() => createClient(), []);
+export default async function HomePage() {
+  const supabase = await createClient();
 
-  const [loading, setLoading] = useState(true);
-  const [posts, setPosts] = useState<PostRow[]>([]);
-  const [profileMap, setProfileMap] = useState<Record<string, string>>({});
-  const [hostStatsMap, setHostStatsMap] = useState<HostStatMap>({});
-  const [errorMessage, setErrorMessage] = useState("");
+  const { data: postsData, error: postsError } = await supabase
+    .from("posts")
+    .select(
+      "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
+    )
+    .order("meeting_time", { ascending: true });
 
-  useEffect(() => {
-    const loadHome = async () => {
-      try {
-        setErrorMessage("");
-
-        const { data: postsData, error: postsError } = await supabase
-          .from("posts")
-          .select(
-            "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
-          )
-          .order("meeting_time", { ascending: true });
-
-        if (postsError) {
-          throw postsError;
-        }
-
-        const nextPosts = ((postsData as PostRow[]) || []).sort((a, b) => {
-          const aUpcoming = getPostStatus(a.meeting_time) === "Upcoming" ? 0 : 1;
-          const bUpcoming = getPostStatus(b.meeting_time) === "Upcoming" ? 0 : 1;
-
-          if (aUpcoming !== bUpcoming) return aUpcoming - bUpcoming;
-
-          const aTime = a.meeting_time ? new Date(a.meeting_time).getTime() : 0;
-          const bTime = b.meeting_time ? new Date(b.meeting_time).getTime() : 0;
-          return aTime - bTime;
-        });
-
-        setPosts(nextPosts);
-
-        const ownerIds = Array.from(
-          new Set(nextPosts.map((post) => post.user_id))
-        ).filter(Boolean);
-
-        if (ownerIds.length === 0) {
-          setProfileMap({});
-          setHostStatsMap({});
-          return;
-        }
-
-        const { data: profilesData, error: profilesError } = await supabase
-          .from("profiles")
-          .select("id, display_name")
-          .in("id", ownerIds);
-
-        if (profilesError) {
-          throw profilesError;
-        }
-
-        const nextProfileMap: Record<string, string> = {};
-        ((profilesData as ProfileRow[]) || []).forEach((profile) => {
-          nextProfileMap[profile.id] = profile.display_name || "Unknown";
-        });
-        setProfileMap(nextProfileMap);
-
-        const statsResults = await Promise.all(
-          ownerIds.map(async (ownerId) => {
-            const { data, error } = await supabase.rpc("get_profile_stats", {
-              p_user_id: ownerId,
-            });
-
-            if (error) {
-              return {
-                ownerId,
-                stats: {
-                  average_rating: 0,
-                  review_count: 0,
-                  completed_meetups: 0,
-                } as ProfileStatsRow,
-              };
-            }
-
-            return {
-              ownerId,
-              stats: (data || {}) as ProfileStatsRow,
-            };
-          })
-        );
-
-        const nextHostStatsMap: HostStatMap = {};
-        statsResults.forEach(({ ownerId, stats }) => {
-          nextHostStatsMap[ownerId] = {
-            averageRating: Number(stats.average_rating ?? 0),
-            reviewCount: Number(stats.review_count ?? 0),
-            completedMeetups: Number(stats.completed_meetups ?? 0),
-          };
-        });
-
-        setHostStatsMap(nextHostStatsMap);
-      } catch (error: any) {
-        console.error("Home load error:", error);
-        setErrorMessage(error?.message || "Failed to load meetups.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadHome();
-  }, []);
-
-  const upcomingCount = useMemo(
-    () => posts.filter((post) => getPostStatus(post.meeting_time) === "Upcoming").length,
-    [posts]
-  );
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
-        <div className="mx-auto max-w-2xl rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
-          Loading...
-        </div>
-      </main>
-    );
-  }
-
-  if (errorMessage) {
+  if (postsError) {
     return (
       <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
         <div className="mx-auto max-w-2xl rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
           <div className="text-lg font-semibold">Could not load home</div>
-          <div className="mt-2 text-sm text-[#8b7f74]">{errorMessage}</div>
+          <div className="mt-2 text-sm text-[#8b7f74]">{postsError.message}</div>
         </div>
       </main>
     );
   }
+
+  const posts = ((postsData as PostRow[]) || []).sort((a, b) => {
+    const aUpcoming = getPostStatus(a.meeting_time) === "Upcoming" ? 0 : 1;
+    const bUpcoming = getPostStatus(b.meeting_time) === "Upcoming" ? 0 : 1;
+
+    if (aUpcoming !== bUpcoming) return aUpcoming - bUpcoming;
+
+    const aTime = a.meeting_time ? new Date(a.meeting_time).getTime() : 0;
+    const bTime = b.meeting_time ? new Date(b.meeting_time).getTime() : 0;
+    return aTime - bTime;
+  });
+
+  const ownerIds = Array.from(new Set(posts.map((post) => post.user_id))).filter(Boolean);
+
+  let profileMap: Record<string, string> = {};
+  let hostStatsMap: HostStatMap = {};
+
+  if (ownerIds.length > 0) {
+    const { data: profilesData } = await supabase
+      .from("profiles")
+      .select("id, display_name")
+      .in("id", ownerIds);
+
+    profileMap = {};
+    ((profilesData as ProfileRow[]) || []).forEach((profile) => {
+      profileMap[profile.id] = profile.display_name || "Unknown";
+    });
+
+    const statsResults = await Promise.all(
+      ownerIds.map(async (ownerId) => {
+        const { data } = await supabase.rpc("get_profile_stats", {
+          p_user_id: ownerId,
+        });
+
+        const stats = (data || {}) as ProfileStatsRow;
+
+        return {
+          ownerId,
+          stats: {
+            averageRating: Number(stats.average_rating ?? 0),
+            reviewCount: Number(stats.review_count ?? 0),
+            completedMeetups: Number(stats.completed_meetups ?? 0),
+          },
+        };
+      })
+    );
+
+    hostStatsMap = {};
+    statsResults.forEach(({ ownerId, stats }) => {
+      hostStatsMap[ownerId] = stats;
+    });
+  }
+
+  const upcomingCount = posts.filter(
+    (post) => getPostStatus(post.meeting_time) === "Upcoming"
+  ).length;
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
