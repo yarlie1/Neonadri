@@ -7,6 +7,18 @@ import {
   Coins,
   Star,
   Plus,
+  Coffee,
+  UtensilsCrossed,
+  CakeSlice,
+  Footprints,
+  PersonStanding,
+  Clapperboard,
+  Mic2,
+  Gamepad2,
+  BookOpen,
+  BriefcaseBusiness,
+  Book,
+  Camera,
 } from "lucide-react";
 import { createClient } from "../lib/supabase/server";
 
@@ -27,6 +39,8 @@ type PostRow = {
 type ProfileRow = {
   id: string;
   display_name: string | null;
+  gender: string | null;
+  age_group: string | null;
 };
 
 type ProfileStatsRow = {
@@ -44,47 +58,54 @@ type HostStatMap = Record<
   }
 >;
 
+type HostProfileMap = Record<
+  string,
+  {
+    displayName: string;
+    gender: string;
+    ageGroup: string;
+  }
+>;
+
 const getPurposeIcon = (purpose: string | null) => {
+  const className = "h-[18px] w-[18px] shrink-0 text-[#7e746b]";
+
   switch (purpose) {
     case "Coffee Chat":
     case "Coffee":
-      return "☕";
+      return <Coffee className={className} />;
     case "Meal":
-      return "🍽";
+      return <UtensilsCrossed className={className} />;
     case "Dessert":
-      return "🍰";
+      return <CakeSlice className={className} />;
     case "Walk":
-      return "🚶";
+      return <Footprints className={className} />;
     case "Jogging":
-      return "🏃";
     case "Yoga":
-      return "🧘";
+      return <PersonStanding className={className} />;
     case "Movie":
     case "Theater":
-      return "🎬";
+      return <Clapperboard className={className} />;
     case "Karaoke":
-      return "🎤";
+      return <Mic2 className={className} />;
     case "Board Games":
-      return "🎲";
     case "Gaming":
-      return "🎮";
     case "Bowling":
-      return "🎳";
     case "Arcade":
-      return "🎯";
+      return <Gamepad2 className={className} />;
     case "Study":
-      return "📚";
+      return <BookOpen className={className} />;
     case "Work Together":
     case "Work":
-      return "💻";
+      return <BriefcaseBusiness className={className} />;
     case "Book Talk":
     case "Book":
-      return "📖";
+      return <Book className={className} />;
     case "Photo Walk":
     case "Photo":
-      return "📷";
+      return <Camera className={className} />;
     default:
-      return "✨";
+      return <MapPin className={className} />;
   }
 };
 
@@ -181,18 +202,21 @@ export default async function HomePage() {
 
   const ownerIds = Array.from(new Set(posts.map((post) => post.user_id))).filter(Boolean);
 
-  let profileMap: Record<string, string> = {};
+  let hostProfileMap: HostProfileMap = {};
   let hostStatsMap: HostStatMap = {};
 
   if (ownerIds.length > 0) {
     const { data: profilesData } = await supabase
       .from("profiles")
-      .select("id, display_name")
+      .select("id, display_name, gender, age_group")
       .in("id", ownerIds);
 
-    profileMap = {};
     ((profilesData as ProfileRow[]) || []).forEach((profile) => {
-      profileMap[profile.id] = profile.display_name || "Unknown";
+      hostProfileMap[profile.id] = {
+        displayName: profile.display_name || "Unknown",
+        gender: profile.gender || "",
+        ageGroup: profile.age_group || "",
+      };
     });
 
     const statsResults = await Promise.all(
@@ -214,32 +238,18 @@ export default async function HomePage() {
       })
     );
 
-    hostStatsMap = {};
     statsResults.forEach(({ ownerId, stats }) => {
       hostStatsMap[ownerId] = stats;
     });
   }
 
-  const upcomingCount = posts.filter(
-    (post) => getPostStatus(post.meeting_time) === "Upcoming"
-  ).length;
-
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl space-y-5">
-        <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] px-6 py-5 shadow-sm">
-          <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">
-            NEONADRI
-          </div>
-
-          <div className="mt-2 flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold tracking-[-0.03em] text-[#2f2a26] sm:text-[34px]">
-                Discover Meetups
-              </h1>
-              <p className="mt-1 text-sm text-[#6f655c]">
-                Browse upcoming meetups and see host trust signals before you join.
-              </p>
+    <main className="min-h-screen bg-[#f7f1ea] px-4 py-5 text-[#2f2a26]">
+      <div className="mx-auto max-w-2xl space-y-4">
+        <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] px-5 py-5 shadow-sm">
+          <div className="flex items-center justify-between gap-4">
+            <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">
+              NEONADRI
             </div>
 
             <Link
@@ -252,26 +262,14 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-[24px] border border-[#e7ddd2] bg-white p-5 shadow-sm">
-            <div className="text-sm text-[#8b7f74]">All Meetups</div>
-            <div className="mt-2 text-[34px] font-extrabold leading-none">
-              {posts.length}
-            </div>
-          </div>
-
-          <div className="rounded-[24px] border border-[#e7ddd2] bg-white p-5 shadow-sm">
-            <div className="text-sm text-[#8b7f74]">Upcoming</div>
-            <div className="mt-2 text-[34px] font-extrabold leading-none">
-              {upcomingCount}
-            </div>
-          </div>
-        </div>
-
         <div className="space-y-4">
           {posts.map((post) => {
             const amount = parseBenefitAmount(post.benefit_amount);
-            const ownerName = profileMap[post.user_id] || "Unknown";
+            const host = hostProfileMap[post.user_id] || {
+              displayName: "Unknown",
+              gender: "",
+              ageGroup: "",
+            };
             const hostStats = hostStatsMap[post.user_id] || {
               averageRating: 0,
               reviewCount: 0,
@@ -280,24 +278,27 @@ export default async function HomePage() {
             const status = getPostStatus(post.meeting_time);
 
             return (
-              <div
+              <Link
                 key={post.id}
-                className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm"
+                href={`/posts/${post.id}`}
+                className="block rounded-[28px] border border-[#e7ddd2] bg-white p-5 shadow-sm transition hover:bg-[#fcfaf7]"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 truncate text-[22px] font-extrabold text-[#2f2a26] sm:text-[24px]">
-                      <span>{getPurposeIcon(post.meeting_purpose)}</span>
-                      <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
+                    <div className="flex items-center gap-2 text-[24px] font-extrabold tracking-[-0.03em] text-[#2f2a26]">
+                      {getPurposeIcon(post.meeting_purpose)}
+                      <span className="truncate">
+                        {post.meeting_purpose || "Meetup"}
+                      </span>
                       {formatDuration(post.duration_minutes) ? (
-                        <span className="inline-flex shrink-0 items-center gap-1 text-[#2f2a26]">
+                        <span className="inline-flex shrink-0 items-center gap-1 text-[20px] font-bold text-[#2f2a26]">
                           <Clock3 className="h-4 w-4" />
                           {formatDuration(post.duration_minutes)}
                         </span>
                       ) : null}
                     </div>
 
-                    <div className="mt-[2px] flex items-center gap-2 truncate text-[22px] font-extrabold text-[#8a7f74] sm:text-[24px]">
+                    <div className="mt-1 flex items-center gap-2 text-[19px] font-bold text-[#3f3833]">
                       <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
                       <span className="truncate">
                         {post.place_name || post.location || "No place"}
@@ -306,10 +307,6 @@ export default async function HomePage() {
                   </div>
 
                   <div className="flex shrink-0 flex-col items-end gap-2">
-                    <span className="rounded-full border border-[#dccfc2] bg-[#efe7dc] px-3 py-1 text-xs font-medium text-[#6b5f52]">
-                      {status}
-                    </span>
-
                     {amount !== null && (
                       <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
                         <span className="inline-flex items-center gap-1.5">
@@ -318,6 +315,10 @@ export default async function HomePage() {
                         </span>
                       </div>
                     )}
+
+                    <span className="rounded-full border border-[#dccfc2] bg-[#efe7dc] px-3 py-1 text-xs font-medium text-[#6b5f52]">
+                      {status}
+                    </span>
                   </div>
                 </div>
 
@@ -344,15 +345,22 @@ export default async function HomePage() {
                   </div>
                 </div>
 
-                <div className="mt-5 rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-4">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <Link
-                      href={`/profile/${post.user_id}`}
-                      className="inline-flex items-center gap-2 rounded-full px-1 py-1 font-medium text-[#5a5149] transition hover:bg-[#f4ece4] hover:text-[#2f2a26]"
-                    >
-                      <UserCircle2 className="h-5 w-5 text-[#8a7f74]" />
-                      <span>{ownerName}</span>
-                    </Link>
+                <div className="mt-4 rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="inline-flex items-center gap-2 font-medium text-[#5a5149]">
+                        <UserCircle2 className="h-5 w-5 text-[#8a7f74]" />
+                        <span className="truncate">{host.displayName}</span>
+                      </div>
+
+                      {(host.gender || host.ageGroup) && (
+                        <div className="mt-1 text-xs text-[#8b7f74]">
+                          {host.gender || "Unknown"}
+                          {host.gender && host.ageGroup ? " / " : ""}
+                          {host.ageGroup || ""}
+                        </div>
+                      )}
+                    </div>
 
                     {hostStats.reviewCount > 0 ? (
                       <StarRatingInline
@@ -365,28 +373,14 @@ export default async function HomePage() {
                       </div>
                     )}
                   </div>
-
-                  <div className="mt-2 text-xs text-[#8b7f74]">
-                    {hostStats.completedMeetups} completed meetups
-                  </div>
                 </div>
 
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <Link
-                    href={`/posts/${post.id}`}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-[#a48f7a] px-3 py-2 text-xs font-medium text-white transition hover:bg-[#927d69]"
-                  >
+                <div className="mt-4">
+                  <span className="inline-flex items-center rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149]">
                     View Meetup
-                  </Link>
-
-                  <Link
-                    href={`/profile/${post.user_id}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                  >
-                    View Host
-                  </Link>
+                  </span>
                 </div>
-              </div>
+              </Link>
             );
           })}
 
