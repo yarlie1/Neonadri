@@ -180,7 +180,7 @@ export default async function HomePage() {
 
   if (postsError) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
+      <main className="min-h-screen bg-[#f7f1ea] px-4 py-5 text-[#2f2a26]">
         <div className="mx-auto max-w-2xl rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
           <div className="text-lg font-semibold">Could not load home</div>
           <div className="mt-2 text-sm text-[#8b7f74]">{postsError.message}</div>
@@ -245,24 +245,12 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-5 text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl space-y-4">
-        <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] px-5 py-5 shadow-sm">
-          <div className="flex items-center justify-between gap-4">
-            <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">
-              NEONADRI
-            </div>
-
-            <Link
-              href="/write"
-              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#927d69]"
-            >
-              <Plus className="h-4 w-4" />
-              Create
-            </Link>
-          </div>
+      <div className="mx-auto max-w-2xl space-y-4 pb-24">
+        <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] px-5 py-4 shadow-sm">
+          <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">NEONADRI</div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {posts.map((post) => {
             const amount = parseBenefitAmount(post.benefit_amount);
             const host = hostProfileMap[post.user_id] || {
@@ -281,24 +269,24 @@ export default async function HomePage() {
               <Link
                 key={post.id}
                 href={`/posts/${post.id}`}
-                className="block rounded-[28px] border border-[#e7ddd2] bg-white p-5 shadow-sm transition hover:bg-[#fcfaf7]"
+                className="block rounded-[26px] border border-[#e7ddd2] bg-white p-4 shadow-sm transition hover:bg-[#fcfaf7]"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 text-[24px] font-extrabold tracking-[-0.03em] text-[#2f2a26]">
+                    <div className="flex items-center gap-2 text-[22px] font-extrabold tracking-[-0.03em] text-[#2f2a26]">
                       {getPurposeIcon(post.meeting_purpose)}
                       <span className="truncate">
                         {post.meeting_purpose || "Meetup"}
                       </span>
                       {formatDuration(post.duration_minutes) ? (
-                        <span className="inline-flex shrink-0 items-center gap-1 text-[20px] font-bold text-[#2f2a26]">
+                        <span className="inline-flex shrink-0 items-center gap-1 text-[18px] font-bold text-[#2f2a26]">
                           <Clock3 className="h-4 w-4" />
                           {formatDuration(post.duration_minutes)}
                         </span>
                       ) : null}
                     </div>
 
-                    <div className="mt-1 flex items-center gap-2 text-[19px] font-bold text-[#3f3833]">
+                    <div className="mt-1 flex items-center gap-2 text-[18px] font-bold text-[#3f3833]">
                       <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
                       <span className="truncate">
                         {post.place_name || post.location || "No place"}
@@ -322,7 +310,7 @@ export default async function HomePage() {
                   </div>
                 </div>
 
-                <div className="mt-4 space-y-2 text-sm text-[#766c62]">
+                <div className="mt-3 space-y-2 text-sm text-[#766c62]">
                   {post.meeting_time && (
                     <div className="flex items-center gap-2">
                       <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
@@ -345,7 +333,7 @@ export default async function HomePage() {
                   </div>
                 </div>
 
-                <div className="mt-4 rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-4">
+                <div className="mt-3 rounded-[18px] border border-[#e7ddd2] bg-[#fcfaf7] px-3.5 py-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <div className="inline-flex items-center gap-2 font-medium text-[#5a5149]">
@@ -374,12 +362,6 @@ export default async function HomePage() {
                     )}
                   </div>
                 </div>
-
-                <div className="mt-4">
-                  <span className="inline-flex items-center rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149]">
-                    View Meetup
-                  </span>
-                </div>
               </Link>
             );
           })}
@@ -391,6 +373,14 @@ export default async function HomePage() {
           )}
         </div>
       </div>
+
+      <Link
+        href="/write"
+        className="fixed bottom-6 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white shadow-[0_10px_25px_rgba(80,60,40,0.18)] transition hover:bg-[#927d69]"
+      >
+        <Plus className="h-4 w-4" />
+        Create
+      </Link>
     </main>
   );
 }
