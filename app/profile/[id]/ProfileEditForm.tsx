@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../lib/supabase/client";
 import { Pencil, Save, X } from "lucide-react";
@@ -96,7 +96,7 @@ export default function ProfileEditForm({
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const [saving, setSaving] = useState(false);
 
   const [displayName, setDisplayName] = useState(profile.display_name || "");
   const [bio, setBio] = useState(profile.bio || "");
@@ -126,38 +126,50 @@ export default function ProfileEditForm({
   };
 
   const handleSave = async () => {
-    if (isPending) return;
+    if (saving) return;
 
-    setMessage("");
-    console.log("save clicked");
+    try {
+      setSaving(true);
+      setMessage("Saving profile...");
 
-    const { error } = await supabase.from("profiles").upsert({
-      id: profile.id,
-      display_name: displayName.trim() || null,
-      bio: bio.trim() || null,
-      about_me: aboutMe.trim() || null,
-      gender: gender || null,
-      age_group: ageGroup || null,
-      preferred_area: null,
-      languages: languages.length > 0 ? languages : null,
-      meeting_style: meetingStyle || null,
-      interests: interests.length > 0 ? interests : null,
-      response_time_note: responseTimeNote || null,
-      is_public: isPublic,
-      updated_at: new Date().toISOString(),
-    });
+      const payload = {
+        id: profile.id,
+        display_name: displayName.trim() || null,
+        bio: bio.trim() || null,
+        about_me: aboutMe.trim() || null,
+        gender: gender || null,
+        age_group: ageGroup || null,
+        preferred_area: null,
+        languages: languages.length > 0 ? languages : null,
+        meeting_style: meetingStyle || null,
+        interests: interests.length > 0 ? interests : null,
+        response_time_note: responseTimeNote || null,
+        is_public: isPublic,
+        updated_at: new Date().toISOString(),
+      };
 
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
+      const { error } = await supabase.from("profiles").upsert(payload);
 
-    setMessage("Profile saved.");
+      if (error) {
+        setMessage(error.message);
+        setSaving(false);
+        return;
+      }
 
-    startTransition(() => {
+      setMessage("Profile saved.");
+
       router.refresh();
-      setOpen(false);
-    });
+
+      setTimeout(() => {
+        setOpen(false);
+        setSaving(false);
+        setMessage("");
+      }, 500);
+    } catch (err) {
+      console.error(err);
+      setMessage("Something went wrong while saving.");
+      setSaving(false);
+    }
   };
 
   if (!open) {
@@ -363,17 +375,18 @@ export default function ProfileEditForm({
               <button
                 type="button"
                 onClick={handleSave}
-                disabled={isPending}
+                disabled={saving}
                 className="touch-manipulation inline-flex min-h-[48px] items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
               >
                 <Save className="h-4 w-4" />
-                {isPending ? "Saving..." : "Save"}
+                {saving ? "Saving..." : "Save"}
               </button>
 
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="touch-manipulation inline-flex min-h-[48px] items-center rounded-full border border-[#dccfc2] bg-white px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                disabled={saving}
+                className="touch-manipulation inline-flex min-h-[48px] items-center rounded-full border border-[#dccfc2] bg-white px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:opacity-50"
               >
                 Cancel
               </button>
