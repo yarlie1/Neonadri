@@ -160,13 +160,14 @@ export default function ProfileEditForm({
 
       setMessage("Profile saved.");
 
+      setOpen(false);
       router.refresh();
+      router.push(`/profile/${profile.id}`);
 
       setTimeout(() => {
-        setOpen(false);
         setSaving(false);
         setMessage("");
-      }, 400);
+      }, 300);
     } catch (err) {
       console.error(err);
       setMessage("Something went wrong while saving.");
