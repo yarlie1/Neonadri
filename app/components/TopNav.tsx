@@ -24,7 +24,7 @@ function PendingBadge({ count }: { count: number }) {
   if (count <= 0) return null;
 
   return (
-    <span className="ml-1 inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#c96f5d] px-1.5 py-0.5 text-[10px] font-bold text-white">
+    <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#c96f5d] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
       {count > 99 ? "99+" : count}
     </span>
   );
@@ -56,6 +56,8 @@ export default function TopNav() {
           .eq("status", "pending");
 
         setPendingCount(count || 0);
+      } else {
+        setPendingCount(0);
       }
 
       setLoading(false);
@@ -102,7 +104,9 @@ export default function TopNav() {
     };
 
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -121,16 +125,19 @@ export default function TopNav() {
     window.location.href = "/";
   };
 
-  const btn =
-    "inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] hover:bg-[#f4ece4]";
+  const desktopButtonClass =
+    "inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
 
-  const primary =
-    "inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#927d69]";
+  const desktopPrimaryButtonClass =
+    "inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#927d69]";
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#e7ddd2] bg-[#fffaf5]/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <Link href="/" className="text-2xl font-extrabold">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+        <Link
+          href="/"
+          className="text-[26px] font-extrabold tracking-[-0.04em] text-[#1f1b18] sm:text-[28px]"
+        >
           Neonadri
         </Link>
 
@@ -138,44 +145,43 @@ export default function TopNav() {
           <div className="h-10 w-10 animate-pulse rounded-full bg-[#f3ebe2]" />
         ) : (
           <>
-            {/* desktop */}
             <div className="hidden items-center gap-2 sm:flex">
-              <Link href="/" className={btn}>
+              <Link href="/" className={desktopButtonClass}>
                 <House className="h-4 w-4" />
                 Home
               </Link>
 
               {user ? (
                 <>
-                  <Link href="/dashboard" className={btn}>
+                  <Link href="/dashboard" className={desktopButtonClass}>
                     <LayoutDashboard className="h-4 w-4" />
                     Dashboard
                     <PendingBadge count={pendingCount} />
                   </Link>
 
-                  <Link href={`/profile/${user.id}`} className={btn}>
+                  <Link href={`/profile/${user.id}`} className={desktopButtonClass}>
                     <UserCircle2 className="h-4 w-4" />
                     Profile
                   </Link>
 
-                  <Link href="/write" className={primary}>
+                  <Link href="/write" className={desktopPrimaryButtonClass}>
                     <Plus className="h-4 w-4" />
                     Create
                   </Link>
 
-                  <button onClick={handleLogout} className={btn}>
+                  <button onClick={handleLogout} className={desktopButtonClass}>
                     <LogOut className="h-4 w-4" />
                     Logout
                   </button>
                 </>
               ) : (
                 <>
-                  <Link href="/login" className={btn}>
+                  <Link href="/login" className={desktopButtonClass}>
                     <LogIn className="h-4 w-4" />
                     Log In
                   </Link>
 
-                  <Link href="/signup" className={primary}>
+                  <Link href="/signup" className={desktopPrimaryButtonClass}>
                     <UserPlus className="h-4 w-4" />
                     Sign Up
                   </Link>
@@ -183,68 +189,103 @@ export default function TopNav() {
               )}
             </div>
 
-            {/* mobile */}
             <div className="relative sm:hidden" ref={menuRef}>
               <button
-                onClick={() => setMenuOpen((p) => !p)}
-                className="h-11 w-11 rounded-full border bg-white"
+                type="button"
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen((prev) => !prev)}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#dccfc2] bg-white text-[#5a5149] shadow-sm transition hover:bg-[#f4ece4]"
               >
-                {menuOpen ? <X /> : <Menu />}
+                {menuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </button>
 
               {menuOpen && (
-                <div className="absolute right-0 top-14 w-64 rounded-2xl border bg-white p-2 shadow-lg">
-                  <Link href="/" className="menu">
-                    Home
-                  </Link>
+                <div className="absolute right-0 top-14 w-64 overflow-hidden rounded-[24px] border border-[#e7ddd2] bg-white shadow-[0_12px_28px_rgba(80,60,40,0.14)]">
+                  <div className="flex flex-col p-2">
+                    <Link
+                      href="/"
+                      onClick={() => setMenuOpen(false)}
+                      className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                    >
+                      <House className="h-4 w-4" />
+                      Home
+                    </Link>
 
-                  {user ? (
-                    <>
-                      <Link href="/dashboard" className="menu flex justify-between">
-                        <span>Dashboard</span>
-                        <PendingBadge count={pendingCount} />
-                      </Link>
+                    {user ? (
+                      <>
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setMenuOpen(false)}
+                          className="inline-flex items-center justify-between gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                        >
+                          <span className="inline-flex items-center gap-2">
+                            <LayoutDashboard className="h-4 w-4" />
+                            Dashboard
+                          </span>
+                          <PendingBadge count={pendingCount} />
+                        </Link>
 
-                      <Link href={`/profile/${user.id}`} className="menu">
-                        Profile
-                      </Link>
+                        <Link
+                          href={`/profile/${user.id}`}
+                          onClick={() => setMenuOpen(false)}
+                          className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                        >
+                          <UserCircle2 className="h-4 w-4" />
+                          Profile
+                        </Link>
 
-                      <Link href="/write" className="menu font-semibold text-[#a48f7a]">
-                        + Create Meetup
-                      </Link>
+                        <Link
+                          href="/write"
+                          onClick={() => setMenuOpen(false)}
+                          className="inline-flex items-center gap-2 rounded-[18px] bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                        >
+                          <Plus className="h-4 w-4" />
+                          Create Meetup
+                        </Link>
 
-                      <button onClick={handleLogout} className="menu text-[#8b5e3c]">
-                        Logout
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link href="/login" className="menu">
-                        Log In
-                      </Link>
+                        <div className="my-2 border-t border-[#f0e8de]" />
 
-                      <Link href="/signup" className="menu font-semibold">
-                        Sign Up
-                      </Link>
-                    </>
-                  )}
+                        <button
+                          onClick={handleLogout}
+                          className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-left text-sm font-medium text-[#8b5e3c] transition hover:bg-[#f8efe7]"
+                        >
+                          <LogOut className="h-4 w-4" />
+                          Logout
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          href="/login"
+                          onClick={() => setMenuOpen(false)}
+                          className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                        >
+                          <LogIn className="h-4 w-4" />
+                          Log In
+                        </Link>
+
+                        <Link
+                          href="/signup"
+                          onClick={() => setMenuOpen(false)}
+                          className="inline-flex items-center gap-2 rounded-[18px] bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                        >
+                          <UserPlus className="h-4 w-4" />
+                          Sign Up
+                        </Link>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
           </>
         )}
       </div>
-
-      <style jsx>{`
-        .menu {
-          display: block;
-          padding: 12px 16px;
-          border-radius: 14px;
-        }
-        .menu:hover {
-          background: #f4ece4;
-        }
-      `}</style>
     </header>
   );
 }
