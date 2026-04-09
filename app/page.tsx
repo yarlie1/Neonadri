@@ -264,18 +264,18 @@ export default async function HomePage() {
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 text-[22px] leading-[1.2] font-extrabold tracking-[-0.01em] text-[#2f2a26]">
+                  <div className="flex items-center gap-2 text-[24px] leading-[1.18] font-extrabold tracking-[-0.01em] text-[#2f2a26]">
                     {getPurposeIcon(post.meeting_purpose)}
                     <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
                     {formatDuration(post.duration_minutes) ? (
-                      <span className="inline-flex shrink-0 items-center gap-1 text-[20px] font-bold text-[#2f2a26]">
+                      <span className="inline-flex shrink-0 items-center gap-1 text-[21px] font-bold text-[#2f2a26]">
                         <Clock3 className="h-4 w-4" />
                         {formatDuration(post.duration_minutes)}
                       </span>
                     ) : null}
                   </div>
 
-                  <div className="mt-1.5 flex items-center gap-2 text-[18px] font-bold leading-[1.25] text-[#2f2a26]">
+                  <div className="mt-2 flex items-center gap-2 text-[21px] font-bold leading-[1.22] text-[#2f2a26]">
                     <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
                     <span className="truncate">
                       {post.place_name || post.location || "No place"}
