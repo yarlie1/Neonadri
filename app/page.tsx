@@ -22,6 +22,17 @@ import {
 } from "lucide-react";
 import { createClient } from "../lib/supabase/server";
 
+type SearchParams = {
+  purpose?: string;
+  gender?: string;
+  age_group?: string;
+  sort?: string;
+};
+
+type PageProps = {
+  searchParams?: Promise<SearchParams>;
+};
+
 type PostRow = {
   id: number;
   user_id: string;
@@ -64,6 +75,40 @@ type HostProfileMap = Record<
     ageGroup: string;
   }
 >;
+
+const PURPOSE_OPTIONS = [
+  "All",
+  "Coffee",
+  "Meal",
+  "Dessert",
+  "Walk",
+  "Jogging",
+  "Yoga",
+  "Movie",
+  "Theater",
+  "Karaoke",
+  "Board Games",
+  "Gaming",
+  "Bowling",
+  "Arcade",
+  "Study",
+  "Work Together",
+  "Work",
+  "Book Talk",
+  "Book",
+  "Photo Walk",
+  "Photo",
+];
+
+const GENDER_OPTIONS = ["All", "Male", "Female", "Other", "Prefer not to say"];
+const AGE_GROUP_OPTIONS = ["All", "20s", "30s", "40s", "50s+"];
+
+const SORT_OPTIONS = [
+  { value: "soonest", label: "Soonest" },
+  { value: "newest", label: "Newest" },
+  { value: "benefit_desc", label: "Highest Benefit" },
+  { value: "benefit_asc", label: "Lowest Benefit" },
+];
 
 const getPurposeIcon = (purpose: string | null) => {
   const className = "h-[19px] w-[19px] shrink-0 text-[#7e746b]";
@@ -166,15 +211,77 @@ function StarRatingInline({
   );
 }
 
-export default async function HomePage() {
+function buildHref(
+  current: {
+    purpose: string;
+    gender: string;
+    age_group: string;
+    sort: string;
+  },
+  updates: Partial<{
+    purpose: string;
+    gender: string;
+    age_group: string;
+    sort: string;
+  }>
+) {
+  const next = { ...current, ...updates };
+  const params = new URLSearchParams();
+
+  if (next.purpose && next.purpose !== "All") params.set("purpose", next.purpose);
+  if (next.gender && next.gender !== "All") params.set("gender", next.gender);
+  if (next.age_group && next.age_group !== "All") params.set("age_group", next.age_group);
+  if (next.sort && next.sort !== "soonest") params.set("sort", next.sort);
+
+  const query = params.toString();
+  return query ? `/?${query}` : "/";
+}
+
+function FilterPill({
+  href,
+  active,
+  label,
+}: {
+  href: string;
+  active: boolean;
+  label: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`inline-flex items-center rounded-full px-3 py-2 text-sm font-medium transition ${
+        active
+          ? "bg-[#a48f7a] text-white"
+          : "bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
+      }`}
+    >
+      {label}
+    </Link>
+  );
+}
+
+export default async function HomePage({ searchParams }: PageProps) {
+  const resolved = (await searchParams) || {};
+
+  const selectedPurpose = resolved.purpose || "All";
+  const selectedGender = resolved.gender || "All";
+  const selectedAgeGroup = resolved.age_group || "All";
+  const selectedSort = resolved.sort || "soonest";
+
+  const currentFilters = {
+    purpose: selectedPurpose,
+    gender: selectedGender,
+    age_group: selectedAgeGroup,
+    sort: selectedSort,
+  };
+
   const supabase = await createClient();
 
   const { data: postsData, error: postsError } = await supabase
     .from("posts")
     .select(
       "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
-    )
-    .order("meeting_time", { ascending: true });
+    );
 
   if (postsError) {
     return (
@@ -187,7 +294,38 @@ export default async function HomePage() {
     );
   }
 
-  const posts = ((postsData as PostRow[]) || []).sort((a, b) => {
+  let posts = ((postsData as PostRow[]) || []).filter((post) => {
+    const purposeMatch =
+      selectedPurpose === "All" || post.meeting_purpose === selectedPurpose;
+
+    const genderMatch =
+      selectedGender === "All" || post.target_gender === selectedGender;
+
+    const ageGroupMatch =
+      selectedAgeGroup === "All" || post.target_age_group === selectedAgeGroup;
+
+    return purposeMatch && genderMatch && ageGroupMatch;
+  });
+
+  posts = posts.sort((a, b) => {
+    if (selectedSort === "newest") {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    }
+
+    if (selectedSort === "benefit_desc") {
+      return (
+        (parseBenefitAmount(b.benefit_amount) ?? -1) -
+        (parseBenefitAmount(a.benefit_amount) ?? -1)
+      );
+    }
+
+    if (selectedSort === "benefit_asc") {
+      return (
+        (parseBenefitAmount(a.benefit_amount) ?? Number.MAX_SAFE_INTEGER) -
+        (parseBenefitAmount(b.benefit_amount) ?? Number.MAX_SAFE_INTEGER)
+      );
+    }
+
     const aUpcoming = getPostStatus(a.meeting_time) === "Upcoming" ? 0 : 1;
     const bUpcoming = getPostStatus(b.meeting_time) === "Upcoming" ? 0 : 1;
 
@@ -243,6 +381,81 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-4 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-3 pb-24">
+        <div className="rounded-[20px] border border-[#e7ddd2] bg-white p-4 shadow-sm">
+          <div>
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+              Purpose
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {PURPOSE_OPTIONS.map((option) => (
+                <FilterPill
+                  key={option}
+                  href={buildHref(currentFilters, { purpose: option })}
+                  active={selectedPurpose === option}
+                  label={option}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+              Gender
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {GENDER_OPTIONS.map((option) => (
+                <FilterPill
+                  key={option}
+                  href={buildHref(currentFilters, { gender: option })}
+                  active={selectedGender === option}
+                  label={option}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+              Age Group
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {AGE_GROUP_OPTIONS.map((option) => (
+                <FilterPill
+                  key={option}
+                  href={buildHref(currentFilters, { age_group: option })}
+                  active={selectedAgeGroup === option}
+                  label={option}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+              Sort
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {SORT_OPTIONS.map((option) => (
+                <FilterPill
+                  key={option.value}
+                  href={buildHref(currentFilters, { sort: option.value })}
+                  active={selectedSort === option.value}
+                  label={option.label}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <Link
+              href="/"
+              className="inline-flex items-center rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+            >
+              Reset
+            </Link>
+          </div>
+        </div>
+
         {posts.map((post) => {
           const amount = parseBenefitAmount(post.benefit_amount);
           const host = hostProfileMap[post.user_id] || {
@@ -358,7 +571,7 @@ export default async function HomePage() {
 
         {posts.length === 0 && (
           <div className="rounded-[24px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
-            No meetups yet.
+            No meetups found.
           </div>
         )}
       </div>
