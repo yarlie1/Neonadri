@@ -66,7 +66,7 @@ type HostProfileMap = Record<
 >;
 
 const getPurposeIcon = (purpose: string | null) => {
-  const className = "h-[18px] w-[18px] shrink-0 text-[#7e746b]";
+  const className = "h-[19px] w-[19px] shrink-0 text-[#7e746b]";
 
   switch (purpose) {
     case "Coffee Chat":
@@ -264,18 +264,18 @@ export default async function HomePage() {
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 text-[20px] font-extrabold tracking-[-0.01em] text-[#2f2a26]">
+                  <div className="flex items-center gap-2 text-[22px] leading-[1.2] font-extrabold tracking-[-0.01em] text-[#2f2a26]">
                     {getPurposeIcon(post.meeting_purpose)}
                     <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
                     {formatDuration(post.duration_minutes) ? (
-                      <span className="inline-flex shrink-0 items-center gap-1 text-[18px] font-bold text-[#2f2a26]">
+                      <span className="inline-flex shrink-0 items-center gap-1 text-[20px] font-bold text-[#2f2a26]">
                         <Clock3 className="h-4 w-4" />
                         {formatDuration(post.duration_minutes)}
                       </span>
                     ) : null}
                   </div>
 
-                  <div className="mt-1 flex items-center gap-2 text-[16px] font-bold text-[#2f2a26]">
+                  <div className="mt-1.5 flex items-center gap-2 text-[18px] font-bold leading-[1.25] text-[#2f2a26]">
                     <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
                     <span className="truncate">
                       {post.place_name || post.location || "No place"}
@@ -299,7 +299,7 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              <div className="mt-3 space-y-1.5 text-[13px] text-[#766c62]">
+              <div className="mt-3.5 space-y-1.5 text-[13px] text-[#766c62]">
                 {post.meeting_time && (
                   <div className="flex items-center gap-2">
                     <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
@@ -322,7 +322,7 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              <div className="mt-3 rounded-[16px] border border-[#e7ddd2] bg-[#fcfaf7] px-3 py-3">
+              <div className="mt-3.5 rounded-[16px] border border-[#e7ddd2] bg-[#fcfaf7] px-3 py-3">
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="inline-flex items-center gap-2 text-sm font-medium text-[#5a5149]">
