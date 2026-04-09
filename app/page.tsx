@@ -349,8 +349,8 @@ export default async function HomePage({ searchParams }: PageProps) {
 
   const ownerIds = Array.from(new Set(posts.map((post) => post.user_id))).filter(Boolean);
 
-  let hostProfileMap: HostProfileMap = {};
-  let hostStatsMap: HostStatMap = {};
+  const hostProfileMap: HostProfileMap = {};
+  const hostStatsMap: HostStatMap = {};
 
   if (ownerIds.length > 0) {
     try {
@@ -359,9 +359,7 @@ export default async function HomePage({ searchParams }: PageProps) {
         .select("id, display_name, gender, age_group")
         .in("id", ownerIds);
 
-      if (profilesError) {
-        console.error("profiles fetch error:", profilesError);
-      } else {
+      if (!profilesError) {
         ((profilesData as ProfileRow[]) || []).forEach((profile) => {
           hostProfileMap[profile.id] = {
             displayName: profile.display_name || "Unknown",
@@ -370,9 +368,7 @@ export default async function HomePage({ searchParams }: PageProps) {
           };
         });
       }
-    } catch (e) {
-      console.error("profiles fetch exception:", e);
-    }
+    } catch {}
 
     try {
       const statsResults = await Promise.all(
@@ -382,7 +378,6 @@ export default async function HomePage({ searchParams }: PageProps) {
           });
 
           if (error) {
-            console.error(`get_profile_stats error for ${ownerId}:`, error);
             return {
               ownerId,
               stats: {
@@ -407,115 +402,116 @@ export default async function HomePage({ searchParams }: PageProps) {
       statsResults.forEach(({ ownerId, stats }) => {
         hostStatsMap[ownerId] = stats;
       });
-    } catch (e) {
-      console.error("RPC exception:", e);
-    }
+    } catch {}
   }
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-4 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-3 pb-24">
-        <details className="group rounded-[20px] border border-[#e7ddd2] bg-white shadow-sm">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 text-sm font-semibold text-[#2f2a26]">
-                <SlidersHorizontal className="h-4 w-4" />
-                Filter & Sort
+        <div className="rounded-[20px] border border-[#e7ddd2] bg-white shadow-sm">
+          <details className="group">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 text-sm font-semibold text-[#2f2a26]">
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Filter & Sort
+                </div>
+
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <SummaryChip label="Purpose" value={selectedPurpose} />
+                  <SummaryChip label="Gender" value={selectedGender} />
+                  <SummaryChip label="Age" value={selectedAgeGroup} />
+                  <SummaryChip
+                    label="Sort"
+                    value={
+                      SORT_OPTIONS.find((s) => s.value === selectedSort)?.label || "Soonest"
+                    }
+                  />
+                </div>
               </div>
 
-              <div className="mt-2 flex flex-wrap gap-2">
-                <SummaryChip label="Purpose" value={selectedPurpose} />
-                <SummaryChip label="Gender" value={selectedGender} />
-                <SummaryChip label="Age" value={selectedAgeGroup} />
-                <SummaryChip
-                  label="Sort"
-                  value={SORT_OPTIONS.find((s) => s.value === selectedSort)?.label || "Soonest"}
-                />
-              </div>
-            </div>
-
-            <div className="flex shrink-0 items-center gap-2">
-              <Link
-                href="/"
-                className="inline-flex items-center gap-1 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                Reset
-              </Link>
-
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#f4ece4] text-[#6b5f52] transition group-open:rotate-180">
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f4ece4] text-[#6b5f52] transition group-open:rotate-180">
                 <ChevronDown className="h-4 w-4" />
               </span>
-            </div>
-          </summary>
+            </summary>
 
-          <div className="border-t border-[#efe6db] px-4 py-4">
-            <div>
-              <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-                Purpose
+            <div className="border-t border-[#efe6db] px-4 py-4">
+              <div>
+                <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+                  Purpose
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {PURPOSE_OPTIONS.map((option) => (
+                    <FilterPill
+                      key={option}
+                      href={buildHref(currentFilters, { purpose: option })}
+                      active={selectedPurpose === option}
+                      label={option}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {PURPOSE_OPTIONS.map((option) => (
-                  <FilterPill
-                    key={option}
-                    href={buildHref(currentFilters, { purpose: option })}
-                    active={selectedPurpose === option}
-                    label={option}
-                  />
-                ))}
-              </div>
-            </div>
 
-            <div className="mt-4">
-              <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-                Gender
+              <div className="mt-4">
+                <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+                  Gender
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {GENDER_OPTIONS.map((option) => (
+                    <FilterPill
+                      key={option}
+                      href={buildHref(currentFilters, { gender: option })}
+                      active={selectedGender === option}
+                      label={option}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {GENDER_OPTIONS.map((option) => (
-                  <FilterPill
-                    key={option}
-                    href={buildHref(currentFilters, { gender: option })}
-                    active={selectedGender === option}
-                    label={option}
-                  />
-                ))}
-              </div>
-            </div>
 
-            <div className="mt-4">
-              <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-                Age Group
+              <div className="mt-4">
+                <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+                  Age Group
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {AGE_GROUP_OPTIONS.map((option) => (
+                    <FilterPill
+                      key={option}
+                      href={buildHref(currentFilters, { age_group: option })}
+                      active={selectedAgeGroup === option}
+                      label={option}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {AGE_GROUP_OPTIONS.map((option) => (
-                  <FilterPill
-                    key={option}
-                    href={buildHref(currentFilters, { age_group: option })}
-                    active={selectedAgeGroup === option}
-                    label={option}
-                  />
-                ))}
-              </div>
-            </div>
 
-            <div className="mt-4">
-              <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-                Sort
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {SORT_OPTIONS.map((option) => (
-                  <FilterPill
-                    key={option.value}
-                    href={buildHref(currentFilters, { sort: option.value })}
-                    active={selectedSort === option.value}
-                    label={option.label}
-                  />
-                ))}
+              <div className="mt-4">
+                <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+                  Sort
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {SORT_OPTIONS.map((option) => (
+                    <FilterPill
+                      key={option.value}
+                      href={buildHref(currentFilters, { sort: option.value })}
+                      active={selectedSort === option.value}
+                      label={option.label}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
+          </details>
+
+          <div className="border-t border-[#efe6db] px-4 py-3">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Reset
+            </Link>
           </div>
-        </details>
+        </div>
 
         {posts.map((post) => {
           const amount = parseBenefitAmount(post.benefit_amount);
