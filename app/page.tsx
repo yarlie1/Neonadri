@@ -185,6 +185,19 @@ const parseBenefitAmount = (value: string | null) => {
   return amount;
 };
 
+const getSortSummaryLabel = (sort: string) => {
+  switch (sort) {
+    case "newest":
+      return "Newest";
+    case "benefit_desc":
+      return "High $";
+    case "benefit_asc":
+      return "Low $";
+    default:
+      return "Soonest";
+  }
+};
+
 function StarRatingInline({
   value,
   count,
@@ -263,12 +276,29 @@ function FilterPill({
   );
 }
 
-function SummaryChip({ label, value }: { label: string; value: string }) {
-  return (
-    <span className="inline-flex items-center rounded-full bg-[#f4ece4] px-3 py-1.5 text-xs font-medium text-[#6b5f52]">
-      {label}: {value}
-    </span>
-  );
+function FilterSummaryText({
+  purpose,
+  gender,
+  ageGroup,
+  sort,
+}: {
+  purpose: string;
+  gender: string;
+  ageGroup: string;
+  sort: string;
+}) {
+  const parts: string[] = [];
+
+  if (purpose !== "All") parts.push(purpose);
+  if (gender !== "All") parts.push(gender);
+  if (ageGroup !== "All") parts.push(ageGroup);
+  if (sort !== "soonest") parts.push(getSortSummaryLabel(sort));
+
+  if (parts.length === 0) {
+    return <span className="text-sm text-[#8b7f74]">All filters</span>;
+  }
+
+  return <span className="text-sm font-medium text-[#5a5149]">{parts.join(" · ")}</span>;
 }
 
 export default async function HomePage({ searchParams }: PageProps) {
@@ -285,6 +315,8 @@ export default async function HomePage({ searchParams }: PageProps) {
     age_group: selectedAgeGroup,
     sort: selectedSort,
   };
+
+  const filtersKey = `${selectedPurpose}-${selectedGender}-${selectedAgeGroup}-${selectedSort}`;
 
   const supabase = createClient();
 
@@ -354,20 +386,18 @@ export default async function HomePage({ searchParams }: PageProps) {
 
   if (ownerIds.length > 0) {
     try {
-      const { data: profilesData, error: profilesError } = await supabase
+      const { data: profilesData } = await supabase
         .from("profiles")
         .select("id, display_name, gender, age_group")
         .in("id", ownerIds);
 
-      if (!profilesError) {
-        ((profilesData as ProfileRow[]) || []).forEach((profile) => {
-          hostProfileMap[profile.id] = {
-            displayName: profile.display_name || "Unknown",
-            gender: profile.gender || "",
-            ageGroup: profile.age_group || "",
-          };
-        });
-      }
+      ((profilesData as ProfileRow[]) || []).forEach((profile) => {
+        hostProfileMap[profile.id] = {
+          displayName: profile.display_name || "Unknown",
+          gender: profile.gender || "",
+          ageGroup: profile.age_group || "",
+        };
+      });
     } catch {}
 
     try {
@@ -409,7 +439,7 @@ export default async function HomePage({ searchParams }: PageProps) {
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-4 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-3 pb-24">
         <div className="rounded-[20px] border border-[#e7ddd2] bg-white shadow-sm">
-          <details className="group">
+          <details key={filtersKey} className="group">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 text-sm font-semibold text-[#2f2a26]">
@@ -417,15 +447,12 @@ export default async function HomePage({ searchParams }: PageProps) {
                   Filter & Sort
                 </div>
 
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <SummaryChip label="Purpose" value={selectedPurpose} />
-                  <SummaryChip label="Gender" value={selectedGender} />
-                  <SummaryChip label="Age" value={selectedAgeGroup} />
-                  <SummaryChip
-                    label="Sort"
-                    value={
-                      SORT_OPTIONS.find((s) => s.value === selectedSort)?.label || "Soonest"
-                    }
+                <div className="mt-2">
+                  <FilterSummaryText
+                    purpose={selectedPurpose}
+                    gender={selectedGender}
+                    ageGroup={selectedAgeGroup}
+                    sort={selectedSort}
                   />
                 </div>
               </div>
