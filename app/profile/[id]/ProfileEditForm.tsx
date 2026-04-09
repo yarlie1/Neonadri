@@ -20,6 +20,73 @@ type ProfileRow = {
   is_public: boolean | null;
 };
 
+const LANGUAGE_OPTIONS = [
+  "English",
+  "Korean",
+  "Spanish",
+  "Japanese",
+  "Chinese",
+  "French",
+];
+
+const MEETING_STYLE_OPTIONS = [
+  "Friendly and relaxed",
+  "Thoughtful and calm",
+  "Casual and easygoing",
+  "Focused and productive",
+  "Energetic and social",
+  "Quiet and comfortable",
+];
+
+const INTEREST_OPTIONS = [
+  "Coffee",
+  "Walk",
+  "Study",
+  "Board Games",
+  "Meal",
+  "Dessert",
+  "Movie",
+  "Karaoke",
+  "Workout",
+  "Books",
+  "Travel",
+  "Language Exchange",
+  "Networking",
+  "Photography",
+];
+
+const RESPONSE_NOTE_OPTIONS = [
+  "Usually replies within a few hours",
+  "Usually replies within a day",
+  "Usually replies within 2 days",
+  "Replies may be slow on weekdays",
+  "Usually replies in the evening",
+];
+
+function ToggleChip({
+  label,
+  selected,
+  onClick,
+}: {
+  label: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full px-3 py-2 text-sm font-medium transition ${
+        selected
+          ? "bg-[#a48f7a] text-white"
+          : "bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
 export default function ProfileEditForm({
   profile,
 }: {
@@ -36,27 +103,30 @@ export default function ProfileEditForm({
   const [aboutMe, setAboutMe] = useState(profile.about_me || "");
   const [gender, setGender] = useState(profile.gender || "");
   const [ageGroup, setAgeGroup] = useState(profile.age_group || "");
-  const [preferredArea, setPreferredArea] = useState(profile.preferred_area || "");
-  const [languages, setLanguages] = useState((profile.languages || []).join(", "));
+  const [languages, setLanguages] = useState<string[]>(profile.languages || []);
   const [meetingStyle, setMeetingStyle] = useState(profile.meeting_style || "");
-  const [interests, setInterests] = useState((profile.interests || []).join(", "));
-  const [responseTimeNote, setResponseTimeNote] = useState(profile.response_time_note || "");
+  const [interests, setInterests] = useState<string[]>(profile.interests || []);
+  const [responseTimeNote, setResponseTimeNote] = useState(
+    profile.response_time_note || ""
+  );
   const [isPublic, setIsPublic] = useState(profile.is_public ?? true);
 
   const [message, setMessage] = useState("");
 
+  const toggleArrayValue = (
+    value: string,
+    current: string[],
+    setter: (next: string[]) => void
+  ) => {
+    if (current.includes(value)) {
+      setter(current.filter((item) => item !== value));
+    } else {
+      setter([...current, value]);
+    }
+  };
+
   const handleSave = async () => {
     setMessage("");
-
-    const parsedLanguages = languages
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
-
-    const parsedInterests = interests
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
 
     const { error } = await supabase.from("profiles").upsert({
       id: profile.id,
@@ -65,11 +135,11 @@ export default function ProfileEditForm({
       about_me: aboutMe.trim() || null,
       gender: gender || null,
       age_group: ageGroup || null,
-      preferred_area: preferredArea.trim() || null,
-      languages: parsedLanguages.length > 0 ? parsedLanguages : null,
-      meeting_style: meetingStyle.trim() || null,
-      interests: parsedInterests.length > 0 ? parsedInterests : null,
-      response_time_note: responseTimeNote.trim() || null,
+      preferred_area: null,
+      languages: languages.length > 0 ? languages : null,
+      meeting_style: meetingStyle || null,
+      interests: interests.length > 0 ? interests : null,
+      response_time_note: responseTimeNote || null,
       is_public: isPublic,
       updated_at: new Date().toISOString(),
     });
@@ -192,62 +262,70 @@ export default function ProfileEditForm({
 
           <div>
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-              Preferred Area
-            </label>
-            <input
-              value={preferredArea}
-              onChange={(e) => setPreferredArea(e.target.value)}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-              placeholder="Koreatown, Pasadena, DTLA..."
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Languages
             </label>
-            <input
-              value={languages}
-              onChange={(e) => setLanguages(e.target.value)}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-              placeholder="English, Korean"
-            />
+            <div className="flex flex-wrap gap-2 rounded-2xl border border-[#e7ddd2] bg-[#fcfaf7] p-3">
+              {LANGUAGE_OPTIONS.map((item) => (
+                <ToggleChip
+                  key={item}
+                  label={item}
+                  selected={languages.includes(item)}
+                  onClick={() => toggleArrayValue(item, languages, setLanguages)}
+                />
+              ))}
+            </div>
           </div>
 
           <div>
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Meeting Style
             </label>
-            <input
+            <select
               value={meetingStyle}
               onChange={(e) => setMeetingStyle(e.target.value)}
               className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-              placeholder="Friendly, thoughtful, relaxed..."
-            />
+            >
+              <option value="">Select meeting style</option>
+              {MEETING_STYLE_OPTIONS.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Interests
             </label>
-            <input
-              value={interests}
-              onChange={(e) => setInterests(e.target.value)}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-              placeholder="Coffee, Walk, Study, Board Games"
-            />
+            <div className="flex flex-wrap gap-2 rounded-2xl border border-[#e7ddd2] bg-[#fcfaf7] p-3">
+              {INTEREST_OPTIONS.map((item) => (
+                <ToggleChip
+                  key={item}
+                  label={item}
+                  selected={interests.includes(item)}
+                  onClick={() => toggleArrayValue(item, interests, setInterests)}
+                />
+              ))}
+            </div>
           </div>
 
           <div>
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Response Note
             </label>
-            <input
+            <select
               value={responseTimeNote}
               onChange={(e) => setResponseTimeNote(e.target.value)}
               className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
-              placeholder="Usually replies within a day"
-            />
+            >
+              <option value="">Select response note</option>
+              {RESPONSE_NOTE_OPTIONS.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
           </div>
 
           <label className="flex items-center gap-3 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#5a5149]">
