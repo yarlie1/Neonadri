@@ -6,7 +6,6 @@ import { createClient } from "../../lib/supabase/client";
 import {
   Menu,
   X,
-  UserRound,
   LayoutDashboard,
   LogOut,
   LogIn,
@@ -22,33 +21,74 @@ type SimpleUser = {
   email?: string | null;
 } | null;
 
+function PendingBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+
+  return (
+    <span className="inline-flex min-w-[20px] items-center justify-center rounded-full bg-[#c96f5d] px-1.5 py-0.5 text-[11px] font-bold leading-none text-white">
+      {count > 99 ? "99+" : count}
+    </span>
+  );
+}
+
 export default function TopNav() {
   const [user, setUser] = useState<SimpleUser>(null);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
 
-    const loadUser = async () => {
+    const loadUserAndPending = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
-      setUser(user ? { id: user.id, email: user.email } : null);
+      const nextUser = user ? { id: user.id, email: user.email } : null;
+      setUser(nextUser);
+
+      if (user) {
+        const { count } = await supabase
+          .from("match_requests")
+          .select("*", { count: "exact", head: true })
+          .eq("post_owner_user_id", user.id)
+          .eq("status", "pending");
+
+        setPendingCount(count || 0);
+      } else {
+        setPendingCount(0);
+      }
+
       setLoading(false);
     };
 
-    loadUser();
+    loadUserAndPending();
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      const nextUser = session?.user;
-      setUser(nextUser ? { id: nextUser.id, email: nextUser.email } : null);
-      setLoading(false);
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const nextUser = session?.user
+        ? { id: session.user.id, email: session.user.email }
+        : null;
+
+      setUser(nextUser);
       setMenuOpen(false);
+
+      if (session?.user) {
+        const { count } = await supabase
+          .from("match_requests")
+          .select("*", { count: "exact", head: true })
+          .eq("post_owner_user_id", session.user.id)
+          .eq("status", "pending");
+
+        setPendingCount(count || 0);
+      } else {
+        setPendingCount(0);
+      }
+
+      setLoading(false);
     });
 
     return () => {
@@ -117,6 +157,7 @@ export default function TopNav() {
                   <Link href="/dashboard" className={desktopButtonClass}>
                     <LayoutDashboard className="h-4 w-4" />
                     Dashboard
+                    <PendingBadge count={pendingCount} />
                   </Link>
 
                   <Link href={`/profile/${user.id}`} className={desktopButtonClass}>
@@ -186,10 +227,13 @@ export default function TopNav() {
                         <Link
                           href="/dashboard"
                           onClick={() => setMenuOpen(false)}
-                          className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                          className="inline-flex items-center justify-between gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
                         >
-                          <LayoutDashboard className="h-4 w-4" />
-                          Dashboard
+                          <span className="inline-flex items-center gap-2">
+                            <LayoutDashboard className="h-4 w-4" />
+                            Dashboard
+                          </span>
+                          <PendingBadge count={pendingCount} />
                         </Link>
 
                         <Link
