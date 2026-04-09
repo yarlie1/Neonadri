@@ -58,7 +58,7 @@ function BrandTagline() {
   }[variant];
 
   return (
-    <div className="ml-2 text-left leading-tight">
+    <div className="ml-2 pt-[2px] text-left leading-tight">
       <div className="text-[11px] font-medium text-[#6f655c] sm:text-[12px]">
         {content[0]}
       </div>
@@ -187,7 +187,7 @@ export default function TopNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-[#e7ddd2] bg-[#fffaf5]/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <div className="flex items-center">
+        <div className="flex items-start">
           <Link
             href="/"
             className="group inline-flex items-center text-[28px] font-extrabold tracking-[-0.04em] text-[#1f1b18] transition duration-200 hover:scale-[1.02] hover:text-[#8f7762] sm:text-[32px]"
