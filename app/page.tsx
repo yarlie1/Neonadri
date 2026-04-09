@@ -66,7 +66,7 @@ type HostProfileMap = Record<
 >;
 
 const getPurposeIcon = (purpose: string | null) => {
-  const className = "h-[19px] w-[19px] shrink-0 text-[#7e746b]";
+  const className = "h-[20px] w-[20px] shrink-0 text-[#7e746b]";
 
   switch (purpose) {
     case "Coffee Chat":
@@ -147,7 +147,7 @@ function StarRatingInline({
   const rounded = Math.round(value);
 
   return (
-    <div className="inline-flex items-center gap-1 rounded-full bg-[#f4ece4] px-2 py-1 text-[11px] text-[#6b5f52]">
+    <div className="inline-flex items-center gap-1.5 rounded-full bg-[#f4ece4] px-2.5 py-1 text-[11px] text-[#6b5f52]">
       <div className="flex items-center gap-0.5">
         {[1, 2, 3, 4, 5].map((n) => (
           <Star
@@ -260,23 +260,23 @@ export default async function HomePage() {
             <Link
               key={post.id}
               href={`/posts/${post.id}`}
-              className="block rounded-[24px] border border-[#e7ddd2] bg-white p-4 shadow-sm transition hover:bg-[#fcfaf7] active:scale-[0.995]"
+              className="block rounded-[26px] border border-[#e5dbcf] bg-white p-4 shadow-[0_6px_18px_rgba(80,60,40,0.08)] transition duration-150 hover:bg-[#fcfaf7] active:scale-[0.985]"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 text-[24px] leading-[1.18] font-extrabold tracking-[-0.01em] text-[#2f2a26]">
+                  <div className="flex items-center gap-2 text-[28px] leading-[1.15] font-extrabold tracking-[-0.015em] text-[#2f2a26]">
                     {getPurposeIcon(post.meeting_purpose)}
                     <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
                     {formatDuration(post.duration_minutes) ? (
-                      <span className="inline-flex shrink-0 items-center gap-1 text-[21px] font-bold text-[#2f2a26]">
-                        <Clock3 className="h-4 w-4" />
+                      <span className="inline-flex shrink-0 items-center gap-1 text-[24px] font-bold text-[#2f2a26]">
+                        <Clock3 className="h-5 w-5" />
                         {formatDuration(post.duration_minutes)}
                       </span>
                     ) : null}
                   </div>
 
-                  <div className="mt-2 flex items-center gap-2 text-[21px] font-bold leading-[1.22] text-[#2f2a26]">
-                    <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                  <div className="mt-2 flex items-center gap-2 text-[24px] leading-[1.18] font-bold text-[#2f2a26]">
+                    <MapPin className="h-5 w-5 shrink-0 text-[#8a7f74]" />
                     <span className="truncate">
                       {post.place_name || post.location || "No place"}
                     </span>
@@ -285,7 +285,7 @@ export default async function HomePage() {
 
                 <div className="flex shrink-0 flex-col items-end gap-2">
                   {amount !== null && (
-                    <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-3.5 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
+                    <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-4 py-2.5 text-[15px] font-bold text-[#5f4c1d] shadow-[0_4px_10px_rgba(229,199,111,0.35)]">
                       <span className="inline-flex items-center gap-1.5">
                         <Coins className="h-4 w-4" />
                         ${amount.toLocaleString()}
@@ -293,13 +293,13 @@ export default async function HomePage() {
                     </div>
                   )}
 
-                  <span className="rounded-full border border-[#dccfc2] bg-[#efe7dc] px-3 py-1 text-[11px] font-medium text-[#6b5f52]">
+                  <span className="rounded-full border border-[#d9cdbf] bg-[#efe7dc] px-3.5 py-1.5 text-[11px] font-medium text-[#6b5f52]">
                     {status}
                   </span>
                 </div>
               </div>
 
-              <div className="mt-3.5 space-y-1.5 text-[13px] text-[#766c62]">
+              <div className="mt-4 space-y-2 text-[13px] text-[#766c62]">
                 {post.meeting_time && (
                   <div className="flex items-center gap-2">
                     <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
@@ -322,16 +322,16 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              <div className="mt-3.5 rounded-[16px] border border-[#e7ddd2] bg-[#fcfaf7] px-3 py-3">
+              <div className="mt-4 rounded-[18px] border border-[#e8ded3] bg-[#fcfaf7] px-3.5 py-3.5">
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="inline-flex items-center gap-2 text-sm font-medium text-[#5a5149]">
+                    <div className="inline-flex items-center gap-2 text-[15px] font-semibold text-[#5a5149]">
                       <UserCircle2 className="h-4.5 w-4.5 text-[#8a7f74]" />
                       <span className="truncate">{host.displayName}</span>
                     </div>
 
                     {(host.gender || host.ageGroup) && (
-                      <div className="mt-0.5 text-[12px] text-[#8b7f74]">
+                      <div className="mt-1 text-[12px] text-[#8b7f74]">
                         {host.gender || "Unknown"}
                         {host.gender && host.ageGroup ? " / " : ""}
                         {host.ageGroup || ""}
@@ -345,7 +345,7 @@ export default async function HomePage() {
                       count={hostStats.reviewCount}
                     />
                   ) : (
-                    <div className="rounded-full bg-[#f4ece4] px-2 py-1 text-[11px] text-[#8b7f74]">
+                    <div className="rounded-full bg-[#f4ece4] px-2.5 py-1 text-[11px] text-[#8b7f74]">
                       No reviews
                     </div>
                   )}
@@ -364,7 +364,7 @@ export default async function HomePage() {
 
       <Link
         href="/write"
-        className="fixed bottom-6 right-5 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#a48f7a] text-white shadow-[0_10px_25px_rgba(80,60,40,0.18)] transition hover:bg-[#927d69]"
+        className="fixed bottom-6 right-5 z-40 inline-flex h-[60px] w-[60px] items-center justify-center rounded-full bg-[#a48f7a] text-white shadow-[0_12px_28px_rgba(80,60,40,0.2)] transition duration-150 hover:bg-[#927d69] active:scale-95"
         aria-label="Create meetup"
       >
         <Plus className="h-6 w-6" />
