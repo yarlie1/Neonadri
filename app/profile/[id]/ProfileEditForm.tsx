@@ -133,7 +133,6 @@ export default function ProfileEditForm({
       setMessage("Saving profile...");
 
       const payload = {
-        id: profile.id,
         display_name: displayName.trim() || null,
         bio: bio.trim() || null,
         about_me: aboutMe.trim() || null,
@@ -148,10 +147,13 @@ export default function ProfileEditForm({
         updated_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase.from("profiles").upsert(payload);
+      const { error } = await supabase
+        .from("profiles")
+        .update(payload)
+        .eq("id", profile.id);
 
       if (error) {
-        setMessage(error.message);
+        setMessage("ERROR: " + error.message);
         setSaving(false);
         return;
       }
@@ -164,7 +166,7 @@ export default function ProfileEditForm({
         setOpen(false);
         setSaving(false);
         setMessage("");
-      }, 500);
+      }, 400);
     } catch (err) {
       console.error(err);
       setMessage("Something went wrong while saving.");
