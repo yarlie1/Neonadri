@@ -263,7 +263,7 @@ export default async function HomePage() {
               className="block rounded-[24px] border border-[#e7ddd2] bg-white p-4 shadow-sm transition hover:bg-[#fcfaf7] active:scale-[0.995]"
             >
               <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 min-h-[74px]">
                   <div className="flex items-center gap-2 text-[24px] leading-[1.18] font-extrabold tracking-[-0.01em] text-[#2f2a26]">
                     {getPurposeIcon(post.meeting_purpose)}
                     <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
@@ -283,14 +283,16 @@ export default async function HomePage() {
                   </div>
                 </div>
 
-                <div className="flex shrink-0 flex-col items-end gap-2">
-                  {amount !== null && (
+                <div className="flex h-[74px] shrink-0 flex-col items-end justify-between">
+                  {amount !== null ? (
                     <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-3.5 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
                       <span className="inline-flex items-center gap-1.5">
                         <Coins className="h-4 w-4" />
                         ${amount.toLocaleString()}
                       </span>
                     </div>
+                  ) : (
+                    <div />
                   )}
 
                   <span className="rounded-full border border-[#dccfc2] bg-[#efe7dc] px-3 py-1 text-[11px] font-medium text-[#6b5f52]">
