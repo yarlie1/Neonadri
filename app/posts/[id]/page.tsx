@@ -10,6 +10,7 @@ import {
   Languages,
   Star,
   HeartHandshake,
+  Sparkles,
 } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import MatchRequestBox from "./MatchRequestBox";
@@ -31,6 +32,7 @@ type ProfileRow = {
   languages: string[] | null;
   meeting_style: string | null;
   interests: string[] | null;
+  response_time_note: string | null;
 };
 
 type MatchRequestRow = {
@@ -192,6 +194,28 @@ function StarRating({
   );
 }
 
+function InfoItem({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-[18px] border border-[#e7ddd2] bg-white px-4 py-3">
+      <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+        {icon}
+        <span>{label}</span>
+      </div>
+      <div className="mt-1 text-sm font-medium leading-6 text-[#4f443b]">
+        {value}
+      </div>
+    </div>
+  );
+}
+
 export default async function MeetupDetailPage({ params }: PageProps) {
   const supabase = await createClient();
   const id = params.id;
@@ -219,10 +243,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   let ownerAboutMe = "";
   let ownerGender = "";
   let ownerAgeGroup = "";
-  let ownerPreferredArea = "";
   let ownerLanguages: string[] = [];
   let ownerMeetingStyle = "";
   let ownerInterests: string[] = [];
+  let ownerResponseNote = "";
 
   let ownerAverageRating = 0;
   let ownerReviewCount = 0;
@@ -234,7 +258,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       supabase
         .from("profiles")
         .select(
-          "id, display_name, bio, about_me, gender, age_group, preferred_area, languages, meeting_style, interests"
+          "id, display_name, bio, about_me, gender, age_group, preferred_area, languages, meeting_style, interests, response_time_note"
         )
         .eq("id", post.user_id)
         .maybeSingle(),
@@ -248,7 +272,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
         .select("id, rating, review_text, created_at")
         .eq("reviewee_user_id", post.user_id)
         .order("created_at", { ascending: false })
-        .limit(2),
+        .limit(3),
     ]);
 
     const profile = ownerProfileRes.data as ProfileRow | null;
@@ -261,10 +285,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       ownerAboutMe = profile.about_me || "";
       ownerGender = profile.gender || "";
       ownerAgeGroup = profile.age_group || "";
-      ownerPreferredArea = profile.preferred_area || "";
       ownerLanguages = profile.languages || [];
       ownerMeetingStyle = profile.meeting_style || "";
       ownerInterests = profile.interests || [];
+      ownerResponseNote = profile.response_time_note || "";
     }
 
     ownerAverageRating = Number(stats?.average_rating ?? 0);
@@ -318,7 +342,13 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   const ownerProfileHref = post.user_id ? `/profile/${post.user_id}` : "#";
   const roundedAverage = Math.round(ownerAverageRating);
-  const introText = ownerAboutMe || ownerBio || "No profile introduction yet.";
+
+  const hasBio = !!ownerBio.trim();
+  const hasAboutMe = !!ownerAboutMe.trim();
+  const hasLanguages = ownerLanguages.length > 0;
+  const hasMeetingStyle = !!ownerMeetingStyle.trim();
+  const hasInterests = ownerInterests.length > 0;
+  const hasResponseNote = !!ownerResponseNote.trim();
 
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
@@ -442,144 +472,179 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             )}
           </div>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-[1.3fr_0.9fr]">
-            <div className="space-y-4">
-              <div className="space-y-3 text-[15px] text-[#6f655c]">
-                <div className="flex items-center gap-3">
-                  <UserCircle2 className="h-5 w-5 shrink-0 text-[#8a7f74]" />
-                  {post.user_id ? (
-                    <Link
-                      href={ownerProfileHref}
-                      className="font-medium text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
-                    >
-                      {ownerName}
-                    </Link>
-                  ) : (
-                    <span className="font-medium text-[#2f2a26]">{ownerName}</span>
-                  )}
-                </div>
-
-                {(ownerGender || ownerAgeGroup) && (
-                  <div className="flex items-center gap-3">
-                    <UserRound className="h-5 w-5 shrink-0 text-[#8a7f74]" />
-                    <span>
-                      {ownerGender || "Unknown"}
-                      {ownerGender && ownerAgeGroup ? " / " : ""}
-                      {ownerAgeGroup || ""}
-                    </span>
-                  </div>
-                )}
-
-                {ownerPreferredArea && (
-                  <div className="flex items-center gap-3">
-                    <MapPin className="h-5 w-5 shrink-0 text-[#8a7f74]" />
-                    <span>{ownerPreferredArea}</span>
-                  </div>
-                )}
-
-                {ownerLanguages.length > 0 && (
-                  <div className="flex items-center gap-3">
-                    <Languages className="h-5 w-5 shrink-0 text-[#8a7f74]" />
-                    <span>{ownerLanguages.join(", ")}</span>
-                  </div>
-                )}
-
-                {ownerMeetingStyle && (
-                  <div className="flex items-center gap-3">
-                    <HeartHandshake className="h-5 w-5 shrink-0 text-[#8a7f74]" />
-                    <span>{ownerMeetingStyle}</span>
-                  </div>
+          <div className="mt-5 space-y-4">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-3 text-[15px] text-[#6f655c]">
+              <div className="flex items-center gap-3">
+                <UserCircle2 className="h-5 w-5 shrink-0 text-[#8a7f74]" />
+                {post.user_id ? (
+                  <Link
+                    href={ownerProfileHref}
+                    className="font-medium text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
+                  >
+                    {ownerName}
+                  </Link>
+                ) : (
+                  <span className="font-medium text-[#2f2a26]">{ownerName}</span>
                 )}
               </div>
 
+              {(ownerGender || ownerAgeGroup) && (
+                <div className="flex items-center gap-2">
+                  <UserRound className="h-5 w-5 shrink-0 text-[#8a7f74]" />
+                  <span>
+                    {ownerGender || "Unknown"}
+                    {ownerGender && ownerAgeGroup ? " / " : ""}
+                    {ownerAgeGroup || ""}
+                  </span>
+                </div>
+              )}
+
+              {hasLanguages && (
+                <div className="flex items-center gap-2">
+                  <Languages className="h-5 w-5 shrink-0 text-[#8a7f74]" />
+                  <span>{ownerLanguages.join(", ")}</span>
+                </div>
+              )}
+            </div>
+
+            {hasBio && (
               <div className="rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
                 <div className="flex items-start gap-3">
                   <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
-                  <span className="leading-6 text-[#6f655c]">{introText}</span>
+                  <div>
+                    <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
+                      Bio
+                    </div>
+                    <div className="mt-1 text-sm leading-7 text-[#5f5347]">
+                      {ownerBio}
+                    </div>
+                  </div>
                 </div>
               </div>
+            )}
 
-              {ownerInterests.length > 0 && (
+            <div className="rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
+              <div className="flex items-start gap-3">
+                <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
+                <div>
+                  <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
+                    About Me
+                  </div>
+                  <div className="mt-1 text-sm leading-7 text-[#5f5347]">
+                    {hasAboutMe ? ownerAboutMe : "No introduction yet."}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {(hasLanguages || hasMeetingStyle || hasResponseNote) && (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {hasLanguages && (
+                  <InfoItem
+                    icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                    label="Languages"
+                    value={ownerLanguages.join(", ")}
+                  />
+                )}
+
+                {hasMeetingStyle && (
+                  <InfoItem
+                    icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                    label="Meeting Style"
+                    value={ownerMeetingStyle}
+                  />
+                )}
+
+                {hasResponseNote && (
+                  <InfoItem
+                    icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                    label="Response Note"
+                    value={ownerResponseNote}
+                  />
+                )}
+              </div>
+            )}
+
+            {hasInterests && (
+              <div>
+                <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
+                  <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
+                  Interests
+                </div>
+
                 <div className="flex flex-wrap gap-2">
-                  {ownerInterests.slice(0, 8).map((item) => (
+                  {ownerInterests.map((item) => (
                     <span
                       key={item}
-                      className="rounded-full bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]"
+                      className="rounded-full bg-[#f4ece4] px-3 py-1.5 text-xs font-medium text-[#6b5f52]"
                     >
                       {item}
                     </span>
                   ))}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            <div className="space-y-4">
-              <div className="grid grid-cols-3 gap-3">
-                <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
-                  <div className="text-xs text-[#8b7f74]">Rating</div>
-                  <div className="mt-1 text-xl font-bold text-[#2f2a26]">
-                    {ownerAverageRating.toFixed(1)}
-                  </div>
-                  <div className="mt-1 flex justify-center">
-                    <StarRating value={roundedAverage} size="sm" />
-                  </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
+                <div className="text-xs text-[#8b7f74]">Rating</div>
+                <div className="mt-1 text-xl font-bold text-[#2f2a26]">
+                  {ownerAverageRating.toFixed(1)}
                 </div>
-
-                <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
-                  <div className="text-xs text-[#8b7f74]">Reviews</div>
-                  <div className="mt-2 text-xl font-bold text-[#2f2a26]">
-                    {ownerReviewCount}
-                  </div>
-                </div>
-
-                <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
-                  <div className="text-xs text-[#8b7f74]">Meetups</div>
-                  <div className="mt-2 text-xl font-bold text-[#2f2a26]">
-                    {ownerCompletedMeetups}
-                  </div>
+                <div className="mt-1 flex justify-center">
+                  <StarRating value={roundedAverage} size="sm" />
                 </div>
               </div>
 
-              <div className="rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
-                <div className="text-sm font-semibold text-[#2f2a26]">
-                  Recent Reviews
+              <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
+                <div className="text-xs text-[#8b7f74]">Reviews</div>
+                <div className="mt-2 text-xl font-bold text-[#2f2a26]">
+                  {ownerReviewCount}
                 </div>
+              </div>
 
-                <div className="mt-3 space-y-3">
-                  {ownerRecentReviews.length === 0 ? (
-                    <div className="text-sm text-[#8b7f74]">
-                      No reviews yet.
-                    </div>
-                  ) : (
-                    ownerRecentReviews.map((review) => (
-                      <div
-                        key={review.id}
-                        className="rounded-[1rem] border border-[#eee4d9] bg-white px-3 py-3"
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <StarRating value={review.rating} size="md" />
-                          <div className="text-[11px] text-[#9b8f84]">
-                            {new Date(review.created_at).toLocaleDateString()}
-                          </div>
+              <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
+                <div className="text-xs text-[#8b7f74]">Meetups</div>
+                <div className="mt-2 text-xl font-bold text-[#2f2a26]">
+                  {ownerCompletedMeetups}
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
+              <div className="text-sm font-semibold text-[#2f2a26]">
+                Recent Reviews
+              </div>
+
+              <div className="mt-3 space-y-3">
+                {ownerRecentReviews.length === 0 ? (
+                  <div className="text-sm text-[#8b7f74]">No reviews yet.</div>
+                ) : (
+                  ownerRecentReviews.map((review) => (
+                    <div
+                      key={review.id}
+                      className="rounded-[1rem] border border-[#eee4d9] bg-white px-3 py-3"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <StarRating value={review.rating} size="md" />
+                        <div className="text-[11px] text-[#9b8f84]">
+                          {new Date(review.created_at).toLocaleDateString()}
                         </div>
-
-                        <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#5f5347]">
-                          {review.review_text || "No comment."}
-                        </p>
                       </div>
-                    ))
-                  )}
-                </div>
+
+                      <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#5f5347]">
+                        {review.review_text || "No comment."}
+                      </p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
         </div>
 
         {post.user_id && user && user.id !== post.user_id && !isMatched && (
-          <MatchRequestBox
-            postId={post.id}
-            postOwnerUserId={post.user_id}
-          />
+          <MatchRequestBox postId={post.id} postOwnerUserId={post.user_id} />
         )}
 
         <div className="px-1 text-xs text-[#9b8f84]">
