@@ -31,13 +31,39 @@ function PendingBadge({ count }: { count: number }) {
 }
 
 function BrandTagline() {
+  const [variant, setVariant] = useState<"A" | "B" | "C">("A");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("tagline_variant") as
+      | "A"
+      | "B"
+      | "C"
+      | null;
+
+    if (saved) {
+      setVariant(saved);
+      return;
+    }
+
+    const options: ("A" | "B" | "C")[] = ["A", "B", "C"];
+    const random = options[Math.floor(Math.random() * options.length)];
+    localStorage.setItem("tagline_variant", random);
+    setVariant(random);
+  }, []);
+
+  const content = {
+    A: ["Want to meet someone?", "Start with Neonadri"],
+    B: ["Meet someone new", "today"],
+    C: ["Find your next meetup", "on Neonadri"],
+  }[variant];
+
   return (
-    <div className="text-right leading-tight">
-      <div className="text-[10px] font-medium text-[#8b7f74] sm:text-[11px]">
-        Want to meet someone?
+    <div className="ml-2 text-left leading-tight">
+      <div className="text-[11px] font-medium text-[#6f655c] sm:text-[12px]">
+        {content[0]}
       </div>
-      <div className="text-[11px] font-semibold text-[#5a5149] sm:text-[12px]">
-        Try Neonadri
+      <div className="text-[11px] font-medium text-[#6f655c] sm:text-[12px]">
+        {content[1]}
       </div>
     </div>
   );
@@ -161,19 +187,19 @@ export default function TopNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-[#e7ddd2] bg-[#fffaf5]/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <Link
-          href="/"
-          className="text-[26px] font-extrabold tracking-[-0.04em] text-[#1f1b18] sm:text-[28px]"
-        >
-          Neonadri
-        </Link>
+        <div className="flex items-center">
+          <Link
+            href="/"
+            className="text-[26px] font-extrabold tracking-[-0.04em] text-[#1f1b18] sm:text-[28px]"
+          >
+            Neonadri
+          </Link>
+
+          <BrandTagline />
+        </div>
 
         <>
-          <div className="hidden items-center gap-3 sm:flex">
-            <BrandTagline />
-
-            <div className="h-8 w-px bg-[#e7ddd2]" />
-
+          <div className="hidden items-center gap-2 sm:flex">
             <Link href="/" className={btn}>
               <House className="h-4 w-4" />
               Home
@@ -217,9 +243,7 @@ export default function TopNav() {
             )}
           </div>
 
-          <div className="relative flex items-center gap-3 sm:hidden" ref={menuRef}>
-            <BrandTagline />
-
+          <div className="relative sm:hidden" ref={menuRef}>
             <button
               type="button"
               aria-label={menuOpen ? "Close menu" : "Open menu"}
