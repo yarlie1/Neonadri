@@ -255,12 +255,17 @@ export default async function HomePage() {
             reviewCount: 0,
           };
           const status = getPostStatus(post.meeting_time);
+          const isExpired = status === "Expired";
 
           return (
             <Link
               key={post.id}
               href={`/posts/${post.id}`}
-              className="block rounded-[24px] border border-[#e7ddd2] bg-white p-4 shadow-sm transition hover:bg-[#fcfaf7] active:scale-[0.995]"
+              className={`block rounded-[24px] border p-4 shadow-sm transition active:scale-[0.995] ${
+                isExpired
+                  ? "border-[#ddd2c5] bg-[#f3eee8] opacity-80"
+                  : "border-[#e7ddd2] bg-white hover:bg-[#fcfaf7]"
+              }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1 min-h-[74px]">
@@ -283,21 +288,15 @@ export default async function HomePage() {
                   </div>
                 </div>
 
-                <div className="flex h-[74px] shrink-0 flex-col items-end justify-between">
-                  {amount !== null ? (
+                <div className="flex h-[74px] shrink-0 flex-col items-end justify-start">
+                  {amount !== null && (
                     <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-3.5 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
                       <span className="inline-flex items-center gap-1.5">
                         <Coins className="h-4 w-4" />
                         ${amount.toLocaleString()}
                       </span>
                     </div>
-                  ) : (
-                    <div />
                   )}
-
-                  <span className="rounded-full border border-[#dccfc2] bg-[#efe7dc] px-3 py-1 text-[11px] font-medium text-[#6b5f52]">
-                    {status}
-                  </span>
                 </div>
               </div>
 
