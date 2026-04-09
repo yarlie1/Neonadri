@@ -19,6 +19,9 @@ import {
   BriefcaseBusiness,
   Book,
   Camera,
+  SlidersHorizontal,
+  RotateCcw,
+  ChevronDown,
 } from "lucide-react";
 import { createClient } from "../lib/supabase/server";
 
@@ -260,6 +263,14 @@ function FilterPill({
   );
 }
 
+function SummaryChip({ label, value }: { label: string; value: string }) {
+  return (
+    <span className="inline-flex items-center rounded-full bg-[#f4ece4] px-3 py-1.5 text-xs font-medium text-[#6b5f52]">
+      {label}: {value}
+    </span>
+  );
+}
+
 export default async function HomePage({ searchParams }: PageProps) {
   const resolved = (await searchParams) || {};
 
@@ -381,80 +392,107 @@ export default async function HomePage({ searchParams }: PageProps) {
   return (
     <main className="min-h-screen bg-[#f7f1ea] px-4 py-4 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-3 pb-24">
-        <div className="rounded-[20px] border border-[#e7ddd2] bg-white p-4 shadow-sm">
-          <div>
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-              Purpose
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {PURPOSE_OPTIONS.map((option) => (
-                <FilterPill
-                  key={option}
-                  href={buildHref(currentFilters, { purpose: option })}
-                  active={selectedPurpose === option}
-                  label={option}
-                />
-              ))}
-            </div>
-          </div>
+        <details className="group rounded-[20px] border border-[#e7ddd2] bg-white shadow-sm">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 text-sm font-semibold text-[#2f2a26]">
+                <SlidersHorizontal className="h-4 w-4" />
+                Filter & Sort
+              </div>
 
-          <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-              Gender
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {GENDER_OPTIONS.map((option) => (
-                <FilterPill
-                  key={option}
-                  href={buildHref(currentFilters, { gender: option })}
-                  active={selectedGender === option}
-                  label={option}
+              <div className="mt-2 flex flex-wrap gap-2">
+                <SummaryChip label="Purpose" value={selectedPurpose} />
+                <SummaryChip label="Gender" value={selectedGender} />
+                <SummaryChip label="Age" value={selectedAgeGroup} />
+                <SummaryChip
+                  label="Sort"
+                  value={SORT_OPTIONS.find((s) => s.value === selectedSort)?.label || "Soonest"}
                 />
-              ))}
+              </div>
             </div>
-          </div>
 
-          <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-              Age Group
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {AGE_GROUP_OPTIONS.map((option) => (
-                <FilterPill
-                  key={option}
-                  href={buildHref(currentFilters, { age_group: option })}
-                  active={selectedAgeGroup === option}
-                  label={option}
-                />
-              ))}
-            </div>
-          </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-1 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Reset
+              </Link>
 
-          <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-              Sort
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#f4ece4] text-[#6b5f52] transition group-open:rotate-180">
+                <ChevronDown className="h-4 w-4" />
+              </span>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {SORT_OPTIONS.map((option) => (
-                <FilterPill
-                  key={option.value}
-                  href={buildHref(currentFilters, { sort: option.value })}
-                  active={selectedSort === option.value}
-                  label={option.label}
-                />
-              ))}
-            </div>
-          </div>
+          </summary>
 
-          <div className="mt-4">
-            <Link
-              href="/"
-              className="inline-flex items-center rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-            >
-              Reset
-            </Link>
+          <div className="border-t border-[#efe6db] px-4 py-4">
+            <div>
+              <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+                Purpose
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {PURPOSE_OPTIONS.map((option) => (
+                  <FilterPill
+                    key={option}
+                    href={buildHref(currentFilters, { purpose: option })}
+                    active={selectedPurpose === option}
+                    label={option}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+                Gender
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {GENDER_OPTIONS.map((option) => (
+                  <FilterPill
+                    key={option}
+                    href={buildHref(currentFilters, { gender: option })}
+                    active={selectedGender === option}
+                    label={option}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+                Age Group
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {AGE_GROUP_OPTIONS.map((option) => (
+                  <FilterPill
+                    key={option}
+                    href={buildHref(currentFilters, { age_group: option })}
+                    active={selectedAgeGroup === option}
+                    label={option}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+                Sort
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {SORT_OPTIONS.map((option) => (
+                  <FilterPill
+                    key={option.value}
+                    href={buildHref(currentFilters, { sort: option.value })}
+                    active={selectedSort === option.value}
+                    label={option.label}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
+        </details>
 
         {posts.map((post) => {
           const amount = parseBenefitAmount(post.benefit_amount);
