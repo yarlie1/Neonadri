@@ -286,7 +286,7 @@ export default async function HomePage({ searchParams }: PageProps) {
     sort: selectedSort,
   };
 
-  const supabase = await createClient();
+  const supabase = createClient();
 
   const { data: postsData, error: postsError } = await supabase
     .from("posts")
@@ -353,40 +353,63 @@ export default async function HomePage({ searchParams }: PageProps) {
   let hostStatsMap: HostStatMap = {};
 
   if (ownerIds.length > 0) {
-    const { data: profilesData } = await supabase
-      .from("profiles")
-      .select("id, display_name, gender, age_group")
-      .in("id", ownerIds);
+    try {
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profiles")
+        .select("id, display_name, gender, age_group")
+        .in("id", ownerIds);
 
-    ((profilesData as ProfileRow[]) || []).forEach((profile) => {
-      hostProfileMap[profile.id] = {
-        displayName: profile.display_name || "Unknown",
-        gender: profile.gender || "",
-        ageGroup: profile.age_group || "",
-      };
-    });
-
-    const statsResults = await Promise.all(
-      ownerIds.map(async (ownerId) => {
-        const { data } = await supabase.rpc("get_profile_stats", {
-          p_user_id: ownerId,
+      if (profilesError) {
+        console.error("profiles fetch error:", profilesError);
+      } else {
+        ((profilesData as ProfileRow[]) || []).forEach((profile) => {
+          hostProfileMap[profile.id] = {
+            displayName: profile.display_name || "Unknown",
+            gender: profile.gender || "",
+            ageGroup: profile.age_group || "",
+          };
         });
+      }
+    } catch (e) {
+      console.error("profiles fetch exception:", e);
+    }
 
-        const stats = (data || {}) as ProfileStatsRow;
+    try {
+      const statsResults = await Promise.all(
+        ownerIds.map(async (ownerId) => {
+          const { data, error } = await supabase.rpc("get_profile_stats", {
+            p_user_id: ownerId,
+          });
 
-        return {
-          ownerId,
-          stats: {
-            averageRating: Number(stats.average_rating ?? 0),
-            reviewCount: Number(stats.review_count ?? 0),
-          },
-        };
-      })
-    );
+          if (error) {
+            console.error(`get_profile_stats error for ${ownerId}:`, error);
+            return {
+              ownerId,
+              stats: {
+                averageRating: 0,
+                reviewCount: 0,
+              },
+            };
+          }
 
-    statsResults.forEach(({ ownerId, stats }) => {
-      hostStatsMap[ownerId] = stats;
-    });
+          const stats = (data || {}) as ProfileStatsRow;
+
+          return {
+            ownerId,
+            stats: {
+              averageRating: Number(stats.average_rating ?? 0),
+              reviewCount: Number(stats.review_count ?? 0),
+            },
+          };
+        })
+      );
+
+      statsResults.forEach(({ ownerId, stats }) => {
+        hostStatsMap[ownerId] = stats;
+      });
+    } catch (e) {
+      console.error("RPC exception:", e);
+    }
   }
 
   return (
@@ -406,9 +429,7 @@ export default async function HomePage({ searchParams }: PageProps) {
                 <SummaryChip label="Age" value={selectedAgeGroup} />
                 <SummaryChip
                   label="Sort"
-                  value={
-                    SORT_OPTIONS.find((s) => s.value === selectedSort)?.label || "Soonest"
-                  }
+                  value={SORT_OPTIONS.find((s) => s.value === selectedSort)?.label || "Soonest"}
                 />
               </div>
             </div>
