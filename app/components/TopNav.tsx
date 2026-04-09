@@ -24,13 +24,13 @@ function PendingBadge({ count }: { count: number }) {
   if (count <= 0) return null;
 
   return (
-    <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#c96f5d] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
+    <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#c96f5d] px-1.5 py-0.5 text-[10px] font-bold text-white">
       {count > 99 ? "99+" : count}
     </span>
   );
 }
 
-/* ✅ A/B 테스트 + 위치 조정된 태그라인 */
+/* ✅ 태그라인 (A/B 테스트 + 아래로 살짝 내림) */
 function BrandTagline() {
   const [variant, setVariant] = useState<"A" | "B" | "C">("A");
 
@@ -81,30 +81,23 @@ export default function TopNav() {
     let mounted = true;
 
     const loadUser = async () => {
-      try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-        if (!mounted) return;
+      if (!mounted) return;
 
-        const nextUser = user ? { id: user.id, email: user.email } : null;
-        setUser(nextUser);
+      const nextUser = user ? { id: user.id, email: user.email } : null;
+      setUser(nextUser);
 
-        if (user) {
-          const { count } = await supabase
-            .from("match_requests")
-            .select("*", { count: "exact", head: true })
-            .eq("post_owner_user_id", user.id)
-            .eq("status", "pending");
+      if (user) {
+        const { count } = await supabase
+          .from("match_requests")
+          .select("*", { count: "exact", head: true })
+          .eq("post_owner_user_id", user.id)
+          .eq("status", "pending");
 
-          if (!mounted) return;
-          setPendingCount(count || 0);
-        } else {
-          setPendingCount(0);
-        }
-      } catch (error) {
-        console.error("TopNav loadUser error:", error);
+        setPendingCount(count || 0);
       }
     };
 
@@ -113,30 +106,23 @@ export default function TopNav() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      try {
-        if (!mounted) return;
+      const nextUser = session?.user
+        ? { id: session.user.id, email: session.user.email }
+        : null;
 
-        const nextUser = session?.user
-          ? { id: session.user.id, email: session.user.email }
-          : null;
+      setUser(nextUser);
+      setMenuOpen(false);
 
-        setUser(nextUser);
-        setMenuOpen(false);
+      if (session?.user) {
+        const { count } = await supabase
+          .from("match_requests")
+          .select("*", { count: "exact", head: true })
+          .eq("post_owner_user_id", session.user.id)
+          .eq("status", "pending");
 
-        if (session?.user) {
-          const { count } = await supabase
-            .from("match_requests")
-            .select("*", { count: "exact", head: true })
-            .eq("post_owner_user_id", session.user.id)
-            .eq("status", "pending");
-
-          if (!mounted) return;
-          setPendingCount(count || 0);
-        } else {
-          setPendingCount(0);
-        }
-      } catch (error) {
-        console.error("TopNav auth change error:", error);
+        setPendingCount(count || 0);
+      } else {
+        setPendingCount(0);
       }
     });
 
@@ -146,6 +132,7 @@ export default function TopNav() {
     };
   }, []);
 
+  /* 외부 클릭 시 메뉴 닫기 */
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!menuRef.current) return;
@@ -154,107 +141,111 @@ export default function TopNav() {
       }
     };
 
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
-    };
-
     document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
-
-    return () => {
+    return () =>
       document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
-    };
   }, []);
 
   const handleLogout = async () => {
-    try {
-      const supabase = createClient();
-      await supabase.auth.signOut();
-    } catch (error) {
-      console.error("TopNav logout error:", error);
-    } finally {
-      setMenuOpen(false);
-      window.location.href = "/";
-    }
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.href = "/";
   };
 
   const btn =
-    "inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
+    "inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm text-[#5a5149] hover:bg-[#f4ece4]";
 
   const primary =
-    "inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#927d69]";
+    "inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm text-white hover:bg-[#927d69]";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#e7ddd2] bg-[#fffaf5]/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+    <header className="sticky top-0 z-50 border-b bg-[#fffaf5]/90 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         
-        {/* ✅ 로고 + 태그라인 */}
+        {/* ✅ 로고 + 문구 */}
         <div className="flex items-start">
           <Link
             href="/"
-            className="text-[26px] font-extrabold tracking-[-0.04em] text-[#1f1b18] sm:text-[28px]"
+            className="text-[26px] font-extrabold text-[#1f1b18]"
           >
             Neonadri
           </Link>
           <BrandTagline />
         </div>
 
-        <>
-          <div className="hidden items-center gap-2 sm:flex">
-            <Link href="/" className={btn}>
-              <House className="h-4 w-4" />
-              Home
-            </Link>
+        {/* 데스크탑 메뉴 */}
+        <div className="hidden sm:flex gap-2">
+          <Link href="/" className={btn}>
+            <House className="h-4 w-4" /> Home
+          </Link>
 
-            {user ? (
-              <>
-                <Link href="/dashboard" className={btn}>
-                  <LayoutDashboard className="h-4 w-4" />
-                  Dashboard
-                  <PendingBadge count={pendingCount} />
-                </Link>
+          {user ? (
+            <>
+              <Link href="/dashboard" className={btn}>
+                Dashboard <PendingBadge count={pendingCount} />
+              </Link>
+              <Link href={`/profile/${user.id}`} className={btn}>
+                Profile
+              </Link>
+              <Link href="/write" className={primary}>
+                Create
+              </Link>
+              <button onClick={handleLogout} className={btn}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className={btn}>
+                Log In
+              </Link>
+              <Link href="/signup" className={primary}>
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
 
-                <Link href={`/profile/${user.id}`} className={btn}>
-                  <UserCircle2 className="h-4 w-4" />
-                  Profile
-                </Link>
+        {/* 모바일 메뉴 */}
+        <div className="relative sm:hidden" ref={menuRef}>
+          <button onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? <X /> : <Menu />}
+          </button>
 
-                <Link href="/write" className={primary}>
-                  <Plus className="h-4 w-4" />
-                  Create
-                </Link>
+          {menuOpen && (
+            <div className="absolute right-0 top-12 w-56 bg-white shadow rounded-xl">
+              <div className="flex flex-col">
+                <Link href="/" className="p-3">Home</Link>
 
-                <button type="button" onClick={handleLogout} className={btn}>
-                  <LogOut className="h-4 w-4" />
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className={btn}>
-                  <LogIn className="h-4 w-4" />
-                  Log In
-                </Link>
-
-                <Link href="/signup" className={primary}>
-                  <UserPlus className="h-4 w-4" />
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </div>
-
-          <div className="relative sm:hidden" ref={menuRef}>
-            <button
-              type="button"
-              onClick={() => setMenuOpen((prev) => !prev)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#dccfc2] bg-white text-[#5a5149] shadow-sm transition hover:bg-[#f4ece4]"
-            >
-              {menuOpen ? <X /> : <Menu />}
-            </button>
-          </div>
-        </>
+                {user ? (
+                  <>
+                    <Link href="/dashboard" className="p-3">
+                      Dashboard
+                    </Link>
+                    <Link href={`/profile/${user.id}`} className="p-3">
+                      Profile
+                    </Link>
+                    <Link href="/write" className="p-3">
+                      Create Meetup
+                    </Link>
+                    <button onClick={handleLogout} className="p-3 text-left">
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login" className="p-3">
+                      Log In
+                    </Link>
+                    <Link href="/signup" className="p-3">
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
