@@ -30,6 +30,19 @@ function PendingBadge({ count }: { count: number }) {
   );
 }
 
+function BrandTagline() {
+  return (
+    <div className="text-right leading-tight">
+      <div className="text-[10px] font-medium text-[#8b7f74] sm:text-[11px]">
+        Want to meet someone?
+      </div>
+      <div className="text-[11px] font-semibold text-[#5a5149] sm:text-[12px]">
+        Try Neonadri
+      </div>
+    </div>
+  );
+}
+
 export default function TopNav() {
   const [user, setUser] = useState<SimpleUser>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -156,7 +169,11 @@ export default function TopNav() {
         </Link>
 
         <>
-          <div className="hidden items-center gap-2 sm:flex">
+          <div className="hidden items-center gap-3 sm:flex">
+            <BrandTagline />
+
+            <div className="h-8 w-px bg-[#e7ddd2]" />
+
             <Link href="/" className={btn}>
               <House className="h-4 w-4" />
               Home
@@ -200,7 +217,9 @@ export default function TopNav() {
             )}
           </div>
 
-          <div className="relative sm:hidden" ref={menuRef}>
+          <div className="relative flex items-center gap-3 sm:hidden" ref={menuRef}>
+            <BrandTagline />
+
             <button
               type="button"
               aria-label={menuOpen ? "Close menu" : "Open menu"}
