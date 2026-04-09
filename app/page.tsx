@@ -151,47 +151,61 @@ function StarRatingInline({
 }
 
 export default function HomePage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<PostRow[]>([]);
   const [profileMap, setProfileMap] = useState<Record<string, string>>({});
   const [hostStatsMap, setHostStatsMap] = useState<HostStatMap>({});
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const loadHome = async () => {
-      const { data: postsData, error: postsError } = await supabase
-        .from("posts")
-        .select(
-          "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
-        )
-        .order("meeting_time", { ascending: true });
+      try {
+        setErrorMessage("");
 
-      if (postsError) {
-        setLoading(false);
-        return;
-      }
+        const { data: postsData, error: postsError } = await supabase
+          .from("posts")
+          .select(
+            "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
+          )
+          .order("meeting_time", { ascending: true });
 
-      const nextPosts = ((postsData as PostRow[]) || []).sort((a, b) => {
-        const aUpcoming = getPostStatus(a.meeting_time) === "Upcoming" ? 0 : 1;
-        const bUpcoming = getPostStatus(b.meeting_time) === "Upcoming" ? 0 : 1;
+        if (postsError) {
+          throw postsError;
+        }
 
-        if (aUpcoming !== bUpcoming) return aUpcoming - bUpcoming;
+        const nextPosts = ((postsData as PostRow[]) || []).sort((a, b) => {
+          const aUpcoming = getPostStatus(a.meeting_time) === "Upcoming" ? 0 : 1;
+          const bUpcoming = getPostStatus(b.meeting_time) === "Upcoming" ? 0 : 1;
 
-        const aTime = a.meeting_time ? new Date(a.meeting_time).getTime() : 0;
-        const bTime = b.meeting_time ? new Date(b.meeting_time).getTime() : 0;
-        return aTime - bTime;
-      });
+          if (aUpcoming !== bUpcoming) return aUpcoming - bUpcoming;
 
-      setPosts(nextPosts);
+          const aTime = a.meeting_time ? new Date(a.meeting_time).getTime() : 0;
+          const bTime = b.meeting_time ? new Date(b.meeting_time).getTime() : 0;
+          return aTime - bTime;
+        });
 
-      const ownerIds = Array.from(new Set(nextPosts.map((post) => post.user_id))).filter(Boolean);
+        setPosts(nextPosts);
 
-      if (ownerIds.length > 0) {
-        const { data: profilesData } = await supabase
+        const ownerIds = Array.from(
+          new Set(nextPosts.map((post) => post.user_id))
+        ).filter(Boolean);
+
+        if (ownerIds.length === 0) {
+          setProfileMap({});
+          setHostStatsMap({});
+          return;
+        }
+
+        const { data: profilesData, error: profilesError } = await supabase
           .from("profiles")
           .select("id, display_name")
           .in("id", ownerIds);
+
+        if (profilesError) {
+          throw profilesError;
+        }
 
         const nextProfileMap: Record<string, string> = {};
         ((profilesData as ProfileRow[]) || []).forEach((profile) => {
@@ -201,9 +215,20 @@ export default function HomePage() {
 
         const statsResults = await Promise.all(
           ownerIds.map(async (ownerId) => {
-            const { data } = await supabase.rpc("get_profile_stats", {
+            const { data, error } = await supabase.rpc("get_profile_stats", {
               p_user_id: ownerId,
             });
+
+            if (error) {
+              return {
+                ownerId,
+                stats: {
+                  average_rating: 0,
+                  review_count: 0,
+                  completed_meetups: 0,
+                } as ProfileStatsRow,
+              };
+            }
 
             return {
               ownerId,
@@ -222,13 +247,16 @@ export default function HomePage() {
         });
 
         setHostStatsMap(nextHostStatsMap);
+      } catch (error: any) {
+        console.error("Home load error:", error);
+        setErrorMessage(error?.message || "Failed to load meetups.");
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     loadHome();
-  }, [supabase]);
+  }, []);
 
   const upcomingCount = useMemo(
     () => posts.filter((post) => getPostStatus(post.meeting_time) === "Upcoming").length,
@@ -240,6 +268,17 @@ export default function HomePage() {
       <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
         <div className="mx-auto max-w-2xl rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
           Loading...
+        </div>
+      </main>
+    );
+  }
+
+  if (errorMessage) {
+    return (
+      <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
+        <div className="mx-auto max-w-2xl rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
+          <div className="text-lg font-semibold">Could not load home</div>
+          <div className="mt-2 text-sm text-[#8b7f74]">{errorMessage}</div>
         </div>
       </main>
     );
