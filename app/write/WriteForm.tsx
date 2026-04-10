@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
 import {
@@ -66,7 +66,7 @@ const PURPOSE_HELP_TEXT: Record<string, string> = {
 };
 
 export default function WriteForm({ userId }: { userId: string }) {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
 
   const searchInputRef = useRef<HTMLInputElement | null>(null);
@@ -85,20 +85,11 @@ export default function WriteForm({ userId }: { userId: string }) {
   const [locationConfirmed, setLocationConfirmed] = useState(false);
 
   const [message, setMessage] = useState("");
+  const [debugInfo, setDebugInfo] = useState("");
   const [saving, setSaving] = useState(false);
 
   const fieldClass =
     "w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 pl-16 text-sm text-[#2f2a26] focus:outline-none focus:ring-2 focus:ring-[#a48f7a]/40";
-
-  useEffect(() => {
-    console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-    console.log(
-      "KEY:",
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-    );
-    console.log("userId:", userId);
-    console.log("supabase client:", supabase);
-  }, [supabase, userId]);
 
   useEffect(() => {
     if (!meetingTime) {
@@ -142,6 +133,7 @@ export default function WriteForm({ userId }: { userId: string }) {
 
         if (!address || nextLat == null || nextLng == null) {
           setLocationConfirmed(false);
+          setDebugInfo("Place selected, but address/coordinates were missing.");
           return;
         }
 
@@ -151,6 +143,7 @@ export default function WriteForm({ userId }: { userId: string }) {
         setLongitude(nextLng);
         setLocationConfirmed(true);
         setMessage("");
+        setDebugInfo("Exact location selected from Google autocomplete.");
       });
 
       return true;
@@ -185,6 +178,7 @@ export default function WriteForm({ userId }: { userId: string }) {
       setLongitude(Number(qLng));
       setLocationConfirmed(true);
       setMessage("");
+      setDebugInfo("Exact location selected from map picker.");
     }
   }, []);
 
@@ -196,6 +190,7 @@ export default function WriteForm({ userId }: { userId: string }) {
     setLatitude(null);
     setLongitude(null);
     setLocationConfirmed(false);
+    setDebugInfo("Location text changed. Waiting for exact place selection.");
   };
 
   const handleOpenMapPicker = () => {
@@ -204,9 +199,11 @@ export default function WriteForm({ userId }: { userId: string }) {
 
   const handleCreate = async () => {
     setMessage("");
+    setDebugInfo("");
 
     if (!userId) {
       setMessage("Please sign in first.");
+      setDebugInfo("No userId prop was provided to WriteForm.");
       return;
     }
 
@@ -219,6 +216,7 @@ export default function WriteForm({ userId }: { userId: string }) {
       !benefitAmount.trim()
     ) {
       setMessage("Please fill in all required fields.");
+      setDebugInfo("Validation failed: one or more required fields are empty.");
       return;
     }
 
@@ -231,14 +229,37 @@ export default function WriteForm({ userId }: { userId: string }) {
       setMessage(
         "Please choose one exact location from the dropdown or map picker."
       );
+      setDebugInfo(
+        "Validation failed: location is not confirmed with latitude/longitude."
+      );
       return;
     }
 
     try {
       setSaving(true);
+      setDebugInfo("Step 1: checking Supabase auth session...");
+
+      const { data: authData, error: authError } =
+        await supabase.auth.getUser();
+
+      if (authError) {
+        setSaving(false);
+        setMessage("Auth error.");
+        setDebugInfo(`Auth error: ${authError.message}`);
+        return;
+      }
+
+      if (!authData?.user) {
+        setSaving(false);
+        setMessage("Your session has expired. Please sign in again.");
+        setDebugInfo("No authenticated Supabase user was found.");
+        return;
+      }
+
+      const authUserId = authData.user.id;
 
       const payload = {
-        user_id: userId,
+        user_id: authUserId,
         place_name: placeName || location,
         location,
         meeting_time: new Date(meetingTime).toISOString(),
@@ -251,31 +272,59 @@ export default function WriteForm({ userId }: { userId: string }) {
         longitude,
       };
 
-      console.log("insert payload:", payload);
+      setDebugInfo(
+        [
+          "Step 2: auth ok.",
+          `prop userId: ${userId}`,
+          `auth userId: ${authUserId}`,
+          userId !== authUserId
+            ? "Warning: prop userId and auth userId do not match."
+            : "User IDs match.",
+          "Step 3: inserting into posts...",
+          JSON.stringify(payload, null, 2),
+        ].join("\n")
+      );
 
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => {
-          reject(new Error("Insert timed out after 15 seconds."));
-        }, 15000);
-      });
+      const { data, error } = await supabase
+        .from("posts")
+        .insert(payload)
+        .select();
 
-      const insertPromise = supabase.from("posts").insert(payload);
-
-      const result = await Promise.race([insertPromise, timeoutPromise]);
-
-      console.log("insert result:", result);
-
-      if ("error" in result && result.error) {
+      if (error) {
         setSaving(false);
-        setMessage(result.error.message || "Failed to create meetup.");
+        setMessage("Failed to create meetup.");
+        setDebugInfo(
+          [
+            "Insert error returned from Supabase:",
+            error.message,
+            error.details || "",
+            error.hint || "",
+            error.code || "",
+          ]
+            .filter(Boolean)
+            .join("\n")
+        );
         return;
       }
 
-      window.location.href = "/dashboard";
+      setDebugInfo(
+        [
+          "Step 4: insert success.",
+          `Inserted rows: ${data?.length ?? 0}`,
+          JSON.stringify(data, null, 2),
+        ].join("\n")
+      );
+
+      router.push("/dashboard");
+      router.refresh();
     } catch (e) {
-      console.error("Create meetup error:", e);
       setSaving(false);
       setMessage(e instanceof Error ? e.message : "Something went wrong.");
+      setDebugInfo(
+        e instanceof Error
+          ? `Caught exception:\n${e.message}`
+          : "Caught unknown exception."
+      );
     }
   };
 
@@ -468,6 +517,12 @@ export default function WriteForm({ userId }: { userId: string }) {
           <p className="mt-4 rounded-2xl border border-[#f0d4d4] bg-[#fff5f5] px-4 py-3 text-sm text-[#c53030]">
             {message}
           </p>
+        )}
+
+        {debugInfo && (
+          <pre className="mt-4 overflow-x-auto whitespace-pre-wrap break-words rounded-2xl border border-[#d9d9d9] bg-white px-4 py-3 text-xs text-[#333]">
+            {debugInfo}
+          </pre>
         )}
       </div>
     </main>
