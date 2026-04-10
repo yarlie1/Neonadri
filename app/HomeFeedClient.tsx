@@ -88,8 +88,8 @@ const GENDER_OPTIONS = ["All", "Male", "Female", "Other", "Prefer not to say"];
 const AGE_GROUP_OPTIONS = ["All", "20s", "30s", "40s", "50s+"];
 
 const SORT_OPTIONS = [
-  { value: "soonest", label: "Soonest" },
   { value: "newest", label: "Newest" },
+  { value: "soonest", label: "Soonest" },
   { value: "benefit_desc", label: "Highest Benefit" },
   { value: "benefit_asc", label: "Lowest Benefit" },
   { value: "distance", label: "Nearest" },
@@ -171,8 +171,8 @@ function parseBenefitAmount(value: string | null) {
 
 function getSortSummaryLabel(sort: SortValue) {
   switch (sort) {
-    case "newest":
-      return "Newest";
+    case "soonest":
+      return "Soonest";
     case "benefit_desc":
       return "High $";
     case "benefit_asc":
@@ -180,7 +180,7 @@ function getSortSummaryLabel(sort: SortValue) {
     case "distance":
       return "Nearest";
     default:
-      return "Soonest";
+      return "";
   }
 }
 
@@ -280,7 +280,10 @@ function FilterSummaryText({
   if (purpose !== "All") parts.push(purpose);
   if (gender !== "All") parts.push(gender);
   if (ageGroup !== "All") parts.push(ageGroup);
-  if (sort !== "soonest") parts.push(getSortSummaryLabel(sort));
+  if (sort !== "newest") {
+    const label = getSortSummaryLabel(sort);
+    if (label) parts.push(label);
+  }
 
   if (parts.length === 0) {
     return <span className="text-sm text-[#8b7f74]">All filters</span>;
