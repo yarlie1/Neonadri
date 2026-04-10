@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   Clock3,
@@ -78,43 +78,43 @@ const getPurposeIcon = (purpose: string | null) => {
   switch (purpose) {
     case "Coffee Chat":
     case "Coffee":
-      return "☕";
+      return "\u2615";
     case "Meal":
-      return "🍽";
+      return "\ud83c\udf7d";
     case "Dessert":
-      return "🍰";
+      return "\ud83c\udf70";
     case "Walk":
-      return "🚶";
+      return "\ud83d\udeb6";
     case "Jogging":
-      return "🏃";
+      return "\ud83c\udfc3";
     case "Yoga":
-      return "🧘";
+      return "\ud83e\uddd8";
     case "Movie":
     case "Theater":
-      return "🎬";
+      return "\ud83c\udfac";
     case "Karaoke":
-      return "🎤";
+      return "\ud83c\udfa4";
     case "Board Games":
-      return "🎲";
+      return "\ud83c\udfb2";
     case "Gaming":
-      return "🎮";
+      return "\ud83c\udfae";
     case "Bowling":
-      return "🎳";
+      return "\ud83c\udfb3";
     case "Arcade":
-      return "🎯";
+      return "\ud83c\udfaf";
     case "Study":
-      return "📚";
+      return "\ud83d\udcda";
     case "Work Together":
     case "Work":
-      return "💻";
+      return "\ud83d\udcbb";
     case "Book Talk":
     case "Book":
-      return "📖";
+      return "\ud83d\udcd6";
     case "Photo Walk":
     case "Photo":
-      return "📷";
+      return "\ud83d\udcf7";
     default:
-      return "✨";
+      return "\u2728";
   }
 };
 

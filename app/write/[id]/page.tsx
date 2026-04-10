@@ -65,6 +65,16 @@ const PURPOSE_HELP_TEXT: Record<string, string> = {
   "Photo Walk": "Walk around and take photos together.",
 };
 
+function formatDateTimeLocalValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
 export default function EditWritePage() {
   const supabase = createClient();
   const router = useRouter();
@@ -123,12 +133,12 @@ export default function EditWritePage() {
       setMeetingPurpose(data.meeting_purpose || "");
 
       if (data.meeting_time) {
-        setMeetingTime(new Date(data.meeting_time).toISOString().slice(0, 16));
+        setMeetingTime(formatDateTimeLocalValue(new Date(data.meeting_time)));
       } else {
         const now = new Date();
         now.setHours(now.getHours() + 3);
         now.setSeconds(0, 0);
-        setMeetingTime(now.toISOString().slice(0, 16));
+        setMeetingTime(formatDateTimeLocalValue(now));
       }
 
       setDurationMinutes(
@@ -257,7 +267,7 @@ export default function EditWritePage() {
       .from("posts")
       .update({
         meeting_purpose: meetingPurpose,
-        meeting_time: new Date(meetingTime).toISOString(),
+        meeting_time: meetingTime,
         duration_minutes: Number(durationMinutes),
         location,
         place_name: placeName || location,

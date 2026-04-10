@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -43,43 +43,43 @@ const getPurposeIcon = (purpose: string | null) => {
   switch (purpose) {
     case "Coffee Chat":
     case "Coffee":
-      return "☕";
+      return "\u2615";
     case "Meal":
-      return "🍽";
+      return "\ud83c\udf7d";
     case "Dessert":
-      return "🍰";
+      return "\ud83c\udf70";
     case "Walk":
-      return "🚶";
+      return "\ud83d\udeb6";
     case "Jogging":
-      return "🏃";
+      return "\ud83c\udfc3";
     case "Yoga":
-      return "🧘";
+      return "\ud83e\uddd8";
     case "Movie":
     case "Theater":
-      return "🎬";
+      return "\ud83c\udfac";
     case "Karaoke":
-      return "🎤";
+      return "\ud83c\udfa4";
     case "Board Games":
-      return "🎲";
+      return "\ud83c\udfb2";
     case "Gaming":
-      return "🎮";
+      return "\ud83c\udfae";
     case "Bowling":
-      return "🎳";
+      return "\ud83c\udfb3";
     case "Arcade":
-      return "🎯";
+      return "\ud83c\udfaf";
     case "Study":
-      return "📚";
+      return "\ud83d\udcda";
     case "Work Together":
     case "Work":
-      return "💻";
+      return "\ud83d\udcbb";
     case "Book Talk":
     case "Book":
-      return "📖";
+      return "\ud83d\udcd6";
     case "Photo Walk":
     case "Photo":
-      return "📷";
+      return "\ud83d\udcf7";
     default:
-      return "✨";
+      return "\u2728";
   }
 };
 
@@ -354,8 +354,7 @@ export default function HomePostsMap({ posts }: Props) {
               onClick={() => setSelectedPost(null)}
               className="absolute right-3 top-3 text-sm text-[#8a7d71]"
             >
-              ✕
-            </button>
+              Close</button>
 
             <div className="flex items-start justify-between gap-4 pr-6">
               <div className="min-w-0 flex-1">
@@ -372,7 +371,7 @@ export default function HomePostsMap({ posts }: Props) {
 
               {selectedPost.benefit_amount && (
                 <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 text-sm font-semibold text-[#5a4a1f] shadow">
-                  🪙 {selectedPost.benefit_amount}
+                  Benefit {selectedPost.benefit_amount}
                 </div>
               )}
             </div>
@@ -380,23 +379,23 @@ export default function HomePostsMap({ posts }: Props) {
             <div className="mt-3">
               {selectedPost.meeting_time && (
                 <div className="text-sm text-[#6f655c]">
-                  ⏰ {formatTime(selectedPost.meeting_time)}
+                  Time: {formatTime(selectedPost.meeting_time)}
                 </div>
               )}
 
               {selectedPost.location && (
                 <div className="mt-1 line-clamp-1 text-sm text-[#6f655c]">
-                  📍 {selectedPost.location}
+                  Location: {selectedPost.location}
                 </div>
               )}
 
               <div className="mt-1 text-sm text-[#6f655c]">
-                👤 {selectedPost.target_gender || "Any"} /{" "}
+                Target: {selectedPost.target_gender || "Any"} /{" "}
                 {selectedPost.target_age_group || "Any"}
               </div>
 
               <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-[#6f655c]">
-                <span>🧑 {selectedPost.host_name}</span>
+                <span>Host: {selectedPost.host_name}</span>
 
                 {selectedPost.is_my_post ? (
                   <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]">
@@ -428,3 +427,4 @@ export default function HomePostsMap({ posts }: Props) {
     </div>
   );
 }
+

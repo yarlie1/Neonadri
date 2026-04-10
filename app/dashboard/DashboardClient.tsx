@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -418,13 +418,13 @@ export default function DashboardClient({
       <div className="mx-auto max-w-2xl space-y-5">
         {showMatchSuccess && (
           <div className="rounded-[20px] border border-[#dccfc2] bg-[#efe7dc] px-4 py-3 text-sm font-medium text-[#5f5347] shadow-sm">
-            Match created successfully 🎉
+            Match created successfully.
           </div>
         )}
 
         {showReviewSuccess && (
           <div className="rounded-[20px] border border-[#dccfc2] bg-[#efe7dc] px-4 py-3 text-sm font-medium text-[#5f5347] shadow-sm">
-            Review submitted successfully ⭐
+            Review submitted successfully.
           </div>
         )}
 
@@ -966,4 +966,5 @@ export default function DashboardClient({
     </main>
   );
 }
+
 
