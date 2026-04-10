@@ -24,13 +24,12 @@ function PendingBadge({ count }: { count: number }) {
   if (count <= 0) return null;
 
   return (
-    <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#c96f5d] px-1.5 py-0.5 text-[10px] font-bold text-white">
+    <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#c96f5d] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
       {count > 99 ? "99+" : count}
     </span>
   );
 }
 
-/* ✅ 태그라인 (A/B 테스트 + 아래로 살짝 내림) */
 function BrandTagline() {
   const [variant, setVariant] = useState<"A" | "B" | "C">("A");
 
@@ -81,23 +80,30 @@ export default function TopNav() {
     let mounted = true;
 
     const loadUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-      if (!mounted) return;
+        if (!mounted) return;
 
-      const nextUser = user ? { id: user.id, email: user.email } : null;
-      setUser(nextUser);
+        const nextUser = user ? { id: user.id, email: user.email } : null;
+        setUser(nextUser);
 
-      if (user) {
-        const { count } = await supabase
-          .from("match_requests")
-          .select("*", { count: "exact", head: true })
-          .eq("post_owner_user_id", user.id)
-          .eq("status", "pending");
+        if (user) {
+          const { count } = await supabase
+            .from("match_requests")
+            .select("*", { count: "exact", head: true })
+            .eq("post_owner_user_id", user.id)
+            .eq("status", "pending");
 
-        setPendingCount(count || 0);
+          if (!mounted) return;
+          setPendingCount(count || 0);
+        } else {
+          setPendingCount(0);
+        }
+      } catch (error) {
+        console.error("TopNav loadUser error:", error);
       }
     };
 
@@ -106,23 +112,30 @@ export default function TopNav() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const nextUser = session?.user
-        ? { id: session.user.id, email: session.user.email }
-        : null;
+      try {
+        if (!mounted) return;
 
-      setUser(nextUser);
-      setMenuOpen(false);
+        const nextUser = session?.user
+          ? { id: session.user.id, email: session.user.email }
+          : null;
 
-      if (session?.user) {
-        const { count } = await supabase
-          .from("match_requests")
-          .select("*", { count: "exact", head: true })
-          .eq("post_owner_user_id", session.user.id)
-          .eq("status", "pending");
+        setUser(nextUser);
+        setMenuOpen(false);
 
-        setPendingCount(count || 0);
-      } else {
-        setPendingCount(0);
+        if (session?.user) {
+          const { count } = await supabase
+            .from("match_requests")
+            .select("*", { count: "exact", head: true })
+            .eq("post_owner_user_id", session.user.id)
+            .eq("status", "pending");
+
+          if (!mounted) return;
+          setPendingCount(count || 0);
+        } else {
+          setPendingCount(0);
+        }
+      } catch (error) {
+        console.error("TopNav auth change error:", error);
       }
     });
 
@@ -132,112 +145,185 @@ export default function TopNav() {
     };
   }, []);
 
-  /* 외부 클릭 시 메뉴 닫기 */
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
       if (!menuRef.current) return;
       if (!menuRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("touchstart", handlePointerDown, { passive: true });
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("touchstart", handlePointerDown);
+      document.removeEventListener("keydown", handleEscape);
+    };
   }, []);
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    window.location.href = "/";
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error("TopNav logout error:", error);
+    } finally {
+      setMenuOpen(false);
+      window.location.href = "/";
+    }
   };
 
+  const closeMenu = () => setMenuOpen(false);
+
   const btn =
-    "inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm text-[#5a5149] hover:bg-[#f4ece4]";
+    "inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
 
   const primary =
-    "inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm text-white hover:bg-[#927d69]";
+    "inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#927d69]";
+
+  const mobileItem =
+    "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-[#fffaf5]/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        
-        {/* ✅ 로고 + 문구 */}
+    <header className="sticky top-0 z-50 border-b border-[#e7ddd2] bg-[#fffaf5]/90 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <div className="flex items-start">
           <Link
             href="/"
-            className="text-[26px] font-extrabold text-[#1f1b18]"
+            className="text-[26px] font-extrabold tracking-[-0.04em] text-[#1f1b18] sm:text-[28px]"
+            onClick={closeMenu}
           >
             Neonadri
           </Link>
           <BrandTagline />
         </div>
 
-        {/* 데스크탑 메뉴 */}
-        <div className="hidden sm:flex gap-2">
+        <div className="hidden items-center gap-2 sm:flex">
           <Link href="/" className={btn}>
-            <House className="h-4 w-4" /> Home
+            <House className="h-4 w-4" />
+            Home
           </Link>
 
           {user ? (
             <>
               <Link href="/dashboard" className={btn}>
-                Dashboard <PendingBadge count={pendingCount} />
+                <LayoutDashboard className="h-4 w-4" />
+                Dashboard
+                <PendingBadge count={pendingCount} />
               </Link>
+
               <Link href={`/profile/${user.id}`} className={btn}>
+                <UserCircle2 className="h-4 w-4" />
                 Profile
               </Link>
+
               <Link href="/write" className={primary}>
+                <Plus className="h-4 w-4" />
                 Create
               </Link>
-              <button onClick={handleLogout} className={btn}>
+
+              <button type="button" onClick={handleLogout} className={btn}>
+                <LogOut className="h-4 w-4" />
                 Logout
               </button>
             </>
           ) : (
             <>
               <Link href="/login" className={btn}>
+                <LogIn className="h-4 w-4" />
                 Log In
               </Link>
+
               <Link href="/signup" className={primary}>
+                <UserPlus className="h-4 w-4" />
                 Sign Up
               </Link>
             </>
           )}
         </div>
 
-        {/* 모바일 메뉴 */}
         <div className="relative sm:hidden" ref={menuRef}>
-          <button onClick={() => setMenuOpen(!menuOpen)}>
-            {menuOpen ? <X /> : <Menu />}
+          <button
+            type="button"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((prev) => !prev)}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#dccfc2] bg-white text-[#5a5149] shadow-sm transition hover:bg-[#f4ece4]"
+          >
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 top-12 w-56 bg-white shadow rounded-xl">
-              <div className="flex flex-col">
-                <Link href="/" className="p-3">Home</Link>
+            <div className="absolute right-0 top-14 z-50 w-64 overflow-hidden rounded-[24px] border border-[#e7ddd2] bg-white shadow-[0_12px_28px_rgba(80,60,40,0.14)]">
+              <div className="flex flex-col p-2">
+                <Link href="/" onClick={closeMenu} className={mobileItem}>
+                  <House className="h-4 w-4" />
+                  Home
+                </Link>
 
                 {user ? (
                   <>
-                    <Link href="/dashboard" className="p-3">
-                      Dashboard
+                    <Link
+                      href="/dashboard"
+                      onClick={closeMenu}
+                      className="inline-flex items-center justify-between gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                    >
+                      <span className="inline-flex items-center gap-2">
+                        <LayoutDashboard className="h-4 w-4" />
+                        Dashboard
+                      </span>
+                      <PendingBadge count={pendingCount} />
                     </Link>
-                    <Link href={`/profile/${user.id}`} className="p-3">
+
+                    <Link
+                      href={`/profile/${user.id}`}
+                      onClick={closeMenu}
+                      className={mobileItem}
+                    >
+                      <UserCircle2 className="h-4 w-4" />
                       Profile
                     </Link>
-                    <Link href="/write" className="p-3">
+
+                    <Link
+                      href="/write"
+                      onClick={closeMenu}
+                      className="inline-flex items-center gap-2 rounded-[18px] bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                    >
+                      <Plus className="h-4 w-4" />
                       Create Meetup
                     </Link>
-                    <button onClick={handleLogout} className="p-3 text-left">
+
+                    <div className="my-2 border-t border-[#f0e8de]" />
+
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-left text-sm font-medium text-[#8b5e3c] transition hover:bg-[#f8efe7]"
+                    >
+                      <LogOut className="h-4 w-4" />
                       Logout
                     </button>
                   </>
                 ) : (
                   <>
-                    <Link href="/login" className="p-3">
+                    <Link href="/login" onClick={closeMenu} className={mobileItem}>
+                      <LogIn className="h-4 w-4" />
                       Log In
                     </Link>
-                    <Link href="/signup" className="p-3">
+
+                    <Link
+                      href="/signup"
+                      onClick={closeMenu}
+                      className="inline-flex items-center gap-2 rounded-[18px] bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                    >
+                      <UserPlus className="h-4 w-4" />
                       Sign Up
                     </Link>
                   </>
