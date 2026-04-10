@@ -47,27 +47,32 @@ type HostStatMap = Record<
 >;
 
 export default async function HomePage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: postsData, error: postsError } = await supabase
     .from("posts")
     .select(
       "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, latitude, longitude"
-    );
+    )
+    .order("created_at", { ascending: false });
 
   if (postsError) {
     return (
       <main className="min-h-screen bg-[#f7f1ea] px-4 py-4 text-[#2f2a26]">
         <div className="mx-auto max-w-2xl rounded-[24px] border border-[#e7ddd2] bg-white p-5 shadow-sm">
           <div className="text-base font-semibold">Could not load home</div>
-          <div className="mt-2 text-sm text-[#8b7f74]">{postsError.message}</div>
+          <div className="mt-2 text-sm text-[#8b7f74]">
+            {postsError.message}
+          </div>
         </div>
       </main>
     );
   }
 
   const posts = ((postsData as PostRow[]) || []).slice();
-  const ownerIds = Array.from(new Set(posts.map((post) => post.user_id))).filter(Boolean);
+  const ownerIds = Array.from(new Set(posts.map((post) => post.user_id))).filter(
+    Boolean
+  );
 
   const hostProfileMap: HostProfileMap = {};
   const hostStatsMap: HostStatMap = {};
