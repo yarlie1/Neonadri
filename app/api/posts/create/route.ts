@@ -1,13 +1,11 @@
-import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function POST(req: Request) {
   try {
-    const supabase = createClient();
-
+    const supabase = await createClient();
     const body = await req.json();
 
-    // 🔐 서버에서 로그인 유저 확인
     const {
       data: { user },
       error: authError,
@@ -22,7 +20,16 @@ export async function POST(req: Request) {
 
     const payload = {
       user_id: user.id,
-      ...body,
+      place_name: body.place_name,
+      location: body.location,
+      meeting_time: body.meeting_time,
+      duration_minutes: body.duration_minutes,
+      target_gender: body.target_gender,
+      target_age_group: body.target_age_group,
+      meeting_purpose: body.meeting_purpose,
+      benefit_amount: body.benefit_amount,
+      latitude: body.latitude,
+      longitude: body.longitude,
     };
 
     const { data, error } = await supabase
@@ -32,15 +39,22 @@ export async function POST(req: Request) {
 
     if (error) {
       return NextResponse.json(
-        { error: error.message },
+        {
+          error: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code,
+        },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ data });
+    return NextResponse.json({ data }, { status: 200 });
   } catch (e) {
     return NextResponse.json(
-      { error: "Server error" },
+      {
+        error: e instanceof Error ? e.message : "Server error",
+      },
       { status: 500 }
     );
   }
