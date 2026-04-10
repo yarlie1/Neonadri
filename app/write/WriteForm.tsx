@@ -89,7 +89,7 @@ export default function WriteForm({ userId }: { userId: string }) {
   const [saving, setSaving] = useState(false);
 
   const fieldClass =
-    "w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 pl-16 text-sm text-[#2f2a26] focus:outline-none focus:ring-2 focus:ring-[#a48f7a]/40";
+    "w-full rounded-xl border border-[#dccfc2] bg-white px-4 py-3 pl-12 text-sm text-[#2f2a26] focus:outline-none focus:ring-2 focus:ring-[#a48f7a]/40";
 
   useEffect(() => {
     if (!meetingTime) {
@@ -197,6 +197,15 @@ export default function WriteForm({ userId }: { userId: string }) {
     router.push("/write/location?returnTo=/write");
   };
 
+  const getSessionWithTimeout = async (ms = 5000) => {
+    return Promise.race([
+      supabase.auth.getSession(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Session check timed out.")), ms)
+      ),
+    ]);
+  };
+
   const handleCreate = async () => {
     setMessage("");
     setDebugInfo("");
@@ -239,8 +248,11 @@ export default function WriteForm({ userId }: { userId: string }) {
       setSaving(true);
       setDebugInfo("Step 1: checking Supabase session...");
 
-      const { data: sessionData, error: sessionError } =
-        await supabase.auth.getSession();
+      const sessionResult = (await getSessionWithTimeout(5000)) as Awaited<
+        ReturnType<typeof supabase.auth.getSession>
+      >;
+
+      const { data: sessionData, error: sessionError } = sessionResult;
 
       if (sessionError) {
         setSaving(false);
@@ -329,11 +341,11 @@ export default function WriteForm({ userId }: { userId: string }) {
   };
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-5 py-6 text-[#2f2a26]">
-      <div className="mx-auto max-w-md rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
+    <main className="min-h-screen overflow-x-hidden bg-[#f7f1ea] px-4 py-5 text-[#2f2a26]">
+      <div className="mx-auto max-w-md rounded-xl border border-[#e7ddd2] bg-[#fffaf5] p-5 shadow-sm">
         <h1 className="text-2xl font-semibold">Create Meetup</h1>
 
-        <div className="mt-4 flex items-start gap-2 rounded-2xl bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+        <div className="mt-4 flex items-start gap-2 rounded-xl bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
           <CheckCircle className="mt-0.5 h-4 w-4 shrink-0" />
           <p>
             {meetingPurpose
@@ -358,10 +370,10 @@ export default function WriteForm({ userId }: { userId: string }) {
                   key={item.value}
                   type="button"
                   onClick={() => setMeetingPurpose(item.value)}
-                  className={`flex items-center gap-2 rounded-2xl border px-4 py-3 text-left text-sm font-medium transition ${
+                  className={`flex min-h-[48px] items-center gap-2 rounded-xl border px-4 py-3 text-left text-sm font-medium transition ${
                     isSelected
                       ? "border-[#a48f7a] bg-[#a48f7a] text-white"
-                      : "border-[#e7ddd2] bg-white text-[#5a5149] hover:bg-[#f6f1ea]"
+                      : "border-[#e7ddd2] bg-white text-[#5a5149] active:bg-[#f6f1ea]"
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
@@ -378,7 +390,7 @@ export default function WriteForm({ userId }: { userId: string }) {
 
         <div className="mt-3 space-y-3">
           <div className="relative">
-            <Clock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <Clock className="absolute left-4 top-4 h-4 w-4 text-[#8a7f74]" />
             <input
               type="datetime-local"
               className={fieldClass}
@@ -388,7 +400,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           </div>
 
           <div className="relative">
-            <Clock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <Clock className="absolute left-4 top-4 h-4 w-4 text-[#8a7f74]" />
             <select
               className={`${fieldClass} pr-10`}
               value={durationMinutes}
@@ -406,7 +418,7 @@ export default function WriteForm({ userId }: { userId: string }) {
 
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
-              <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+              <MapPin className="pointer-events-none absolute left-4 top-4 h-4 w-4 text-[#8a7f74]" />
               <input
                 ref={searchInputRef}
                 className={`${fieldClass} pr-5`}
@@ -420,7 +432,7 @@ export default function WriteForm({ userId }: { userId: string }) {
             <button
               type="button"
               onClick={handleOpenMapPicker}
-              className="inline-flex h-[50px] w-[50px] items-center justify-center rounded-2xl bg-[#f4ece4] text-[#6b5f52]"
+              className="inline-flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-xl bg-[#f4ece4] text-[#6b5f52]"
               aria-label="Pick on map"
               title="Pick on map"
             >
@@ -429,11 +441,11 @@ export default function WriteForm({ userId }: { userId: string }) {
           </div>
 
           {location && (
-            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+            <div className="rounded-xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
               <p className="font-medium text-[#2f2a26]">
                 {placeName || location}
               </p>
-              <p className="mt-1">{location}</p>
+              <p className="mt-1 break-words">{location}</p>
 
               {latitude !== null && longitude !== null && (
                 <p className="mt-1 text-xs text-[#8b7f74]">
@@ -456,7 +468,7 @@ export default function WriteForm({ userId }: { userId: string }) {
 
         <div className="mt-3 space-y-3">
           <div className="relative">
-            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <User className="absolute left-4 top-4 h-4 w-4 text-[#8a7f74]" />
             <select
               className={`${fieldClass} pr-10`}
               value={targetGender}
@@ -470,7 +482,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           </div>
 
           <div className="relative">
-            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <User className="absolute left-4 top-4 h-4 w-4 text-[#8a7f74]" />
             <select
               className={`${fieldClass} pr-10`}
               value={targetAgeGroup}
@@ -486,7 +498,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           </div>
 
           <div className="relative">
-            <Coins className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <Coins className="absolute left-4 top-4 h-4 w-4 text-[#8a7f74]" />
             <select
               className={`${fieldClass} pr-10`}
               value={benefitAmount}
@@ -508,19 +520,19 @@ export default function WriteForm({ userId }: { userId: string }) {
           type="button"
           onClick={handleCreate}
           disabled={saving}
-          className="mt-6 w-full rounded-2xl bg-[#a48f7a] py-4 text-base font-semibold text-white disabled:opacity-50"
+          className="mt-6 w-full rounded-xl bg-[#a48f7a] py-4 text-base font-semibold text-white disabled:opacity-50"
         >
           {saving ? "Creating..." : "Create Meetup"}
         </button>
 
         {message && (
-          <p className="mt-4 rounded-2xl border border-[#f0d4d4] bg-[#fff5f5] px-4 py-3 text-sm text-[#c53030]">
+          <p className="mt-4 rounded-xl border border-[#f0d4d4] bg-[#fff5f5] px-4 py-3 text-sm text-[#c53030]">
             {message}
           </p>
         )}
 
         {debugInfo && (
-          <pre className="mt-4 overflow-x-auto whitespace-pre-wrap break-words rounded-2xl border border-[#d9d9d9] bg-white px-4 py-3 text-xs text-[#333]">
+          <pre className="mt-4 overflow-x-auto whitespace-pre-wrap break-words rounded-xl border border-[#d9d9d9] bg-white px-4 py-3 text-xs text-[#333]">
             {debugInfo}
           </pre>
         )}
