@@ -197,15 +197,6 @@ export default function WriteForm({ userId }: { userId: string }) {
     router.push("/write/location?returnTo=/write");
   };
 
-  const getSessionWithTimeout = async (ms = 5000) => {
-    return Promise.race([
-      supabase.auth.getSession(),
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("Session check timed out.")), ms)
-      ),
-    ]);
-  };
-
   const handleCreate = async () => {
     setMessage("");
     setDebugInfo("");
@@ -246,32 +237,9 @@ export default function WriteForm({ userId }: { userId: string }) {
 
     try {
       setSaving(true);
-      setDebugInfo("Step 1: checking Supabase session...");
-
-      const sessionResult = (await getSessionWithTimeout(5000)) as Awaited<
-        ReturnType<typeof supabase.auth.getSession>
-      >;
-
-      const { data: sessionData, error: sessionError } = sessionResult;
-
-      if (sessionError) {
-        setSaving(false);
-        setMessage("Session error.");
-        setDebugInfo(`Session error: ${sessionError.message}`);
-        return;
-      }
-
-      if (!sessionData?.session) {
-        setSaving(false);
-        setMessage("Your session has expired. Please sign in again.");
-        setDebugInfo("No active Supabase session was found.");
-        return;
-      }
-
-      const sessionUserId = sessionData.session.user.id;
 
       const payload = {
-        user_id: sessionUserId,
+        user_id: userId,
         place_name: placeName || location,
         location,
         meeting_time: new Date(meetingTime).toISOString(),
@@ -286,13 +254,9 @@ export default function WriteForm({ userId }: { userId: string }) {
 
       setDebugInfo(
         [
-          "Step 2: session ok.",
-          `prop userId: ${userId}`,
-          `session userId: ${sessionUserId}`,
-          userId !== sessionUserId
-            ? "Warning: prop userId and session userId do not match."
-            : "User IDs match.",
-          "Step 3: inserting into posts...",
+          "Step 1: using server-passed userId directly.",
+          `userId: ${userId}`,
+          "Step 2: inserting into posts...",
           JSON.stringify(payload, null, 2),
         ].join("\n")
       );
@@ -321,7 +285,7 @@ export default function WriteForm({ userId }: { userId: string }) {
 
       setDebugInfo(
         [
-          "Step 4: insert success.",
+          "Step 3: insert success.",
           `Inserted rows: ${data?.length ?? 0}`,
           JSON.stringify(data, null, 2),
         ].join("\n")
