@@ -9,6 +9,7 @@ import {
   UserCircle2,
   Star,
   Plus,
+  ArrowUpRight,
   Coffee,
   UtensilsCrossed,
   CakeSlice,
@@ -25,6 +26,9 @@ import {
   RotateCcw,
   ChevronDown,
   LocateFixed,
+  Sparkles,
+  HeartHandshake,
+  Search,
 } from "lucide-react";
 
 type PostRow = {
@@ -209,6 +213,43 @@ function formatDistanceKm(km: number | null) {
   if (km === null || !Number.isFinite(km)) return "";
   if (km < 1) return `${(km * 1000).toFixed(0)} m away`;
   return `${km.toFixed(1)} km away`;
+}
+
+function getPurposeLabel(purpose: string | null) {
+  if (!purpose) return "Open meetup";
+
+  switch (purpose) {
+    case "Coffee Chat":
+    case "Coffee":
+      return "Easy conversation";
+    case "Meal":
+      return "Sit down and connect";
+    case "Dessert":
+      return "Sweet and casual";
+    case "Walk":
+    case "Jogging":
+    case "Yoga":
+      return "Move together";
+    case "Movie":
+    case "Theater":
+    case "Karaoke":
+    case "Board Games":
+    case "Gaming":
+    case "Bowling":
+    case "Arcade":
+      return "Shared fun";
+    case "Study":
+    case "Work Together":
+    case "Work":
+    case "Book Talk":
+    case "Book":
+      return "Focused company";
+    case "Photo Walk":
+    case "Photo":
+      return "Creative hangout";
+    default:
+      return "Meet someone new";
+  }
 }
 
 function StarRatingInline({
@@ -422,6 +463,21 @@ export default function HomeFeedClient({
     return next;
   }, [initialPosts, purpose, gender, ageGroup, sort, userLocation]);
 
+  const upcomingCount = useMemo(
+    () =>
+      initialPosts.filter(
+        (post) => getPostStatus(post.meeting_time) === "Upcoming"
+      ).length,
+    [initialPosts]
+  );
+
+  const hostCount = useMemo(
+    () => Object.keys(hostProfileMap).length,
+    [hostProfileMap]
+  );
+
+  const highlightedPost = posts[0] || null;
+
   const applyAndClose = (fn: () => void) => {
     fn();
     setIsOpen(false);
@@ -436,9 +492,138 @@ export default function HomeFeedClient({
   };
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-4 py-4 text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl space-y-3 pb-24">
-        <div className="rounded-[20px] border border-[#e7ddd2] bg-white shadow-sm">
+    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f9efe4_38%,#f7f1ea_100%)] px-4 py-4 text-[#2f2a26]">
+      <div className="mx-auto max-w-2xl space-y-4 pb-24">
+        <section className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f6d8cb_38%,#e9b7a6_100%)] px-5 py-6 text-[#2a211d] shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:px-6 sm:py-7">
+          <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-white/35 blur-2xl" />
+          <div className="absolute bottom-0 right-0 h-32 w-32 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+
+          <div className="relative">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+              <Sparkles className="h-3.5 w-3.5" />
+              Social meetups near you
+            </div>
+
+            <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#2b1f1a] sm:text-[40px]">
+              Meet someone new without the awkward start.
+            </h1>
+
+            <p className="mt-3 max-w-lg text-sm leading-6 text-[#5f453b] sm:text-[15px]">
+              Browse warm, low-pressure meetups around you. Coffee, walks,
+              study sessions, game nights. Pick a mood and step in.
+            </p>
+
+            <div className="mt-5 grid grid-cols-3 gap-2.5">
+              <div className="rounded-[22px] border border-white/70 bg-white/70 px-3 py-3 shadow-sm backdrop-blur">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-[#906556]">
+                  Live now
+                </div>
+                <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#2b1f1a]">
+                  {upcomingCount}
+                </div>
+              </div>
+
+              <div className="rounded-[22px] border border-white/70 bg-white/70 px-3 py-3 shadow-sm backdrop-blur">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-[#906556]">
+                  Hosts
+                </div>
+                <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#2b1f1a]">
+                  {hostCount}
+                </div>
+              </div>
+
+              <div className="rounded-[22px] border border-white/70 bg-white/70 px-3 py-3 shadow-sm backdrop-blur">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-[#906556]">
+                  Mood
+                </div>
+                <div className="mt-1 text-sm font-bold leading-5 text-[#2b1f1a]">
+                  Cozy
+                  <br />
+                  Local
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              <span className="rounded-full border border-white/70 bg-white/65 px-3 py-2 text-xs font-medium text-[#6a4b40]">
+                Coffee chats
+              </span>
+              <span className="rounded-full border border-white/70 bg-white/65 px-3 py-2 text-xs font-medium text-[#6a4b40]">
+                Walk dates
+              </span>
+              <span className="rounded-full border border-white/70 bg-white/65 px-3 py-2 text-xs font-medium text-[#6a4b40]">
+                Game nights
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {highlightedPost && (
+          <section className="overflow-hidden rounded-[28px] border border-[#eadfd2] bg-[#fffaf6] shadow-[0_16px_40px_rgba(92,69,52,0.08)]">
+            <div className="border-b border-[#f0e5db] px-5 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                    <HeartHandshake className="h-3.5 w-3.5" />
+                    Featured vibe
+                  </div>
+                  <div className="mt-1 text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
+                    {highlightedPost.place_name || highlightedPost.location || "Meetup"}
+                  </div>
+                </div>
+
+                <Link
+                  href={`/posts/${highlightedPost.id}`}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#2f2a26] text-white transition hover:bg-[#443730]"
+                  aria-label="Open featured meetup"
+                >
+                  <ArrowUpRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="grid gap-3 px-5 py-4 sm:grid-cols-[1.4fr_1fr]">
+              <div className="rounded-[24px] bg-[linear-gradient(135deg,#382a25_0%,#805448_100%)] px-4 py-4 text-white">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white/90">
+                  {getPurposeIcon(highlightedPost.meeting_purpose)}
+                  {highlightedPost.meeting_purpose || "Meetup"}
+                </div>
+
+                <div className="mt-4 text-2xl font-black leading-[1.02] tracking-[-0.04em]">
+                  {getPurposeLabel(highlightedPost.meeting_purpose)}
+                </div>
+
+                <div className="mt-2 text-sm leading-6 text-white/75">
+                  Low-pressure social energy with a clear plan, time, and place.
+                </div>
+              </div>
+
+              <div className="space-y-2.5 rounded-[24px] border border-[#efe2d7] bg-white px-4 py-4">
+                <div className="flex items-center gap-2 text-sm text-[#5a5149]">
+                  <Clock3 className="h-4 w-4 text-[#a27767]" />
+                  <span>{formatTime(highlightedPost.meeting_time) || "Time TBD"}</span>
+                </div>
+
+                <div className="flex items-start gap-2 text-sm text-[#5a5149]">
+                  <MapPin className="mt-0.5 h-4 w-4 text-[#a27767]" />
+                  <span className="line-clamp-2">
+                    {highlightedPost.location || highlightedPost.place_name || "Location TBD"}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 text-sm text-[#5a5149]">
+                  <Search className="h-4 w-4 text-[#a27767]" />
+                  <span>
+                    {highlightedPost.target_gender || "Any"} /{" "}
+                    {highlightedPost.target_age_group || "Any"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        <div className="rounded-[24px] border border-[#eadfd3] bg-white/85 shadow-sm backdrop-blur">
           <button
             type="button"
             onClick={() => setIsOpen((v) => !v)}
@@ -447,7 +632,7 @@ export default function HomeFeedClient({
             <div className="min-w-0">
               <div className="flex items-center gap-2 text-sm font-semibold text-[#2f2a26]">
                 <SlidersHorizontal className="h-4 w-4" />
-                Filter & Sort
+                Shape your mood
               </div>
 
               <div className="mt-2">
@@ -561,6 +746,21 @@ export default function HomeFeedClient({
           )}
         </div>
 
+        <div className="flex items-center justify-between px-1 pt-1">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9b8f84]">
+              Discover
+            </div>
+            <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#2f2a26]">
+              Nearby social moments
+            </div>
+          </div>
+
+          <div className="rounded-full bg-white/80 px-3 py-1.5 text-xs font-medium text-[#7a6b61] shadow-sm">
+            {posts.length} results
+          </div>
+        </div>
+
         {posts.map((post) => {
           const amount = parseBenefitAmount(post.benefit_amount);
           const host = hostProfileMap[post.user_id] || {
@@ -594,15 +794,32 @@ export default function HomeFeedClient({
             <Link
               key={post.id}
               href={`/posts/${post.id}`}
-              className={`block rounded-[24px] border p-4 shadow-sm transition active:scale-[0.995] ${
+              className={`block overflow-hidden rounded-[28px] border p-4 shadow-[0_14px_32px_rgba(92,69,52,0.08)] transition active:scale-[0.995] ${
                 isExpired
                   ? "border-[#ddd2c5] bg-[#f3eee8] opacity-80"
-                  : "border-[#e7ddd2] bg-white hover:bg-[#fcfaf7]"
+                  : "border-[#e7ddd2] bg-white hover:-translate-y-0.5 hover:bg-[#fffdf9]"
               }`}
             >
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[#f8efe8] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9a6f5f]">
+                  {getPurposeIcon(post.meeting_purpose)}
+                  {getPurposeLabel(post.meeting_purpose)}
+                </div>
+
+                <div
+                  className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${
+                    isExpired
+                      ? "bg-[#e6ddd4] text-[#8b7f74]"
+                      : "bg-[#eef7ee] text-[#4f8a54]"
+                  }`}
+                >
+                  {status}
+                </div>
+              </div>
+
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1 min-h-[74px]">
-                  <div className="flex items-center gap-2 text-[24px] leading-[1.18] font-extrabold tracking-[-0.01em] text-[#2f2a26]">
+                  <div className="flex items-center gap-2 text-[24px] leading-[1.1] font-extrabold tracking-[-0.03em] text-[#2f2a26]">
                     {getPurposeIcon(post.meeting_purpose)}
                     <span className="truncate">
                       {post.meeting_purpose || "Meetup"}
@@ -615,7 +832,7 @@ export default function HomeFeedClient({
                     ) : null}
                   </div>
 
-                  <div className="mt-2 flex items-center gap-2 text-[21px] font-bold leading-[1.22] text-[#2f2a26]">
+                  <div className="mt-2 flex items-center gap-2 text-[21px] font-bold leading-[1.16] text-[#2f2a26]">
                     <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
                     <span className="truncate">
                       {post.place_name || post.location || "No place"}
@@ -625,45 +842,51 @@ export default function HomeFeedClient({
 
                 <div className="flex h-[74px] shrink-0 flex-col items-end justify-start">
                   {amount !== null && (
-                    <div className="inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-2 text-sm font-semibold text-green-700 shadow-sm">
-                      <span>You get</span>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-2 text-sm font-semibold text-[#6e4715] shadow-sm">
+                      <span>Benefit</span>
                       <span>+${amount.toLocaleString()}</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="mt-3.5 space-y-1.5 text-[13px] text-[#766c62]">
-                {post.meeting_time && (
-                  <div className="flex items-center gap-2">
-                    <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                    <span>{formatTime(post.meeting_time)}</span>
-                  </div>
-                )}
-
-                {post.location && (
-                  <div className="flex items-start gap-2">
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                    <span className="line-clamp-1">{post.location}</span>
-                  </div>
-                )}
-
-                <div className="flex items-center gap-2">
-                  <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                  <span>
-                    {post.target_gender || "Any"} / {post.target_age_group || "Any"}
-                  </span>
+              <div className="mt-4 rounded-[22px] bg-[#fcf6f1] px-3.5 py-3.5">
+                <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                  Meetup details
                 </div>
 
-                {distanceText && (
+                <div className="space-y-1.5 text-[13px] text-[#766c62]">
+                  {post.meeting_time && (
+                    <div className="flex items-center gap-2">
+                      <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                      <span>{formatTime(post.meeting_time)}</span>
+                    </div>
+                  )}
+
+                  {post.location && (
+                    <div className="flex items-start gap-2">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+                      <span className="line-clamp-1">{post.location}</span>
+                    </div>
+                  )}
+
                   <div className="flex items-center gap-2">
-                    <LocateFixed className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                    <span>{distanceText}</span>
+                    <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                    <span>
+                      {post.target_gender || "Any"} / {post.target_age_group || "Any"}
+                    </span>
                   </div>
-                )}
+
+                  {distanceText && (
+                    <div className="flex items-center gap-2">
+                      <LocateFixed className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                      <span>{distanceText}</span>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="mt-3.5 rounded-[16px] border border-[#e7ddd2] bg-[#fcfaf7] px-3 py-3">
+              <div className="mt-3.5 rounded-[22px] border border-[#eee2d7] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] px-3.5 py-3.5">
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="inline-flex items-center gap-2 text-sm font-medium text-[#5a5149]">
@@ -697,7 +920,7 @@ export default function HomeFeedClient({
         })}
 
         {posts.length === 0 && (
-          <div className="rounded-[24px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+          <div className="rounded-[28px] border border-[#eadfd3] bg-white px-6 py-12 text-center text-[#8b7f74] shadow-sm">
             No meetups found.
           </div>
         )}
@@ -705,7 +928,7 @@ export default function HomeFeedClient({
 
       <Link
         href="/write"
-        className="fixed bottom-6 right-5 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#a48f7a] text-white shadow-[0_10px_25px_rgba(80,60,40,0.18)] transition hover:bg-[#927d69]"
+        className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2e2420_0%,#a36c5a_100%)] text-white shadow-[0_18px_34px_rgba(80,60,40,0.28)] transition hover:scale-[1.02]"
         aria-label="Create meetup"
       >
         <Plus className="h-6 w-6" />
