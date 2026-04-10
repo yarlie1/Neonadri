@@ -305,7 +305,7 @@ export default function HomeFeedClient({
   const [purpose, setPurpose] = useState("All");
   const [gender, setGender] = useState("All");
   const [ageGroup, setAgeGroup] = useState("All");
-  const [sort, setSort] = useState<SortValue>("soonest");
+  const [sort, setSort] = useState<SortValue>("newest");
   const [isOpen, setIsOpen] = useState(false);
 
   const [userLocation, setUserLocation] = useState<{
@@ -361,7 +361,9 @@ export default function HomeFeedClient({
       if (aExpired !== bExpired) return aExpired - bExpired;
 
       if (sort === "newest") {
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        return (
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
       }
 
       if (sort === "benefit_desc") {
@@ -384,12 +386,22 @@ export default function HomeFeedClient({
 
         const aDistance =
           userLocation && aHasCoords
-            ? haversineKm(userLocation.lat, userLocation.lng, a.latitude!, a.longitude!)
+            ? haversineKm(
+                userLocation.lat,
+                userLocation.lng,
+                a.latitude!,
+                a.longitude!
+              )
             : Number.MAX_SAFE_INTEGER;
 
         const bDistance =
           userLocation && bHasCoords
-            ? haversineKm(userLocation.lat, userLocation.lng, b.latitude!, b.longitude!)
+            ? haversineKm(
+                userLocation.lat,
+                userLocation.lng,
+                b.latitude!,
+                b.longitude!
+              )
             : Number.MAX_SAFE_INTEGER;
 
         if (aDistance !== bDistance) return aDistance - bDistance;
@@ -416,7 +428,7 @@ export default function HomeFeedClient({
     setPurpose("All");
     setGender("All");
     setAgeGroup("All");
-    setSort("soonest");
+    setSort("newest");
     setIsOpen(false);
   };
 
@@ -698,4 +710,3 @@ export default function HomeFeedClient({
     </main>
   );
 }
-
