@@ -50,7 +50,7 @@ export type MapPost = {
 };
 
 export default async function MapPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
@@ -72,6 +72,7 @@ export default async function MapPage() {
   const ownerIds = Array.from(new Set(posts.map((post) => post.user_id)));
 
   const profileMap = new Map<string, string>();
+
   if (ownerIds.length > 0) {
     const { data: profilesData } = await supabase
       .from("profiles")
