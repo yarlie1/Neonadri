@@ -133,7 +133,7 @@ export default function WriteForm({ userId }: { userId: string }) {
 
         if (!address || nextLat == null || nextLng == null) {
           setLocationConfirmed(false);
-          setDebugInfo("Place selected, but address/coordinates were missing.");
+          setDebugInfo("Place selected, but address or coordinates were missing.");
           return;
         }
 
@@ -237,29 +237,29 @@ export default function WriteForm({ userId }: { userId: string }) {
 
     try {
       setSaving(true);
-      setDebugInfo("Step 1: checking Supabase auth session...");
+      setDebugInfo("Step 1: checking Supabase session...");
 
-      const { data: authData, error: authError } =
-        await supabase.auth.getUser();
+      const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
 
-      if (authError) {
+      if (sessionError) {
         setSaving(false);
-        setMessage("Auth error.");
-        setDebugInfo(`Auth error: ${authError.message}`);
+        setMessage("Session error.");
+        setDebugInfo(`Session error: ${sessionError.message}`);
         return;
       }
 
-      if (!authData?.user) {
+      if (!sessionData?.session) {
         setSaving(false);
         setMessage("Your session has expired. Please sign in again.");
-        setDebugInfo("No authenticated Supabase user was found.");
+        setDebugInfo("No active Supabase session was found.");
         return;
       }
 
-      const authUserId = authData.user.id;
+      const sessionUserId = sessionData.session.user.id;
 
       const payload = {
-        user_id: authUserId,
+        user_id: sessionUserId,
         place_name: placeName || location,
         location,
         meeting_time: new Date(meetingTime).toISOString(),
@@ -274,11 +274,11 @@ export default function WriteForm({ userId }: { userId: string }) {
 
       setDebugInfo(
         [
-          "Step 2: auth ok.",
+          "Step 2: session ok.",
           `prop userId: ${userId}`,
-          `auth userId: ${authUserId}`,
-          userId !== authUserId
-            ? "Warning: prop userId and auth userId do not match."
+          `session userId: ${sessionUserId}`,
+          userId !== sessionUserId
+            ? "Warning: prop userId and session userId do not match."
             : "User IDs match.",
           "Step 3: inserting into posts...",
           JSON.stringify(payload, null, 2),
