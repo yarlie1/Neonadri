@@ -7,7 +7,6 @@ import {
   MapPin,
   UserRound,
   UserCircle2,
-  Coins,
   Star,
   Plus,
   Coffee,
@@ -287,7 +286,11 @@ function FilterSummaryText({
     return <span className="text-sm text-[#8b7f74]">All filters</span>;
   }
 
-  return <span className="text-sm font-medium text-[#5a5149]">{parts.join(" · ")}</span>;
+  return (
+    <span className="text-sm font-medium text-[#5a5149]">
+      {parts.join(" · ")}
+    </span>
+  );
 }
 
 export default function HomeFeedClient({
@@ -519,9 +522,12 @@ export default function HomeFeedClient({
                 {sort === "distance" && (
                   <div className="mt-3 text-xs text-[#8b7f74]">
                     {locationStatus === "loading" && "Getting your location..."}
-                    {locationStatus === "denied" && "Location permission denied. Nearest sort may not be accurate."}
-                    {locationStatus === "unavailable" && "Location is unavailable on this device/browser."}
-                    {locationStatus === "granted" && "Using your current location."}
+                    {locationStatus === "denied" &&
+                      "Location permission denied. Nearest sort may not be accurate."}
+                    {locationStatus === "unavailable" &&
+                      "Location is unavailable on this device/browser."}
+                    {locationStatus === "granted" &&
+                      "Using your current location."}
                   </div>
                 )}
               </div>
@@ -583,7 +589,9 @@ export default function HomeFeedClient({
                 <div className="min-w-0 flex-1 min-h-[74px]">
                   <div className="flex items-center gap-2 text-[24px] leading-[1.18] font-extrabold tracking-[-0.01em] text-[#2f2a26]">
                     {getPurposeIcon(post.meeting_purpose)}
-                    <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
+                    <span className="truncate">
+                      {post.meeting_purpose || "Meetup"}
+                    </span>
                     {formatDuration(post.duration_minutes) ? (
                       <span className="inline-flex shrink-0 items-center gap-1 text-[21px] font-bold text-[#2f2a26]">
                         <Clock3 className="h-4 w-4" />
@@ -602,11 +610,9 @@ export default function HomeFeedClient({
 
                 <div className="flex h-[74px] shrink-0 flex-col items-end justify-start">
                   {amount !== null && (
-                    <div className="rounded-full bg-gradient-to-b from-[#f5df97] to-[#e5c76f] px-3.5 py-2 text-sm font-bold text-[#5f4c1d] shadow-sm">
-                      <span className="inline-flex items-center gap-1.5">
-                        <Coins className="h-4 w-4" />
-                        ${amount.toLocaleString()}
-                      </span>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-2 text-sm font-semibold text-green-700 shadow-sm">
+                      <span>You get</span>
+                      <span>+${amount.toLocaleString()}</span>
                     </div>
                   )}
                 </div>
