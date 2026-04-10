@@ -3,7 +3,7 @@ import { createClient } from "../../lib/supabase/server";
 import WriteForm from "./WriteForm";
 
 export default async function WritePage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
