@@ -505,3 +505,4 @@ export default function WriteForm({ userId }: { userId: string }) {
     </main>
   );
 }
+
