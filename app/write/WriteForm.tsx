@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
 import {
   Coffee,
@@ -66,7 +65,6 @@ const PURPOSE_HELP_TEXT: Record<string, string> = {
 };
 
 export default function WriteForm({ userId }: { userId: string }) {
-  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
 
   const searchInputRef = useRef<HTMLInputElement | null>(null);
@@ -239,7 +237,6 @@ export default function WriteForm({ userId }: { userId: string }) {
       setSaving(true);
 
       const payload = {
-        user_id: userId,
         place_name: placeName || location,
         location,
         meeting_time: new Date(meetingTime).toISOString(),
@@ -254,28 +251,33 @@ export default function WriteForm({ userId }: { userId: string }) {
 
       setDebugInfo(
         [
-          "Step 1: using server-passed userId directly.",
-          `userId: ${userId}`,
-          "Step 2: inserting into posts...",
+          "Step 1: sending request to /api/posts/create",
+          `server-passed userId: ${userId}`,
+          "Step 2: request payload",
           JSON.stringify(payload, null, 2),
         ].join("\n")
       );
 
-      const { data, error } = await supabase
-        .from("posts")
-        .insert(payload)
-        .select();
+      const res = await fetch("/api/posts/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-      if (error) {
+      const result = await res.json();
+
+      if (!res.ok) {
         setSaving(false);
-        setMessage("Failed to create meetup.");
+        setMessage(result.error || "Failed to create meetup.");
         setDebugInfo(
           [
-            "Insert error returned from Supabase:",
-            error.message,
-            error.details || "",
-            error.hint || "",
-            error.code || "",
+            "API error:",
+            result.error || "",
+            result.details || "",
+            result.hint || "",
+            result.code || "",
           ]
             .filter(Boolean)
             .join("\n")
@@ -286,8 +288,7 @@ export default function WriteForm({ userId }: { userId: string }) {
       setDebugInfo(
         [
           "Step 3: insert success.",
-          `Inserted rows: ${data?.length ?? 0}`,
-          JSON.stringify(data, null, 2),
+          JSON.stringify(result.data, null, 2),
         ].join("\n")
       );
 
