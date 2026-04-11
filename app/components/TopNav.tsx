@@ -183,14 +183,19 @@ export default function TopNav() {
     try {
       setIsLoggingOut(true);
       setMenuOpen(false);
+      setUser(null);
+      setPendingCount(0);
       const supabase = createClient();
-      await supabase.auth.signOut();
+      await Promise.race([
+        supabase.auth.signOut({ scope: "local" }),
+        new Promise((resolve) => window.setTimeout(resolve, 1500)),
+      ]);
     } catch (error) {
       console.error("TopNav logout error:", error);
     } finally {
       router.replace("/");
       router.refresh();
-      window.setTimeout(() => setIsLoggingOut(false), 500);
+      window.setTimeout(() => setIsLoggingOut(false), 1200);
     }
   };
 
