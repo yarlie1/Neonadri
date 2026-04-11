@@ -48,9 +48,6 @@ const STEPS = [
   { number: 4, label: "Finish" },
 ];
 
-const DEFAULT_BIO =
-  "I like easygoing meetups where conversation feels natural and comfortable.";
-
 const DEFAULT_ABOUT_ME =
   "I enjoy meeting new people over coffee, walks, or low-pressure plans. I usually appreciate clear communication, relaxed energy, and a meetup that feels easy to settle into.";
 
@@ -91,7 +88,6 @@ export default function SignupPage() {
   const [displayName, setDisplayName] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
-  const [bio, setBio] = useState(DEFAULT_BIO);
   const [aboutMe, setAboutMe] = useState(DEFAULT_ABOUT_ME);
   const [languages, setLanguages] = useState<string[]>(["English"]);
   const [meetingStyle, setMeetingStyle] = useState("");
@@ -113,14 +109,26 @@ export default function SignupPage() {
 
     if (step === 3) {
       return (
-        bio.trim().length > 0 &&
+        aboutMe.trim().length > 0 &&
         meetingStyle.trim().length > 0 &&
         interests.length > 0
       );
     }
 
     return true;
-  }, [ageGroup, bio, displayName, email, gender, interests.length, meetingStyle, password, step]);
+  }, [aboutMe, ageGroup, displayName, email, gender, interests.length, meetingStyle, password, step]);
+
+  const profileSummary = useMemo(() => {
+    const normalized = aboutMe.replace(/\s+/g, " ").trim();
+
+    if (!normalized) return "";
+
+    if (normalized.length <= 110) {
+      return normalized;
+    }
+
+    return `${normalized.slice(0, 107).trimEnd()}...`;
+  }, [aboutMe]);
 
   const toggleArrayValue = (
     value: string,
@@ -176,7 +184,7 @@ export default function SignupPage() {
       const payload = {
         id: userId,
         display_name: displayName.trim(),
-        bio: bio.trim(),
+        bio: profileSummary || null,
         about_me: aboutMe.trim() || null,
         gender: gender || null,
         age_group: ageGroup || null,
@@ -268,7 +276,7 @@ export default function SignupPage() {
                         <div className="text-xs text-[#6f5448]">
                           {item.number === 1 && "Email and password"}
                           {item.number === 2 && "Name, gender, and age group"}
-                          {item.number === 3 && "Bio, style, and interests"}
+                          {item.number === 3 && "About you, style, and interests"}
                           {item.number === 4 && "Visibility and final review"}
                         </div>
                       </div>
@@ -411,18 +419,6 @@ export default function SignupPage() {
                 <>
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-                      About Me
-                    </label>
-                    <textarea
-                      value={aboutMe}
-                      onChange={(e) => setAboutMe(e.target.value)}
-                      rows={4}
-                      className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
                       Languages
                     </label>
                     <div className="flex flex-wrap gap-2 rounded-[22px] border border-[#e7ddd2] bg-[#fcfaf7] p-3">
@@ -477,12 +473,12 @@ export default function SignupPage() {
 
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-                      Short Bio
+                      About Me
                     </label>
                     <textarea
-                      value={bio}
-                      onChange={(e) => setBio(e.target.value)}
-                      rows={3}
+                      value={aboutMe}
+                      onChange={(e) => setAboutMe(e.target.value)}
+                      rows={4}
                       className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                     />
                   </div>
@@ -499,7 +495,7 @@ export default function SignupPage() {
                       {displayName || "Your display name"}
                     </h3>
                     <p className="mt-2 text-sm leading-6 text-[#6f6258]">
-                      {bio || "A short introduction will show up here."}
+                      {profileSummary || "A quick introduction will show up here."}
                     </p>
 
                     <div className="mt-4 flex flex-wrap gap-2">
