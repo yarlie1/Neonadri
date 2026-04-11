@@ -164,6 +164,20 @@ export default function SignupPage() {
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
+        options: {
+          data: {
+            full_name: displayName.trim(),
+            display_name: displayName.trim(),
+            bio: profileSummary || "",
+            about_me: aboutMe.trim(),
+            gender: gender || "",
+            age_group: ageGroup || "",
+            languages,
+            meeting_style: meetingStyle || "",
+            interests,
+            is_public: true,
+          },
+        },
       });
 
       if (error) {
