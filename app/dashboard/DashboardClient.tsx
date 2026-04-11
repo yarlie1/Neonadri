@@ -202,6 +202,28 @@ function FilterPill({
   );
 }
 
+function SectionIntro({
+  eyebrow,
+  title,
+  body,
+}: {
+  eyebrow: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div className="rounded-[24px] border border-[#eadfd3] bg-[#fcfaf7] px-4 py-4">
+      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+        {eyebrow}
+      </div>
+      <div className="mt-2 text-lg font-black tracking-[-0.04em] text-[#2f2a26]">
+        {title}
+      </div>
+      <p className="mt-2 text-sm leading-6 text-[#7a6b61]">{body}</p>
+    </div>
+  );
+}
+
 function CompactActionButton({
   href,
   onClick,
@@ -489,54 +511,70 @@ export default function DashboardClient({
 
         {activeTab === "posts" && (
           <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex flex-wrap gap-2">
-                <FilterPill active={postFilter === "all"} onClick={() => setPostFilter("all")}>
-                  All
-                </FilterPill>
-                <FilterPill
-                  active={postFilter === "upcoming"}
-                  onClick={() => setPostFilter("upcoming")}
-                >
-                  Upcoming
-                </FilterPill>
-                <FilterPill
-                  active={postFilter === "expired"}
-                  onClick={() => setPostFilter("expired")}
-                >
-                  Expired
-                </FilterPill>
-              </div>
+            <div className="space-y-4">
+              <SectionIntro
+                eyebrow="Hosting"
+                title="Everything you are hosting"
+                body="Review what is live, what has passed, and what still needs attention before the meetup happens."
+              />
 
-              <Link
-                href={`/profile/${userId}`}
-                className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-              >
-                <UserCircle2 className="h-4 w-4" />
-                My Profile
-              </Link>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap gap-2">
+                  <FilterPill active={postFilter === "all"} onClick={() => setPostFilter("all")}>
+                    All
+                  </FilterPill>
+                  <FilterPill
+                    active={postFilter === "upcoming"}
+                    onClick={() => setPostFilter("upcoming")}
+                  >
+                    Upcoming
+                  </FilterPill>
+                  <FilterPill
+                    active={postFilter === "expired"}
+                    onClick={() => setPostFilter("expired")}
+                  >
+                    Expired
+                  </FilterPill>
+                </div>
+
+                <Link
+                  href={`/profile/${userId}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                >
+                  <UserCircle2 className="h-4 w-4" />
+                  My Profile
+                </Link>
+              </div>
             </div>
           </div>
         )}
 
         {activeTab === "matches" && (
           <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
-            <div className="flex flex-wrap gap-2">
-              <FilterPill active={matchFilter === "all"} onClick={() => setMatchFilter("all")}>
-                All
-              </FilterPill>
-              <FilterPill
-                active={matchFilter === "upcoming"}
-                onClick={() => setMatchFilter("upcoming")}
-              >
-                Upcoming
-              </FilterPill>
-              <FilterPill
-                active={matchFilter === "expired"}
-                onClick={() => setMatchFilter("expired")}
-              >
-                Expired
-              </FilterPill>
+            <div className="space-y-4">
+              <SectionIntro
+                eyebrow="Connections"
+                title="People you have matched with"
+                body="Keep track of upcoming meetups, revisit finished ones, and leave reviews after the moment has passed."
+              />
+
+              <div className="flex flex-wrap gap-2">
+                <FilterPill active={matchFilter === "all"} onClick={() => setMatchFilter("all")}>
+                  All
+                </FilterPill>
+                <FilterPill
+                  active={matchFilter === "upcoming"}
+                  onClick={() => setMatchFilter("upcoming")}
+                >
+                  Upcoming
+                </FilterPill>
+                <FilterPill
+                  active={matchFilter === "expired"}
+                  onClick={() => setMatchFilter("expired")}
+                >
+                  Expired
+                </FilterPill>
+              </div>
             </div>
           </div>
         )}

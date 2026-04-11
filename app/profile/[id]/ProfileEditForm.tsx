@@ -197,11 +197,18 @@ export default function ProfileEditForm({
 
       <div className="absolute inset-0 flex items-end justify-center sm:items-center">
         <div
-          className="relative z-[101] pointer-events-auto flex h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[28px] border border-[#e7ddd2] bg-white shadow-xl sm:h-auto sm:max-h-[90vh] sm:rounded-[28px]"
+          className="relative z-[101] pointer-events-auto flex h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[30px] border border-[#eadfd3] bg-white/95 shadow-[0_24px_60px_rgba(92,69,52,0.22)] backdrop-blur sm:h-auto sm:max-h-[90vh] sm:rounded-[30px]"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex items-center justify-between gap-3 border-b border-[#efe6db] px-6 py-5">
-            <h2 className="text-xl font-bold text-[#2f2a26]">Edit Profile</h2>
+          <div className="flex items-center justify-between gap-3 border-b border-[#efe6db] bg-[#fffaf6] px-6 py-5">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                Edit profile
+              </div>
+              <h2 className="mt-1 text-xl font-black tracking-[-0.03em] text-[#2f2a26]">
+                Refresh your introduction
+              </h2>
+            </div>
 
             <button
               type="button"
@@ -213,6 +220,10 @@ export default function ProfileEditForm({
           </div>
 
           <div className="flex-1 overflow-y-auto px-6 py-5">
+            <div className="mb-5 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-4 text-sm leading-6 text-[#6b5f52]">
+              A clear profile makes it easier for people to understand your energy before they send a request.
+            </div>
+
             <div className="space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-medium text-[#5a5149]">
@@ -221,7 +232,7 @@ export default function ProfileEditForm({
                 <input
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                   placeholder="Your name"
                 />
               </div>
@@ -234,7 +245,7 @@ export default function ProfileEditForm({
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   rows={3}
-                  className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                   placeholder="Short intro"
                 />
               </div>
@@ -247,7 +258,7 @@ export default function ProfileEditForm({
                   value={aboutMe}
                   onChange={(e) => setAboutMe(e.target.value)}
                   rows={4}
-                  className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                   placeholder="Tell people more about yourself"
                 />
               </div>
@@ -260,7 +271,7 @@ export default function ProfileEditForm({
                   <select
                     value={gender}
                     onChange={(e) => setGender(e.target.value)}
-                    className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                    className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                   >
                     <option value="">Select gender</option>
                     <option value="Male">Male</option>
@@ -277,7 +288,7 @@ export default function ProfileEditForm({
                   <select
                     value={ageGroup}
                     onChange={(e) => setAgeGroup(e.target.value)}
-                    className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                    className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                   >
                     <option value="">Select age group</option>
                     <option value="20s">20s</option>
@@ -292,7 +303,7 @@ export default function ProfileEditForm({
                 <label className="mb-2 block text-sm font-medium text-[#5a5149]">
                   Languages
                 </label>
-                <div className="flex flex-wrap gap-2 rounded-2xl border border-[#e7ddd2] bg-[#fcfaf7] p-3">
+                <div className="flex flex-wrap gap-2 rounded-[22px] border border-[#e7ddd2] bg-[#fcfaf7] p-3">
                   {LANGUAGE_OPTIONS.map((item) => (
                     <ToggleChip
                       key={item}
@@ -311,7 +322,7 @@ export default function ProfileEditForm({
                 <select
                   value={meetingStyle}
                   onChange={(e) => setMeetingStyle(e.target.value)}
-                  className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                 >
                   <option value="">Select meeting style</option>
                   {MEETING_STYLE_OPTIONS.map((item) => (
@@ -326,7 +337,7 @@ export default function ProfileEditForm({
                 <label className="mb-2 block text-sm font-medium text-[#5a5149]">
                   Interests
                 </label>
-                <div className="flex flex-wrap gap-2 rounded-2xl border border-[#e7ddd2] bg-[#fcfaf7] p-3">
+                <div className="flex flex-wrap gap-2 rounded-[22px] border border-[#e7ddd2] bg-[#fcfaf7] p-3">
                   {INTEREST_OPTIONS.map((item) => (
                     <ToggleChip
                       key={item}
@@ -345,7 +356,7 @@ export default function ProfileEditForm({
                 <select
                   value={responseTimeNote}
                   onChange={(e) => setResponseTimeNote(e.target.value)}
-                  className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                 >
                   <option value="">Select response note</option>
                   {RESPONSE_NOTE_OPTIONS.map((item) => (
@@ -356,7 +367,7 @@ export default function ProfileEditForm({
                 </select>
               </div>
 
-              <label className="flex items-center gap-3 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#5a5149]">
+              <label className="flex items-center gap-3 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#5a5149]">
                 <input
                   type="checkbox"
                   checked={isPublic}
@@ -366,14 +377,14 @@ export default function ProfileEditForm({
               </label>
 
               {message && (
-                <p className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+                <p className="rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
                   {message}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="relative z-[102] border-t border-[#efe6db] bg-white px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
+          <div className="relative z-[102] border-t border-[#efe6db] bg-[#fffaf6] px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"

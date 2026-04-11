@@ -396,7 +396,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 </div>
 
                 <p className="mt-3 max-w-xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
-                  Clear place, clear timing, and a host profile you can read before you decide. Everything you need to judge the vibe is right here.
+                  Clear timing, a real place, and enough host context to decide whether this meetup feels right before you commit.
                 </p>
               </div>
 
@@ -520,7 +520,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                   Meetup location
                 </div>
                 <h2 className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
-                  See where you are meeting
+                  See the meetup on the map
                 </h2>
               </div>
               {mapUrl && (
