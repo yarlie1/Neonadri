@@ -59,7 +59,7 @@ function BrandTagline() {
   }[variant];
 
   return (
-    <div className="ml-2 mt-[6px] text-left leading-tight">
+    <div className="text-left leading-[1.05]">
       <div className="text-[11px] font-medium text-[#6f655c] sm:text-[12px]">
         {content[0]}
       </div>
@@ -205,22 +205,22 @@ export default function TopNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-[#e7ddd2] bg-[#fffaf5]/88 backdrop-blur-xl">
       <div className="border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(252,245,237,0.96),rgba(255,250,245,0.9))]">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f7d9bf,_#c89277_78%)] text-lg font-bold tracking-[-0.05em] text-white shadow-[0_14px_30px_rgba(160,111,82,0.28)]"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f7d9bf,_#c89277_78%)] text-base font-bold tracking-[-0.05em] text-white shadow-[0_14px_30px_rgba(160,111,82,0.28)]"
               onClick={closeMenu}
               aria-label="Neonadri home"
             >
               N
             </Link>
 
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex min-w-0 items-center gap-2">
                 <Link
                   href="/"
-                  className="truncate text-[24px] font-extrabold tracking-[-0.05em] text-[#1f1b18] sm:text-[28px]"
+                  className="truncate text-[22px] font-extrabold tracking-[-0.05em] text-[#1f1b18] sm:text-[25px]"
                   onClick={closeMenu}
                 >
                   Neonadri
@@ -229,7 +229,9 @@ export default function TopNav() {
                   Social meetup
                 </span>
               </div>
-              <BrandTagline />
+              <div className="hidden border-l border-[#eadccd] pl-3 sm:block">
+                <BrandTagline />
+              </div>
             </div>
           </div>
 
