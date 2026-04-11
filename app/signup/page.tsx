@@ -411,18 +411,6 @@ export default function SignupPage() {
                 <>
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-                      Short Bio
-                    </label>
-                    <textarea
-                      value={bio}
-                      onChange={(e) => setBio(e.target.value)}
-                      rows={3}
-                      className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
                       About Me
                     </label>
                     <textarea
@@ -485,6 +473,18 @@ export default function SignupPage() {
                         />
                       ))}
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                      Short Bio
+                    </label>
+                    <textarea
+                      value={bio}
+                      onChange={(e) => setBio(e.target.value)}
+                      rows={3}
+                      className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                    />
                   </div>
                 </>
               )}
