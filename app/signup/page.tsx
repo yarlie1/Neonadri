@@ -92,7 +92,6 @@ export default function SignupPage() {
   const [languages, setLanguages] = useState<string[]>(["English"]);
   const [meetingStyle, setMeetingStyle] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
-  const [isPublic, setIsPublic] = useState(true);
 
   const canMoveNext = useMemo(() => {
     if (step === 1) {
@@ -193,7 +192,7 @@ export default function SignupPage() {
         meeting_style: meetingStyle || null,
         interests: interests.length > 0 ? interests : null,
         response_time_note: null,
-        is_public: isPublic,
+        is_public: true,
         updated_at: new Date().toISOString(),
       };
 
@@ -277,7 +276,7 @@ export default function SignupPage() {
                           {item.number === 1 && "Email and password"}
                           {item.number === 2 && "Name, gender, and age group"}
                           {item.number === 3 && "About you, style, and interests"}
-                          {item.number === 4 && "Visibility and final review"}
+                          {item.number === 4 && "Final review before joining"}
                         </div>
                       </div>
                     </div>
@@ -536,29 +535,6 @@ export default function SignupPage() {
                     )}
                   </div>
 
-                  <div className="rounded-[24px] border border-[#eadfd3] bg-[#f9f1e9] p-5">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="text-sm font-semibold text-[#4e4037]">
-                          Profile visibility
-                        </div>
-                        <p className="mt-1 text-sm leading-6 text-[#6f6258]">
-                          Start public if you want people to understand your vibe before sending a request.
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setIsPublic((current) => !current)}
-                        className={`inline-flex rounded-full px-4 py-2 text-sm font-medium transition ${
-                          isPublic
-                            ? "bg-[#a48f7a] text-white"
-                            : "bg-white text-[#5a5149]"
-                        }`}
-                      >
-                        {isPublic ? "Public" : "Private"}
-                      </button>
-                    </div>
-                  </div>
                 </div>
               )}
             </div>
