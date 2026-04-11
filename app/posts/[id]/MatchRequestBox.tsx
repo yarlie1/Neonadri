@@ -93,20 +93,33 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
   };
 
   return (
-    <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-6 shadow-sm">
-      <div className="flex items-start gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f4ece4]">
+    <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f6eee6]">
           <Send className="h-5 w-5 text-[#8a7f74]" />
         </div>
 
         <div className="min-w-0 flex-1">
-          <h2 className="text-[1.5rem] font-bold text-[#2f2a26]">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+            Join this meetup
+          </div>
+          <h2 className="mt-2 text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
             Request Match
           </h2>
           <p className="mt-1 text-sm leading-6 text-[#6f655c]">
             Send a request to the host if you want to join this meetup.
           </p>
         </div>
+        </div>
+
+        <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+          Host approval
+        </div>
+      </div>
+
+      <div className="mt-5 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-4 text-sm leading-6 text-[#6b5f52]">
+        Once you send a request, the host can review your profile and accept or decline from their dashboard.
       </div>
 
       <div className="mt-5 flex flex-wrap gap-3">
@@ -114,7 +127,7 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
           type="button"
           onClick={handleRequestMatch}
           disabled={loading}
-          className="inline-flex items-center gap-2 rounded-[1rem] bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
         >
           <Send className="h-4 w-4" />
           {loading ? "Sending..." : "Send Request"}
@@ -123,7 +136,7 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
 
       {message && (
         <div
-          className={`mt-5 rounded-[1.25rem] border px-4 py-3 text-sm ${
+          className={`mt-5 rounded-[22px] border px-4 py-3 text-sm ${
             messageType === "success"
               ? "border-[#dccfc2] bg-[#efe7dc] text-[#5f5347]"
               : "border-[#e7ddd2] bg-[#f4ece4] text-[#6b5f52]"
