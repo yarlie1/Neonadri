@@ -243,7 +243,7 @@ function getPurposeLabel(purpose: string | null) {
     case "Work":
     case "Book Talk":
     case "Book":
-      return "Focused company";
+      return "Focus session";
     case "Photo Walk":
     case "Photo":
       return "Creative hangout";
