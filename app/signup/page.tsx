@@ -108,7 +108,11 @@ export default function SignupPage() {
     }
 
     if (step === 3) {
-      return aboutMe.trim().length > 0;
+      return (
+        aboutMe.trim().length > 0 &&
+        meetingStyle.trim().length > 0 &&
+        interests.length > 0
+      );
     }
 
     return true;
@@ -560,6 +564,12 @@ export default function SignupPage() {
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3">
+              {step === 3 && !canMoveNext && (
+                <p className="w-full text-xs text-[#8c7668]">
+                  Select a meeting style and at least one interest to continue.
+                </p>
+              )}
+
               {step > 1 ? (
                 <button
                   type="button"
