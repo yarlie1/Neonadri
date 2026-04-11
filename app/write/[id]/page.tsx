@@ -101,7 +101,7 @@ export default function EditWritePage() {
   const [saving, setSaving] = useState(false);
 
   const fieldClass =
-    "w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 pl-16 text-sm text-[#2f2a26] focus:outline-none focus:ring-2 focus:ring-[#a48f7a]/40";
+    "w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 pl-16 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12";
 
   useEffect(() => {
     const loadUserAndPost = async () => {
@@ -292,8 +292,8 @@ export default function EditWritePage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] px-5 py-6">
-        <div className="mx-auto max-w-md rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
+      <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-5 py-6">
+        <div className="mx-auto max-w-md rounded-[30px] border border-[#eadfd3] bg-white/90 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
           Loading...
         </div>
       </main>
@@ -301,17 +301,46 @@ export default function EditWritePage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-5 py-6 text-[#2f2a26]">
-      <div className="mx-auto max-w-md rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-6 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
-        <h1 className="text-2xl font-semibold">Edit Meetup</h1>
+    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-5 py-6 text-[#2f2a26]">
+      <div className="mx-auto max-w-2xl space-y-4">
+        <section className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f5dacd_38%,#e8b9a7_100%)] px-5 py-6 text-[#2a211d] shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:px-6 sm:py-7">
+          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
+          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+          <div className="relative">
+            <div className="inline-flex items-center rounded-full bg-white/70 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+              Edit meetup
+            </div>
+            <h1 className="mt-4 max-w-md text-[32px] font-black leading-[0.98] tracking-[-0.05em] text-[#2b1f1a] sm:text-[38px]">
+              Refine the plan without losing the vibe.
+            </h1>
+            <p className="mt-3 max-w-lg text-sm leading-6 text-[#5f453b] sm:text-[15px]">
+              Update the details, keep the tone clear, and make sure the meetup still feels easy to say yes to.
+            </p>
+          </div>
+        </section>
 
-        <div className="mt-4 flex items-start gap-2 rounded-2xl bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+        <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+              Edit post
+            </div>
+            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#2f2a26]">
+              Update your meetup
+            </h2>
+          </div>
+          <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+            Keep place exact
+          </div>
+        </div>
+
+        <div className="mt-4 flex items-start gap-2 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
           <CheckCircle className="mt-0.5 h-4 w-4 shrink-0" />
           <p>{purposeHelpText}</p>
         </div>
 
         <div className="mt-6">
-          <h2 className="mb-3 text-sm font-semibold text-[#6b5f52]">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#8e7a6b]">
             Choose Activity
           </h2>
 
@@ -325,10 +354,10 @@ export default function EditWritePage() {
                   key={item.value}
                   type="button"
                   onClick={() => setMeetingPurpose(item.value)}
-                  className={`flex items-center gap-2 rounded-2xl border px-4 py-3 text-left text-sm font-medium transition ${
+                  className={`flex items-center gap-2 rounded-[20px] border px-4 py-3 text-left text-sm font-medium transition ${
                     isSelected
-                      ? "border-[#a48f7a] bg-[#a48f7a] text-white"
-                      : "border-[#e7ddd2] bg-white text-[#5a5149] hover:bg-[#f6f1ea]"
+                      ? "border-[#a48f7a] bg-[#a48f7a] text-white shadow-sm"
+                      : "border-[#e7ddd2] bg-[#fffdfa] text-[#5a5149] hover:bg-[#faf4ee]"
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
@@ -339,7 +368,7 @@ export default function EditWritePage() {
           </div>
         </div>
 
-        <h2 className="mt-6 text-sm font-semibold text-[#6b5f52]">
+        <h2 className="mt-6 text-sm font-semibold uppercase tracking-[0.14em] text-[#8e7a6b]">
           Meetup Details
         </h2>
 
@@ -386,7 +415,7 @@ export default function EditWritePage() {
             <button
               type="button"
               onClick={handleOpenMapPicker}
-              className="inline-flex h-[50px] w-[50px] items-center justify-center rounded-2xl bg-[#f4ece4] text-[#6b5f52]"
+              className="inline-flex h-[50px] w-[50px] items-center justify-center rounded-[20px] border border-[#eadfd3] bg-[#f6eee6] text-[#6b5f52] transition hover:bg-[#efe4d9]"
               aria-label="Pick on map"
               title="Pick on map"
             >
@@ -395,7 +424,7 @@ export default function EditWritePage() {
           </div>
 
           {location && (
-            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+            <div className="rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
               <p className="font-medium text-[#2f2a26]">
                 {placeName || location}
               </p>
@@ -416,7 +445,7 @@ export default function EditWritePage() {
           )}
         </div>
 
-        <h2 className="mt-6 text-sm font-semibold text-[#6b5f52]">
+        <h2 className="mt-6 text-sm font-semibold uppercase tracking-[0.14em] text-[#8e7a6b]">
           Target & Benefit
         </h2>
 
@@ -474,7 +503,7 @@ export default function EditWritePage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex-1 rounded-2xl bg-[#a48f7a] py-4 text-base font-semibold text-white disabled:opacity-50"
+            className="flex-1 rounded-full bg-[#a48f7a] py-4 text-base font-semibold text-white transition hover:bg-[#927d69] disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save Meetup"}
           </button>
@@ -482,17 +511,18 @@ export default function EditWritePage() {
           <button
             type="button"
             onClick={() => router.push("/dashboard")}
-            className="rounded-2xl border border-[#dccfc2] bg-white px-5 py-4 text-sm font-medium text-[#5a5149]"
+            className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
           >
             Cancel
           </button>
         </div>
 
         {message && (
-          <p className="mt-4 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+          <p className="mt-4 rounded-[20px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
             {message}
           </p>
         )}
+        </div>
       </div>
     </main>
   );

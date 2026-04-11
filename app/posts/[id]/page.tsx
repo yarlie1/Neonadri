@@ -351,9 +351,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const hasResponseNote = !!ownerResponseNote.trim();
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
+    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
       <div className="mx-auto max-w-3xl space-y-5">
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-6 shadow-sm">
+        <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e5b29e_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
+          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
+          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+          <div className="relative">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
               <div className="text-base font-semibold text-[#5f5347]">
@@ -364,7 +367,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                   : ""}
               </div>
 
-              <div className="mt-2 truncate text-[2rem] font-bold leading-tight text-[#2f2a26]">
+              <div className="mt-2 truncate text-[2rem] font-black leading-tight tracking-[-0.04em] text-[#2b1f1a]">
                 {post.place_name || post.location || "No place"}
               </div>
             </div>
@@ -379,7 +382,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             )}
           </div>
 
-          <div className="mt-5 space-y-2 text-[15px] text-[#6f655c]">
+          <div className="mt-5 rounded-[24px] border border-white/50 bg-white/55 px-4 py-4 backdrop-blur">
+          <div className="space-y-2 text-[15px] text-[#5f5347]">
             {post.meeting_time && (
               <div className="flex items-center gap-2">
                 <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
@@ -401,8 +405,9 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </span>
             </div>
           </div>
+          </div>
 
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[#f0e8de] pt-4">
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/45 pt-4">
             {post.user_id ? (
               <Link
                 href={ownerProfileHref}
@@ -441,7 +446,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 href={mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-[1rem] bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                className="rounded-full bg-[#2f2a26] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#443730]"
               >
                 Open Map
               </a>
@@ -449,14 +454,15 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
             <Link
               href="/"
-              className="rounded-[1rem] border border-[#dccfc2] bg-white px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+              className="rounded-full border border-white/60 bg-white/65 px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-white"
             >
               Back
             </Link>
           </div>
+          </div>
         </div>
 
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-white px-6 py-6 shadow-sm">
+        <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 px-6 py-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-[1.75rem] font-bold text-[#2f2a26]">
               About the Host

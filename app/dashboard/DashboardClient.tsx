@@ -160,7 +160,7 @@ function DashboardTabCard({
       onClick={onClick}
       className={`w-full rounded-[26px] border px-4 py-5 text-left transition ${
         active
-          ? "bg-[#b7a38f] border-[#b7a38f] text-white shadow-md"
+          ? "bg-[linear-gradient(135deg,#b79f89_0%,#927763_100%)] border-[#b7a38f] text-white shadow-[0_16px_32px_rgba(120,76,52,0.18)]"
           : "bg-[#fcfaf7] border-[#e7ddd2] text-[#2f2a26] hover:bg-[#f6efe7]"
       }`}
     >
@@ -414,7 +414,7 @@ export default function DashboardClient({
   };
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
+    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-5">
         {showMatchSuccess && (
           <div className="rounded-[20px] border border-[#dccfc2] bg-[#efe7dc] px-4 py-3 text-sm font-medium text-[#5f5347] shadow-sm">
@@ -428,26 +428,30 @@ export default function DashboardClient({
           </div>
         )}
 
-        <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] px-6 py-5 shadow-sm">
+        <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f4d7c7_38%,#e4b49d_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
+          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
+          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+          <div className="relative">
           <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">DASHBOARD</div>
 
           <div className="mt-2 flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold tracking-[-0.03em] text-[#2f2a26] sm:text-[34px]">
+              <h1 className="text-3xl font-black tracking-[-0.04em] text-[#2b1f1a] sm:text-[36px]">
                 My Meetups
               </h1>
-              <p className="mt-1 text-sm text-[#6f655c]">
+              <p className="mt-2 max-w-md text-sm leading-6 text-[#5f453b]">
                 Manage posts, requests, matches, and reviews.
               </p>
             </div>
 
             <Link
               href="/write"
-              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#927d69]"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#2f2a26] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#443730]"
             >
               <Plus className="h-4 w-4" />
               Create
             </Link>
+          </div>
           </div>
         </div>
 
@@ -484,7 +488,7 @@ export default function DashboardClient({
         </div>
 
         {activeTab === "posts" && (
-          <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] p-4 shadow-sm">
+          <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap gap-2">
                 <FilterPill active={postFilter === "all"} onClick={() => setPostFilter("all")}>
@@ -516,7 +520,7 @@ export default function DashboardClient({
         )}
 
         {activeTab === "matches" && (
-          <div className="rounded-[28px] border border-[#e7ddd2] bg-[#fffaf5] p-4 shadow-sm">
+          <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
             <div className="flex flex-wrap gap-2">
               <FilterPill active={matchFilter === "all"} onClick={() => setMatchFilter("all")}>
                 All
@@ -546,7 +550,7 @@ export default function DashboardClient({
               return (
                 <div
                   key={post.id}
-                  className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm"
+                  className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
@@ -650,7 +654,7 @@ export default function DashboardClient({
             })}
 
             {filteredPosts.length === 0 && (
-              <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+              <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-10 text-center text-[#8b7f74] shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
                 {postFilter === "all"
                   ? "No meetups yet."
                   : postFilter === "upcoming"
@@ -666,7 +670,7 @@ export default function DashboardClient({
             {requestsReceived.map((item) => (
               <div
                 key={item.id}
-                className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm"
+                className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
@@ -728,7 +732,7 @@ export default function DashboardClient({
             ))}
 
             {requestsReceived.length === 0 && (
-              <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+              <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-10 text-center text-[#8b7f74] shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
                 No requests received.
               </div>
             )}
@@ -740,7 +744,7 @@ export default function DashboardClient({
             {requestsSent.map((item) => (
               <div
                 key={item.id}
-                className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm"
+                className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
@@ -778,7 +782,7 @@ export default function DashboardClient({
             ))}
 
             {requestsSent.length === 0 && (
-              <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+              <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-10 text-center text-[#8b7f74] shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
                 No requests sent.
               </div>
             )}
@@ -803,7 +807,7 @@ export default function DashboardClient({
               return (
                 <div
                   key={item.id}
-                  className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm"
+                  className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
@@ -952,7 +956,7 @@ export default function DashboardClient({
             })}
 
             {filteredMatches.length === 0 && (
-              <div className="rounded-[28px] border border-[#e7ddd2] bg-white px-6 py-10 text-center text-[#8b7f74] shadow-sm">
+              <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-10 text-center text-[#8b7f74] shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
                 {matchFilter === "all"
                   ? "No matches yet."
                   : matchFilter === "upcoming"

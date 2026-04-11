@@ -172,8 +172,8 @@ export default function AccountPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
-        <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 text-center shadow-sm">
+      <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-6 py-8 text-[#2f2a26]">
+        <div className="mx-auto max-w-3xl rounded-[30px] border border-[#eadfd3] bg-white/90 p-8 text-center shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
           Loading...
         </div>
       </main>
@@ -181,17 +181,43 @@ export default function AccountPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
-      <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
-        <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
-          My Account
-        </h1>
+    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
+      <div className="mx-auto max-w-4xl space-y-4">
+        <section className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f4d7c7_38%,#e4b49d_100%)] px-6 py-7 text-[#2a211d] shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:px-8 sm:py-9">
+          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
+          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+          <div className="relative">
+            <div className="inline-flex items-center rounded-full bg-white/70 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+              Profile settings
+            </div>
+            <h1 className="mt-4 text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#2b1f1a] sm:text-[40px]">
+              Shape how people meet you.
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
+              Your account sets the tone before the first message. Keep it warm, clear, and easy to trust.
+            </p>
+          </div>
+        </section>
 
-        <p className="mt-3 text-sm leading-7 text-[#6f655c]">
-          Manage your personal profile information.
-        </p>
+        <div className="mx-auto rounded-[30px] border border-[#eadfd3] bg-white/90 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur md:p-8">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+              My account
+            </div>
+            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#2f2a26]">
+              Personal profile
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[#7a6b61]">
+              Manage your public intro, preferences, and profile details.
+            </p>
+          </div>
+          <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+            Visible across meetups
+          </div>
+        </div>
 
-        <div className="mt-8 space-y-4">
+        <div className="mt-8 space-y-5">
           <div>
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Email
@@ -199,7 +225,7 @@ export default function AccountPage() {
             <input
               value={email}
               disabled
-              className="w-full rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-4 py-3 text-sm text-[#7b7067]"
+              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#f6eee6] px-4 py-3 text-sm text-[#7b7067]"
             />
           </div>
 
@@ -210,7 +236,7 @@ export default function AccountPage() {
             <input
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
               placeholder="Your name"
             />
           </div>
@@ -223,7 +249,7 @@ export default function AccountPage() {
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               rows={4}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
               placeholder="Short intro shown in your profile"
             />
           </div>
@@ -236,7 +262,7 @@ export default function AccountPage() {
               value={aboutMe}
               onChange={(e) => setAboutMe(e.target.value)}
               rows={5}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
               placeholder="Tell people more about your personality, interests, and meetup style"
             />
           </div>
@@ -248,7 +274,7 @@ export default function AccountPage() {
             <select
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
             >
               <option value="">Select gender</option>
               <option value="Male">Male</option>
@@ -265,7 +291,7 @@ export default function AccountPage() {
             <select
               value={ageGroup}
               onChange={(e) => setAgeGroup(e.target.value)}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
             >
               <option value="">Select age group</option>
               <option value="20s">20s</option>
@@ -282,7 +308,7 @@ export default function AccountPage() {
             <input
               value={preferredArea}
               onChange={(e) => setPreferredArea(e.target.value)}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
               placeholder="Koreatown, Pasadena, DTLA..."
             />
           </div>
@@ -294,7 +320,7 @@ export default function AccountPage() {
             <input
               value={meetingStyle}
               onChange={(e) => setMeetingStyle(e.target.value)}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
               placeholder="Friendly, casual, thoughtful..."
             />
           </div>
@@ -306,7 +332,7 @@ export default function AccountPage() {
             <input
               value={languages}
               onChange={(e) => setLanguages(e.target.value)}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
               placeholder="English, Korean"
             />
             <p className="mt-1 text-xs text-[#9b8f84]">
@@ -321,7 +347,7 @@ export default function AccountPage() {
             <input
               value={interests}
               onChange={(e) => setInterests(e.target.value)}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
               placeholder="Coffee, Walk, Study, Board Games"
             />
             <p className="mt-1 text-xs text-[#9b8f84]">
@@ -336,12 +362,12 @@ export default function AccountPage() {
             <input
               value={responseTimeNote}
               onChange={(e) => setResponseTimeNote(e.target.value)}
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
               placeholder="Usually replies within a day"
             />
           </div>
 
-          <label className="flex items-center gap-3 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#5a5149]">
+          <label className="flex items-center gap-3 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#5a5149]">
             <input
               type="checkbox"
               checked={isPublic}
@@ -355,24 +381,25 @@ export default function AccountPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+            className="rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save Profile"}
           </button>
 
           <a
             href="/"
-            className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+            className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
           >
             Back to Home
           </a>
         </div>
 
         {message && (
-          <p className="mt-5 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+          <p className="mt-5 rounded-[20px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
             {message}
           </p>
         )}
+        </div>
       </div>
     </main>
   );

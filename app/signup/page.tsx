@@ -29,50 +29,98 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] text-[#2f2a26]">
-      <div className="mx-auto max-w-xl px-6 py-8">
-        <div className="rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)]">
-          <h1 className="text-3xl font-semibold text-[#2f2a26]">Sign Up</h1>
+    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
+      <div className="mx-auto max-w-5xl">
+        <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <section className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e4b49d_100%)] px-6 py-7 text-[#2a211d] shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:px-8 sm:py-9">
+            <div className="absolute -left-10 bottom-0 h-36 w-36 rounded-full bg-white/25 blur-2xl" />
+            <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+            <div className="relative">
+              <div className="inline-flex items-center rounded-full bg-white/70 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+                Join the vibe
+              </div>
+              <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#2b1f1a] sm:text-[40px]">
+                Start with one easy meetup, not a cold intro.
+              </h1>
+              <p className="mt-3 max-w-lg text-sm leading-6 text-[#5f453b] sm:text-[15px]">
+                Create your account, browse nearby meetups, and find a setting that already feels comfortable before you ever say hi.
+              </p>
 
-          <div className="mt-6 space-y-4">
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+              <div className="mt-6 flex flex-wrap gap-2">
+                <span className="rounded-full border border-white/70 bg-white/65 px-3 py-2 text-xs font-medium text-[#6a4b40]">
+                  Coffee chats
+                </span>
+                <span className="rounded-full border border-white/70 bg-white/65 px-3 py-2 text-xs font-medium text-[#6a4b40]">
+                  Walk dates
+                </span>
+                <span className="rounded-full border border-white/70 bg-white/65 px-3 py-2 text-xs font-medium text-[#6a4b40]">
+                  Quiet study
+                </span>
+              </div>
+            </div>
+          </section>
 
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            <button
-              onClick={handleSignup}
-              className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
-            >
+          <section className="rounded-[32px] border border-[#eadfd3] bg-white/90 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-8">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
               Sign Up
-            </button>
-
-            <a
-              href="/login"
-              className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149]"
-            >
-              Log In
-            </a>
-          </div>
-
-          {message && (
-            <p className="mt-4 rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
-              {message}
+            </div>
+            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#2f2a26]">
+              Build your Neonadri profile
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[#7a6b61]">
+              A simple account gets you into the app. You can refine your profile and meetup style right after.
             </p>
-          )}
+
+            <div className="mt-6 space-y-4">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="you@example.com"
+                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  placeholder="Create a password"
+                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button
+                onClick={handleSignup}
+                className="rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+              >
+                Create account
+              </button>
+
+              <a
+                href="/login"
+                className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
+              >
+                I already have one
+              </a>
+            </div>
+
+            {message && (
+              <p className="mt-4 rounded-[20px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
+                {message}
+              </p>
+            )}
+          </section>
         </div>
       </div>
     </main>

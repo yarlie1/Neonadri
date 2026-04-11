@@ -97,7 +97,7 @@ export default function WriteForm({ userId }: { userId: string }) {
   const [saving, setSaving] = useState(false);
 
   const fieldClass =
-    "w-full rounded-xl border border-[#dccfc2] bg-white px-4 py-3 pl-12 text-sm text-[#2f2a26] focus:outline-none focus:ring-2 focus:ring-[#a48f7a]/40";
+    "w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 pl-12 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12";
 
   useEffect(() => {
     if (!meetingTime) {
@@ -316,11 +316,40 @@ export default function WriteForm({ userId }: { userId: string }) {
   };
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#f7f1ea] px-4 py-5 text-[#2f2a26]">
-      <div className="mx-auto max-w-md rounded-xl border border-[#e7ddd2] bg-[#fffaf5] p-5 shadow-sm">
-        <h1 className="text-2xl font-semibold">Create Meetup</h1>
+    <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-5 text-[#2f2a26]">
+      <div className="mx-auto max-w-2xl space-y-4">
+        <section className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f5dacd_38%,#e8b9a7_100%)] px-5 py-6 text-[#2a211d] shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:px-6 sm:py-7">
+          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
+          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+          <div className="relative">
+            <div className="inline-flex items-center rounded-full bg-white/70 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+              Create meetup
+            </div>
+            <h1 className="mt-4 max-w-md text-[32px] font-black leading-[0.98] tracking-[-0.05em] text-[#2b1f1a] sm:text-[38px]">
+              Make the first step feel easy.
+            </h1>
+            <p className="mt-3 max-w-lg text-sm leading-6 text-[#5f453b] sm:text-[15px]">
+              Pick a vibe, set a clear place and time, and give people enough context to say yes without hesitation.
+            </p>
+          </div>
+        </section>
 
-        <div className="mt-4 flex items-start gap-2 rounded-xl bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+        <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 p-5 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+              New post
+            </div>
+            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#2f2a26]">
+              Create your meetup
+            </h2>
+          </div>
+          <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+            Exact place required
+          </div>
+        </div>
+
+        <div className="mt-4 flex items-start gap-2 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
           <CheckCircle className="mt-0.5 h-4 w-4 shrink-0" />
           <p>
             {meetingPurpose
@@ -331,7 +360,7 @@ export default function WriteForm({ userId }: { userId: string }) {
         </div>
 
         <div className="mt-6">
-          <h2 className="mb-3 text-sm font-semibold text-[#6b5f52]">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#8e7a6b]">
             Choose Activity
           </h2>
 
@@ -345,10 +374,10 @@ export default function WriteForm({ userId }: { userId: string }) {
                   key={item.value}
                   type="button"
                   onClick={() => setMeetingPurpose(item.value)}
-                  className={`flex min-h-[48px] items-center gap-2 rounded-xl border px-4 py-3 text-left text-sm font-medium transition ${
+                  className={`flex min-h-[52px] items-center gap-2 rounded-[20px] border px-4 py-3 text-left text-sm font-medium transition ${
                     isSelected
-                      ? "border-[#a48f7a] bg-[#a48f7a] text-white"
-                      : "border-[#e7ddd2] bg-white text-[#5a5149] active:bg-[#f6f1ea]"
+                      ? "border-[#a48f7a] bg-[#a48f7a] text-white shadow-sm"
+                      : "border-[#e7ddd2] bg-[#fffdfa] text-[#5a5149] hover:bg-[#faf4ee]"
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
@@ -359,7 +388,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           </div>
         </div>
 
-        <h2 className="mt-6 text-sm font-semibold text-[#6b5f52]">
+        <h2 className="mt-6 text-sm font-semibold uppercase tracking-[0.14em] text-[#8e7a6b]">
           Meetup Details
         </h2>
 
@@ -407,7 +436,7 @@ export default function WriteForm({ userId }: { userId: string }) {
             <button
               type="button"
               onClick={handleOpenMapPicker}
-              className="inline-flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-xl bg-[#f4ece4] text-[#6b5f52]"
+              className="inline-flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-[20px] border border-[#eadfd3] bg-[#f6eee6] text-[#6b5f52] transition hover:bg-[#efe4d9]"
               aria-label="Pick on map"
               title="Pick on map"
             >
@@ -416,7 +445,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           </div>
 
           {location && (
-            <div className="rounded-xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+            <div className="rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
               <p className="font-medium text-[#2f2a26]">
                 {placeName || location}
               </p>
@@ -437,7 +466,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           )}
         </div>
 
-        <h2 className="mt-6 text-sm font-semibold text-[#6b5f52]">
+        <h2 className="mt-6 text-sm font-semibold uppercase tracking-[0.14em] text-[#8e7a6b]">
           Target & Benefit
         </h2>
 
@@ -495,22 +524,23 @@ export default function WriteForm({ userId }: { userId: string }) {
           type="button"
           onClick={handleCreate}
           disabled={saving}
-          className="mt-6 w-full rounded-xl bg-[#a48f7a] py-4 text-base font-semibold text-white disabled:opacity-50"
+          className="mt-6 w-full rounded-full bg-[#a48f7a] py-4 text-base font-semibold text-white transition hover:bg-[#927d69] disabled:opacity-50"
         >
           {saving ? "Creating..." : "Create Meetup"}
         </button>
 
         {message && (
-          <p className="mt-4 rounded-xl border border-[#f0d4d4] bg-[#fff5f5] px-4 py-3 text-sm text-[#c53030]">
+          <p className="mt-4 rounded-[20px] border border-[#f0d4d4] bg-[#fff5f5] px-4 py-3 text-sm text-[#c53030]">
             {message}
           </p>
         )}
 
         {debugInfo && (
-          <pre className="mt-4 overflow-x-auto whitespace-pre-wrap break-words rounded-xl border border-[#d9d9d9] bg-white px-4 py-3 text-xs text-[#333]">
+          <pre className="mt-4 overflow-x-auto whitespace-pre-wrap break-words rounded-[20px] border border-[#e7ddd2] bg-[#fffdfa] px-4 py-3 text-xs text-[#333]">
             {debugInfo}
           </pre>
         )}
+        </div>
       </div>
     </main>
   );
