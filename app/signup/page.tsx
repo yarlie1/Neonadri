@@ -108,11 +108,7 @@ export default function SignupPage() {
     }
 
     if (step === 3) {
-      return (
-        aboutMe.trim().length > 0 &&
-        meetingStyle.trim().length > 0 &&
-        interests.length > 0
-      );
+      return aboutMe.trim().length > 0;
     }
 
     return true;
