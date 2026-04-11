@@ -202,14 +202,21 @@ export default function TopNav() {
     setPendingCount(0);
 
     try {
-      await Promise.race([
-        supabase.auth.signOut({ scope: "local" }),
-        new Promise((resolve) => window.setTimeout(resolve, 1500)),
-      ]);
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 2500);
 
-      void supabase.auth.signOut({ scope: "global" }).catch((error) => {
-        console.error("TopNav global logout error:", error);
-      });
+      try {
+        await fetch("/api/auth/logout", {
+          method: "POST",
+          credentials: "include",
+          cache: "no-store",
+          signal: controller.signal,
+        });
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
+
+      await supabase.auth.signOut({ scope: "local" });
     } catch (error) {
       console.error("TopNav logout error:", error);
     } finally {

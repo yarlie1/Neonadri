@@ -1,0 +1,58 @@
+import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+
+export async function POST(request: Request) {
+  const response = NextResponse.json({ success: true });
+  const cookieHeader = request.headers.get("cookie") || "";
+
+  const cookieMap = new Map<string, string>();
+  cookieHeader.split(";").forEach((part) => {
+    const trimmed = part.trim();
+    if (!trimmed) return;
+
+    const separatorIndex = trimmed.indexOf("=");
+    if (separatorIndex === -1) return;
+
+    const name = trimmed.slice(0, separatorIndex).trim();
+    const value = trimmed.slice(separatorIndex + 1).trim();
+    cookieMap.set(name, value);
+  });
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieMap.get(name);
+        },
+        set(name: string, value: string, options: Record<string, unknown>) {
+          response.cookies.set({
+            name,
+            value,
+            ...(options as any),
+          });
+        },
+        remove(name: string, options: Record<string, unknown>) {
+          response.cookies.set({
+            name,
+            value: "",
+            ...(options as any),
+            maxAge: 0,
+          });
+        },
+      },
+    }
+  );
+
+  const { error } = await supabase.auth.signOut({ scope: "global" });
+
+  if (error) {
+    return NextResponse.json(
+      { success: false, message: error.message },
+      { status: 500 }
+    );
+  }
+
+  return response;
+}
