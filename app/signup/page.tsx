@@ -48,6 +48,12 @@ const STEPS = [
   { number: 4, label: "Finish" },
 ];
 
+const DEFAULT_BIO =
+  "I like easygoing meetups where conversation feels natural and comfortable.";
+
+const DEFAULT_ABOUT_ME =
+  "I enjoy meeting new people over coffee, walks, or low-pressure plans. I usually appreciate clear communication, relaxed energy, and a meetup that feels easy to settle into.";
+
 function ToggleChip({
   label,
   selected,
@@ -85,8 +91,8 @@ export default function SignupPage() {
   const [displayName, setDisplayName] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
-  const [bio, setBio] = useState("");
-  const [aboutMe, setAboutMe] = useState("");
+  const [bio, setBio] = useState(DEFAULT_BIO);
+  const [aboutMe, setAboutMe] = useState(DEFAULT_ABOUT_ME);
   const [languages, setLanguages] = useState<string[]>(["English"]);
   const [meetingStyle, setMeetingStyle] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
@@ -412,7 +418,6 @@ export default function SignupPage() {
                       onChange={(e) => setBio(e.target.value)}
                       rows={3}
                       className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-                      placeholder="A short line people can understand quickly"
                     />
                   </div>
 
@@ -425,7 +430,6 @@ export default function SignupPage() {
                       onChange={(e) => setAboutMe(e.target.value)}
                       rows={4}
                       className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-                      placeholder="A little more detail about your energy, preferences, or what makes a meetup comfortable"
                     />
                   </div>
 
