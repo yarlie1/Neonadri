@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
 import {
   Menu,
@@ -76,17 +76,35 @@ function isActivePath(pathname: string, href: string) {
 }
 
 export default function TopNav() {
+  const supabase = useMemo(() => createClient(), []);
   const [user, setUser] = useState<SimpleUser>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const loggingOutRef = useRef(false);
   const pathname = usePathname();
-  const router = useRouter();
 
   useEffect(() => {
-    const supabase = createClient();
     let mounted = true;
+
+    const resetSignedOutState = () => {
+      setUser(null);
+      setPendingCount(0);
+      setMenuOpen(false);
+      setIsLoggingOut(false);
+      loggingOutRef.current = false;
+    };
+
+    const loadPendingCount = async (userId: string) => {
+      const { count } = await supabase
+        .from("match_requests")
+        .select("*", { count: "exact", head: true })
+        .eq("post_owner_user_id", userId)
+        .eq("status", "pending");
+
+      return count || 0;
+    };
 
     const loadUser = async () => {
       try {
@@ -94,20 +112,15 @@ export default function TopNav() {
           data: { user },
         } = await supabase.auth.getUser();
 
-        if (!mounted) return;
+        if (!mounted || loggingOutRef.current) return;
 
         const nextUser = user ? { id: user.id, email: user.email } : null;
         setUser(nextUser);
 
         if (user) {
-          const { count } = await supabase
-            .from("match_requests")
-            .select("*", { count: "exact", head: true })
-            .eq("post_owner_user_id", user.id)
-            .eq("status", "pending");
-
-          if (!mounted) return;
-          setPendingCount(count || 0);
+          const count = await loadPendingCount(user.id);
+          if (!mounted || loggingOutRef.current) return;
+          setPendingCount(count);
         } else {
           setPendingCount(0);
         }
@@ -124,6 +137,13 @@ export default function TopNav() {
       try {
         if (!mounted) return;
 
+        if (_event === "SIGNED_OUT" || !session?.user) {
+          resetSignedOutState();
+          return;
+        }
+
+        if (loggingOutRef.current) return;
+
         const nextUser = session?.user
           ? { id: session.user.id, email: session.user.email }
           : null;
@@ -132,14 +152,9 @@ export default function TopNav() {
         setMenuOpen(false);
 
         if (session?.user) {
-          const { count } = await supabase
-            .from("match_requests")
-            .select("*", { count: "exact", head: true })
-            .eq("post_owner_user_id", session.user.id)
-            .eq("status", "pending");
-
-          if (!mounted) return;
-          setPendingCount(count || 0);
+          const count = await loadPendingCount(session.user.id);
+          if (!mounted || loggingOutRef.current) return;
+          setPendingCount(count);
         } else {
           setPendingCount(0);
         }
@@ -152,7 +167,7 @@ export default function TopNav() {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase]);
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
@@ -180,22 +195,29 @@ export default function TopNav() {
   const handleLogout = async () => {
     if (isLoggingOut) return;
 
+    loggingOutRef.current = true;
+    setIsLoggingOut(true);
+    setMenuOpen(false);
+    setUser(null);
+    setPendingCount(0);
+
     try {
-      setIsLoggingOut(true);
-      setMenuOpen(false);
-      setUser(null);
-      setPendingCount(0);
-      const supabase = createClient();
       await Promise.race([
         supabase.auth.signOut({ scope: "local" }),
         new Promise((resolve) => window.setTimeout(resolve, 1500)),
       ]);
+
+      void supabase.auth.signOut({ scope: "global" }).catch((error) => {
+        console.error("TopNav global logout error:", error);
+      });
     } catch (error) {
       console.error("TopNav logout error:", error);
     } finally {
-      router.replace("/");
-      router.refresh();
-      window.setTimeout(() => setIsLoggingOut(false), 1200);
+      window.location.assign("/");
+      window.setTimeout(() => {
+        setIsLoggingOut(false);
+        loggingOutRef.current = false;
+      }, 2000);
     }
   };
 
