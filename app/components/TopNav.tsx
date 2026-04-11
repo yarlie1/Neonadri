@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
 import {
   Menu,
@@ -79,8 +79,10 @@ export default function TopNav() {
   const [user, setUser] = useState<SimpleUser>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const supabase = createClient();
@@ -176,14 +178,19 @@ export default function TopNav() {
   }, []);
 
   const handleLogout = async () => {
+    if (isLoggingOut) return;
+
     try {
+      setIsLoggingOut(true);
+      setMenuOpen(false);
       const supabase = createClient();
       await supabase.auth.signOut();
     } catch (error) {
       console.error("TopNav logout error:", error);
     } finally {
-      setMenuOpen(false);
-      window.location.href = "/";
+      router.replace("/");
+      router.refresh();
+      window.setTimeout(() => setIsLoggingOut(false), 500);
     }
   };
 
@@ -268,10 +275,15 @@ export default function TopNav() {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className={navBtn(false)}
+                  disabled={isLoggingOut}
+                  className={`${navBtn(false)} ${
+                    isLoggingOut
+                      ? "cursor-not-allowed opacity-60"
+                      : ""
+                  }`}
                 >
                   <LogOut className="h-4 w-4" />
-                  Logout
+                  {isLoggingOut ? "Logging out..." : "Logout"}
                 </button>
               </>
             ) : (
@@ -365,10 +377,13 @@ export default function TopNav() {
                       <button
                         type="button"
                         onClick={handleLogout}
-                        className="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-left text-sm font-medium text-[#8b5e3c] transition hover:bg-[#f8efe7]"
+                        disabled={isLoggingOut}
+                        className={`inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-left text-sm font-medium text-[#8b5e3c] transition hover:bg-[#f8efe7] ${
+                          isLoggingOut ? "cursor-not-allowed opacity-60" : ""
+                        }`}
                       >
                         <LogOut className="h-4 w-4" />
-                        Logout
+                        {isLoggingOut ? "Logging out..." : "Logout"}
                       </button>
                     </>
                   ) : (
