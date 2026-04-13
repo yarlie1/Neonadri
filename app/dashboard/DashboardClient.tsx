@@ -321,29 +321,6 @@ function MiniPostPreview({ post }: { post?: PostRow }) {
   );
 }
 
-function ProfileInlineLink({
-  userId,
-  name,
-  prefix,
-}: {
-  userId: string;
-  name: string;
-  prefix: string;
-}) {
-  return (
-    <div className="mt-1 flex items-center gap-2 text-sm text-[#6f655c]">
-      <span>{prefix}</span>
-      <Link
-        href={`/profile/${userId}`}
-        className="inline-flex items-center gap-1 rounded-full px-1 py-0.5 font-medium text-[#5a5149] transition hover:bg-[#f4ece4] hover:text-[#2f2a26]"
-      >
-        <UserCircle2 className="h-4 w-4 text-[#8a7f74]" />
-        <span>{name || "Unknown"}</span>
-      </Link>
-    </div>
-  );
-}
-
 export default function DashboardClient({
   userId,
   posts: initialPosts,
@@ -753,15 +730,16 @@ export default function DashboardClient({
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <div className="text-lg font-semibold text-[#2f2a26]">Request received</div>
-
-                    <ProfileInlineLink
-                      userId={item.requester_user_id}
-                      name={profileMap[item.requester_user_id] || "Unknown"}
-                      prefix="From:"
-                    />
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                      Incoming request
+                    </div>
+                    <div className="mt-2 text-lg font-semibold text-[#2f2a26]">Someone wants to join your meetup.</div>
 
                     <div className="mt-1 text-sm text-[#6f655c]">
+                      From {profileMap[item.requester_user_id] || "Unknown"}
+                    </div>
+
+                    <div className="mt-1 text-sm text-[#8b7f74]">
                       {new Date(item.created_at).toLocaleString()}
                     </div>
                   </div>
@@ -835,15 +813,16 @@ export default function DashboardClient({
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <div className="text-lg font-semibold text-[#2f2a26]">Request sent</div>
-
-                    <ProfileInlineLink
-                      userId={item.post_owner_user_id}
-                      name={profileMap[item.post_owner_user_id] || "Unknown"}
-                      prefix="To:"
-                    />
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                      Outgoing request
+                    </div>
+                    <div className="mt-2 text-lg font-semibold text-[#2f2a26]">You asked to join this meetup.</div>
 
                     <div className="mt-1 text-sm text-[#6f655c]">
+                      Sent to {profileMap[item.post_owner_user_id] || "Unknown"}
+                    </div>
+
+                    <div className="mt-1 text-sm text-[#8b7f74]">
                       {new Date(item.created_at).toLocaleString()}
                     </div>
                   </div>
