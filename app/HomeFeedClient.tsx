@@ -994,7 +994,7 @@ export default function HomeFeedClient({
                     </div>
                     <div className="min-w-0">
                       <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/70">
-                        {matchBadge.label}
+                        Meetup vibe
                       </div>
                       <div className="truncate text-sm font-semibold text-white/95">
                         {post.meeting_purpose || "Social meetup"}
@@ -1003,16 +1003,26 @@ export default function HomeFeedClient({
                   </div>
 
                   {formatDuration(post.duration_minutes) ? (
-                    <div className="inline-flex shrink-0 items-center gap-2 rounded-[18px] bg-[#f4ece4] px-3 py-3 text-base font-semibold text-[#4f443b]">
+                    <div className="inline-flex w-[76px] shrink-0 flex-col items-center justify-center rounded-[18px] bg-[#f4ece4] px-3 py-2 text-[#4f443b]">
                       <Clock3 className="h-4 w-4" />
-                      <span>{formatDuration(post.duration_minutes)}</span>
+                      <span className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
+                        Duration
+                      </span>
+                      <span className="mt-0.5 text-sm font-semibold">
+                        {formatDuration(post.duration_minutes)}
+                      </span>
                     </div>
                   ) : null}
 
                   {amount !== null && (
-                    <div className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-3 text-base font-semibold text-[#6e4715] shadow-sm">
+                    <div className="inline-flex w-[86px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-2 text-[#6e4715] shadow-sm">
                       <Coins className="h-4 w-4 shrink-0" />
-                      <span>+${amount.toLocaleString()}</span>
+                      <span className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9a6926]">
+                        Benefit
+                      </span>
+                      <span className="mt-0.5 text-sm font-semibold">
+                        +${amount.toLocaleString()}
+                      </span>
                     </div>
                   )}
                 </div>
