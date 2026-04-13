@@ -511,32 +511,34 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
       <div className="mx-auto max-w-3xl space-y-5">
+        <div className="sticky top-16 z-20 rounded-[24px] border border-[#eadfd3] bg-[#fffaf5]/95 p-3 shadow-[0_10px_24px_rgba(92,69,52,0.1)] backdrop-blur">
+          <div className="flex flex-wrap items-start gap-2">
+            <div className="inline-flex min-w-0 flex-1 items-center gap-2 rounded-[18px] bg-[#2f2a26] px-4 py-3 text-base font-semibold text-white shadow-sm">
+              {getPurposeIcon(post.meeting_purpose)}
+              <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
+            </div>
+
+            {meetupDurationLabel && (
+              <div className="inline-flex shrink-0 items-center gap-2 rounded-[18px] bg-white/90 px-4 py-3 text-base font-semibold text-[#4f443b] shadow-sm">
+                <Clock3 className="h-4 w-4" />
+                <span>{meetupDurationLabel}</span>
+              </div>
+            )}
+
+            {post.benefit_amount && (
+              <div className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-4 py-3 text-base font-semibold text-[#6e4715] shadow-sm">
+                <Coins className="h-4 w-4" />
+                <span>{post.benefit_amount}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e5b29e_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
           <div className="relative">
-            <div className="flex flex-wrap items-start gap-2">
-              <div className="inline-flex min-w-0 flex-1 items-center gap-2 rounded-[18px] bg-[#2f2a26] px-4 py-3 text-base font-semibold text-white shadow-sm">
-                {getPurposeIcon(post.meeting_purpose)}
-                <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
-              </div>
-
-              {meetupDurationLabel && (
-                <div className="inline-flex shrink-0 items-center gap-2 rounded-[18px] bg-white/80 px-4 py-3 text-base font-semibold text-[#4f443b] shadow-sm">
-                  <Clock3 className="h-4 w-4" />
-                  <span>{meetupDurationLabel}</span>
-                </div>
-              )}
-
-              {post.benefit_amount && (
-                <div className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-4 py-3 text-base font-semibold text-[#6e4715] shadow-sm">
-                  <Coins className="h-4 w-4" />
-                  <span>{post.benefit_amount}</span>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-5">
+            <div>
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
                 Meetup overview
               </div>
@@ -575,8 +577,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
                   Quick snapshot
                 </div>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   <StatCard label="When" value={meetupTimeLabel} />
+                  <StatCard
+                    label="Host"
+                    value={[ownerGender || "Unknown", ownerAgeGroup || null].filter(Boolean).join(" / ")}
+                  />
                   <StatCard label="Guest" value={targetLabel} />
                   <StatCard
                     label={isPostMatched ? "Status" : "Requests"}

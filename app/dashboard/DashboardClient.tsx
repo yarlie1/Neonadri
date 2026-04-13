@@ -436,8 +436,8 @@ export default function DashboardClient({
     [requestsReceived]
   );
 
-  const nextMatchedMeetup = useMemo(() => {
-    const upcomingMatches = matches
+  const upcomingMatchedMeetups = useMemo(() => {
+    return matches
       .map((match) => {
         const post = postMap[match.post_id];
         if (!post?.meeting_time) return null;
@@ -457,8 +457,6 @@ export default function DashboardClient({
       })
       .filter(Boolean)
       .sort((a, b) => a!.time - b!.time);
-
-    return upcomingMatches[0] || null;
   }, [matches, postMap, profileMap, userId]);
 
   const deletePost = async (postId: number) => {
@@ -558,7 +556,7 @@ export default function DashboardClient({
           </div>
         </div>
 
-        {nextMatchedMeetup && (
+        {upcomingMatchedMeetups.length > 0 && (
           <div className="rounded-[28px] border border-[#dccfc2] bg-[linear-gradient(135deg,#fff9f3_0%,#f2e4d7_100%)] p-4 shadow-[0_14px_32px_rgba(92,69,52,0.08)]">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -566,26 +564,50 @@ export default function DashboardClient({
                   Coming up next
                 </div>
                 <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#2f2a26]">
-                  Matched meetup with {nextMatchedMeetup.otherName}
+                  Upcoming matched meetups
                 </div>
                 <div className="mt-2 text-sm leading-6 text-[#6f655c]">
-                  {formatTime(nextMatchedMeetup.post.meeting_time)} at{" "}
-                  {nextMatchedMeetup.post.place_name ||
-                    nextMatchedMeetup.post.location ||
-                    "your selected place"}
+                  {upcomingMatchedMeetups.length} meetup{upcomingMatchedMeetups.length > 1 ? "s" : ""} already matched and still ahead.
                 </div>
               </div>
+            </div>
 
-              <div className="flex flex-wrap gap-2">
-                <CompactActionButton href={`/posts/${nextMatchedMeetup.post.id}`} primary>
-                  <Eye className="h-3.5 w-3.5" />
-                  Open Meetup
-                </CompactActionButton>
-                <CompactActionButton href={`/profile/${nextMatchedMeetup.otherUserId}`}>
-                  <UserCircle2 className="h-3.5 w-3.5" />
-                  View Match
-                </CompactActionButton>
-              </div>
+            <div className="mt-4 space-y-3">
+              {upcomingMatchedMeetups.map((item) => (
+                <div
+                  key={item.match.id}
+                  className="rounded-[22px] border border-[#eadfd3] bg-white/75 p-4"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
+                        With {item.otherName}
+                      </div>
+                      <div className="mt-2 flex flex-col gap-1 text-sm text-[#6f655c]">
+                        <div className="inline-flex items-center gap-2">
+                          <Clock3 className="h-4 w-4 text-[#a27767]" />
+                          <span>{formatTime(item.post.meeting_time)}</span>
+                        </div>
+                        <div className="inline-flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-[#a27767]" />
+                          <span>{item.post.place_name || item.post.location || "your selected place"}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <CompactActionButton href={`/posts/${item.post.id}`} primary>
+                        <Eye className="h-3.5 w-3.5" />
+                        Open Meetup
+                      </CompactActionButton>
+                      <CompactActionButton href={`/profile/${item.otherUserId}`}>
+                        <UserCircle2 className="h-3.5 w-3.5" />
+                        View Match
+                      </CompactActionButton>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}

@@ -687,7 +687,7 @@ export default function HomeFeedClient({
           </button>
 
           {isOpen && (
-            <div className="max-h-[calc(100vh-8rem)] overflow-y-auto border-t border-[#efe6db] px-4 py-4">
+            <div className="max-h-[calc(100vh-14rem)] overflow-y-auto border-t border-[#efe6db] px-4 py-4 pb-28">
               <div>
                 <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
                   Status
