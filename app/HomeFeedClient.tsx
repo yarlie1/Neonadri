@@ -773,62 +773,62 @@ export default function HomeFeedClient({
                 </div>
               </div>
 
-              <div className="rounded-[24px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-4">
-                <div className="flex flex-wrap items-start gap-2">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-2 text-sm font-semibold text-white">
+              <div className="rounded-[24px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-3.5">
+                <div className="flex flex-wrap items-start gap-1.5">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-1.5 text-sm font-semibold text-white">
                     {getPurposeIcon(post.meeting_purpose)}
                     <span>{post.meeting_purpose || "Meetup"}</span>
                   </div>
 
                   {formatDuration(post.duration_minutes) ? (
-                    <div className="inline-flex items-center gap-2 rounded-full bg-[#f4ece4] px-3 py-2 text-sm font-semibold text-[#4f443b]">
-                      <Clock3 className="h-4 w-4" />
+                    <div className="inline-flex items-center gap-2 rounded-full bg-[#f4ece4] px-3 py-1.5 text-sm font-semibold text-[#4f443b]">
+                      <Clock3 className="h-3.5 w-3.5" />
                       <span>{formatDuration(post.duration_minutes)}</span>
                     </div>
                   ) : null}
 
                   {amount !== null && (
-                    <div className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-2 text-sm font-semibold text-[#6e4715] shadow-sm">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-1.5 text-sm font-semibold text-[#6e4715] shadow-sm">
                       <span>Benefit</span>
                       <span>+${amount.toLocaleString()}</span>
                     </div>
                   )}
                 </div>
 
-                <div className="mt-4 grid gap-2 text-[12px] text-[#7d7268] sm:grid-cols-2">
+                <div className="mt-3 grid gap-1.5 text-[12px] leading-5 text-[#7d7268] sm:grid-cols-2">
                   {post.meeting_time && (
-                    <div className="flex items-center gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                    <div className="flex items-center gap-2 rounded-[15px] bg-[#faf3ec] px-3 py-1.5">
                       <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                      <span className="truncate">When: {formatTime(post.meeting_time)}</span>
+                      <span className="truncate"><span className="font-medium text-[#6d5d52]">When</span>{" "}{formatTime(post.meeting_time)}</span>
                     </div>
                   )}
 
-                  <div className="flex items-center gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                  <div className="flex items-center gap-2 rounded-[15px] bg-[#faf3ec] px-3 py-1.5">
                     <MapPin className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                     <span className="truncate">
-                      Place: {post.place_name || post.location || "No place"}
+                      <span className="font-medium text-[#6d5d52]">Place</span>{" "}{post.place_name || post.location || "No place"}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                  <div className="flex items-center gap-2 rounded-[15px] bg-[#faf3ec] px-3 py-1.5">
                     <UserCircle2 className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                     <span className="truncate">
-                      Host: {host.displayName}
+                      <span className="font-medium text-[#6d5d52]">Hosted by</span>{" "}{host.displayName}
                       {(host.gender || host.ageGroup)
-                        ? ` Â· ${host.gender || "Unknown"} / ${host.ageGroup || ""}`.trim()
+                        ? ` ¡¤ ${host.gender || "Unknown"}${host.ageGroup ? ` / ${host.ageGroup}` : ""}`
                         : ""}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                  <div className="flex items-center gap-2 rounded-[15px] bg-[#faf3ec] px-3 py-1.5">
                     <UserRound className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                     <span className="truncate">
-                      Guest: {post.target_gender || "Any"} / {post.target_age_group || "Any"}
+                      <span className="font-medium text-[#6d5d52]">Looking for</span>{" "}{post.target_gender || "Any"} / {post.target_age_group || "Any"}
                     </span>
                   </div>
 
                   {distanceText && (
-                    <div className="flex items-center gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2 sm:col-span-2">
+                    <div className="flex items-center gap-2 rounded-[15px] bg-[#faf3ec] px-3 py-1.5 sm:col-span-2">
                       <LocateFixed className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                       <span>{distanceText}</span>
                     </div>
@@ -856,3 +856,4 @@ export default function HomeFeedClient({
     </main>
   );
 }
+
