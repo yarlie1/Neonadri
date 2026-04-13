@@ -1000,7 +1000,7 @@ export default function HomeFeedClient({
                   </div>
 
                   {formatDuration(post.duration_minutes) ? (
-                    <div className="inline-flex w-[76px] shrink-0 flex-col items-center justify-center rounded-[18px] bg-[#f4ece4] px-3 py-2 text-[#4f443b]">
+                    <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] bg-[#f4ece4] px-1.5 py-2 text-[#4f443b]">
                       <Clock3 className="h-4 w-4" />
                       <span className="mt-1 text-sm font-semibold">
                         {formatDuration(post.duration_minutes)}
@@ -1009,7 +1009,7 @@ export default function HomeFeedClient({
                   ) : null}
 
                   {amount !== null && (
-                    <div className="inline-flex w-[86px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-2 text-[#6e4715] shadow-sm">
+                    <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[16px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-1.5 py-2 text-[#6e4715] shadow-sm">
                       <Coins className="h-4 w-4 shrink-0" />
                       <span className="mt-1 text-sm font-semibold">
                         +${amount.toLocaleString()}
