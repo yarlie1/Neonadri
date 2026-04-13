@@ -966,14 +966,7 @@ export default function HomeFeedClient({
                   : "border-[#e7ddd2] bg-white hover:-translate-y-0.5 hover:bg-[#fffdf9]"
               }`}
             >
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <div
-                  className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] ${purposeTheme.pillClass}`}
-                >
-                  {getPurposeIcon(post.meeting_purpose)}
-                  {post.meeting_purpose || "Meetup"}
-                </div>
-
+              <div className="mb-4 flex items-center justify-end gap-3">
                 <div
                   className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${matchBadge.className}`}
                 >
