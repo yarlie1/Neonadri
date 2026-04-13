@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../../../../lib/supabase/client";
 import { Star, Clock3 } from "lucide-react";
 
@@ -40,7 +40,7 @@ const isMeetupExpired = (meetingTime: string | null) => {
 };
 
 export default function WriteReviewPage({ params }: PageProps) {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
