@@ -789,7 +789,7 @@ export default function HomeFeedClient({
 
                   {amount !== null && (
                     <div className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-3 text-base font-semibold text-[#6e4715] shadow-sm">
-                      <span className="text-[0.95rem]">Benefit</span>
+                      <Coins className="h-4 w-4 shrink-0" />
                       <span>+${amount.toLocaleString()}</span>
                     </div>
                   )}
