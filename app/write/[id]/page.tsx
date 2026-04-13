@@ -76,9 +76,10 @@ function formatDateTimeLocalValue(date: Date) {
 }
 
 export default function EditWritePage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const params = useParams();
+  const postId = Array.isArray(params.id) ? params.id[0] : params.id;
 
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const autocompleteRef = useRef<any>(null);
@@ -105,11 +106,18 @@ export default function EditWritePage() {
 
   useEffect(() => {
     const loadUserAndPost = async () => {
+      if (!postId) {
+        setLoading(false);
+        router.push("/dashboard");
+        return;
+      }
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
       if (!user) {
+        setLoading(false);
         router.push("/");
         return;
       }
@@ -121,11 +129,12 @@ export default function EditWritePage() {
         .select(
           "id, user_id, meeting_purpose, meeting_time, duration_minutes, location, place_name, latitude, longitude, target_gender, target_age_group, benefit_amount"
         )
-        .eq("id", params.id)
+        .eq("id", postId)
         .eq("user_id", user.id)
         .single();
 
       if (error || !data) {
+        setLoading(false);
         router.push("/dashboard");
         return;
       }
@@ -158,7 +167,7 @@ export default function EditWritePage() {
     };
 
     loadUserAndPost();
-  }, [params.id, router, supabase]);
+  }, [postId, router, supabase]);
 
   useEffect(() => {
     if (!window.google || !searchInputRef.current) return;
@@ -231,7 +240,7 @@ export default function EditWritePage() {
   };
 
   const handleOpenMapPicker = () => {
-    router.push(`/write/location?returnTo=/write/${params.id}`);
+    router.push(`/write/location?returnTo=/write/${postId}`);
   };
 
   const handleSave = async () => {
@@ -277,7 +286,7 @@ export default function EditWritePage() {
         target_age_group: targetAgeGroup,
         benefit_amount: benefitAmount,
       })
-      .eq("id", params.id)
+      .eq("id", postId)
       .eq("user_id", userId);
 
     setSaving(false);
