@@ -492,6 +492,13 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }`;
   const meetupTimeLabel = formatTime(post.meeting_time) || "Time not set";
   const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
+  const overviewLine = [
+    locationLabel,
+    post.meeting_purpose || "Meetup",
+    meetupDurationLabel,
+  ]
+    .filter(Boolean)
+    .join(" - ");
   const ownerRequestItems = ownerRequests.map((request) => {
     const profile = requesterProfileMap.get(request.requester_user_id);
 
@@ -517,59 +524,27 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 Meetup overview
               </div>
               <div className="mt-3 text-[2rem] font-black leading-[1.02] tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.5rem]">
-                {locationLabel}
+                {overviewLine}
               </div>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
                 The essentials first: when it happens, who it is for, and what makes the meetup worth joining.
               </p>
             </div>
 
-            <div className="mt-5 grid gap-3 lg:grid-cols-[1.1fr_0.9fr]">
-              <div className="rounded-[26px] border border-white/55 bg-white/58 px-4 py-4 backdrop-blur">
-                <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
-                  Quick snapshot
-                </div>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-                  <StatCard label="Type" value={post.meeting_purpose || "Meetup"} />
-                  <StatCard label="When" value={meetupTimeLabel} />
-                  <StatCard
-                    label="Host"
-                    value={[ownerGender || "Unknown", ownerAgeGroup || null].filter(Boolean).join(" / ")}
-                  />
-                  <StatCard label="Guest" value={targetLabel} />
-                  <StatCard
-                    label={isPostMatched ? "Status" : "Requests"}
-                    value={isPostMatched ? "Matched" : `${totalRequestCount}`}
-                  />
-                </div>
+            <div className="mt-5 rounded-[26px] border border-white/55 bg-white/58 px-4 py-4 backdrop-blur">
+              <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
+                Quick snapshot
               </div>
-
-              <div className="rounded-[26px] border border-white/55 bg-white/58 px-4 py-4 backdrop-blur">
-                <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
-                  Meetup details
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <InfoItem
-                    icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                    label="Time"
-                    value={meetupTimeLabel}
-                  />
-                  <InfoItem
-                    icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                    label="Duration"
-                    value={meetupDurationLabel}
-                  />
-                  <InfoItem
-                    icon={<UserRound className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                    label="Looking for"
-                    value={targetLabel}
-                  />
-                  <InfoItem
-                    icon={<Coins className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                    label="Benefit"
-                    value={post.benefit_amount || "Not listed"}
-                  />
-                </div>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <StatCard label="Benefit" value={post.benefit_amount || "Not listed"} />
+                <StatCard label="Type" value={post.meeting_purpose || "Meetup"} />
+                <StatCard label="When" value={meetupTimeLabel} />
+                <StatCard label="Duration" value={meetupDurationLabel} />
+                <StatCard
+                  label="Host"
+                  value={[ownerGender || "Unknown", ownerAgeGroup || null].filter(Boolean).join(" / ")}
+                />
+                <StatCard label="Guest" value={targetLabel} />
               </div>
             </div>
 
