@@ -294,7 +294,7 @@ function FilterSummaryText({
 
   return (
     <span className="text-sm font-medium text-[#5a5149]">
-      {parts.join(" 夷?")}
+      {parts.join(" / ")}
     </span>
   );
 }
@@ -773,8 +773,8 @@ export default function HomeFeedClient({
                 </div>
               </div>
 
-              <div className="rounded-[24px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-3.5">
-                <div className="flex flex-wrap items-start gap-1.5">
+              <div className="rounded-[22px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-3">
+                <div className="flex flex-wrap items-start gap-2">
                   <div className="inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-1.5 text-sm font-semibold text-white">
                     {getPurposeIcon(post.meeting_purpose)}
                     <span>{post.meeting_purpose || "Meetup"}</span>
@@ -795,42 +795,53 @@ export default function HomeFeedClient({
                   )}
                 </div>
 
-                <div className="mt-3 grid gap-1.5 text-[12px] leading-5 text-[#7d7268] sm:grid-cols-2">
+                <div className="mt-3 grid gap-2 text-[#7d7268] sm:grid-cols-2">
                   {post.meeting_time && (
-                    <div className="flex items-center gap-2 rounded-[15px] bg-[#faf3ec] px-3 py-1.5">
-                      <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                      <span className="truncate"><span className="font-medium text-[#6d5d52]">When</span>{" "}{formatTime(post.meeting_time)}</span>
+                    <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                      <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                      <div className="min-w-0 leading-[1.2]">
+                        <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">When</div>
+                        <div className="truncate text-[12px] font-medium text-[#554a42]">{formatTime(post.meeting_time)}</div>
+                      </div>
                     </div>
                   )}
 
-                  <div className="flex items-center gap-2 rounded-[15px] bg-[#faf3ec] px-3 py-1.5">
-                    <MapPin className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                    <span className="truncate">
-                      <span className="font-medium text-[#6d5d52]">Place</span>{" "}{post.place_name || post.location || "No place"}
-                    </span>
+                  <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                    <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                    <div className="min-w-0 leading-[1.2]">
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Place</div>
+                      <div className="truncate text-[12px] font-medium text-[#554a42]">{post.place_name || post.location || "No place"}</div>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2 rounded-[15px] bg-[#faf3ec] px-3 py-1.5">
-                    <UserCircle2 className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                    <span className="truncate">
-                      <span className="font-medium text-[#6d5d52]">Hosted by</span>{" "}{host.displayName}
-                      {(host.gender || host.ageGroup)
-                        ? ` · ${host.gender || "Unknown"}${host.ageGroup ? ` / ${host.ageGroup}` : ""}`
-                        : ""}
-                    </span>
+                  <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                    <UserCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                    <div className="min-w-0 leading-[1.2]">
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Hosted by</div>
+                      <div className="truncate text-[12px] font-medium text-[#554a42]">
+                        {host.displayName}
+                        {(host.gender || host.ageGroup)
+                          ? ` - ${host.gender || "Unknown"}${host.ageGroup ? ` / ${host.ageGroup}` : ""}`
+                          : ""}
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2 rounded-[15px] bg-[#faf3ec] px-3 py-1.5">
-                    <UserRound className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                    <span className="truncate">
-                      <span className="font-medium text-[#6d5d52]">Looking for</span>{" "}{post.target_gender || "Any"} / {post.target_age_group || "Any"}
-                    </span>
+                  <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                    <UserRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                    <div className="min-w-0 leading-[1.2]">
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Looking for</div>
+                      <div className="truncate text-[12px] font-medium text-[#554a42]">{post.target_gender || "Any"} / {post.target_age_group || "Any"}</div>
+                    </div>
                   </div>
 
                   {distanceText && (
-                    <div className="flex items-center gap-2 rounded-[15px] bg-[#faf3ec] px-3 py-1.5 sm:col-span-2">
-                      <LocateFixed className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                      <span>{distanceText}</span>
+                    <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2 sm:col-span-2">
+                      <LocateFixed className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                      <div className="leading-[1.2]">
+                        <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Distance</div>
+                        <div className="text-[12px] font-medium text-[#554a42]">{distanceText}</div>
+                      </div>
                     </div>
                   )}
                 </div>
