@@ -24,25 +24,12 @@ type ProfileRow = {
   age_group: string | null;
 };
 
-type ProfileStatsRow = {
-  average_rating?: number | null;
-  review_count?: number | null;
-};
-
 type HostProfileMap = Record<
   string,
   {
     displayName: string;
     gender: string;
     ageGroup: string;
-  }
->;
-
-type HostStatMap = Record<
-  string,
-  {
-    averageRating: number;
-    reviewCount: number;
   }
 >;
 
@@ -75,7 +62,6 @@ export default async function HomePage() {
   );
 
   const hostProfileMap: HostProfileMap = {};
-  const hostStatsMap: HostStatMap = {};
 
   if (ownerIds.length > 0) {
     try {
@@ -92,47 +78,12 @@ export default async function HomePage() {
         };
       });
     } catch {}
-
-    try {
-      const statsResults = await Promise.all(
-        ownerIds.map(async (ownerId) => {
-          const { data, error } = await supabase.rpc("get_profile_stats", {
-            p_user_id: ownerId,
-          });
-
-          if (error) {
-            return {
-              ownerId,
-              stats: {
-                averageRating: 0,
-                reviewCount: 0,
-              },
-            };
-          }
-
-          const stats = (data || {}) as ProfileStatsRow;
-
-          return {
-            ownerId,
-            stats: {
-              averageRating: Number(stats.average_rating ?? 0),
-              reviewCount: Number(stats.review_count ?? 0),
-            },
-          };
-        })
-      );
-
-      statsResults.forEach(({ ownerId, stats }) => {
-        hostStatsMap[ownerId] = stats;
-      });
-    } catch {}
   }
 
   return (
     <HomeFeedClient
       initialPosts={posts}
       hostProfileMap={hostProfileMap}
-      hostStatsMap={hostStatsMap}
     />
   );
 }

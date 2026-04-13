@@ -7,7 +7,6 @@ import {
   MapPin,
   UserRound,
   UserCircle2,
-  Star,
   Plus,
   ArrowUpRight,
   Coffee,
@@ -53,14 +52,6 @@ type HostProfileMap = Record<
     displayName: string;
     gender: string;
     ageGroup: string;
-  }
->;
-
-type HostStatMap = Record<
-  string,
-  {
-    averageRating: number;
-    reviewCount: number;
   }
 >;
 
@@ -252,35 +243,6 @@ function getPurposeLabel(purpose: string | null) {
   }
 }
 
-function StarRatingInline({
-  value,
-  count,
-}: {
-  value: number;
-  count: number;
-}) {
-  const rounded = Math.round(value);
-
-  return (
-    <div className="inline-flex items-center gap-1 rounded-full bg-[#f4ece4] px-2 py-1 text-[11px] text-[#6b5f52]">
-      <div className="flex items-center gap-0.5">
-        {[1, 2, 3, 4, 5].map((n) => (
-          <Star
-            key={n}
-            className={`h-3 w-3 ${
-              n <= rounded
-                ? "fill-[#a48f7a] text-[#a48f7a]"
-                : "text-[#d8cec3]"
-            }`}
-          />
-        ))}
-      </div>
-      <span className="font-medium">{value.toFixed(1)}</span>
-      <span className="text-[#8b7f74]">({count})</span>
-    </div>
-  );
-}
-
 function FilterPill({
   active,
   label,
@@ -340,11 +302,9 @@ function FilterSummaryText({
 export default function HomeFeedClient({
   initialPosts,
   hostProfileMap,
-  hostStatsMap,
 }: {
   initialPosts: PostRow[];
   hostProfileMap: HostProfileMap;
-  hostStatsMap: HostStatMap;
 }) {
   const [purpose, setPurpose] = useState("All");
   const [gender, setGender] = useState("All");
@@ -768,10 +728,6 @@ export default function HomeFeedClient({
             gender: "",
             ageGroup: "",
           };
-          const hostStats = hostStatsMap[post.user_id] || {
-            averageRating: 0,
-            reviewCount: 0,
-          };
           const status = getPostStatus(post.meeting_time);
           const isExpired = status === "Expired";
 
@@ -803,7 +759,7 @@ export default function HomeFeedClient({
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="inline-flex items-center gap-2 rounded-full bg-[#f8efe8] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9a6f5f]">
                   {getPurposeIcon(post.meeting_purpose)}
-                  {getPurposeLabel(post.meeting_purpose)}
+                  {post.meeting_purpose || "Meetup"}
                 </div>
 
                 <div
@@ -817,30 +773,20 @@ export default function HomeFeedClient({
                 </div>
               </div>
 
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0 flex-1 min-h-[74px]">
-                  <div className="flex items-center gap-2 text-[24px] leading-[1.1] font-extrabold tracking-[-0.03em] text-[#2f2a26]">
+              <div className="rounded-[24px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-4">
+                <div className="flex flex-wrap items-start gap-2">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-2 text-sm font-semibold text-white">
                     {getPurposeIcon(post.meeting_purpose)}
-                    <span className="truncate">
-                      {post.meeting_purpose || "Meetup"}
-                    </span>
-                    {formatDuration(post.duration_minutes) ? (
-                      <span className="inline-flex shrink-0 items-center gap-1 text-[21px] font-bold text-[#2f2a26]">
-                        <Clock3 className="h-4 w-4" />
-                        {formatDuration(post.duration_minutes)}
-                      </span>
-                    ) : null}
+                    <span>{post.meeting_purpose || "Meetup"}</span>
                   </div>
 
-                  <div className="mt-2 flex items-center gap-2 text-[21px] font-bold leading-[1.16] text-[#2f2a26]">
-                    <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                    <span className="truncate">
-                      {post.place_name || post.location || "No place"}
-                    </span>
-                  </div>
-                </div>
+                  {formatDuration(post.duration_minutes) ? (
+                    <div className="inline-flex items-center gap-2 rounded-full bg-[#f4ece4] px-3 py-2 text-sm font-semibold text-[#4f443b]">
+                      <Clock3 className="h-4 w-4" />
+                      <span>{formatDuration(post.duration_minutes)}</span>
+                    </div>
+                  ) : null}
 
-                <div className="flex h-[74px] shrink-0 flex-col items-end justify-start">
                   {amount !== null && (
                     <div className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-2 text-sm font-semibold text-[#6e4715] shadow-sm">
                       <span>Benefit</span>
@@ -848,69 +794,43 @@ export default function HomeFeedClient({
                     </div>
                   )}
                 </div>
-              </div>
 
-              <div className="mt-4 rounded-[22px] bg-[#fcf6f1] px-3.5 py-3.5">
-                <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                  Meetup details
-                </div>
-
-                <div className="space-y-1.5 text-[13px] text-[#766c62]">
+                <div className="mt-4 grid gap-2 text-[12px] text-[#7d7268] sm:grid-cols-2">
                   {post.meeting_time && (
-                    <div className="flex items-center gap-2">
-                      <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <span>{formatTime(post.meeting_time)}</span>
+                    <div className="flex items-center gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                      <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                      <span className="truncate">When: {formatTime(post.meeting_time)}</span>
                     </div>
                   )}
 
-                  {post.location && (
-                    <div className="flex items-start gap-2">
-                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <span className="line-clamp-1">{post.location}</span>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                    <MapPin className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                    <span className="truncate">
+                      Place: {post.place_name || post.location || "No place"}
+                    </span>
+                  </div>
 
-                  <div className="flex items-center gap-2">
-                    <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                    <span>
-                      {post.target_gender || "Any"} / {post.target_age_group || "Any"}
+                  <div className="flex items-center gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                    <UserCircle2 className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                    <span className="truncate">
+                      Host: {host.displayName}
+                      {(host.gender || host.ageGroup)
+                        ? ` · ${host.gender || "Unknown"} / ${host.ageGroup || ""}`.trim()
+                        : ""}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                    <UserRound className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                    <span className="truncate">
+                      Guest: {post.target_gender || "Any"} / {post.target_age_group || "Any"}
                     </span>
                   </div>
 
                   {distanceText && (
-                    <div className="flex items-center gap-2">
-                      <LocateFixed className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                    <div className="flex items-center gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2 sm:col-span-2">
+                      <LocateFixed className="h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                       <span>{distanceText}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-3.5 rounded-[22px] border border-[#eee2d7] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] px-3.5 py-3.5">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="inline-flex items-center gap-2 text-sm font-medium text-[#5a5149]">
-                      <UserCircle2 className="h-4.5 w-4.5 text-[#8a7f74]" />
-                      <span className="truncate">{host.displayName}</span>
-                    </div>
-
-                    {(host.gender || host.ageGroup) && (
-                      <div className="mt-0.5 text-[12px] text-[#8b7f74]">
-                        {host.gender || "Unknown"}
-                        {host.gender && host.ageGroup ? " / " : ""}
-                        {host.ageGroup || ""}
-                      </div>
-                    )}
-                  </div>
-
-                  {hostStats.reviewCount > 0 ? (
-                    <StarRatingInline
-                      value={hostStats.averageRating}
-                      count={hostStats.reviewCount}
-                    />
-                  ) : (
-                    <div className="rounded-full bg-[#f4ece4] px-2 py-1 text-[11px] text-[#8b7f74]">
-                      No reviews
                     </div>
                   )}
                 </div>
