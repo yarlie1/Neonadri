@@ -180,10 +180,10 @@ export default function ProfileEditForm({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+        className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/70 px-4 py-2 text-sm font-medium text-[#5a5149] shadow-sm backdrop-blur transition hover:bg-white"
       >
         <Pencil className="h-4 w-4" />
-        Edit
+        Edit Profile
       </button>
     );
   }
@@ -206,7 +206,7 @@ export default function ProfileEditForm({
                 Edit profile
               </div>
               <h2 className="mt-1 text-xl font-black tracking-[-0.03em] text-[#2f2a26]">
-                Refresh your introduction
+                Keep your profile feeling current
               </h2>
             </div>
 
@@ -221,7 +221,7 @@ export default function ProfileEditForm({
 
           <div className="flex-1 overflow-y-auto px-6 py-5">
             <div className="mb-5 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-4 text-sm leading-6 text-[#6b5f52]">
-              A clear profile makes it easier for people to understand your energy before they send a request.
+              A clear, warm profile makes it easier for people to understand your energy before they send a request.
             </div>
 
             <div className="space-y-4">

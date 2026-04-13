@@ -4,6 +4,49 @@ import { useEffect, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
 
+const LANGUAGE_OPTIONS = [
+  "English",
+  "Korean",
+  "Spanish",
+  "Japanese",
+  "Chinese",
+  "French",
+];
+
+const MEETING_STYLE_OPTIONS = [
+  "Friendly and relaxed",
+  "Thoughtful and calm",
+  "Casual and easygoing",
+  "Focused and productive",
+  "Energetic and social",
+  "Quiet and comfortable",
+];
+
+const INTEREST_OPTIONS = [
+  "Coffee",
+  "Walk",
+  "Study",
+  "Board Games",
+  "Meal",
+  "Dessert",
+  "Movie",
+  "Karaoke",
+  "Workout",
+  "Books",
+  "Travel",
+  "Language Exchange",
+  "Networking",
+  "Photography",
+];
+
+const RESPONSE_NOTE_OPTIONS = [
+  "Usually replies within a few hours",
+  "Usually replies within a day",
+  "Usually replies within 2 days",
+  "Replies may be slow on weekdays",
+  "Usually replies in the evening",
+];
+
 type Profile = {
   id: string;
   display_name: string | null;
@@ -18,6 +61,30 @@ type Profile = {
   interests: string[] | null;
   response_time_note: string | null;
 };
+
+function ToggleChip({
+  label,
+  selected,
+  onClick,
+}: {
+  label: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full px-3 py-2 text-sm font-medium transition ${
+        selected
+          ? "bg-[#a48f7a] text-white"
+          : "bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
 
 export default function AccountPage() {
   const supabase = createClient();
@@ -35,13 +102,26 @@ export default function AccountPage() {
   const [aboutMe, setAboutMe] = useState("");
   const [preferredArea, setPreferredArea] = useState("");
   const [meetingStyle, setMeetingStyle] = useState("");
-  const [languages, setLanguages] = useState("");
-  const [interests, setInterests] = useState("");
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [interests, setInterests] = useState<string[]>([]);
   const [responseTimeNote, setResponseTimeNote] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+
+  const toggleArrayValue = (
+    value: string,
+    current: string[],
+    setter: (next: string[]) => void
+  ) => {
+    if (current.includes(value)) {
+      setter(current.filter((item) => item !== value));
+      return;
+    }
+
+    setter([...current, value]);
+  };
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -117,8 +197,8 @@ export default function AccountPage() {
         setAboutMe(profile.about_me || "");
         setPreferredArea(profile.preferred_area || "");
         setMeetingStyle(profile.meeting_style || "");
-        setLanguages((profile.languages || []).join(", "));
-        setInterests((profile.interests || []).join(", "));
+        setLanguages(profile.languages || []);
+        setInterests(profile.interests || []);
         setResponseTimeNote(profile.response_time_note || "");
       }
 
@@ -134,16 +214,6 @@ export default function AccountPage() {
     setMessage("");
     setSaving(true);
 
-    const parsedLanguages = languages
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
-
-    const parsedInterests = interests
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
-
     const { error } = await supabase.from("profiles").upsert({
       id: userId,
       display_name: displayName.trim() || null,
@@ -154,8 +224,8 @@ export default function AccountPage() {
       about_me: aboutMe.trim() || null,
       preferred_area: preferredArea.trim() || null,
       meeting_style: meetingStyle.trim() || null,
-      languages: parsedLanguages.length > 0 ? parsedLanguages : null,
-      interests: parsedInterests.length > 0 ? parsedInterests : null,
+      languages: languages.length > 0 ? languages : null,
+      interests: interests.length > 0 ? interests : null,
       response_time_note: responseTimeNote.trim() || null,
       updated_at: new Date().toISOString(),
     });
@@ -209,15 +279,51 @@ export default function AccountPage() {
               Personal profile
             </h2>
             <p className="mt-2 text-sm leading-6 text-[#7a6b61]">
-              Manage your public intro, preferences, and profile details.
+              Manage your public intro, meetup preferences, and the signals people see before they reach out.
             </p>
           </div>
           <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
-            Visible across meetups
+            {isPublic ? "Public profile" : "Private profile"}
           </div>
         </div>
 
-        <div className="mt-8 space-y-5">
+        <div className="mt-8 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-[22px] border border-[#eadfd3] bg-[#fffaf6] p-4">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+              Account email
+            </div>
+            <div className="mt-2 text-sm font-medium text-[#5f5347]">
+              {email || "Not available"}
+            </div>
+          </div>
+          <div className="rounded-[22px] border border-[#eadfd3] bg-[#fffaf6] p-4">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+              Meetup style
+            </div>
+            <div className="mt-2 text-sm font-medium text-[#5f5347]">
+              {meetingStyle || "Choose your vibe"}
+            </div>
+          </div>
+          <div className="rounded-[22px] border border-[#eadfd3] bg-[#fffaf6] p-4">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+              Interests
+            </div>
+            <div className="mt-2 text-sm font-medium text-[#5f5347]">
+              {interests.length > 0 ? `${interests.length} selected` : "Add a few favorites"}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 space-y-6">
+          <section className="rounded-[26px] border border-[#efe6db] bg-[#fcfaf7] p-5">
+            <div className="mb-4">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                Basics
+              </div>
+              <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#2f2a26]">
+                The first impression
+              </h3>
+            </div>
           <div>
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Email
@@ -241,7 +347,7 @@ export default function AccountPage() {
             />
           </div>
 
-          <div>
+          <div className="mt-5">
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Bio
             </label>
@@ -254,6 +360,52 @@ export default function AccountPage() {
             />
           </div>
 
+          <div className="mt-5 grid gap-5 sm:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                Gender
+              </label>
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+              >
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                Age Group
+              </label>
+              <select
+                value={ageGroup}
+                onChange={(e) => setAgeGroup(e.target.value)}
+                className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+              >
+                <option value="">Select age group</option>
+                <option value="20s">20s</option>
+                <option value="30s">30s</option>
+                <option value="40s">40s</option>
+                <option value="50s+">50s+</option>
+              </select>
+            </div>
+          </div>
+          </section>
+
+          <section className="rounded-[26px] border border-[#efe6db] bg-[#fcfaf7] p-5">
+            <div className="mb-4">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                Personality
+              </div>
+              <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#2f2a26]">
+                Help people understand your vibe
+              </h3>
+            </div>
           <div>
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               About Me
@@ -267,41 +419,7 @@ export default function AccountPage() {
             />
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-              Gender
-            </label>
-            <select
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
-              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-            >
-              <option value="">Select gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-              <option value="Prefer not to say">Prefer not to say</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-              Age Group
-            </label>
-            <select
-              value={ageGroup}
-              onChange={(e) => setAgeGroup(e.target.value)}
-              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-            >
-              <option value="">Select age group</option>
-              <option value="20s">20s</option>
-              <option value="30s">30s</option>
-              <option value="40s">40s</option>
-              <option value="50s+">50s+</option>
-            </select>
-          </div>
-
-          <div>
+          <div className="mt-5">
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Preferred Area
             </label>
@@ -312,62 +430,86 @@ export default function AccountPage() {
               placeholder="Koreatown, Pasadena, DTLA..."
             />
           </div>
+          </section>
 
+          <section className="rounded-[26px] border border-[#efe6db] bg-[#fcfaf7] p-5">
+            <div className="mb-4">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                Preferences
+              </div>
+              <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#2f2a26]">
+                Make your meetup style easy to read
+              </h3>
+            </div>
           <div>
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Meeting Style
             </label>
-            <input
+            <select
               value={meetingStyle}
               onChange={(e) => setMeetingStyle(e.target.value)}
               className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-              placeholder="Friendly, casual, thoughtful..."
-            />
+            >
+              <option value="">Select meeting style</option>
+              {MEETING_STYLE_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div>
+          <div className="mt-5">
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Languages
             </label>
-            <input
-              value={languages}
-              onChange={(e) => setLanguages(e.target.value)}
-              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-              placeholder="English, Korean"
-            />
-            <p className="mt-1 text-xs text-[#9b8f84]">
-              Separate with commas.
-            </p>
+            <div className="flex flex-wrap gap-2 rounded-[22px] border border-[#e7ddd2] bg-white p-3">
+              {LANGUAGE_OPTIONS.map((item) => (
+                <ToggleChip
+                  key={item}
+                  label={item}
+                  selected={languages.includes(item)}
+                  onClick={() => toggleArrayValue(item, languages, setLanguages)}
+                />
+              ))}
+            </div>
           </div>
 
-          <div>
+          <div className="mt-5">
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Interests
             </label>
-            <input
-              value={interests}
-              onChange={(e) => setInterests(e.target.value)}
-              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-              placeholder="Coffee, Walk, Study, Board Games"
-            />
-            <p className="mt-1 text-xs text-[#9b8f84]">
-              Separate with commas.
-            </p>
+            <div className="flex flex-wrap gap-2 rounded-[22px] border border-[#e7ddd2] bg-white p-3">
+              {INTEREST_OPTIONS.map((item) => (
+                <ToggleChip
+                  key={item}
+                  label={item}
+                  selected={interests.includes(item)}
+                  onClick={() => toggleArrayValue(item, interests, setInterests)}
+                />
+              ))}
+            </div>
           </div>
 
-          <div>
+          <div className="mt-5">
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Response Note
             </label>
-            <input
+            <select
               value={responseTimeNote}
               onChange={(e) => setResponseTimeNote(e.target.value)}
               className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-              placeholder="Usually replies within a day"
-            />
+            >
+              <option value="">Select response note</option>
+              {RESPONSE_NOTE_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <label className="flex items-center gap-3 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#5a5149]">
+          <label className="mt-5 flex items-center gap-3 rounded-[22px] border border-[#eadfd3] bg-white px-4 py-3 text-sm text-[#5a5149]">
             <input
               type="checkbox"
               checked={isPublic}
@@ -375,6 +517,7 @@ export default function AccountPage() {
             />
             Make my profile public
           </label>
+          </section>
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
