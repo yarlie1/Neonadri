@@ -994,12 +994,10 @@ export default function HomeFeedClient({
                     </div>
                     <div className="min-w-0">
                       <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/70">
-                        Meetup vibe
+                        {matchBadge.label}
                       </div>
                       <div className="truncate text-sm font-semibold text-white/95">
-                        {matchBadge.label === "Matched"
-                          ? "Matched and confirmed"
-                          : "Open for a good meetup"}
+                        {post.meeting_purpose || "Social meetup"}
                       </div>
                     </div>
                   </div>
