@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   Clock3,
   Eye,
-  Pencil,
   UserCircle2,
   XCircle,
 } from "lucide-react";
@@ -105,15 +104,6 @@ export default function OwnerMatchPanel({
           </p>
         </div>
 
-        {!isMatched && (
-          <Link
-            href={`/write/${postId}`}
-            className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-          >
-            <Pencil className="h-4 w-4" />
-            Edit Meetup
-          </Link>
-        )}
       </div>
 
       {isMatched && matchedPartner ? (

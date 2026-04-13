@@ -619,16 +619,47 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
           <div className="relative">
-            <div>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
-                Meetup overview
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+                  Meetup overview
+                </div>
+                <div className="mt-3 text-[2rem] font-black leading-[1.02] tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.5rem]">
+                  {locationLabel}
+                </div>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
+                  The essentials first: when it happens, who it is for, and what makes the meetup worth joining.
+                </p>
               </div>
-              <div className="mt-3 text-[2rem] font-black leading-[1.02] tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.5rem]">
-                {locationLabel}
+
+              <div className="shrink-0 rounded-[24px] border border-white/60 bg-white/60 px-4 py-4 backdrop-blur sm:min-w-[220px]">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
+                  Hosted by
+                </div>
+                <div className="mt-3 flex items-center gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-base font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
+                    {ownerName.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="min-w-0">
+                    {post.user_id ? (
+                      <Link
+                        href={ownerProfileHref}
+                        className="block truncate text-base font-bold text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
+                      >
+                        {ownerName}
+                      </Link>
+                    ) : (
+                      <div className="truncate text-base font-bold text-[#2f2a26]">{ownerName}</div>
+                    )}
+                    <div className="mt-1 text-sm text-[#6f655c]">
+                      {[ownerGender || "Unknown", ownerAgeGroup || null].filter(Boolean).join(" / ")}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-3 rounded-full border border-[#e7ddd2] bg-white/80 px-3 py-1.5 text-xs font-medium text-[#6b5f52]">
+                  {ownerAverageRating.toFixed(1)} rating / {ownerReviewCount} reviews
+                </div>
               </div>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
-                A clear meetup plan with time, place, benefit, and just enough host context to decide quickly.
-              </p>
             </div>
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -651,9 +682,14 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                   My meetup
                 </span>
               )}
+              {!isPostMatched && (
+                <span className="rounded-full border border-white/60 bg-white/55 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#7d6458]">
+                  {totalRequestCount} request{totalRequestCount === 1 ? "" : "s"}
+                </span>
+              )}
             </div>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
+            <div className="mt-5 grid gap-3 lg:grid-cols-[1.1fr_0.9fr]">
               <div className="rounded-[26px] border border-white/55 bg-white/58 px-4 py-4 backdrop-blur">
                 <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
                   Quick snapshot
@@ -673,103 +709,40 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </div>
 
               <div className="rounded-[26px] border border-white/55 bg-white/58 px-4 py-4 backdrop-blur">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
-                      Hosted by
-                    </div>
-                    <div className="mt-3 flex items-center gap-3">
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-base font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
-                        {ownerName.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="min-w-0">
-                        {post.user_id ? (
-                          <Link
-                            href={ownerProfileHref}
-                            className="block truncate text-base font-bold text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
-                          >
-                            {ownerName}
-                          </Link>
-                        ) : (
-                          <div className="truncate text-base font-bold text-[#2f2a26]">{ownerName}</div>
-                        )}
-                        <div className="mt-1 text-sm text-[#6f655c]">
-                          {[ownerGender || "Unknown", ownerAgeGroup || null].filter(Boolean).join(" / ")}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="shrink-0 rounded-full border border-[#e7ddd2] bg-white/75 px-3 py-1.5 text-xs font-medium text-[#6b5f52]">
-                    {ownerAverageRating.toFixed(1)} · {ownerReviewCount} reviews
-                  </div>
+                <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
+                  Meetup details
                 </div>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {user && user.id === post.user_id && !isPostMatched && (
-                    <>
-                      <Link
-                        href={`/write/${post.id}`}
-                        className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                      >
-                        <Sparkles className="h-4 w-4" />
-                        Edit Meetup
-                      </Link>
-                      <DeletePostButton postId={post.id} />
-                    </>
-                  )}
-
-                  {isPostMatched && (
-                    <div className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-[#efe7dc] px-4 py-2 text-sm font-medium text-[#5f5347]">
-                      <HeartHandshake className="h-4 w-4" />
-                      Match completed
-                    </div>
-                  )}
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <InfoItem
+                    icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                    label="Time"
+                    value={meetupTimeLabel}
+                  />
+                  <InfoItem
+                    icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                    label="Duration"
+                    value={meetupDurationLabel}
+                  />
+                  <InfoItem
+                    icon={<UserRound className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                    label="Looking for"
+                    value={targetLabel}
+                  />
+                  <InfoItem
+                    icon={<Coins className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                    label="Benefit"
+                    value={post.benefit_amount || "Not listed"}
+                  />
                 </div>
               </div>
             </div>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-[1.05fr_0.95fr]">
-              <div className="rounded-[24px] border border-white/50 bg-white/55 px-4 py-4 backdrop-blur">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
-                  Meetup details
-                </div>
-                <div className="mt-3 space-y-3 text-[15px] text-[#5f5347]">
-                  <div className="flex items-start gap-2">
-                    <Clock3 className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                    <div>
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b8f84]">
-                        Time
-                      </div>
-                      <div className="mt-1">{meetupTimeLabel}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <Clock3 className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                    <div>
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b8f84]">
-                        Duration
-                      </div>
-                      <div className="mt-1">{meetupDurationLabel}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <UserRound className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                    <div>
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b8f84]">
-                        Looking for
-                      </div>
-                      <div className="mt-1">{targetLabel}</div>
-                    </div>
-                  </div>
-                </div>
+            <div className="mt-5 rounded-[26px] border border-white/55 bg-white/58 px-4 py-4 backdrop-blur">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
+                Location
               </div>
-
-              <div className="rounded-[24px] border border-white/50 bg-white/55 px-4 py-4 backdrop-blur">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
-                  Location
-                </div>
-                <div className="mt-3 space-y-3 text-[15px] text-[#5f5347]">
+              <div className="mt-3 grid gap-3 lg:grid-cols-[0.9fr_1.1fr]">
+                <div className="space-y-3 text-[15px] text-[#5f5347]">
                   <div className="flex items-start gap-2">
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
                     <div>
@@ -790,254 +763,214 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                       </div>
                     </div>
                   )}
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {post.latitude !== null && post.longitude !== null && (
-          <div className="overflow-hidden rounded-[30px] border border-[#eadfd3] bg-white/90 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
-            <div className="flex items-center justify-between gap-3 px-2 pb-4">
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-                  Where you'll meet
-                </div>
-                <h2 className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
-                  Map and address
-                </h2>
-                <p className="mt-2 text-sm text-[#6f655c]">
-                  Confirm the meeting area before you send a request.
-                </p>
-              </div>
-              {mapUrl && (
-                <a
-                  href={mapUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
-                >
-                  Open in Maps
-                </a>
-              )}
-            </div>
-            <div className="mb-4 rounded-[22px] border border-[#efe6db] bg-[#fcfaf7] px-4 py-3 text-sm leading-6 text-[#5f5347]">
-              <div className="font-medium text-[#2f2a26]">{post.place_name || "Selected place"}</div>
-              {post.location && <div className="mt-1 text-[#6f655c]">{post.location}</div>}
-            </div>
-            <ClientMap latitude={post.latitude} longitude={post.longitude} />
-          </div>
-        )}
-
-        <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 px-6 py-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
-          <div>
-            <h2 className="text-[1.75rem] font-bold text-[#2f2a26]">
-              About the Host
-            </h2>
-          </div>
-
-          <div className="mt-5 space-y-4">
-            <div className="rounded-[1.6rem] border border-[#efe3d8] bg-[linear-gradient(135deg,#fffaf5_0%,#f8eee3_100%)] p-4 shadow-sm">
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="min-w-0">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-                      Host snapshot
-                    </div>
-                    <div className="mt-2 flex items-center gap-3">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-lg font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
-                        {ownerName.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="min-w-0">
-                        {post.user_id ? (
-                          <Link
-                            href={ownerProfileHref}
-                            className="block truncate text-lg font-bold tracking-[-0.03em] text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
-                          >
-                            {ownerName}
-                          </Link>
-                        ) : (
-                          <div className="truncate text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
-                            {ownerName}
-                          </div>
-                        )}
-                        <div className="mt-1 text-sm text-[#6f655c]">
-                          Warm, low-pressure meetup host
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-full border border-[#e7ddd2] bg-white/75 px-4 py-2 text-sm font-medium text-[#6b5f52]">
-                    {ownerAverageRating.toFixed(1)} rating · {ownerReviewCount} reviews
-                  </div>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {(ownerGender || ownerAgeGroup) && (
-                    <div className="flex items-start gap-3 rounded-[1rem] bg-white/75 px-3.5 py-3">
-                      <UserRound className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <div className="min-w-0">
-                        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                          Host
-                        </div>
-                        <div className="mt-1 text-sm font-medium text-[#4f443b]">
-                          {ownerGender || "Unknown"}
-                          {ownerGender && ownerAgeGroup ? " / " : ""}
-                          {ownerAgeGroup || ""}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {hasLanguages && (
-                    <div className="flex items-start gap-3 rounded-[1rem] bg-white/75 px-3.5 py-3">
-                      <Languages className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <div className="min-w-0">
-                        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                          Languages
-                        </div>
-                        <div className="mt-1 truncate text-sm font-medium text-[#4f443b]">
-                          {ownerLanguages.join(", ")}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[1.4rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
-              <div className="flex items-start gap-3">
-                <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
-                <div>
-                  <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                    About Me
-                  </div>
-                  <div className="mt-2 text-[15px] leading-7 text-[#5f5347]">
-                    {ownerSummary}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {(hasMeetingStyle || hasResponseNote) && (
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {hasMeetingStyle && (
-                  <InfoItem
-                    icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                    label="Meeting Style"
-                    value={ownerMeetingStyle}
-                  />
-                )}
-
-                {hasResponseNote && (
-                  <InfoItem
-                    icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                    label="Response Note"
-                    value={ownerResponseNote}
-                  />
-                )}
-              </div>
-            )}
-
-            {hasInterests && (
-              <div>
-                <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                  <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
-                  Interests
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {ownerInterests.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-full bg-[#f4ece4] px-3 py-1.5 text-xs font-medium text-[#6b5f52]"
+                  {mapUrl && (
+                    <a
+                      href={mapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-[#f6eee6] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
                     >
-                      {item}
-                    </span>
-                  ))}
+                      Open in Maps
+                    </a>
+                  )}
                 </div>
-              </div>
-            )}
 
-            <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
-                <div className="text-xs text-[#8b7f74]">Rating</div>
-                <div className="mt-1 text-xl font-bold text-[#2f2a26]">
-                  {ownerAverageRating.toFixed(1)}
-                </div>
-                <div className="mt-1 flex justify-center">
-                  <StarRating value={roundedAverage} size="sm" />
-                </div>
-              </div>
-
-              <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
-                <div className="text-xs text-[#8b7f74]">Reviews</div>
-                <div className="mt-2 text-xl font-bold text-[#2f2a26]">
-                  {ownerReviewCount}
-                </div>
-              </div>
-
-              <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
-                <div className="text-xs text-[#8b7f74]">Meetups</div>
-                <div className="mt-2 text-xl font-bold text-[#2f2a26]">
-                  {ownerCompletedMeetups}
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
-              <div className="text-sm font-semibold text-[#2f2a26]">
-                Recent Reviews
-              </div>
-
-              <div className="mt-3 space-y-3">
-                {ownerRecentReviews.length === 0 ? (
-                  <div className="text-sm text-[#8b7f74]">No reviews yet.</div>
+                {post.latitude !== null && post.longitude !== null ? (
+                  <div className="overflow-hidden rounded-[22px] border border-[#efe6db] bg-[#fcfaf7]">
+                    <ClientMap latitude={post.latitude} longitude={post.longitude} />
+                  </div>
                 ) : (
-                  ownerRecentReviews.map((review) => (
-                    <div
-                      key={review.id}
-                      className="rounded-[1rem] border border-[#eee4d9] bg-white px-3 py-3"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <StarRating value={review.rating} size="md" />
-                        <div className="text-[11px] text-[#9b8f84]">
-                          {new Date(review.created_at).toLocaleDateString()}
-                        </div>
-                      </div>
-
-                      <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#5f5347]">
-                        {review.review_text || "No comment."}
-                      </p>
-                    </div>
-                  ))
+                  <div className="rounded-[22px] border border-[#efe6db] bg-[#fcfaf7] px-4 py-8 text-sm text-[#8b7f74]">
+                    Map preview is not available for this meetup.
+                  </div>
                 )}
               </div>
             </div>
           </div>
         </div>
 
-        {user && user.id === post.user_id ? (
-          <OwnerMatchPanel
-            postId={post.id}
-            isMatched={isPostMatched}
-            pendingRequestCount={pendingRequestCount}
-            requests={ownerRequestItems}
-            matchedPartner={matchedPartner}
-          />
-        ) : post.user_id ? (
-          <MatchRequestBox
-            postId={post.id}
-            postOwnerUserId={post.user_id}
-            requestCount={totalRequestCount}
-            isPostMatched={isPostMatched}
-            myRequestId={myRequestId}
-            myRequestStatus={myRequestStatus}
-          />
-        ) : null}
+        <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+          <div className="space-y-5">
+            <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 px-6 py-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-[1.75rem] font-bold text-[#2f2a26]">About the Host</h2>
+                <div className="rounded-full border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-2 text-sm font-medium text-[#6b5f52]">
+                  {ownerAverageRating.toFixed(1)} rating / {ownerReviewCount} reviews
+                </div>
+              </div>
+
+              <div className="mt-5 rounded-[1.6rem] border border-[#efe3d8] bg-[linear-gradient(135deg,#fffaf5_0%,#f8eee3_100%)] p-4 shadow-sm">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-lg font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
+                      {ownerName.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      {post.user_id ? (
+                        <Link
+                          href={ownerProfileHref}
+                          className="block truncate text-lg font-bold tracking-[-0.03em] text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
+                        >
+                          {ownerName}
+                        </Link>
+                      ) : (
+                        <div className="truncate text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
+                          {ownerName}
+                        </div>
+                      )}
+                      <div className="mt-1 text-sm text-[#6f655c]">Warm, low-pressure meetup host</div>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {(ownerGender || ownerAgeGroup) && (
+                      <InfoItem
+                        icon={<UserRound className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                        label="Host"
+                        value={`${ownerGender || "Unknown"}${ownerGender && ownerAgeGroup ? " / " : ""}${ownerAgeGroup || ""}`}
+                      />
+                    )}
+                    {hasLanguages && (
+                      <InfoItem
+                        icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                        label="Languages"
+                        value={ownerLanguages.join(", ")}
+                      />
+                    )}
+                    {hasMeetingStyle && (
+                      <InfoItem
+                        icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                        label="Meeting Style"
+                        value={ownerMeetingStyle}
+                      />
+                    )}
+                    {hasResponseNote && (
+                      <InfoItem
+                        icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                        label="Response Note"
+                        value={ownerResponseNote}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-[1.4rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
+                <div className="flex items-start gap-3">
+                  <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
+                  <div>
+                    <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
+                      About Me
+                    </div>
+                    <div className="mt-2 text-[15px] leading-7 text-[#5f5347]">{ownerSummary}</div>
+                  </div>
+                </div>
+              </div>
+
+              {hasInterests && (
+                <div className="mt-4">
+                  <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
+                    <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
+                    Interests
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {ownerInterests.map((item) => (
+                      <span
+                        key={item}
+                        className="rounded-full bg-[#f4ece4] px-3 py-1.5 text-xs font-medium text-[#6b5f52]"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-4 grid grid-cols-3 gap-3">
+                <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
+                  <div className="text-xs text-[#8b7f74]">Rating</div>
+                  <div className="mt-1 text-xl font-bold text-[#2f2a26]">{ownerAverageRating.toFixed(1)}</div>
+                  <div className="mt-1 flex justify-center">
+                    <StarRating value={roundedAverage} size="sm" />
+                  </div>
+                </div>
+                <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
+                  <div className="text-xs text-[#8b7f74]">Reviews</div>
+                  <div className="mt-2 text-xl font-bold text-[#2f2a26]">{ownerReviewCount}</div>
+                </div>
+                <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
+                  <div className="text-xs text-[#8b7f74]">Meetups</div>
+                  <div className="mt-2 text-xl font-bold text-[#2f2a26]">{ownerCompletedMeetups}</div>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
+                <div className="text-sm font-semibold text-[#2f2a26]">Recent Reviews</div>
+                <div className="mt-3 space-y-3">
+                  {ownerRecentReviews.length === 0 ? (
+                    <div className="text-sm text-[#8b7f74]">No reviews yet.</div>
+                  ) : (
+                    ownerRecentReviews.map((review) => (
+                      <div
+                        key={review.id}
+                        className="rounded-[1rem] border border-[#eee4d9] bg-white px-3 py-3"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <StarRating value={review.rating} size="md" />
+                          <div className="text-[11px] text-[#9b8f84]">
+                            {new Date(review.created_at).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#5f5347]">
+                          {review.review_text || "No comment."}
+                        </p>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-5 lg:sticky lg:top-36">
+            {user && user.id === post.user_id ? (
+              <OwnerMatchPanel
+                postId={post.id}
+                isMatched={isPostMatched}
+                pendingRequestCount={pendingRequestCount}
+                requests={ownerRequestItems}
+                matchedPartner={matchedPartner}
+              />
+            ) : post.user_id ? (
+              <MatchRequestBox
+                postId={post.id}
+                postOwnerUserId={post.user_id}
+                requestCount={totalRequestCount}
+                isPostMatched={isPostMatched}
+                myRequestId={myRequestId}
+                myRequestStatus={myRequestStatus}
+              />
+            ) : null}
+
+            {user && user.id === post.user_id && !isPostMatched && (
+              <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-5 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
+                  Meetup actions
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Link
+                    href={`/write/${post.id}`}
+                    className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                  >
+                    <Sparkles className="h-4 w-4" />
+                    Edit Meetup
+                  </Link>
+                  <DeletePostButton postId={post.id} />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
 
         <div className="px-1 text-xs text-[#9b8f84]">
           Created at {new Date(post.created_at).toLocaleString()}
