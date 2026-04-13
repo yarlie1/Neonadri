@@ -227,7 +227,7 @@ export default function SignupPage() {
       setMessage(
         hasSession
           ? "Account created. Taking you into Neonadri now..."
-          : "Account created. Please check your email to confirm, then log in."
+          : "Account created. Please log in to continue."
       );
 
       window.setTimeout(() => {
@@ -257,7 +257,7 @@ export default function SignupPage() {
                 Build your profile before the first hello.
               </h1>
               <p className="mt-3 max-w-lg text-sm leading-6 text-[#5f453b] sm:text-[15px]">
-                We guide people through account setup one step at a time, so the first meetup already feels personal, clear, and comfortable.
+                We guide people through account setup one step at a time, so you can finish your profile and join the app without friction.
               </p>
 
               <div className="mt-7 space-y-3">
@@ -293,7 +293,7 @@ export default function SignupPage() {
                           {item.number === 1 && "Email and password"}
                           {item.number === 2 && "Name, gender, and age group"}
                           {item.number === 3 && "About you, style, and interests"}
-                          {item.number === 4 && "Final review before joining"}
+                          {item.number === 4 && "Final review before entering"}
                         </div>
                       </div>
                     </div>
@@ -338,7 +338,7 @@ export default function SignupPage() {
               {step === 3 &&
                 "Show your personality so meetup requests feel more natural."}
               {step === 4 &&
-                "Review the profile that will be created together with your account."}
+                "Review the profile that will be created before you enter Neonadri."}
             </p>
 
             <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#f2e7dc]">
@@ -614,3 +614,4 @@ export default function SignupPage() {
     </main>
   );
 }
+
