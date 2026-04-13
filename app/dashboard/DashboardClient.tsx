@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import {
@@ -341,6 +342,7 @@ export default function DashboardClient({
   reviewedMatchIds: number[];
 }) {
   const supabase = createClient();
+  const router = useRouter();
 
   const [posts, setPosts] = useState(initialPosts);
   const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
@@ -353,6 +355,15 @@ export default function DashboardClient({
   >(null);
   const [showMatchSuccess, setShowMatchSuccess] = useState(false);
   const [showReviewSuccess, setShowReviewSuccess] = useState(false);
+
+  const stopCardClick = (event: { stopPropagation: () => void }) => {
+    event.stopPropagation();
+  };
+
+  const openPostDetail = (postId?: number) => {
+    if (!postId) return;
+    router.push(`/posts/${postId}`);
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -604,7 +615,8 @@ export default function DashboardClient({
               return (
                 <div
                   key={post.id}
-                  className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
+                  onClick={() => openPostDetail(post.id)}
+                  className="cursor-pointer rounded-[30px] border border-[#eadfd3] bg-white/92 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
                 >
                   <div className="mb-4 flex items-center justify-between gap-3">
                     <div className="inline-flex items-center gap-2 rounded-full bg-[#f8efe8] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9a6f5f]">
@@ -672,7 +684,7 @@ export default function DashboardClient({
                     </div>
                   </div>
 
-                  <div className="mt-5 flex flex-wrap gap-2">
+                  <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
                     <CompactActionButton href={`/posts/${post.id}`} primary>
                       <Eye className="h-3.5 w-3.5" />
                       View
@@ -726,7 +738,8 @@ export default function DashboardClient({
             {requestsReceived.map((item) => (
               <div
                 key={item.id}
-                className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
+                onClick={() => openPostDetail(item.post_id)}
+                className="cursor-pointer rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
@@ -756,7 +769,7 @@ export default function DashboardClient({
                 <MiniPostPreview post={postMap[item.post_id]} />
 
                 {item.status === "pending" ? (
-                  <div className="mt-5 flex flex-wrap gap-2">
+                  <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
                     <CompactActionButton href={`/profile/${item.requester_user_id}`}>
                       <UserCircle2 className="h-3.5 w-3.5" />
                       View Profile
@@ -786,7 +799,7 @@ export default function DashboardClient({
                     </CompactActionButton>
                   </div>
                 ) : (
-                  <div className="mt-5 flex flex-wrap gap-2">
+                  <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
                     <CompactActionButton href={`/profile/${item.requester_user_id}`}>
                       <UserCircle2 className="h-3.5 w-3.5" />
                       View Profile
@@ -809,7 +822,8 @@ export default function DashboardClient({
             {requestsSent.map((item) => (
               <div
                 key={item.id}
-                className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
+                onClick={() => openPostDetail(item.post_id)}
+                className="cursor-pointer rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
@@ -838,7 +852,7 @@ export default function DashboardClient({
 
                 <MiniPostPreview post={postMap[item.post_id]} />
 
-                <div className="mt-5 flex flex-wrap gap-2">
+                <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
                   <CompactActionButton href={`/profile/${item.post_owner_user_id}`}>
                     <UserCircle2 className="h-3.5 w-3.5" />
                     View Profile
@@ -873,7 +887,8 @@ export default function DashboardClient({
               return (
                 <div
                   key={item.id}
-                  className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
+                  onClick={() => openPostDetail(item.post_id)}
+                  className="cursor-pointer rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
@@ -982,7 +997,7 @@ export default function DashboardClient({
                     <MiniPostPreview post={post} />
                   )}
 
-                  <div className="mt-5 flex flex-wrap gap-2">
+                  <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
                     <CompactActionButton href={`/posts/${item.post_id}`} primary>
                       <Eye className="h-3.5 w-3.5" />
                       View Meetup

@@ -91,6 +91,7 @@ const PURPOSE_OPTIONS = [
 
 const GENDER_OPTIONS = ["All", "Male", "Female", "Other", "Prefer not to say"];
 const AGE_GROUP_OPTIONS = ["All", "20s", "30s", "40s", "50s+"];
+const MATCH_STATE_OPTIONS = ["All", "Open", "Matched"];
 
 const SORT_OPTIONS = [
   { value: "newest", label: "Newest" },
@@ -301,11 +302,13 @@ function FilterPill({
 }
 
 function FilterSummaryText({
+  matchState,
   purpose,
   gender,
   ageGroup,
   sort,
 }: {
+  matchState: string;
   purpose: string;
   gender: string;
   ageGroup: string;
@@ -313,6 +316,7 @@ function FilterSummaryText({
 }) {
   const parts: string[] = [];
 
+  if (matchState !== "All") parts.push(matchState);
   if (purpose !== "All") parts.push(purpose);
   if (gender !== "All") parts.push(gender);
   if (ageGroup !== "All") parts.push(ageGroup);
@@ -341,6 +345,7 @@ export default function HomeFeedClient({
   hostProfileMap: HostProfileMap;
   matchSummaryMap: MatchSummaryMap;
 }) {
+  const [matchState, setMatchState] = useState("All");
   const [purpose, setPurpose] = useState("All");
   const [gender, setGender] = useState("All");
   const [ageGroup, setAgeGroup] = useState("All");
@@ -385,12 +390,17 @@ export default function HomeFeedClient({
 
   const posts = useMemo(() => {
     let next = initialPosts.filter((post) => {
+      const isMatched = !!matchSummaryMap[post.id]?.isMatched;
+      const matchStateMatch =
+        matchState === "All" ||
+        (matchState === "Matched" && isMatched) ||
+        (matchState === "Open" && !isMatched);
       const purposeMatch = purpose === "All" || post.meeting_purpose === purpose;
       const genderMatch = gender === "All" || post.target_gender === gender;
       const ageGroupMatch =
         ageGroup === "All" || post.target_age_group === ageGroup;
 
-      return purposeMatch && genderMatch && ageGroupMatch;
+      return matchStateMatch && purposeMatch && genderMatch && ageGroupMatch;
     });
 
     next = [...next].sort((a, b) => {
@@ -456,7 +466,7 @@ export default function HomeFeedClient({
     });
 
     return next;
-  }, [initialPosts, purpose, gender, ageGroup, sort, userLocation]);
+  }, [initialPosts, matchState, purpose, gender, ageGroup, sort, userLocation, matchSummaryMap]);
 
   const upcomingCount = useMemo(
     () =>
@@ -479,6 +489,7 @@ export default function HomeFeedClient({
   };
 
   const resetAll = () => {
+    setMatchState("All");
     setPurpose("All");
     setGender("All");
     setAgeGroup("All");
@@ -618,7 +629,7 @@ export default function HomeFeedClient({
           </section>
         )}
 
-        <div className="sticky top-[88px] z-30 rounded-[24px] border border-[#eadfd3] bg-white/90 shadow-[0_16px_34px_rgba(92,69,52,0.12)] backdrop-blur">
+        <div className="sticky top-[72px] z-30 rounded-[24px] border border-[#eadfd3] bg-white/95 shadow-[0_16px_34px_rgba(92,69,52,0.12)] backdrop-blur">
           <button
             type="button"
             onClick={() => setIsOpen((v) => !v)}
@@ -632,6 +643,7 @@ export default function HomeFeedClient({
 
               <div className="mt-2">
                 <FilterSummaryText
+                  matchState={matchState}
                   purpose={purpose}
                   gender={gender}
                   ageGroup={ageGroup}
@@ -650,8 +662,24 @@ export default function HomeFeedClient({
           </button>
 
           {isOpen && (
-            <div className="border-t border-[#efe6db] px-4 py-4">
+            <div className="max-h-[calc(100vh-8rem)] overflow-y-auto border-t border-[#efe6db] px-4 py-4">
               <div>
+                <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+                  Status
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {MATCH_STATE_OPTIONS.map((option) => (
+                    <FilterPill
+                      key={option}
+                      active={matchState === option}
+                      label={option}
+                      onClick={() => applyAndClose(() => setMatchState(option))}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4">
                 <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
                   Purpose
                 </div>

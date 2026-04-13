@@ -725,25 +725,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           </div>
         )}
 
-        {user && user.id === post.user_id ? (
-          <OwnerMatchPanel
-            postId={post.id}
-            isMatched={isPostMatched}
-            pendingRequestCount={pendingRequestCount}
-            requests={ownerRequestItems}
-            matchedPartner={matchedPartner}
-          />
-        ) : post.user_id && (
-          <MatchRequestBox
-            postId={post.id}
-            postOwnerUserId={post.user_id}
-            requestCount={totalRequestCount}
-            isPostMatched={isPostMatched}
-            myRequestId={myRequestId}
-            myRequestStatus={myRequestStatus}
-          />
-        )}
-
         <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 px-6 py-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
           <div>
             <h2 className="text-[1.75rem] font-bold text-[#2f2a26]">
@@ -935,6 +916,25 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             </div>
           </div>
         </div>
+
+        {user && user.id === post.user_id ? (
+          <OwnerMatchPanel
+            postId={post.id}
+            isMatched={isPostMatched}
+            pendingRequestCount={pendingRequestCount}
+            requests={ownerRequestItems}
+            matchedPartner={matchedPartner}
+          />
+        ) : post.user_id ? (
+          <MatchRequestBox
+            postId={post.id}
+            postOwnerUserId={post.user_id}
+            requestCount={totalRequestCount}
+            isPostMatched={isPostMatched}
+            myRequestId={myRequestId}
+            myRequestStatus={myRequestStatus}
+          />
+        ) : null}
 
         <div className="px-1 text-xs text-[#9b8f84]">
           Created at {new Date(post.created_at).toLocaleString()}
