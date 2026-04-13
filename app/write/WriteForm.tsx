@@ -74,6 +74,19 @@ function formatDateTimeLocalValue(date: Date) {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
+function getDefaultMeetingTime() {
+  const now = new Date();
+  const target = new Date(now.getTime() + 3 * 60 * 60 * 1000);
+
+  target.setMinutes(0, 0, 0);
+
+  if (target.getTime() < now.getTime() + 3 * 60 * 60 * 1000) {
+    target.setHours(target.getHours() + 1);
+  }
+
+  return formatDateTimeLocalValue(target);
+}
+
 export default function WriteForm({ userId }: { userId: string }) {
   const router = useRouter();
 
@@ -101,10 +114,7 @@ export default function WriteForm({ userId }: { userId: string }) {
 
   useEffect(() => {
     if (!meetingTime) {
-      const now = new Date();
-      now.setHours(now.getHours() + 3);
-      now.setSeconds(0, 0);
-      setMeetingTime(formatDateTimeLocalValue(now));
+      setMeetingTime(getDefaultMeetingTime());
     }
   }, [meetingTime]);
 
@@ -394,12 +404,13 @@ export default function WriteForm({ userId }: { userId: string }) {
 
         <div className="mt-3 space-y-3">
           <div className="relative">
-            <Clock className="absolute left-4 top-4 h-4 w-4 text-[#8a7f74]" />
+            <Clock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
             <input
               type="datetime-local"
               className={fieldClass}
               value={meetingTime}
               onChange={(e) => setMeetingTime(e.target.value)}
+              step={1800}
             />
           </div>
 
@@ -422,7 +433,7 @@ export default function WriteForm({ userId }: { userId: string }) {
 
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
-              <MapPin className="pointer-events-none absolute left-4 top-4 h-4 w-4 text-[#8a7f74]" />
+              <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
               <input
                 ref={searchInputRef}
                 className={`${fieldClass} pr-5`}
