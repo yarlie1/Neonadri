@@ -344,6 +344,10 @@ export default function DashboardClient({
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
   const [matchFilter, setMatchFilter] = useState<PostFilter>("all");
   const [deletingPostId, setDeletingPostId] = useState<number | null>(null);
+  const [processingRequestId, setProcessingRequestId] = useState<number | null>(null);
+  const [processingRequestAction, setProcessingRequestAction] = useState<
+    "accepted" | "rejected" | null
+  >(null);
   const [showMatchSuccess, setShowMatchSuccess] = useState(false);
   const [showReviewSuccess, setShowReviewSuccess] = useState(false);
 
@@ -409,6 +413,11 @@ export default function DashboardClient({
     requestId: number,
     nextStatus: "accepted" | "rejected"
   ) => {
+    if (processingRequestId !== null) return;
+
+    setProcessingRequestId(requestId);
+    setProcessingRequestAction(nextStatus);
+
     const rpcName =
       nextStatus === "accepted" ? "accept_match_request" : "reject_match_request";
 
@@ -417,12 +426,16 @@ export default function DashboardClient({
     });
 
     if (error) {
+      setProcessingRequestId(null);
+      setProcessingRequestAction(null);
       alert(error.message);
       return;
     }
 
     const result = data as { ok?: boolean; error?: string } | null;
     if (!result?.ok) {
+      setProcessingRequestId(null);
+      setProcessingRequestAction(null);
       alert(result?.error || "Failed to update request");
       return;
     }
@@ -745,17 +758,25 @@ export default function DashboardClient({
 
                     <CompactActionButton
                       onClick={() => updateRequestStatus(item.id, "accepted")}
+                      disabled={processingRequestId !== null}
                       primary
                     >
                       <CheckCircle2 className="h-3.5 w-3.5" />
-                      Accept
+                      {processingRequestId === item.id &&
+                      processingRequestAction === "accepted"
+                        ? "Accepting..."
+                        : "Accept"}
                     </CompactActionButton>
 
                     <CompactActionButton
                       onClick={() => updateRequestStatus(item.id, "rejected")}
+                      disabled={processingRequestId !== null}
                     >
                       <XCircle className="h-3.5 w-3.5" />
-                      Reject
+                      {processingRequestId === item.id &&
+                      processingRequestAction === "rejected"
+                        ? "Rejecting..."
+                        : "Reject"}
                     </CompactActionButton>
                   </div>
                 ) : (
