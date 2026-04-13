@@ -970,11 +970,20 @@ export default function HomeFeedClient({
                   : "border-[#e7ddd2] bg-white hover:-translate-y-0.5 hover:bg-[#fffdf9]"
               }`}
             >
-              <div className="mb-4 flex items-center justify-end gap-3">
+              <div className="mb-4 flex items-center justify-between gap-3">
                 <div
-                  className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${matchBadge.className}`}
+                  className={`rounded-full px-3 py-1.5 text-[11px] font-semibold tracking-[0.02em] ${matchBadge.className}`}
                 >
                   {matchBadge.label}
+                </div>
+
+                <div className="min-w-0 text-right">
+                  <div className="hidden text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71] sm:block">
+                    Hosted by
+                  </div>
+                  <div className="truncate text-[12px] font-medium text-[#6a5e54]">
+                    {host.displayName}
+                  </div>
                 </div>
               </div>
 
