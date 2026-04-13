@@ -194,33 +194,36 @@ export default function SignupPage() {
         return;
       }
 
-      const payload = {
-        id: userId,
-        display_name: displayName.trim(),
-        bio: profileSummary || null,
-        about_me: aboutMe.trim() || null,
-        gender: gender || null,
-        age_group: ageGroup || null,
-        preferred_area: null,
-        languages: languages.length > 0 ? languages : null,
-        meeting_style: meetingStyle || null,
-        interests: interests.length > 0 ? interests : null,
-        response_time_note: null,
-        is_public: true,
-        updated_at: new Date().toISOString(),
-      };
+      const hasSession = !!data.session;
 
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .upsert(payload);
+      if (hasSession) {
+        const payload = {
+          id: userId,
+          display_name: displayName.trim(),
+          bio: profileSummary || null,
+          about_me: aboutMe.trim() || null,
+          gender: gender || null,
+          age_group: ageGroup || null,
+          preferred_area: null,
+          languages: languages.length > 0 ? languages : null,
+          meeting_style: meetingStyle || null,
+          interests: interests.length > 0 ? interests : null,
+          response_time_note: null,
+          is_public: true,
+          updated_at: new Date().toISOString(),
+        };
 
-      if (profileError) {
-        setMessage(profileError.message);
-        setSubmitting(false);
-        return;
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .upsert(payload);
+
+        if (profileError) {
+          setMessage(profileError.message);
+          setSubmitting(false);
+          return;
+        }
       }
 
-      const hasSession = !!data.session;
       setMessage(
         hasSession
           ? "Account created. Taking you into Neonadri now..."
