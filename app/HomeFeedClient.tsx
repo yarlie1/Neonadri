@@ -649,9 +649,9 @@ export default function HomeFeedClient({
                   <span>{formatTime(highlightedPost.meeting_time) || "Time TBD"}</span>
                 </div>
 
-                <div className="flex items-start gap-2 text-sm text-[#5a5149]">
+                <div className="flex min-w-0 items-start gap-2 text-sm text-[#5a5149]">
                   <MapPin className="mt-0.5 h-4 w-4 text-[#a27767]" />
-                  <span className="line-clamp-2">
+                  <span className="block min-w-0 flex-1 break-words line-clamp-2">
                     {highlightedPost.location || highlightedPost.place_name || "Location TBD"}
                   </span>
                 </div>
@@ -939,11 +939,11 @@ export default function HomeFeedClient({
                     </div>
                   )}
 
-                  <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                  <div className="flex min-w-0 items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
                     <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                     <div className="min-w-0 leading-[1.2]">
                       <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Place</div>
-                      <div className="truncate text-[12px] font-medium text-[#554a42]">{post.place_name || post.location || "No place"}</div>
+                      <div className="block truncate text-[12px] font-medium text-[#554a42]">{post.place_name || post.location || "No place"}</div>
                     </div>
                   </div>
 

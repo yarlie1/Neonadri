@@ -568,10 +568,12 @@ export default function DashboardClient({
                         <Clock3 className="h-4 w-4" />
                         <span>{formatTime(item.post.meeting_time)}</span>
                       </div>
-                      <div className="mt-3 flex flex-col gap-1 text-sm text-[#6f655c]">
-                        <div className="inline-flex items-center gap-2">
+                      <div className="mt-3 flex min-w-0 flex-col gap-1 text-sm text-[#6f655c]">
+                        <div className="inline-flex min-w-0 items-center gap-2">
                           <MapPin className="h-4 w-4 text-[#a27767]" />
-                          <span>{item.post.place_name || item.post.location || "your selected place"}</span>
+                          <span className="block min-w-0 truncate">
+                            {item.post.place_name || item.post.location || "your selected place"}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -754,11 +756,11 @@ export default function DashboardClient({
                         </div>
                       )}
 
-                      <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                      <div className="flex min-w-0 items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
                         <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                         <div className="min-w-0 leading-[1.2]">
                           <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Place</div>
-                          <div className="truncate text-[12px] font-medium text-[#554a42]">{post.place_name || post.location || "No place"}</div>
+                          <div className="block truncate text-[12px] font-medium text-[#554a42]">{post.place_name || post.location || "No place"}</div>
                         </div>
                       </div>
 
@@ -1013,13 +1015,13 @@ export default function DashboardClient({
                           </div>
                         )}
 
-                        <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                        <div className="flex min-w-0 items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
                           <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                           <div className="min-w-0 leading-[1.2]">
                             <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
                               Place
                             </div>
-                            <div className="truncate text-[12px] font-medium text-[#554a42]">
+                            <div className="block truncate text-[12px] font-medium text-[#554a42]">
                               {post.place_name || post.location || "No place"}
                             </div>
                           </div>
