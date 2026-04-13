@@ -977,7 +977,7 @@ export default function HomeFeedClient({
                   {matchBadge.label}
                 </div>
 
-                <div className="min-w-0 text-right">
+                <div className="min-w-0 rounded-full border border-[#e7ddd2] bg-[#faf3ec] px-3 py-1.5 text-right">
                   <div className="hidden text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71] sm:block">
                     Hosted by
                   </div>
