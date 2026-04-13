@@ -398,7 +398,7 @@ export default function EditWritePage() {
             </div>
             <input
               type="datetime-local"
-              className="h-[50px] w-full min-w-0 appearance-none border-0 bg-transparent px-4 text-sm text-[#2f2a26] shadow-none outline-none ring-0"
+              className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 text-sm text-[#2f2a26] !shadow-none !outline-none !ring-0"
               value={meetingTime}
               onChange={(e) => setMeetingTime(e.target.value)}
               step={1800}
@@ -431,7 +431,7 @@ export default function EditWritePage() {
               </div>
               <input
                 ref={searchInputRef}
-                className="h-[50px] w-full min-w-0 appearance-none border-0 bg-transparent px-4 pr-5 text-sm text-[#2f2a26] shadow-none outline-none ring-0"
+                className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 pr-5 text-sm text-[#2f2a26] !shadow-none !outline-none !ring-0"
                 placeholder="Search exact place or address"
                 value={location}
                 onChange={handleLocationInputChange}
