@@ -416,10 +416,12 @@ export default function WriteForm({ userId }: { userId: string }) {
             />
           </div>
 
-          <div className="relative">
-            <Clock className="absolute left-4 top-4 h-4 w-4 text-[#8a7f74]" />
+          <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
+            <div className="flex h-[50px] w-12 shrink-0 items-center justify-center border-r border-[#ece1d6] text-[#8a7f74]">
+              <Clock className="h-4 w-4" />
+            </div>
             <select
-              className={`${fieldClass} pr-10`}
+              className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-10 text-sm text-[#2f2a26] outline-none"
               value={durationMinutes}
               onChange={(e) => setDurationMinutes(e.target.value)}
             >
