@@ -25,6 +25,7 @@ import {
   RotateCcw,
   ChevronDown,
   LocateFixed,
+  Coins,
   Sparkles,
   HeartHandshake,
   Search,
