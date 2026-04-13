@@ -393,7 +393,7 @@ export default function EditWritePage() {
 
         <div className="mt-3 space-y-3">
           <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
-            <div className="flex h-[50px] w-12 shrink-0 items-center justify-center border-r border-[#ece1d6] text-[#8a7f74]">
+            <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
               <Clock className="h-4 w-4" />
             </div>
             <input
@@ -406,7 +406,7 @@ export default function EditWritePage() {
           </div>
 
           <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
-            <div className="flex h-[50px] w-12 shrink-0 items-center justify-center border-r border-[#ece1d6] text-[#8a7f74]">
+            <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
               <Clock className="h-4 w-4" />
             </div>
             <select
@@ -426,7 +426,7 @@ export default function EditWritePage() {
 
           <div className="flex items-center gap-2">
             <div className="flex flex-1 overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
-              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center border-r border-[#ece1d6] text-[#8a7f74]">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
                 <MapPin className="h-4 w-4" />
               </div>
               <input
