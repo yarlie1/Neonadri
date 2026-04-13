@@ -99,7 +99,6 @@ export default function ProfileEditForm({
   const [saving, setSaving] = useState(false);
 
   const [displayName, setDisplayName] = useState(profile.display_name || "");
-  const [bio, setBio] = useState(profile.bio || "");
   const [aboutMe, setAboutMe] = useState(profile.about_me || "");
   const [gender, setGender] = useState(profile.gender || "");
   const [ageGroup, setAgeGroup] = useState(profile.age_group || "");
@@ -112,6 +111,12 @@ export default function ProfileEditForm({
   const [isPublic, setIsPublic] = useState(profile.is_public ?? true);
 
   const [message, setMessage] = useState("");
+
+  const aboutMeSummary = aboutMe.replace(/\s+/g, " ").trim()
+    ? aboutMe.replace(/\s+/g, " ").trim().length <= 110
+      ? aboutMe.replace(/\s+/g, " ").trim()
+      : `${aboutMe.replace(/\s+/g, " ").trim().slice(0, 107).trimEnd()}...`
+    : "";
 
   const toggleArrayValue = (
     value: string,
@@ -134,7 +139,7 @@ export default function ProfileEditForm({
 
       const payload = {
         display_name: displayName.trim() || null,
-        bio: bio.trim() || null,
+        bio: aboutMeSummary || null,
         about_me: aboutMe.trim() || null,
         gender: gender || null,
         age_group: ageGroup || null,
@@ -234,19 +239,6 @@ export default function ProfileEditForm({
                   onChange={(e) => setDisplayName(e.target.value)}
                   className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                   placeholder="Your name"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-                  Bio
-                </label>
-                <textarea
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  rows={3}
-                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-                  placeholder="Short intro"
                 />
               </div>
 

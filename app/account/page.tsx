@@ -94,7 +94,6 @@ export default function AccountPage() {
   const [email, setEmail] = useState("");
 
   const [displayName, setDisplayName] = useState("");
-  const [bio, setBio] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
   const [isPublic, setIsPublic] = useState(true);
@@ -109,6 +108,12 @@ export default function AccountPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+
+  const aboutMeSummary = aboutMe.replace(/\s+/g, " ").trim()
+    ? aboutMe.replace(/\s+/g, " ").trim().length <= 110
+      ? aboutMe.replace(/\s+/g, " ").trim()
+      : `${aboutMe.replace(/\s+/g, " ").trim().slice(0, 107).trimEnd()}...`
+    : "";
 
   const toggleArrayValue = (
     value: string,
@@ -189,7 +194,6 @@ export default function AccountPage() {
         const profile = data as Profile;
 
         setDisplayName(profile.display_name || "");
-        setBio(profile.bio || "");
         setGender(profile.gender || "");
         setAgeGroup(profile.age_group || "");
         setIsPublic(profile.is_public ?? true);
@@ -217,7 +221,7 @@ export default function AccountPage() {
     const { error } = await supabase.from("profiles").upsert({
       id: userId,
       display_name: displayName.trim() || null,
-      bio: bio.trim() || null,
+      bio: aboutMeSummary || null,
       gender: gender || null,
       age_group: ageGroup || null,
       is_public: isPublic,
@@ -298,10 +302,10 @@ export default function AccountPage() {
           </div>
           <div className="rounded-[22px] border border-[#eadfd3] bg-[#fffaf6] p-4">
             <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-              Meetup style
+              About you
             </div>
             <div className="mt-2 text-sm font-medium text-[#5f5347]">
-              {meetingStyle || "Choose your vibe"}
+              {aboutMeSummary || "Write a little about yourself"}
             </div>
           </div>
           <div className="rounded-[22px] border border-[#eadfd3] bg-[#fffaf6] p-4">
@@ -344,19 +348,6 @@ export default function AccountPage() {
               onChange={(e) => setDisplayName(e.target.value)}
               className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
               placeholder="Your name"
-            />
-          </div>
-
-          <div className="mt-5">
-            <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-              Bio
-            </label>
-            <textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              rows={4}
-              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-              placeholder="Short intro shown in your profile"
             />
           </div>
 

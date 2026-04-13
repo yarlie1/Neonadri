@@ -259,7 +259,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const post = postData as PostRow;
 
   let ownerName = "Unknown";
-  let ownerBio = "";
   let ownerAboutMe = "";
   let ownerGender = "";
   let ownerAgeGroup = "";
@@ -301,7 +300,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
     if (profile) {
       ownerName = profile.display_name || "Unknown";
-      ownerBio = profile.bio || "";
       ownerAboutMe = profile.about_me || "";
       ownerGender = profile.gender || "";
       ownerAgeGroup = profile.age_group || "";
@@ -363,12 +361,16 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const ownerProfileHref = post.user_id ? `/profile/${post.user_id}` : "#";
   const roundedAverage = Math.round(ownerAverageRating);
 
-  const hasBio = !!ownerBio.trim();
   const hasAboutMe = !!ownerAboutMe.trim();
   const hasLanguages = ownerLanguages.length > 0;
   const hasMeetingStyle = !!ownerMeetingStyle.trim();
   const hasInterests = ownerInterests.length > 0;
   const hasResponseNote = !!ownerResponseNote.trim();
+  const ownerSummary = hasAboutMe
+    ? ownerAboutMe.replace(/\s+/g, " ").trim().length <= 140
+      ? ownerAboutMe.replace(/\s+/g, " ").trim()
+      : `${ownerAboutMe.replace(/\s+/g, " ").trim().slice(0, 137).trimEnd()}...`
+    : "No introduction yet.";
 
   const locationLabel = post.place_name || post.location || "No place";
   const targetLabel = `${post.target_gender || "Any"} / ${
@@ -589,22 +591,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               )}
             </div>
 
-            {hasBio && (
-              <div className="rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
-                <div className="flex items-start gap-3">
-                  <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
-                  <div>
-                    <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                      Bio
-                    </div>
-                    <div className="mt-1 text-sm leading-7 text-[#5f5347]">
-                      {ownerBio}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
             <div className="rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
               <div className="flex items-start gap-3">
                 <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
@@ -613,7 +599,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                     About Me
                   </div>
                   <div className="mt-1 text-sm leading-7 text-[#5f5347]">
-                    {hasAboutMe ? ownerAboutMe : "No introduction yet."}
+                    {ownerSummary}
                   </div>
                 </div>
               </div>

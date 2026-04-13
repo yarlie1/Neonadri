@@ -190,13 +190,17 @@ export default async function ProfilePage({ params }: PageProps) {
   const completedMeetups = Number(stats.completed_meetups ?? 0);
   const roundedAverage = Math.round(averageRating);
 
-  const hasBio = !!profile.bio?.trim();
   const hasAboutMe = !!profile.about_me?.trim();
   const hasLanguages = !!profile.languages && profile.languages.length > 0;
   const hasMeetingStyle = !!profile.meeting_style?.trim();
   const hasInterests = !!profile.interests && profile.interests.length > 0;
   const hasResponseNote = !!profile.response_time_note?.trim();
   const visibilityLabel = profile.is_public === false ? "Private" : "Public";
+  const profileSummary = hasAboutMe
+    ? profile.about_me!.replace(/\s+/g, " ").trim().length <= 140
+      ? profile.about_me!.replace(/\s+/g, " ").trim()
+      : `${profile.about_me!.replace(/\s+/g, " ").trim().slice(0, 137).trimEnd()}...`
+    : "A profile that gives people enough context to understand the vibe before the first message.";
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
@@ -220,9 +224,7 @@ export default async function ProfilePage({ params }: PageProps) {
                 </div>
 
                 <p className="mt-3 max-w-xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
-                  {hasBio
-                    ? profile.bio
-                    : "A profile that gives people enough context to understand the vibe before the first message."}
+                  {profileSummary}
                 </p>
               </div>
 
@@ -307,22 +309,6 @@ export default async function ProfilePage({ params }: PageProps) {
           </div>
 
           <div className="mt-5 space-y-4">
-            {hasBio && (
-              <div className="rounded-[22px] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
-                <div className="flex items-start gap-3">
-                  <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
-                  <div>
-                    <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                      Short bio
-                    </div>
-                    <div className="mt-1 leading-7 text-[#5f5347]">
-                      {profile.bio}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
             <div className="rounded-[22px] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
               <div className="flex items-start gap-3">
                 <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
