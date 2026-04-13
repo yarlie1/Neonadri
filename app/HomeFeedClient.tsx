@@ -534,7 +534,7 @@ export default function HomeFeedClient({
 
                 <Link
                   href={`/posts/${highlightedPost.id}`}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#2f2a26] text-white transition hover:bg-[#443730]"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#d9c9bc] bg-[#fff6ee] text-[#6f5649] shadow-sm transition hover:bg-[#f7eadf]"
                   aria-label="Open featured meetup"
                 >
                   <ArrowUpRight className="h-4 w-4" />
@@ -583,7 +583,7 @@ export default function HomeFeedClient({
           </section>
         )}
 
-        <div className="rounded-[24px] border border-[#eadfd3] bg-white/85 shadow-sm backdrop-blur">
+        <div className="sticky top-[88px] z-30 rounded-[24px] border border-[#eadfd3] bg-white/90 shadow-[0_16px_34px_rgba(92,69,52,0.12)] backdrop-blur">
           <button
             type="button"
             onClick={() => setIsOpen((v) => !v)}
@@ -605,11 +605,11 @@ export default function HomeFeedClient({
               </div>
             </div>
 
-            <span
-              className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f4ece4] text-[#6b5f52] transition ${
-                isOpen ? "rotate-180" : ""
-              }`}
-            >
+              <span
+                className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e7ddd2] bg-[#fff7ef] text-[#6b5f52] transition ${
+                  isOpen ? "rotate-180" : ""
+                }`}
+              >
               <ChevronDown className="h-4 w-4" />
             </span>
           </button>
@@ -774,22 +774,22 @@ export default function HomeFeedClient({
               </div>
 
               <div className="rounded-[22px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-3">
-                <div className="flex flex-wrap items-start gap-2">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-1.5 text-sm font-semibold text-white">
+                <div className="flex items-stretch gap-2">
+                  <div className="inline-flex min-w-0 flex-1 items-center gap-2 rounded-[18px] bg-[#2f2a26] px-3 py-3 text-base font-semibold text-white">
                     {getPurposeIcon(post.meeting_purpose)}
-                    <span>{post.meeting_purpose || "Meetup"}</span>
+                    <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
                   </div>
 
                   {formatDuration(post.duration_minutes) ? (
-                    <div className="inline-flex items-center gap-2 rounded-full bg-[#f4ece4] px-3 py-1.5 text-sm font-semibold text-[#4f443b]">
-                      <Clock3 className="h-3.5 w-3.5" />
+                    <div className="inline-flex shrink-0 items-center gap-2 rounded-[18px] bg-[#f4ece4] px-3 py-3 text-base font-semibold text-[#4f443b]">
+                      <Clock3 className="h-4 w-4" />
                       <span>{formatDuration(post.duration_minutes)}</span>
                     </div>
                   ) : null}
 
                   {amount !== null && (
-                    <div className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-1.5 text-sm font-semibold text-[#6e4715] shadow-sm">
-                      <span>Benefit</span>
+                    <div className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-3 text-base font-semibold text-[#6e4715] shadow-sm">
+                      <span className="text-[0.95rem]">Benefit</span>
                       <span>+${amount.toLocaleString()}</span>
                     </div>
                   )}

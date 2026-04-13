@@ -195,7 +195,6 @@ export default async function ProfilePage({ params }: PageProps) {
   const hasMeetingStyle = !!profile.meeting_style?.trim();
   const hasInterests = !!profile.interests && profile.interests.length > 0;
   const hasResponseNote = !!profile.response_time_note?.trim();
-  const visibilityLabel = profile.is_public === false ? "Private" : "Public";
   const profileSummary = hasAboutMe
     ? profile.about_me!.replace(/\s+/g, " ").trim().length <= 140
       ? profile.about_me!.replace(/\s+/g, " ").trim()
@@ -229,9 +228,6 @@ export default async function ProfilePage({ params }: PageProps) {
               </div>
 
               <div className="flex flex-col items-end gap-2">
-                <div className="rounded-full bg-white/60 px-3 py-1.5 text-xs font-medium text-[#6b5f52]">
-                  {visibilityLabel}
-                </div>
                 {isMyProfile && <ProfileEditForm profile={profile} />}
               </div>
             </div>
