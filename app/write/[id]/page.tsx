@@ -392,11 +392,13 @@ export default function EditWritePage() {
         </h2>
 
         <div className="mt-3 space-y-3">
-          <div className="relative">
-            <Clock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+          <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
+            <div className="flex h-[50px] w-12 shrink-0 items-center justify-center border-r border-[#ece1d6] text-[#8a7f74]">
+              <Clock className="h-4 w-4" />
+            </div>
             <input
               type="datetime-local"
-              className={fieldClass}
+              className="h-[50px] w-full min-w-0 bg-transparent px-4 text-sm text-[#2f2a26] outline-none"
               value={meetingTime}
               onChange={(e) => setMeetingTime(e.target.value)}
               step={1800}
@@ -421,11 +423,13 @@ export default function EditWritePage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="relative flex-1">
-              <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <div className="flex flex-1 overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center border-r border-[#ece1d6] text-[#8a7f74]">
+                <MapPin className="h-4 w-4" />
+              </div>
               <input
                 ref={searchInputRef}
-                className={`${fieldClass} pr-5`}
+                className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-5 text-sm text-[#2f2a26] outline-none"
                 placeholder="Search exact place or address"
                 value={location}
                 onChange={handleLocationInputChange}
