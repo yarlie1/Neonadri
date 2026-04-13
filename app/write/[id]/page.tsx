@@ -392,7 +392,7 @@ export default function EditWritePage() {
         </h2>
 
         <div className="mt-3 space-y-3">
-          <div className="flex overflow-hidden rounded-[20px] bg-[#fffdfa] shadow-[inset_0_0_0_1px_rgba(220,207,194,0.15)] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
+          <div className="flex overflow-hidden rounded-[20px] bg-[#fffdfa] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
             <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
               <Clock className="h-4 w-4" />
             </div>
@@ -425,7 +425,7 @@ export default function EditWritePage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex flex-1 overflow-hidden rounded-[20px] bg-[#fffdfa] shadow-[inset_0_0_0_1px_rgba(220,207,194,0.15)] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
+            <div className="flex flex-1 overflow-hidden rounded-[20px] bg-[#fffdfa] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
               <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
                 <MapPin className="h-4 w-4" />
               </div>
