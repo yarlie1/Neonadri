@@ -27,10 +27,7 @@ import {
   HeartHandshake,
   CheckCircle2,
   XCircle,
-  Trash2,
-  Pencil,
   Eye,
-  Map as MapIcon,
   Plus,
   Star,
   UserCircle2,
@@ -371,11 +368,10 @@ export default function DashboardClient({
   const supabase = createClient();
   const router = useRouter();
 
-  const [posts, setPosts] = useState(initialPosts);
+  const [posts] = useState(initialPosts);
   const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
   const [matchFilter, setMatchFilter] = useState<MatchFilter>("all");
-  const [deletingPostId, setDeletingPostId] = useState<number | null>(null);
   const [processingRequestId, setProcessingRequestId] = useState<number | null>(null);
   const [processingRequestAction, setProcessingRequestAction] = useState<
     "accepted" | "rejected" | null
@@ -458,22 +454,6 @@ export default function DashboardClient({
       .filter(Boolean)
       .sort((a, b) => a!.time - b!.time);
   }, [matches, postMap, profileMap, userId]);
-
-  const deletePost = async (postId: number) => {
-    const confirmed = window.confirm("Delete this meetup?");
-    if (!confirmed) return;
-
-    setDeletingPostId(postId);
-    const { error } = await supabase.from("posts").delete().eq("id", postId);
-    setDeletingPostId(null);
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    setPosts((prev) => prev.filter((post) => post.id !== postId));
-  };
 
   const updateRequestStatus = async (
     requestId: number,
@@ -583,11 +563,11 @@ export default function DashboardClient({
                       <div className="text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
                         With {item.otherName}
                       </div>
-                      <div className="mt-2 flex flex-col gap-1 text-sm text-[#6f655c]">
-                        <div className="inline-flex items-center gap-2">
-                          <Clock3 className="h-4 w-4 text-[#a27767]" />
-                          <span>{formatTime(item.post.meeting_time)}</span>
-                        </div>
+                      <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-2 text-sm font-semibold text-white">
+                        <Clock3 className="h-4 w-4" />
+                        <span>{formatTime(item.post.meeting_time)}</span>
+                      </div>
+                      <div className="mt-3 flex flex-col gap-1 text-sm text-[#6f655c]">
                         <div className="inline-flex items-center gap-2">
                           <MapPin className="h-4 w-4 text-[#a27767]" />
                           <span>{item.post.place_name || item.post.location || "your selected place"}</span>
@@ -678,13 +658,6 @@ export default function DashboardClient({
                   </FilterPill>
                 </div>
 
-                <Link
-                  href={`/profile/${userId}`}
-                  className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                >
-                  <UserCircle2 className="h-4 w-4" />
-                  My Profile
-                </Link>
               </div>
             </div>
           </div>
@@ -763,7 +736,7 @@ export default function DashboardClient({
 
                       {amount !== null && (
                         <div className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-3 text-base font-semibold text-[#6e4715] shadow-sm">
-                          <span>Benefit</span>
+                          <Coins className="h-4 w-4 shrink-0" />
                           <span>+${amount.toLocaleString()}</span>
                         </div>
                       )}
@@ -798,39 +771,6 @@ export default function DashboardClient({
                     </div>
                   </div>
 
-                  <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
-                    <CompactActionButton href={`/posts/${post.id}`} primary>
-                      <Eye className="h-3.5 w-3.5" />
-                      View
-                    </CompactActionButton>
-
-                    <CompactActionButton href={`/write/${post.id}`}>
-                      <Pencil className="h-3.5 w-3.5" />
-                      Edit
-                    </CompactActionButton>
-
-                    {post.location && (
-                      <a
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                          post.location
-                        )}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                      >
-                        <MapIcon className="h-3.5 w-3.5" />
-                        Map
-                      </a>
-                    )}
-
-                    <CompactActionButton
-                      onClick={() => deletePost(post.id)}
-                      disabled={deletingPostId === post.id}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                      {deletingPostId === post.id ? "Deleting..." : "Delete"}
-                    </CompactActionButton>
-                  </div>
                 </div>
               );
             })}

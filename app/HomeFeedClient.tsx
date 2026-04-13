@@ -92,6 +92,7 @@ const PURPOSE_OPTIONS = [
 const GENDER_OPTIONS = ["All", "Male", "Female", "Other", "Prefer not to say"];
 const AGE_GROUP_OPTIONS = ["All", "20s", "30s", "40s", "50s+"];
 const MATCH_STATE_OPTIONS = ["All", "Open", "Matched"];
+const AUDIENCE_OPTIONS = ["All", "Fits me"] as const;
 
 const SORT_OPTIONS = [
   { value: "newest", label: "Newest" },
@@ -303,12 +304,14 @@ function FilterPill({
 
 function FilterSummaryText({
   matchState,
+  audience,
   purpose,
   gender,
   ageGroup,
   sort,
 }: {
   matchState: string;
+  audience: string;
   purpose: string;
   gender: string;
   ageGroup: string;
@@ -317,6 +320,7 @@ function FilterSummaryText({
   const parts: string[] = [];
 
   if (matchState !== "All") parts.push(matchState);
+  if (audience !== "All") parts.push(audience);
   if (purpose !== "All") parts.push(purpose);
   if (gender !== "All") parts.push(gender);
   if (ageGroup !== "All") parts.push(ageGroup);
@@ -340,12 +344,15 @@ export default function HomeFeedClient({
   initialPosts,
   hostProfileMap,
   matchSummaryMap,
+  viewerPreference,
 }: {
   initialPosts: PostRow[];
   hostProfileMap: HostProfileMap;
   matchSummaryMap: MatchSummaryMap;
+  viewerPreference: { gender: string; ageGroup: string } | null;
 }) {
   const [matchState, setMatchState] = useState("All");
+  const [audience, setAudience] = useState<(typeof AUDIENCE_OPTIONS)[number]>("All");
   const [purpose, setPurpose] = useState("All");
   const [gender, setGender] = useState("All");
   const [ageGroup, setAgeGroup] = useState("All");
@@ -506,8 +513,22 @@ export default function HomeFeedClient({
     setIsOpen(false);
   };
 
+  const applyAudience = (option: (typeof AUDIENCE_OPTIONS)[number]) => {
+    setAudience(option);
+
+    if (option === "All") {
+      setGender("All");
+      setAgeGroup("All");
+      return;
+    }
+
+    setGender(viewerPreference?.gender || "All");
+    setAgeGroup(viewerPreference?.ageGroup || "All");
+  };
+
   const resetAll = () => {
     setMatchState("All");
+    setAudience("All");
     setPurpose("All");
     setGender("All");
     setAgeGroup("All");
@@ -669,6 +690,7 @@ export default function HomeFeedClient({
               <div className="mt-2">
                 <FilterSummaryText
                   matchState={matchState}
+                  audience={audience}
                   purpose={purpose}
                   gender={gender}
                   ageGroup={ageGroup}
@@ -706,6 +728,22 @@ export default function HomeFeedClient({
 
               <div className="mt-4">
                 <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+                  Audience
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {AUDIENCE_OPTIONS.map((option) => (
+                    <FilterPill
+                      key={option}
+                      active={audience === option}
+                      label={option}
+                      onClick={() => applyAndClose(() => applyAudience(option))}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
                   Purpose
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -730,7 +768,12 @@ export default function HomeFeedClient({
                       key={option}
                       active={gender === option}
                       label={option}
-                      onClick={() => applyAndClose(() => setGender(option))}
+                      onClick={() =>
+                        applyAndClose(() => {
+                          setAudience("All");
+                          setGender(option);
+                        })
+                      }
                     />
                   ))}
                 </div>
@@ -746,7 +789,12 @@ export default function HomeFeedClient({
                       key={option}
                       active={ageGroup === option}
                       label={option}
-                      onClick={() => applyAndClose(() => setAgeGroup(option))}
+                      onClick={() =>
+                        applyAndClose(() => {
+                          setAudience("All");
+                          setAgeGroup(option);
+                        })
+                      }
                     />
                   ))}
                 </div>

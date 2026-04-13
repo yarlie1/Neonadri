@@ -212,7 +212,7 @@ export default async function ProfilePage({ params }: PageProps) {
               <div className="min-w-0">
                 <div className="inline-flex items-center gap-2 rounded-full bg-white/60 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
                   <UserCircle2 className="h-3.5 w-3.5" />
-                  <span>{isMyProfile ? "My profile" : "Host profile"}</span>
+                  <span>{isMyProfile ? "My profile" : "Guest profile"}</span>
                 </div>
 
                 <div className="mt-4 flex items-center gap-3">
@@ -419,3 +419,4 @@ export default async function ProfilePage({ params }: PageProps) {
     </main>
   );
 }
+

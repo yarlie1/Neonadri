@@ -28,6 +28,7 @@ import { createClient } from "../../../lib/supabase/server";
 import MatchRequestBox from "./MatchRequestBox";
 import ClientMap from "./ClientMap";
 import OwnerMatchPanel from "./OwnerMatchPanel";
+import DeletePostButton from "./DeletePostButton";
 
 type PageProps = {
   params: {
@@ -626,13 +627,16 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   {user && user.id === post.user_id && !isPostMatched && (
-                    <Link
-                      href={`/write/${post.id}`}
-                      className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                    >
-                      <Sparkles className="h-4 w-4" />
-                      Edit Meetup
-                    </Link>
+                    <>
+                      <Link
+                        href={`/write/${post.id}`}
+                        className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        Edit Meetup
+                      </Link>
+                      <DeletePostButton postId={post.id} />
+                    </>
                   )}
 
                   {isPostMatched && (

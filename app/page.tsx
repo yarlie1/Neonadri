@@ -51,6 +51,9 @@ type MatchSummaryMap = Record<
 
 export default async function HomePage() {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data: postsData, error: postsError } = await supabase
     .from("posts")
@@ -80,6 +83,7 @@ export default async function HomePage() {
 
   const hostProfileMap: HostProfileMap = {};
   const matchSummaryMap: MatchSummaryMap = {};
+  let viewerPreference: { gender: string; ageGroup: string } | null = null;
 
   if (ownerIds.length > 0) {
     try {
@@ -96,6 +100,21 @@ export default async function HomePage() {
         };
       });
     } catch {}
+  }
+
+  if (user?.id) {
+    const { data: viewerProfile } = await supabase
+      .from("profiles")
+      .select("gender, age_group")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (viewerProfile) {
+      viewerPreference = {
+        gender: viewerProfile.gender || "",
+        ageGroup: viewerProfile.age_group || "",
+      };
+    }
   }
 
   if (postIds.length > 0) {
@@ -117,6 +136,7 @@ export default async function HomePage() {
       initialPosts={posts}
       hostProfileMap={hostProfileMap}
       matchSummaryMap={matchSummaryMap}
+      viewerPreference={viewerPreference}
     />
   );
 }
