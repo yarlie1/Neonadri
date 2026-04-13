@@ -144,69 +144,6 @@ const getPurposeIcon = (purpose: string | null, className?: string) => {
   }
 };
 
-const getPurposeTheme = (purpose: string | null) => {
-  switch (purpose) {
-    case "Coffee Chat":
-    case "Coffee":
-      return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#8b5e4a_0%,#c98b67_100%)] text-white",
-      };
-    case "Meal":
-    case "Dessert":
-      return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#9f7440_0%,#d5a15a_100%)] text-white",
-      };
-    case "Walk":
-    case "Jogging":
-    case "Yoga":
-      return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#5d8c5f_0%,#87b377_100%)] text-white",
-      };
-    case "Movie":
-    case "Theater":
-    case "Karaoke":
-      return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#5d4f7d_0%,#8c75b6_100%)] text-white",
-      };
-    case "Board Games":
-    case "Gaming":
-    case "Bowling":
-    case "Arcade":
-      return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#64508a_0%,#8f73c6_100%)] text-white",
-      };
-    case "Study":
-    case "Book Talk":
-    case "Book":
-      return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#4e5f84_0%,#6d8fb8_100%)] text-white",
-      };
-    case "Work Together":
-    case "Work":
-      return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#4f4640_0%,#847467_100%)] text-white",
-      };
-    case "Photo Walk":
-    case "Photo":
-      return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#8e5f5b_0%,#c8827f_100%)] text-white",
-      };
-    default:
-      return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#2f2a26_0%,#5a4d45_100%)] text-white",
-      };
-  }
-};
-
 const formatTime = (meetingTime: string | null) => {
   if (!meetingTime) return null;
 
@@ -555,7 +492,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }`;
   const meetupTimeLabel = formatTime(post.meeting_time) || "Time not set";
   const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
-  const purposeTheme = getPurposeTheme(post.meeting_purpose);
   const ownerRequestItems = ownerRequests.map((request) => {
     const profile = requesterProfileMap.get(request.requester_user_id);
 
@@ -569,124 +505,23 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       status: request.status,
     };
   });
-  const heroStatusLabel = isPostMatched ? "Matched" : "Open";
-  const heroStatusClass = isPostMatched
-    ? "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]"
-    : "bg-[#eef7ee] text-[#4f8a54] border border-[#dce8dc]";
-
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
       <div className="mx-auto max-w-3xl space-y-5">
-        <div className="sticky top-16 z-20 rounded-[24px] border border-[#eadfd3] bg-[#fffaf5]/95 p-3 shadow-[0_10px_24px_rgba(92,69,52,0.1)] backdrop-blur">
-          <div className="flex flex-wrap items-start gap-2">
-            <div
-              className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
-            >
-              <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/18">
-                {getPurposeIcon(
-                  post.meeting_purpose,
-                  "h-[19px] w-[19px] shrink-0 text-white"
-                )}
-              </div>
-              <div className="min-w-0">
-                <div className="truncate text-sm font-semibold text-white/95">
-                  {post.meeting_purpose || "Meetup"}
-                </div>
-              </div>
-            </div>
-
-            {meetupDurationLabel && (
-              <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] bg-[#f4ece4] px-1.5 py-2 text-[#4f443b] shadow-sm">
-                <Clock3 className="h-4 w-4" />
-                <span className="mt-1 text-sm font-semibold">
-                  {meetupDurationLabel}
-                </span>
-              </div>
-            )}
-
-            {post.benefit_amount && (
-              <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[16px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-1.5 py-2 text-[#6e4715] shadow-sm">
-                <Coins className="h-4 w-4 shrink-0" />
-                <span className="mt-1 text-sm font-semibold">
-                  {post.benefit_amount}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-
         <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e5b29e_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
           <div className="relative">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
-                  Meetup overview
-                </div>
-                <div className="mt-3 text-[2rem] font-black leading-[1.02] tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.5rem]">
-                  {locationLabel}
-                </div>
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
-                  The essentials first: when it happens, who it is for, and what makes the meetup worth joining.
-                </p>
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+                Meetup overview
               </div>
-
-              <div className="shrink-0 rounded-[24px] border border-white/60 bg-white/60 px-4 py-4 backdrop-blur sm:min-w-[220px]">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
-                  Hosted by
-                </div>
-                <div className="mt-3 flex items-center gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-base font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
-                    {ownerName.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="min-w-0">
-                    {post.user_id ? (
-                      <Link
-                        href={ownerProfileHref}
-                        className="block truncate text-base font-bold text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
-                      >
-                        {ownerName}
-                      </Link>
-                    ) : (
-                      <div className="truncate text-base font-bold text-[#2f2a26]">{ownerName}</div>
-                    )}
-                    <div className="mt-1 text-sm text-[#6f655c]">
-                      {[ownerGender || "Unknown", ownerAgeGroup || null].filter(Boolean).join(" / ")}
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-3 rounded-full border border-[#e7ddd2] bg-white/80 px-3 py-1.5 text-xs font-medium text-[#6b5f52]">
-                  {ownerAverageRating.toFixed(1)} rating / {ownerReviewCount} reviews
-                </div>
+              <div className="mt-3 text-[2rem] font-black leading-[1.02] tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.5rem]">
+                {locationLabel}
               </div>
-            </div>
-
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              <span
-                className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${heroStatusClass}`}
-              >
-                {heroStatusLabel}
-              </span>
-              {user && user.id !== post.user_id && myRequestStatus !== "No request yet" && (
-                <span
-                  className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${getStatusBadge(
-                    myRequestStatus
-                  )}`}
-                >
-                  {getFriendlyStatusLabel(myRequestStatus)}
-                </span>
-              )}
-              {user && user.id === post.user_id && (
-                <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b5f52]">
-                  My meetup
-                </span>
-              )}
-              {!isPostMatched && (
-                <span className="rounded-full border border-white/60 bg-white/55 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#7d6458]">
-                  {totalRequestCount} request{totalRequestCount === 1 ? "" : "s"}
-                </span>
-              )}
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
+                The essentials first: when it happens, who it is for, and what makes the meetup worth joining.
+              </p>
             </div>
 
             <div className="mt-5 grid gap-3 lg:grid-cols-[1.1fr_0.9fr]">
@@ -694,7 +529,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
                   Quick snapshot
                 </div>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+                  <StatCard label="Type" value={post.meeting_purpose || "Meetup"} />
                   <StatCard label="When" value={meetupTimeLabel} />
                   <StatCard
                     label="Host"
@@ -791,67 +627,72 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
         <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
           <div className="space-y-5">
-            <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 px-6 py-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="text-[1.75rem] font-bold text-[#2f2a26]">About the Host</h2>
-                <div className="rounded-full border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-2 text-sm font-medium text-[#6b5f52]">
-                  {ownerAverageRating.toFixed(1)} rating / {ownerReviewCount} reviews
-                </div>
-              </div>
-
-              <div className="mt-5 rounded-[1.6rem] border border-[#efe3d8] bg-[linear-gradient(135deg,#fffaf5_0%,#f8eee3_100%)] p-4 shadow-sm">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-lg font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
-                      {ownerName.charAt(0).toUpperCase()}
+            <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e5b29e_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
+              <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
+              <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+              <div className="relative">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+                      About the Host
                     </div>
-                    <div className="min-w-0">
-                      {post.user_id ? (
-                        <Link
-                          href={ownerProfileHref}
-                          className="block truncate text-lg font-bold tracking-[-0.03em] text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
-                        >
-                          {ownerName}
-                        </Link>
-                      ) : (
-                        <div className="truncate text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
-                          {ownerName}
+                    <div className="mt-3 flex items-center gap-3">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-lg font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
+                        {ownerName.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        {post.user_id ? (
+                          <Link
+                            href={ownerProfileHref}
+                            className="block truncate text-[1.7rem] font-black tracking-[-0.04em] text-[#2b1f1a] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
+                          >
+                            {ownerName}
+                          </Link>
+                        ) : (
+                          <div className="truncate text-[1.7rem] font-black tracking-[-0.04em] text-[#2b1f1a]">
+                            {ownerName}
+                          </div>
+                        )}
+                        <div className="mt-1 text-sm text-[#5f453b]">
+                          Warm, low-pressure meetup host
                         </div>
-                      )}
-                      <div className="mt-1 text-sm text-[#6f655c]">Warm, low-pressure meetup host</div>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {(ownerGender || ownerAgeGroup) && (
-                      <InfoItem
-                        icon={<UserRound className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                        label="Host"
-                        value={`${ownerGender || "Unknown"}${ownerGender && ownerAgeGroup ? " / " : ""}${ownerAgeGroup || ""}`}
-                      />
-                    )}
-                    {hasLanguages && (
-                      <InfoItem
-                        icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                        label="Languages"
-                        value={ownerLanguages.join(", ")}
-                      />
-                    )}
-                    {hasMeetingStyle && (
-                      <InfoItem
-                        icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                        label="Meeting Style"
-                        value={ownerMeetingStyle}
-                      />
-                    )}
-                    {hasResponseNote && (
-                      <InfoItem
-                        icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                        label="Response Note"
-                        value={ownerResponseNote}
-                      />
-                    )}
+                  <div className="rounded-full border border-white/60 bg-white/60 px-4 py-2 text-sm font-medium text-[#6b5f52] backdrop-blur">
+                    {ownerAverageRating.toFixed(1)} rating / {ownerReviewCount} reviews
                   </div>
+                </div>
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  {(ownerGender || ownerAgeGroup) && (
+                    <InfoItem
+                      icon={<UserRound className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                      label="Host"
+                      value={`${ownerGender || "Unknown"}${ownerGender && ownerAgeGroup ? " / " : ""}${ownerAgeGroup || ""}`}
+                    />
+                  )}
+                  {hasLanguages && (
+                    <InfoItem
+                      icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                      label="Languages"
+                      value={ownerLanguages.join(", ")}
+                    />
+                  )}
+                  {hasMeetingStyle && (
+                    <InfoItem
+                      icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                      label="Meeting Style"
+                      value={ownerMeetingStyle}
+                    />
+                  )}
+                  {hasResponseNote && (
+                    <InfoItem
+                      icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                      label="Response Note"
+                      value={ownerResponseNote}
+                    />
+                  )}
                 </div>
               </div>
 
