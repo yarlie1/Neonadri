@@ -542,33 +542,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-white/45 pt-4">
-              {post.user_id ? (
-                <Link
-                  href={ownerProfileHref}
-                  className="inline-flex items-center gap-2 rounded-full bg-white/55 px-3 py-2 text-[#5a5149] transition hover:bg-white hover:text-[#2f2a26]"
-                >
-                  <UserCircle2 className="h-5 w-5 text-[#8a7f74]" />
-                  <span className="font-medium">{ownerName}</span>
-                </Link>
-              ) : (
-                <span className="inline-flex items-center gap-2 text-[#5a5149]">
-                  <UserCircle2 className="h-5 w-5 text-[#8a7f74]" />
-                  <span className="font-medium">{ownerName}</span>
-                </span>
-              )}
-
-              {mapUrl && (
-                <a
-                  href={mapUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full border border-white/60 bg-white/70 px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-white"
-                >
-                  Open in Maps
-                </a>
-              )}
-            </div>
           </div>
         </div>
 
