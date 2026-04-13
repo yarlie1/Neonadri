@@ -108,7 +108,6 @@ export default function ProfileEditForm({
   const [responseTimeNote, setResponseTimeNote] = useState(
     profile.response_time_note || ""
   );
-  const [isPublic, setIsPublic] = useState(profile.is_public ?? true);
 
   const [message, setMessage] = useState("");
 
@@ -148,7 +147,6 @@ export default function ProfileEditForm({
         meeting_style: meetingStyle || null,
         interests: interests.length > 0 ? interests : null,
         response_time_note: responseTimeNote || null,
-        is_public: isPublic,
         updated_at: new Date().toISOString(),
       };
 
@@ -358,15 +356,6 @@ export default function ProfileEditForm({
                   ))}
                 </select>
               </div>
-
-              <label className="flex items-center gap-3 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#5a5149]">
-                <input
-                  type="checkbox"
-                  checked={isPublic}
-                  onChange={(e) => setIsPublic(e.target.checked)}
-                />
-                Make my profile public
-              </label>
 
               {message && (
                 <p className="rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
