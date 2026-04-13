@@ -21,6 +21,7 @@ import {
   MapPin,
   UserRound,
   Coins,
+  Map as MapIcon,
   FileText,
   Inbox,
   Send,
