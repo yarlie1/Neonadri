@@ -294,7 +294,7 @@ function FilterSummaryText({
 
   return (
     <span className="text-sm font-medium text-[#5a5149]">
-      {parts.join(" Â· ")}
+      {parts.join(" ì¨Œ ")}
     </span>
   );
 }
@@ -815,7 +815,7 @@ export default function HomeFeedClient({
                     <span className="truncate">
                       <span className="font-medium text-[#6d5d52]">Hosted by</span>{" "}{host.displayName}
                       {(host.gender || host.ageGroup)
-                        ? ` ¡¤ ${host.gender || "Unknown"}${host.ageGroup ? ` / ${host.ageGroup}` : ""}`
+                        ? ` Â· ${host.gender || "Unknown"}${host.ageGroup ? ` / ${host.ageGroup}` : ""}`
                         : ""}
                     </span>
                   </div>
