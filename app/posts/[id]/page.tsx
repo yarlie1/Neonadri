@@ -555,6 +555,9 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }`;
   const meetupTimeLabel = formatTime(post.meeting_time) || "Time not set";
   const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
+  const benefitExplanation = post.benefit_amount
+    ? `During this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host gives ${post.benefit_amount} to the guest.`
+    : `During this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host has not listed a guest benefit yet.`;
   const purposeTheme = getPurposeTheme(post.meeting_purpose);
   const ownerRequestItems = ownerRequests.map((request) => {
     const profile = requesterProfileMap.get(request.requester_user_id);
@@ -615,7 +618,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 </div>
               </div>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
-                {meetupTimeLabel} · {locationLabel}
+                {benefitExplanation}
               </p>
               <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm text-[#5f453b]">
                 <span>Looking for {targetLabel}</span>
@@ -627,16 +630,14 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
                 Quick snapshot
               </div>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                <StatCard label="Benefit" value={post.benefit_amount || "Not listed"} />
-                <StatCard label="Type" value={post.meeting_purpose || "Meetup"} />
-                <StatCard label="When" value={meetupTimeLabel} />
-                <StatCard label="Duration" value={meetupDurationLabel} />
+              <div className="grid grid-cols-1 gap-3">
                 <StatCard
                   label="Host"
                   value={[ownerGender || "Unknown", ownerAgeGroup || null].filter(Boolean).join(" / ")}
                 />
                 <StatCard label="Guest" value={targetLabel} />
+                <StatCard label="When" value={meetupTimeLabel} />
+                <StatCard label="Place" value={post.place_name || "Selected place"} />
               </div>
             </div>
 
@@ -646,15 +647,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </div>
               <div className="mt-3 grid gap-3 lg:grid-cols-[0.9fr_1.1fr]">
                 <div className="space-y-3 text-[15px] text-[#5f5347]">
-                  <div className="flex items-start gap-2">
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                    <div>
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b8f84]">
-                        Place
-                      </div>
-                      <div className="mt-1">{post.place_name || "Selected place"}</div>
-                    </div>
-                  </div>
                   {post.location && (
                     <div className="flex items-start gap-2">
                       <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
