@@ -11,6 +11,18 @@ import {
   Star,
   HeartHandshake,
   Sparkles,
+  Coffee,
+  UtensilsCrossed,
+  CakeSlice,
+  Footprints,
+  PersonStanding,
+  Clapperboard,
+  Mic2,
+  Gamepad2,
+  BookOpen,
+  BriefcaseBusiness,
+  Book,
+  Camera,
 } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import MatchRequestBox from "./MatchRequestBox";
@@ -76,46 +88,44 @@ type PostRow = {
 };
 
 const getPurposeIcon = (purpose: string | null) => {
+  const className = "h-[19px] w-[19px] shrink-0 text-[#7e746b]";
+
   switch (purpose) {
     case "Coffee Chat":
     case "Coffee":
-      return "\u2615";
+      return <Coffee className={className} />;
     case "Meal":
-      return "\ud83c\udf7d";
+      return <UtensilsCrossed className={className} />;
     case "Dessert":
-      return "\ud83c\udf70";
+      return <CakeSlice className={className} />;
     case "Walk":
-      return "\ud83d\udeb6";
+      return <Footprints className={className} />;
     case "Jogging":
-      return "\ud83c\udfc3";
     case "Yoga":
-      return "\ud83e\uddd8";
+      return <PersonStanding className={className} />;
     case "Movie":
     case "Theater":
-      return "\ud83c\udfac";
+      return <Clapperboard className={className} />;
     case "Karaoke":
-      return "\ud83c\udfa4";
+      return <Mic2 className={className} />;
     case "Board Games":
-      return "\ud83c\udfb2";
     case "Gaming":
-      return "\ud83c\udfae";
     case "Bowling":
-      return "\ud83c\udfb3";
     case "Arcade":
-      return "\ud83c\udfaf";
+      return <Gamepad2 className={className} />;
     case "Study":
-      return "\ud83d\udcdd";
+      return <BookOpen className={className} />;
     case "Work Together":
     case "Work":
-      return "\ud83d\udcbb";
+      return <BriefcaseBusiness className={className} />;
     case "Book Talk":
     case "Book":
-      return "\ud83d\udcd6";
+      return <Book className={className} />;
     case "Photo Walk":
     case "Photo":
-      return "\ud83d\udcf7";
+      return <Camera className={className} />;
     default:
-      return "\u2728";
+      return <Sparkles className={className} />;
   }
 };
 
