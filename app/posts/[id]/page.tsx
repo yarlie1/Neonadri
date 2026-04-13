@@ -492,13 +492,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }`;
   const meetupTimeLabel = formatTime(post.meeting_time) || "Time not set";
   const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
-  const overviewLine = [
-    locationLabel,
-    post.meeting_purpose || "Meetup",
-    meetupDurationLabel,
-  ]
-    .filter(Boolean)
-    .join(" - ");
   const ownerRequestItems = ownerRequests.map((request) => {
     const profile = requesterProfileMap.get(request.requester_user_id);
 
@@ -520,15 +513,48 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
           <div className="relative">
             <div>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
-                Meetup overview
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+                  Meetup overview
+                </div>
+                <span className="rounded-full border border-white/60 bg-white/55 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#7d6458]">
+                  {isPostMatched ? "Matched" : "Open"}
+                </span>
               </div>
-              <div className="mt-3 text-[2rem] font-black leading-[1.02] tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.5rem]">
-                {overviewLine}
+              <div className="mt-4 flex flex-wrap items-stretch gap-3">
+                <div className="inline-flex min-w-0 flex-1 items-center gap-3 rounded-[20px] bg-[#2f2a26] px-5 py-4 text-white shadow-[0_16px_30px_rgba(47,42,38,0.18)]">
+                  <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/14">
+                    {getPurposeIcon(
+                      post.meeting_purpose,
+                      "h-[18px] w-[18px] shrink-0 text-white"
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="truncate text-[1.35rem] font-black tracking-[-0.04em] text-white sm:text-[1.55rem]">
+                      {post.meeting_purpose || "Meetup"}
+                    </div>
+                  </div>
+                </div>
+                <div className="inline-flex min-w-[90px] shrink-0 flex-col items-center justify-center rounded-[18px] bg-white/70 px-3 py-3 text-center text-[#4f443b] shadow-sm backdrop-blur">
+                  <Clock3 className="h-4 w-4" />
+                  <span className="mt-2 text-base font-bold tracking-[-0.03em]">
+                    {meetupDurationLabel}
+                  </span>
+                </div>
+                <div className="inline-flex min-w-[96px] shrink-0 flex-col items-center justify-center rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-3 text-center text-[#6e4715] shadow-sm">
+                  <Coins className="h-4 w-4" />
+                  <span className="mt-2 text-base font-bold tracking-[-0.03em]">
+                    {post.benefit_amount || "N/A"}
+                  </span>
+                </div>
               </div>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
-                The essentials first: when it happens, who it is for, and what makes the meetup worth joining.
+                {meetupTimeLabel} · {locationLabel}
               </p>
+              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm text-[#5f453b]">
+                <span>Looking for {targetLabel}</span>
+                <span>Hosted by {ownerName}</span>
+              </div>
             </div>
 
             <div className="mt-5 rounded-[26px] border border-white/55 bg-white/58 px-4 py-4 backdrop-blur">
