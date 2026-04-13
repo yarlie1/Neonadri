@@ -294,7 +294,7 @@ function FilterSummaryText({
 
   return (
     <span className="text-sm font-medium text-[#5a5149]">
-      {parts.join(" 쨌 ")}
+      {parts.join(" 夷?")}
     </span>
   );
 }
