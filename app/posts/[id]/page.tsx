@@ -104,7 +104,7 @@ const getPurposeIcon = (purpose: string | null) => {
     case "Arcade":
       return "\ud83c\udfaf";
     case "Study":
-      return "\ud83d\udcda";
+      return "\ud83d\udcdd";
     case "Work Together":
     case "Work":
       return "\ud83d\udcbb";
