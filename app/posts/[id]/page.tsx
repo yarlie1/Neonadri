@@ -572,11 +572,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
             <div className="mt-5 grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
               <div className="rounded-[26px] border border-white/55 bg-white/58 px-4 py-4 backdrop-blur">
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+                <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
+                  Quick snapshot
+                </div>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   <StatCard label="When" value={meetupTimeLabel} />
-                  <StatCard label="Duration" value={meetupDurationLabel} />
                   <StatCard label="Guest" value={targetLabel} />
-                  <StatCard label="Benefit" value={post.benefit_amount || "None"} />
                   <StatCard
                     label={isPostMatched ? "Status" : "Requests"}
                     value={isPostMatched ? "Matched" : `${totalRequestCount}`}
@@ -585,27 +586,35 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </div>
 
               <div className="rounded-[26px] border border-white/55 bg-white/58 px-4 py-4 backdrop-blur">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
-                  Hosted by
-                </div>
-                <div className="mt-2 flex items-center gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-base font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
-                    {ownerName.charAt(0).toUpperCase()}
-                  </div>
+                <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    {post.user_id ? (
-                      <Link
-                        href={ownerProfileHref}
-                        className="block truncate text-base font-bold text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
-                      >
-                        {ownerName}
-                      </Link>
-                    ) : (
-                      <div className="truncate text-base font-bold text-[#2f2a26]">{ownerName}</div>
-                    )}
-                    <div className="mt-1 text-sm text-[#6f655c]">
-                      {[ownerGender || "Unknown", ownerAgeGroup || null].filter(Boolean).join(" / ")}
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
+                      Hosted by
                     </div>
+                    <div className="mt-3 flex items-center gap-3">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-base font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
+                        {ownerName.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        {post.user_id ? (
+                          <Link
+                            href={ownerProfileHref}
+                            className="block truncate text-base font-bold text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
+                          >
+                            {ownerName}
+                          </Link>
+                        ) : (
+                          <div className="truncate text-base font-bold text-[#2f2a26]">{ownerName}</div>
+                        )}
+                        <div className="mt-1 text-sm text-[#6f655c]">
+                          {[ownerGender || "Unknown", ownerAgeGroup || null].filter(Boolean).join(" / ")}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0 rounded-full border border-[#e7ddd2] bg-white/75 px-3 py-1.5 text-xs font-medium text-[#6b5f52]">
+                    {ownerAverageRating.toFixed(1)} · {ownerReviewCount} reviews
                   </div>
                 </div>
 
