@@ -242,23 +242,27 @@ function getPurposeTheme(purpose: string | null) {
 
 function getMatchBadge(post: PostRow, summary?: MatchSummaryMap[number]) {
   const isExpired = getPostStatus(post.meeting_time) === "Expired";
+  const requestCount = summary?.pendingRequestCount ?? summary?.totalRequestCount ?? 0;
 
   if (summary?.isMatched) {
     return {
-      label: "Matched",
+      label: "Matched · confirmed",
       className: "bg-[#efe7dc] text-[#6b5f52]",
     };
   }
 
   if (isExpired) {
     return {
-      label: "Expired",
+      label: "Expired · closed",
       className: "bg-[#e6ddd4] text-[#8b7f74]",
     };
   }
 
   return {
-    label: "Open",
+    label:
+      requestCount > 0
+        ? `Open · ${requestCount} request${requestCount === 1 ? "" : "s"}`
+        : "Open · no requests yet",
     className: "bg-[#eef7ee] text-[#4f8a54]",
   };
 }
