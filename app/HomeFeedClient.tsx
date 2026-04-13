@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Clock3,
   MapPin,
@@ -351,6 +351,8 @@ export default function HomeFeedClient({
   const [ageGroup, setAgeGroup] = useState("All");
   const [sort, setSort] = useState<SortValue>("newest");
   const [isOpen, setIsOpen] = useState(false);
+  const [isFilterPinned, setIsFilterPinned] = useState(false);
+  const filterRef = useRef<HTMLDivElement | null>(null);
 
   const [userLocation, setUserLocation] = useState<{
     lat: number;
@@ -387,6 +389,22 @@ export default function HomeFeedClient({
       }
     );
   }, [sort, userLocation, locationStatus]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!filterRef.current) return;
+      setIsFilterPinned(filterRef.current.getBoundingClientRect().top <= 64);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
 
   const posts = useMemo(() => {
     let next = initialPosts.filter((post) => {
@@ -629,7 +647,14 @@ export default function HomeFeedClient({
           </section>
         )}
 
-        <div className="sticky top-[72px] z-30 rounded-[24px] border border-[#eadfd3] bg-white/95 shadow-[0_16px_34px_rgba(92,69,52,0.12)] backdrop-blur">
+        <div
+          ref={filterRef}
+          className={`sticky top-16 z-20 rounded-[24px] transition ${
+            isFilterPinned
+              ? "border border-[#eadfd3] bg-[#fffdf9] shadow-[0_10px_24px_rgba(92,69,52,0.1)]"
+              : "border border-[#eadfd3] bg-[#fffaf5] shadow-none"
+          }`}
+        >
           <button
             type="button"
             onClick={() => setIsOpen((v) => !v)}

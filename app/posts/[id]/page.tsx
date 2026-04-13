@@ -734,44 +734,50 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
           <div className="mt-5 space-y-4">
             <div className="rounded-[1.6rem] border border-[#efe3d8] bg-[linear-gradient(135deg,#fffaf5_0%,#f8eee3_100%)] p-4 shadow-sm">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="min-w-0">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-                    Host snapshot
-                  </div>
-                  <div className="mt-2 flex items-center gap-3">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-lg font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
-                      {ownerName.charAt(0).toUpperCase()}
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                      Host snapshot
                     </div>
-                    <div className="min-w-0">
-                      {post.user_id ? (
-                        <Link
-                          href={ownerProfileHref}
-                          className="block truncate text-lg font-bold tracking-[-0.03em] text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
-                        >
-                          {ownerName}
-                        </Link>
-                      ) : (
-                        <div className="truncate text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
-                          {ownerName}
+                    <div className="mt-2 flex items-center gap-3">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-lg font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
+                        {ownerName.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        {post.user_id ? (
+                          <Link
+                            href={ownerProfileHref}
+                            className="block truncate text-lg font-bold tracking-[-0.03em] text-[#2f2a26] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
+                          >
+                            {ownerName}
+                          </Link>
+                        ) : (
+                          <div className="truncate text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
+                            {ownerName}
+                          </div>
+                        )}
+                        <div className="mt-1 text-sm text-[#6f655c]">
+                          Warm, low-pressure meetup host
                         </div>
-                      )}
-                      <div className="mt-1 text-sm text-[#6f655c]">
-                        Warm, low-pressure meetup host
                       </div>
                     </div>
                   </div>
+
+                  <div className="rounded-full border border-[#e7ddd2] bg-white/75 px-4 py-2 text-sm font-medium text-[#6b5f52]">
+                    {ownerAverageRating.toFixed(1)} rating · {ownerReviewCount} reviews
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-2 sm:min-w-[250px]">
+                <div className="grid gap-3 sm:grid-cols-2">
                   {(ownerGender || ownerAgeGroup) && (
-                    <div className="flex items-start gap-2 rounded-[1rem] bg-white/75 px-3 py-2">
+                    <div className="flex items-start gap-3 rounded-[1rem] bg-white/75 px-3.5 py-3">
                       <UserRound className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <div>
+                      <div className="min-w-0">
                         <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                           Host
                         </div>
-                        <div className="text-sm font-medium text-[#4f443b]">
+                        <div className="mt-1 text-sm font-medium text-[#4f443b]">
                           {ownerGender || "Unknown"}
                           {ownerGender && ownerAgeGroup ? " / " : ""}
                           {ownerAgeGroup || ""}
@@ -781,13 +787,13 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                   )}
 
                   {hasLanguages && (
-                    <div className="flex items-start gap-2 rounded-[1rem] bg-white/75 px-3 py-2">
+                    <div className="flex items-start gap-3 rounded-[1rem] bg-white/75 px-3.5 py-3">
                       <Languages className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
                       <div className="min-w-0">
                         <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                           Languages
                         </div>
-                        <div className="truncate text-sm font-medium text-[#4f443b]">
+                        <div className="mt-1 truncate text-sm font-medium text-[#4f443b]">
                           {ownerLanguages.join(", ")}
                         </div>
                       </div>
@@ -811,16 +817,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            {(hasLanguages || hasMeetingStyle || hasResponseNote) && (
+            {(hasMeetingStyle || hasResponseNote) && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {hasLanguages && (
-                  <InfoItem
-                    icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                    label="Languages"
-                    value={ownerLanguages.join(", ")}
-                  />
-                )}
-
                 {hasMeetingStyle && (
                   <InfoItem
                     icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}

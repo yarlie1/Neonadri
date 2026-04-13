@@ -38,7 +38,7 @@ import {
 import type { MatchRow, MatchRequestRow, PostRow } from "./page";
 
 type DashboardTab = "posts" | "received" | "sent" | "matches";
-type PostFilter = "all" | "upcoming" | "expired";
+type PostFilter = "all" | "open" | "matched" | "expired";
 
 function getPurposeIcon(purpose: string | null) {
   const className = "h-5 w-5 shrink-0 text-[#7b7067]";
@@ -117,6 +117,10 @@ function getStatusBadgeClass(status: string) {
     return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
   }
 
+  if (normalized === "open") {
+    return "bg-[#eef7ee] text-[#4f8a54] border border-[#dce8dc]";
+  }
+
   if (normalized === "matched" || normalized === "accepted") {
     return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
   }
@@ -130,6 +134,23 @@ function getStatusBadgeClass(status: string) {
   }
 
   return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+}
+
+function getPostMatchState(
+  post: PostRow,
+  summary?: { isMatched: boolean }
+) {
+  const isExpired = getPostStatus(post.meeting_time) === "Expired";
+
+  if (summary?.isMatched) {
+    return "Matched";
+  }
+
+  if (isExpired) {
+    return "Expired";
+  }
+
+  return "Open";
 }
 
 function parseBenefitAmount(value: string | null) {
@@ -330,6 +351,7 @@ export default function DashboardClient({
   matches,
   profileMap,
   postMap,
+  matchSummaryMap,
   reviewedMatchIds,
 }: {
   userId: string;
@@ -339,6 +361,10 @@ export default function DashboardClient({
   matches: MatchRow[];
   profileMap: Record<string, string>;
   postMap: Record<number, PostRow>;
+  matchSummaryMap: Record<
+    number,
+    { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
+  >;
   reviewedMatchIds: number[];
 }) {
   const supabase = createClient();
@@ -390,8 +416,10 @@ export default function DashboardClient({
 
   const filteredPosts = useMemo(() => {
     if (postFilter === "all") return posts;
-    return posts.filter((post) => getPostStatus(post.meeting_time).toLowerCase() === postFilter);
-  }, [posts, postFilter]);
+    return posts.filter(
+      (post) => getPostMatchState(post, matchSummaryMap[post.id]).toLowerCase() === postFilter
+    );
+  }, [posts, postFilter, matchSummaryMap]);
 
   const filteredMatches = useMemo(() => {
     if (matchFilter === "all") return matches;
@@ -406,6 +434,31 @@ export default function DashboardClient({
     () => requestsReceived.filter((item) => item.status === "pending").length,
     [requestsReceived]
   );
+
+  const nextMatchedMeetup = useMemo(() => {
+    const upcomingMatches = matches
+      .map((match) => {
+        const post = postMap[match.post_id];
+        if (!post?.meeting_time) return null;
+
+        const time = new Date(post.meeting_time).getTime();
+        if (Number.isNaN(time) || time < Date.now()) return null;
+
+        const otherUserId = match.user_a === userId ? match.user_b : match.user_a;
+
+        return {
+          match,
+          post,
+          time,
+          otherUserId,
+          otherName: profileMap[otherUserId] || "Unknown",
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => a!.time - b!.time);
+
+    return upcomingMatches[0] || null;
+  }, [matches, postMap, profileMap, userId]);
 
   const deletePost = async (postId: number) => {
     const confirmed = window.confirm("Delete this meetup?");
@@ -504,6 +557,38 @@ export default function DashboardClient({
           </div>
         </div>
 
+        {nextMatchedMeetup && (
+          <div className="rounded-[28px] border border-[#dccfc2] bg-[linear-gradient(135deg,#fff9f3_0%,#f2e4d7_100%)] p-4 shadow-[0_14px_32px_rgba(92,69,52,0.08)]">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                  Coming up next
+                </div>
+                <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#2f2a26]">
+                  Matched meetup with {nextMatchedMeetup.otherName}
+                </div>
+                <div className="mt-2 text-sm leading-6 text-[#6f655c]">
+                  {formatTime(nextMatchedMeetup.post.meeting_time)} at{" "}
+                  {nextMatchedMeetup.post.place_name ||
+                    nextMatchedMeetup.post.location ||
+                    "your selected place"}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <CompactActionButton href={`/posts/${nextMatchedMeetup.post.id}`} primary>
+                  <Eye className="h-3.5 w-3.5" />
+                  Open Meetup
+                </CompactActionButton>
+                <CompactActionButton href={`/profile/${nextMatchedMeetup.otherUserId}`}>
+                  <UserCircle2 className="h-3.5 w-3.5" />
+                  View Match
+                </CompactActionButton>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-4">
           <DashboardTabCard
             active={activeTab === "posts"}
@@ -551,10 +636,16 @@ export default function DashboardClient({
                     All
                   </FilterPill>
                   <FilterPill
-                    active={postFilter === "upcoming"}
-                    onClick={() => setPostFilter("upcoming")}
+                    active={postFilter === "open"}
+                    onClick={() => setPostFilter("open")}
                   >
-                    Upcoming
+                    Open
+                  </FilterPill>
+                  <FilterPill
+                    active={postFilter === "matched"}
+                    onClick={() => setPostFilter("matched")}
+                  >
+                    Matched
                   </FilterPill>
                   <FilterPill
                     active={postFilter === "expired"}
@@ -609,7 +700,7 @@ export default function DashboardClient({
         {activeTab === "posts" && (
           <div className="space-y-4">
             {filteredPosts.map((post) => {
-              const postStatus = getPostStatus(post.meeting_time);
+              const postStatus = getPostMatchState(post, matchSummaryMap[post.id]);
               const amount = parseBenefitAmount(post.benefit_amount);
 
               return (
@@ -725,8 +816,10 @@ export default function DashboardClient({
               <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-10 text-center text-[#8b7f74] shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
                 {postFilter === "all"
                   ? "No meetups yet."
-                  : postFilter === "upcoming"
-                  ? "No upcoming meetups."
+                  : postFilter === "open"
+                  ? "No open meetups."
+                  : postFilter === "matched"
+                  ? "No matched meetups."
                   : "No expired meetups."}
               </div>
             )}
@@ -914,7 +1007,7 @@ export default function DashboardClient({
                         meetupStatus
                       )}`}
                     >
-                      {meetupStatus === "upcoming" ? "Upcoming" : "Expired"}
+                      {meetupStatus === "upcoming" ? "Matched" : "Expired"}
                     </span>
                   </div>
 

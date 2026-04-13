@@ -49,6 +49,13 @@ export type MatchReviewRow = {
   created_at: string;
 };
 
+export type MatchSummaryRow = {
+  post_id: number;
+  is_matched: boolean;
+  pending_request_count: number;
+  total_request_count: number;
+};
+
 export default async function DashboardPage() {
   const supabase = await createClient();
 
@@ -98,6 +105,10 @@ export default async function DashboardPage() {
   const requestsSent = (sentRes.data || []) as MatchRequestRow[];
   const matches = (matchesRes.data || []) as MatchRow[];
   const reviews = (reviewsRes.data || []) as MatchReviewRow[];
+  let matchSummaryMap: Record<
+    number,
+    { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
+  > = {};
 
   const relatedUserIds = Array.from(
     new Set([
@@ -142,6 +153,20 @@ export default async function DashboardPage() {
     });
   }
 
+  if (posts.length > 0) {
+    const { data: summaryData } = await supabase.rpc("get_post_match_summaries", {
+      p_post_ids: posts.map((post) => post.id),
+    });
+
+    ((summaryData || []) as MatchSummaryRow[]).forEach((summary) => {
+      matchSummaryMap[summary.post_id] = {
+        isMatched: !!summary.is_matched,
+        pendingRequestCount: Number(summary.pending_request_count || 0),
+        totalRequestCount: Number(summary.total_request_count || 0),
+      };
+    });
+  }
+
   const reviewedMatchIds = reviews.map((r) => r.match_id);
 
   return (
@@ -153,6 +178,7 @@ export default async function DashboardPage() {
       matches={matches}
       profileMap={profileMap}
       postMap={postMap}
+      matchSummaryMap={matchSummaryMap}
       reviewedMatchIds={reviewedMatchIds}
     />
   );
