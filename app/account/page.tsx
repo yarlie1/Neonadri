@@ -96,8 +96,6 @@ export default function AccountPage() {
   const [displayName, setDisplayName] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
-  const [isPublic, setIsPublic] = useState(true);
-
   const [aboutMe, setAboutMe] = useState("");
   const [preferredArea, setPreferredArea] = useState("");
   const [meetingStyle, setMeetingStyle] = useState("");
@@ -196,8 +194,6 @@ export default function AccountPage() {
         setDisplayName(profile.display_name || "");
         setGender(profile.gender || "");
         setAgeGroup(profile.age_group || "");
-        setIsPublic(profile.is_public ?? true);
-
         setAboutMe(profile.about_me || "");
         setPreferredArea(profile.preferred_area || "");
         setMeetingStyle(profile.meeting_style || "");
@@ -224,7 +220,7 @@ export default function AccountPage() {
       bio: aboutMeSummary || null,
       gender: gender || null,
       age_group: ageGroup || null,
-      is_public: isPublic,
+      is_public: true,
       about_me: aboutMe.trim() || null,
       preferred_area: preferredArea.trim() || null,
       meeting_style: meetingStyle.trim() || null,
@@ -285,9 +281,6 @@ export default function AccountPage() {
             <p className="mt-2 text-sm leading-6 text-[#7a6b61]">
               Manage your public intro, meetup preferences, and the signals people see before they reach out.
             </p>
-          </div>
-          <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
-            {isPublic ? "Public profile" : "Private profile"}
           </div>
         </div>
 
@@ -500,14 +493,6 @@ export default function AccountPage() {
             </select>
           </div>
 
-          <label className="mt-5 flex items-center gap-3 rounded-[22px] border border-[#eadfd3] bg-white px-4 py-3 text-sm text-[#5a5149]">
-            <input
-              type="checkbox"
-              checked={isPublic}
-              onChange={(e) => setIsPublic(e.target.checked)}
-            />
-            Make my profile public
-          </label>
           </section>
         </div>
 
