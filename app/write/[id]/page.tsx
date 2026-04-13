@@ -75,6 +75,19 @@ function formatDateTimeLocalValue(date: Date) {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
+function getDefaultMeetingTime() {
+  const now = new Date();
+  const target = new Date(now.getTime() + 3 * 60 * 60 * 1000);
+
+  target.setMinutes(0, 0, 0);
+
+  if (target.getTime() < now.getTime() + 3 * 60 * 60 * 1000) {
+    target.setHours(target.getHours() + 1);
+  }
+
+  return formatDateTimeLocalValue(target);
+}
+
 export default function EditWritePage() {
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
@@ -144,10 +157,7 @@ export default function EditWritePage() {
       if (data.meeting_time) {
         setMeetingTime(formatDateTimeLocalValue(new Date(data.meeting_time)));
       } else {
-        const now = new Date();
-        now.setHours(now.getHours() + 3);
-        now.setSeconds(0, 0);
-        setMeetingTime(formatDateTimeLocalValue(now));
+        setMeetingTime(getDefaultMeetingTime());
       }
 
       setDurationMinutes(
@@ -389,6 +399,7 @@ export default function EditWritePage() {
               className={fieldClass}
               value={meetingTime}
               onChange={(e) => setMeetingTime(e.target.value)}
+              step={1800}
             />
           </div>
 
