@@ -79,6 +79,12 @@ export default function MatchRequestBox({ postId, postOwnerUserId }: Props) {
       });
 
       if (error) {
+        if (error.code === "23505") {
+          setMessage("Your request has already been sent.");
+          setMessageType("info");
+          return;
+        }
+
         setMessage(error.message);
         setMessageType("info");
         return;
