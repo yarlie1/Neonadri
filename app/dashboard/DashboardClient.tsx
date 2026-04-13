@@ -39,6 +39,7 @@ import type { MatchRow, MatchRequestRow, PostRow } from "./page";
 
 type DashboardTab = "posts" | "received" | "sent" | "matches";
 type PostFilter = "all" | "open" | "matched" | "expired";
+type MatchFilter = "all" | "upcoming" | "expired";
 
 function getPurposeIcon(purpose: string | null) {
   const className = "h-5 w-5 shrink-0 text-[#7b7067]";
@@ -373,7 +374,7 @@ export default function DashboardClient({
   const [posts, setPosts] = useState(initialPosts);
   const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
-  const [matchFilter, setMatchFilter] = useState<PostFilter>("all");
+  const [matchFilter, setMatchFilter] = useState<MatchFilter>("all");
   const [deletingPostId, setDeletingPostId] = useState<number | null>(null);
   const [processingRequestId, setProcessingRequestId] = useState<number | null>(null);
   const [processingRequestAction, setProcessingRequestAction] = useState<
