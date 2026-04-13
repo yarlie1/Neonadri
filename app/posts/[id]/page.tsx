@@ -144,6 +144,69 @@ const getPurposeIcon = (purpose: string | null, className?: string) => {
   }
 };
 
+const getPurposeTheme = (purpose: string | null) => {
+  switch (purpose) {
+    case "Coffee Chat":
+    case "Coffee":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#8b5e4a_0%,#c98b67_100%)] text-white",
+      };
+    case "Meal":
+    case "Dessert":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#9f7440_0%,#d5a15a_100%)] text-white",
+      };
+    case "Walk":
+    case "Jogging":
+    case "Yoga":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#5d8c5f_0%,#87b377_100%)] text-white",
+      };
+    case "Movie":
+    case "Theater":
+    case "Karaoke":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#5d4f7d_0%,#8c75b6_100%)] text-white",
+      };
+    case "Board Games":
+    case "Gaming":
+    case "Bowling":
+    case "Arcade":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#64508a_0%,#8f73c6_100%)] text-white",
+      };
+    case "Study":
+    case "Book Talk":
+    case "Book":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#4e5f84_0%,#6d8fb8_100%)] text-white",
+      };
+    case "Work Together":
+    case "Work":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#4f4640_0%,#847467_100%)] text-white",
+      };
+    case "Photo Walk":
+    case "Photo":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#8e5f5b_0%,#c8827f_100%)] text-white",
+      };
+    default:
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#2f2a26_0%,#5a4d45_100%)] text-white",
+      };
+  }
+};
+
 const formatTime = (meetingTime: string | null) => {
   if (!meetingTime) return null;
 
@@ -492,6 +555,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }`;
   const meetupTimeLabel = formatTime(post.meeting_time) || "Time not set";
   const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
+  const purposeTheme = getPurposeTheme(post.meeting_purpose);
   const ownerRequestItems = ownerRequests.map((request) => {
     const profile = requesterProfileMap.get(request.requester_user_id);
 
@@ -522,7 +586,9 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 </span>
               </div>
               <div className="mt-4 flex flex-wrap items-stretch gap-3">
-                <div className="inline-flex min-w-0 flex-1 items-center gap-3 rounded-[20px] bg-[#2f2a26] px-5 py-4 text-white shadow-[0_16px_30px_rgba(47,42,38,0.18)]">
+                <div
+                  className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 text-white shadow-[0_16px_30px_rgba(47,42,38,0.18)] ${purposeTheme.bandClass}`}
+                >
                   <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/14">
                     {getPurposeIcon(
                       post.meeting_purpose,
@@ -535,15 +601,15 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                     </div>
                   </div>
                 </div>
-                <div className="inline-flex min-w-[90px] shrink-0 flex-col items-center justify-center rounded-[18px] bg-white/70 px-3 py-3 text-center text-[#4f443b] shadow-sm backdrop-blur">
+                <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] bg-white/70 px-1.5 py-2 text-center text-[#4f443b] shadow-sm backdrop-blur">
                   <Clock3 className="h-4 w-4" />
-                  <span className="mt-2 text-base font-bold tracking-[-0.03em]">
+                  <span className="mt-1 text-sm font-semibold tracking-[-0.03em]">
                     {meetupDurationLabel}
                   </span>
                 </div>
-                <div className="inline-flex min-w-[96px] shrink-0 flex-col items-center justify-center rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-3 text-center text-[#6e4715] shadow-sm">
+                <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center rounded-[16px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-1.5 py-2 text-center text-[#6e4715] shadow-sm">
                   <Coins className="h-4 w-4" />
-                  <span className="mt-2 text-base font-bold tracking-[-0.03em]">
+                  <span className="mt-1 text-sm font-semibold tracking-[-0.03em]">
                     {post.benefit_amount || "N/A"}
                   </span>
                 </div>
