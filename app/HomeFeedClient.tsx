@@ -104,45 +104,45 @@ const SORT_OPTIONS = [
 
 type SortValue = (typeof SORT_OPTIONS)[number]["value"];
 
-function getPurposeIcon(purpose: string | null) {
-  const className = "h-[19px] w-[19px] shrink-0 text-[#7e746b]";
+function getPurposeIcon(purpose: string | null, className?: string) {
+  const iconClassName = className || "h-[19px] w-[19px] shrink-0 text-[#7e746b]";
 
   switch (purpose) {
     case "Coffee Chat":
     case "Coffee":
-      return <Coffee className={className} />;
+      return <Coffee className={iconClassName} />;
     case "Meal":
-      return <UtensilsCrossed className={className} />;
+      return <UtensilsCrossed className={iconClassName} />;
     case "Dessert":
-      return <CakeSlice className={className} />;
+      return <CakeSlice className={iconClassName} />;
     case "Walk":
-      return <Footprints className={className} />;
+      return <Footprints className={iconClassName} />;
     case "Jogging":
     case "Yoga":
-      return <PersonStanding className={className} />;
+      return <PersonStanding className={iconClassName} />;
     case "Movie":
     case "Theater":
-      return <Clapperboard className={className} />;
+      return <Clapperboard className={iconClassName} />;
     case "Karaoke":
-      return <Mic2 className={className} />;
+      return <Mic2 className={iconClassName} />;
     case "Board Games":
     case "Gaming":
     case "Bowling":
     case "Arcade":
-      return <Gamepad2 className={className} />;
+      return <Gamepad2 className={iconClassName} />;
     case "Study":
-      return <BookOpen className={className} />;
+      return <BookOpen className={iconClassName} />;
     case "Work Together":
     case "Work":
-      return <BriefcaseBusiness className={className} />;
+      return <BriefcaseBusiness className={iconClassName} />;
     case "Book Talk":
     case "Book":
-      return <Book className={className} />;
+      return <Book className={iconClassName} />;
     case "Photo Walk":
     case "Photo":
-      return <Camera className={className} />;
+      return <Camera className={iconClassName} />;
     default:
-      return <MapPin className={className} />;
+      return <MapPin className={iconClassName} />;
   }
 }
 
@@ -166,6 +166,78 @@ function formatTime(meetingTime: string | null) {
 function getPostStatus(meetingTime: string | null) {
   if (!meetingTime) return "Upcoming";
   return new Date(meetingTime).getTime() >= Date.now() ? "Upcoming" : "Expired";
+}
+
+function getPurposeTheme(purpose: string | null) {
+  switch (purpose) {
+    case "Coffee Chat":
+    case "Coffee":
+      return {
+        pillClass: "bg-[#f7eadf] text-[#9a6248]",
+        bandClass:
+          "bg-[linear-gradient(135deg,#8b5e4a_0%,#c98b67_100%)] text-white",
+      };
+    case "Meal":
+    case "Dessert":
+      return {
+        pillClass: "bg-[#f6ebdf] text-[#8f6a3a]",
+        bandClass:
+          "bg-[linear-gradient(135deg,#9f7440_0%,#d5a15a_100%)] text-white",
+      };
+    case "Walk":
+    case "Jogging":
+    case "Yoga":
+      return {
+        pillClass: "bg-[#eaf4ea] text-[#4f8a54]",
+        bandClass:
+          "bg-[linear-gradient(135deg,#5d8c5f_0%,#87b377_100%)] text-white",
+      };
+    case "Movie":
+    case "Theater":
+    case "Karaoke":
+      return {
+        pillClass: "bg-[#eee7f6] text-[#6f5a92]",
+        bandClass:
+          "bg-[linear-gradient(135deg,#5d4f7d_0%,#8c75b6_100%)] text-white",
+      };
+    case "Board Games":
+    case "Gaming":
+    case "Bowling":
+    case "Arcade":
+      return {
+        pillClass: "bg-[#efe8ff] text-[#6a5ea5]",
+        bandClass:
+          "bg-[linear-gradient(135deg,#64508a_0%,#8f73c6_100%)] text-white",
+      };
+    case "Study":
+    case "Book Talk":
+    case "Book":
+      return {
+        pillClass: "bg-[#e8f0fb] text-[#5e79a6]",
+        bandClass:
+          "bg-[linear-gradient(135deg,#4e5f84_0%,#6d8fb8_100%)] text-white",
+      };
+    case "Work Together":
+    case "Work":
+      return {
+        pillClass: "bg-[#ece8e3] text-[#6d6258]",
+        bandClass:
+          "bg-[linear-gradient(135deg,#4f4640_0%,#847467_100%)] text-white",
+      };
+    case "Photo Walk":
+    case "Photo":
+      return {
+        pillClass: "bg-[#f9e8e5] text-[#9a5f57]",
+        bandClass:
+          "bg-[linear-gradient(135deg,#8e5f5b_0%,#c8827f_100%)] text-white",
+      };
+    default:
+      return {
+        pillClass: "bg-[#f8efe8] text-[#9a6f5f]",
+        bandClass:
+          "bg-[linear-gradient(135deg,#2f2a26_0%,#5a4d45_100%)] text-white",
+      };
+  }
 }
 
 function getMatchBadge(post: PostRow, summary?: MatchSummaryMap[number]) {
@@ -867,6 +939,7 @@ export default function HomeFeedClient({
           const status = getPostStatus(post.meeting_time);
           const isExpired = status === "Expired";
           const matchBadge = getMatchBadge(post, matchSummaryMap[post.id]);
+          const purposeTheme = getPurposeTheme(post.meeting_purpose);
 
           const distanceText =
             sort === "distance" &&
@@ -894,7 +967,9 @@ export default function HomeFeedClient({
               }`}
             >
               <div className="mb-4 flex items-center justify-between gap-3">
-                <div className="inline-flex items-center gap-2 rounded-full bg-[#f8efe8] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9a6f5f]">
+                <div
+                  className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] ${purposeTheme.pillClass}`}
+                >
                   {getPurposeIcon(post.meeting_purpose)}
                   {post.meeting_purpose || "Meetup"}
                 </div>
@@ -908,9 +983,25 @@ export default function HomeFeedClient({
 
               <div className="rounded-[22px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-3">
                 <div className="flex items-stretch gap-2">
-                  <div className="inline-flex min-w-0 flex-1 items-center gap-2 rounded-[18px] bg-[#2f2a26] px-3 py-3 text-base font-semibold text-white">
-                    {getPurposeIcon(post.meeting_purpose)}
-                    <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
+                  <div
+                    className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
+                  >
+                    <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/18">
+                      {getPurposeIcon(
+                        post.meeting_purpose,
+                        "h-[19px] w-[19px] shrink-0 text-white"
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/70">
+                        Meetup vibe
+                      </div>
+                      <div className="truncate text-sm font-semibold text-white/95">
+                        {matchBadge.label === "Matched"
+                          ? "Matched and confirmed"
+                          : "Open for a good meetup"}
+                      </div>
+                    </div>
                   </div>
 
                   {formatDuration(post.duration_minutes) ? (
