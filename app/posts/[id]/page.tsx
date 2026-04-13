@@ -515,39 +515,23 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
           <div className="relative">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/60 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
-                  <span>{getPurposeIcon(post.meeting_purpose)}</span>
-                  <span>{post.meeting_purpose || "Meetup"}</span>
-                </div>
-                <span
-                  className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${heroStatusClass}`}
-                >
-                  {heroStatusLabel}
-                </span>
-                {user && user.id !== post.user_id && myRequestStatus !== "No request yet" && (
-                  <span
-                    className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${getStatusBadge(
-                      myRequestStatus
-                    )}`}
-                  >
-                    {getFriendlyStatusLabel(myRequestStatus)}
-                  </span>
-                )}
-                {user && user.id === post.user_id && (
-                  <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b5f52]">
-                    My meetup
-                  </span>
-                )}
+            <div className="flex flex-wrap items-start gap-2">
+              <div className="inline-flex min-w-0 flex-1 items-center gap-2 rounded-[18px] bg-[#2f2a26] px-4 py-3 text-base font-semibold text-white shadow-sm">
+                {getPurposeIcon(post.meeting_purpose)}
+                <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
               </div>
 
+              {meetupDurationLabel && (
+                <div className="inline-flex shrink-0 items-center gap-2 rounded-[18px] bg-white/80 px-4 py-3 text-base font-semibold text-[#4f443b] shadow-sm">
+                  <Clock3 className="h-4 w-4" />
+                  <span>{meetupDurationLabel}</span>
+                </div>
+              )}
+
               {post.benefit_amount && (
-                <div className="shrink-0 rounded-[1.4rem] bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-3 text-base font-bold text-[#5a4a1f] shadow">
-                  <span className="inline-flex items-center gap-2">
-                    <Coins className="h-4 w-4" />
-                    {post.benefit_amount}
-                  </span>
+                <div className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-4 py-3 text-base font-semibold text-[#6e4715] shadow-sm">
+                  <Coins className="h-4 w-4" />
+                  <span>{post.benefit_amount}</span>
                 </div>
               )}
             </div>
@@ -562,6 +546,28 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
                 A clear meetup plan with time, place, benefit, and just enough host context to decide quickly.
               </p>
+            </div>
+
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span
+                className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${heroStatusClass}`}
+              >
+                {heroStatusLabel}
+              </span>
+              {user && user.id !== post.user_id && myRequestStatus !== "No request yet" && (
+                <span
+                  className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${getStatusBadge(
+                    myRequestStatus
+                  )}`}
+                >
+                  {getFriendlyStatusLabel(myRequestStatus)}
+                </span>
+              )}
+              {user && user.id === post.user_id && (
+                <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b5f52]">
+                  My meetup
+                </span>
+              )}
             </div>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
