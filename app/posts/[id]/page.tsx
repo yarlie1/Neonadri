@@ -27,6 +27,7 @@ import {
 import { createClient } from "../../../lib/supabase/server";
 import MatchRequestBox from "./MatchRequestBox";
 import ClientMap from "./ClientMap";
+import OwnerMatchPanel from "./OwnerMatchPanel";
 
 type PageProps = {
   params: {
@@ -50,12 +51,24 @@ type ProfileRow = {
 
 type MatchRequestRow = {
   id: number;
+  requester_user_id: string;
+  post_owner_user_id: string;
   status: string;
+  created_at: string;
 };
 
 type MatchRow = {
   id: number;
+  user_a?: string;
+  user_b?: string;
   status: string;
+};
+
+type MatchSummaryRow = {
+  post_id: number;
+  is_matched: boolean;
+  pending_request_count: number;
+  total_request_count: number;
 };
 
 type ReviewRow = {
@@ -326,7 +339,28 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }
 
   let myRequestStatus = "No request yet";
-  let isMatched = false;
+  let myRequestId: number | null = null;
+  let isPostMatched = false;
+  let pendingRequestCount = 0;
+  let totalRequestCount = 0;
+  let ownerRequests: MatchRequestRow[] = [];
+  let matchedPartner:
+    | {
+        userId: string;
+        displayName: string;
+        gender: string;
+        ageGroup: string;
+      }
+    | null = null;
+
+  const { data: summaryData } = await supabase.rpc("get_post_match_summaries", {
+    p_post_ids: [post.id],
+  });
+
+  const summary = ((summaryData || []) as MatchSummaryRow[])[0];
+  isPostMatched = !!summary?.is_matched;
+  pendingRequestCount = Number(summary?.pending_request_count || 0);
+  totalRequestCount = Number(summary?.total_request_count || 0);
 
   if (user && post.user_id && user.id !== post.user_id) {
     const [{ data: requestData }, { data: matchData }] = await Promise.all([
@@ -351,12 +385,80 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
     if (request?.status) {
       myRequestStatus = request.status;
+      myRequestId = request.id;
     }
 
     if (match?.status) {
-      isMatched = true;
       myRequestStatus = "matched";
     }
+  }
+
+  if (user && user.id === post.user_id) {
+    const { data: ownerRequestData } = await supabase
+      .from("match_requests")
+      .select("id, requester_user_id, post_owner_user_id, status, created_at")
+      .eq("post_id", post.id)
+      .eq("post_owner_user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    ownerRequests = (ownerRequestData || []) as MatchRequestRow[];
+
+    if (isPostMatched) {
+      const { data: ownerMatchData } = await supabase
+        .from("matches")
+        .select("id, user_a, user_b, status")
+        .eq("post_id", post.id)
+        .maybeSingle();
+
+      const match = ownerMatchData as MatchRow | null;
+      const matchedPartnerId =
+        match?.user_a === user.id ? match?.user_b : match?.user_b === user.id ? match?.user_a : null;
+
+      if (matchedPartnerId) {
+        const { data: partnerProfile } = await supabase
+          .from("profiles")
+          .select("id, display_name, gender, age_group")
+          .eq("id", matchedPartnerId)
+          .maybeSingle();
+
+        if (partnerProfile) {
+          matchedPartner = {
+            userId: partnerProfile.id,
+            displayName: partnerProfile.display_name || "Unknown",
+            gender: partnerProfile.gender || "",
+            ageGroup: partnerProfile.age_group || "",
+          };
+        }
+      }
+    }
+  }
+
+  const requesterIds = Array.from(
+    new Set(ownerRequests.map((request) => request.requester_user_id).filter(Boolean))
+  );
+  const requesterProfileMap = new Map<
+    string,
+    { displayName: string; gender: string; ageGroup: string }
+  >();
+
+  if (requesterIds.length > 0) {
+    const { data: requesterProfiles } = await supabase
+      .from("profiles")
+      .select("id, display_name, gender, age_group")
+      .in("id", requesterIds);
+
+    ((requesterProfiles || []) as Array<{
+      id: string;
+      display_name: string | null;
+      gender: string | null;
+      age_group: string | null;
+    }>).forEach((profile) => {
+      requesterProfileMap.set(profile.id, {
+        displayName: profile.display_name || "Unknown",
+        gender: profile.gender || "",
+        ageGroup: profile.age_group || "",
+      });
+    });
   }
 
   const mapUrl =
@@ -388,6 +490,23 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }`;
   const meetupTimeLabel = formatTime(post.meeting_time) || "Time not set";
   const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
+  const ownerRequestItems = ownerRequests.map((request) => {
+    const profile = requesterProfileMap.get(request.requester_user_id);
+
+    return {
+      id: request.id,
+      requesterUserId: request.requester_user_id,
+      requesterName: profile?.displayName || "Unknown",
+      requesterGender: profile?.gender || "",
+      requesterAgeGroup: profile?.ageGroup || "",
+      createdAt: request.created_at,
+      status: request.status,
+    };
+  });
+  const heroStatusLabel = isPostMatched ? "Matched" : "Open";
+  const heroStatusClass = isPostMatched
+    ? "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]"
+    : "bg-[#eef7ee] text-[#4f8a54] border border-[#dce8dc]";
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
@@ -402,6 +521,11 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                   <span>{getPurposeIcon(post.meeting_purpose)}</span>
                   <span>{post.meeting_purpose || "Meetup"}</span>
                 </div>
+                <span
+                  className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${heroStatusClass}`}
+                >
+                  {heroStatusLabel}
+                </span>
                 {user && user.id !== post.user_id && myRequestStatus !== "No request yet" && (
                   <span
                     className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${getStatusBadge(
@@ -442,11 +566,15 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
             <div className="mt-5 grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
               <div className="rounded-[26px] border border-white/55 bg-white/58 px-4 py-4 backdrop-blur">
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
                   <StatCard label="When" value={meetupTimeLabel} />
                   <StatCard label="Duration" value={meetupDurationLabel} />
                   <StatCard label="Guest" value={targetLabel} />
                   <StatCard label="Benefit" value={post.benefit_amount || "None"} />
+                  <StatCard
+                    label={isPostMatched ? "Status" : "Requests"}
+                    value={isPostMatched ? "Matched" : `${totalRequestCount}`}
+                  />
                 </div>
               </div>
 
@@ -473,6 +601,25 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                       {[ownerGender || "Unknown", ownerAgeGroup || null].filter(Boolean).join(" / ")}
                     </div>
                   </div>
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {user && user.id === post.user_id && !isPostMatched && (
+                    <Link
+                      href={`/write/${post.id}`}
+                      className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      Edit Meetup
+                    </Link>
+                  )}
+
+                  {isPostMatched && (
+                    <div className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-[#efe7dc] px-4 py-2 text-sm font-medium text-[#5f5347]">
+                      <HeartHandshake className="h-4 w-4" />
+                      Match completed
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -576,6 +723,25 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             </div>
             <ClientMap latitude={post.latitude} longitude={post.longitude} />
           </div>
+        )}
+
+        {user && user.id === post.user_id ? (
+          <OwnerMatchPanel
+            postId={post.id}
+            isMatched={isPostMatched}
+            pendingRequestCount={pendingRequestCount}
+            requests={ownerRequestItems}
+            matchedPartner={matchedPartner}
+          />
+        ) : post.user_id && (
+          <MatchRequestBox
+            postId={post.id}
+            postOwnerUserId={post.user_id}
+            requestCount={totalRequestCount}
+            isPostMatched={isPostMatched}
+            myRequestId={myRequestId}
+            myRequestStatus={myRequestStatus}
+          />
         )}
 
         <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 px-6 py-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
@@ -769,10 +935,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             </div>
           </div>
         </div>
-
-        {post.user_id && user && user.id !== post.user_id && !isMatched && (
-          <MatchRequestBox postId={post.id} postOwnerUserId={post.user_id} />
-        )}
 
         <div className="px-1 text-xs text-[#9b8f84]">
           Created at {new Date(post.created_at).toLocaleString()}

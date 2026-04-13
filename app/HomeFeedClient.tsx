@@ -56,6 +56,15 @@ type HostProfileMap = Record<
   }
 >;
 
+type MatchSummaryMap = Record<
+  number,
+  {
+    isMatched: boolean;
+    pendingRequestCount: number;
+    totalRequestCount: number;
+  }
+>;
+
 const PURPOSE_OPTIONS = [
   "All",
   "Coffee",
@@ -155,6 +164,29 @@ function formatTime(meetingTime: string | null) {
 function getPostStatus(meetingTime: string | null) {
   if (!meetingTime) return "Upcoming";
   return new Date(meetingTime).getTime() >= Date.now() ? "Upcoming" : "Expired";
+}
+
+function getMatchBadge(post: PostRow, summary?: MatchSummaryMap[number]) {
+  const isExpired = getPostStatus(post.meeting_time) === "Expired";
+
+  if (summary?.isMatched) {
+    return {
+      label: "Matched",
+      className: "bg-[#efe7dc] text-[#6b5f52]",
+    };
+  }
+
+  if (isExpired) {
+    return {
+      label: "Expired",
+      className: "bg-[#e6ddd4] text-[#8b7f74]",
+    };
+  }
+
+  return {
+    label: "Open",
+    className: "bg-[#eef7ee] text-[#4f8a54]",
+  };
 }
 
 function parseBenefitAmount(value: string | null) {
@@ -303,9 +335,11 @@ function FilterSummaryText({
 export default function HomeFeedClient({
   initialPosts,
   hostProfileMap,
+  matchSummaryMap,
 }: {
   initialPosts: PostRow[];
   hostProfileMap: HostProfileMap;
+  matchSummaryMap: MatchSummaryMap;
 }) {
   const [purpose, setPurpose] = useState("All");
   const [gender, setGender] = useState("All");
@@ -731,6 +765,7 @@ export default function HomeFeedClient({
           };
           const status = getPostStatus(post.meeting_time);
           const isExpired = status === "Expired";
+          const matchBadge = getMatchBadge(post, matchSummaryMap[post.id]);
 
           const distanceText =
             sort === "distance" &&
@@ -764,13 +799,9 @@ export default function HomeFeedClient({
                 </div>
 
                 <div
-                  className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${
-                    isExpired
-                      ? "bg-[#e6ddd4] text-[#8b7f74]"
-                      : "bg-[#eef7ee] text-[#4f8a54]"
-                  }`}
+                  className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${matchBadge.className}`}
                 >
-                  {status}
+                  {matchBadge.label}
                 </div>
               </div>
 

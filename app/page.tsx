@@ -33,6 +33,22 @@ type HostProfileMap = Record<
   }
 >;
 
+type MatchSummaryRow = {
+  post_id: number;
+  is_matched: boolean;
+  pending_request_count: number;
+  total_request_count: number;
+};
+
+type MatchSummaryMap = Record<
+  number,
+  {
+    isMatched: boolean;
+    pendingRequestCount: number;
+    totalRequestCount: number;
+  }
+>;
+
 export default async function HomePage() {
   const supabase = await createClient();
 
@@ -60,8 +76,10 @@ export default async function HomePage() {
   const ownerIds = Array.from(new Set(posts.map((post) => post.user_id))).filter(
     Boolean
   );
+  const postIds = posts.map((post) => post.id);
 
   const hostProfileMap: HostProfileMap = {};
+  const matchSummaryMap: MatchSummaryMap = {};
 
   if (ownerIds.length > 0) {
     try {
@@ -80,10 +98,25 @@ export default async function HomePage() {
     } catch {}
   }
 
+  if (postIds.length > 0) {
+    const { data: matchSummaries } = await supabase.rpc("get_post_match_summaries", {
+      p_post_ids: postIds,
+    });
+
+    ((matchSummaries || []) as MatchSummaryRow[]).forEach((summary) => {
+      matchSummaryMap[summary.post_id] = {
+        isMatched: !!summary.is_matched,
+        pendingRequestCount: Number(summary.pending_request_count || 0),
+        totalRequestCount: Number(summary.total_request_count || 0),
+      };
+    });
+  }
+
   return (
     <HomeFeedClient
       initialPosts={posts}
       hostProfileMap={hostProfileMap}
+      matchSummaryMap={matchSummaryMap}
     />
   );
 }
