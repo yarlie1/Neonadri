@@ -29,7 +29,6 @@ import {
   XCircle,
   Plus,
   Star,
-  UserCircle2,
 } from "lucide-react";
 import type { MatchRow, MatchRequestRow, PostRow } from "./page";
 
@@ -973,11 +972,6 @@ export default function DashboardClient({
 
                   {item.status === "pending" ? (
                     <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
-                      <CompactActionButton href={`/profile/${item.requester_user_id}`}>
-                        <UserCircle2 className="h-3.5 w-3.5" />
-                        View {requesterName}
-                      </CompactActionButton>
-
                       <CompactActionButton
                         onClick={() => updateRequestStatus(item.id, "accepted")}
                         disabled={processingRequestId !== null}
@@ -1001,14 +995,7 @@ export default function DashboardClient({
                           : "Reject"}
                       </CompactActionButton>
                     </div>
-                  ) : (
-                    <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
-                      <CompactActionButton href={`/profile/${item.requester_user_id}`}>
-                        <UserCircle2 className="h-3.5 w-3.5" />
-                        View {requesterName}
-                      </CompactActionButton>
-                    </div>
-                  )}
+                  ) : null}
                 </div>
               );
             })}
@@ -1056,12 +1043,6 @@ export default function DashboardClient({
 
                 <MiniPostPreview post={postMap[item.post_id]} />
 
-                <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
-                  <CompactActionButton href={`/profile/${item.post_owner_user_id}`}>
-                    <UserCircle2 className="h-3.5 w-3.5" />
-                    View Profile
-                  </CompactActionButton>
-                </div>
               </div>
             ))}
 
