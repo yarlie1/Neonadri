@@ -174,13 +174,6 @@ export default async function ProfilePage({ params }: PageProps) {
   const hasInterests = !!profile.interests && profile.interests.length > 0;
   const hasResponseNote = !!profile.response_time_note?.trim();
   const hasPreferredArea = !!profile.preferred_area?.trim();
-  const profileSummary = [
-    hasMeetingStyle ? profile.meeting_style : null,
-    hasPreferredArea ? `Usually around ${profile.preferred_area}` : null,
-    hasResponseNote ? profile.response_time_note : null,
-  ]
-    .filter(Boolean)
-    .join(" • ");
 
   return (
       <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
@@ -195,43 +188,43 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
 
             <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-3">
                 <h1 className="truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
                   {profile.display_name || "Unknown"}
                 </h1>
-                {profileSummary && (
-                  <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[#6b5f52] sm:text-[15px]">
-                    {profileSummary}
-                  </p>
-                )}
-                <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-[#6b5f52]">
-                  <div className="flex items-center gap-2">
-                    <StarRating value={roundedAverage} size="md" />
-                    <span className="font-semibold text-[#4f4339]">
-                      {averageRating.toFixed(1)}
-                    </span>
-                  </div>
-                  <span className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
-                    {completedMeetups} completed meetups
-                  </span>
-                  <span className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
-                    {reviewCount} review{reviewCount === 1 ? "" : "s"}
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                  <StarRating value={roundedAverage} size="sm" />
+                  <span className="font-semibold text-[#4f4339]">
+                    {averageRating.toFixed(1)}
                   </span>
                 </div>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-[#6b5f52]">
+                <span className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                  {completedMeetups} completed meetups
+                </span>
+                <span className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                  {reviewCount} review{reviewCount === 1 ? "" : "s"}
+                </span>
+              </div>
             </div>
-            {(hasResponseNote || hasPreferredArea) && (
+
+            {hasMeetingStyle && (
               <div className="flex flex-wrap gap-2">
-                {hasResponseNote && (
-                  <span className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f4ece3_100%)] px-3 py-1.5 text-xs font-medium text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
-                    <Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />
-                    {profile.response_time_note}
-                  </span>
-                )}
-                {hasPreferredArea && (
-                  <span className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f4ece3_100%)] px-3 py-1.5 text-xs font-medium text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
-                    <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
-                    {profile.preferred_area}
-                  </span>
-                )}
+                <span className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f4ece3_100%)] px-3 py-1.5 text-xs font-medium text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                  <HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />
+                  {profile.meeting_style}
+                </span>
+              </div>
+            )}
+
+            {hasResponseNote && (
+              <div className="flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f4ece3_100%)] px-3 py-1.5 text-xs font-medium text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                  <Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />
+                  {profile.response_time_note}
+                </span>
               </div>
             )}
           </div>
@@ -399,6 +392,7 @@ export default async function ProfilePage({ params }: PageProps) {
     </main>
   );
 }
+
 
 
 
