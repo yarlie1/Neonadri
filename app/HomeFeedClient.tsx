@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Activity,
   Clock3,
   MapPin,
   UserRound,
@@ -10,15 +11,17 @@ import {
   Plus,
   ArrowUpRight,
   Coffee,
-  UtensilsCrossed,
-  CakeSlice,
+  Utensils,
+  Cake,
   Footprints,
-  PersonStanding,
-  Clapperboard,
-  Mic2,
+  Smile,
+  Film,
+  Mic,
+  Dice5,
   Gamepad2,
   BookOpen,
-  BriefcaseBusiness,
+  Target,
+  Laptop,
   Book,
   Camera,
   SlidersHorizontal,
@@ -117,29 +120,32 @@ function getPurposeIcon(purpose: string | null, className?: string) {
     case "Coffee":
       return <Coffee className={iconClassName} />;
     case "Meal":
-      return <UtensilsCrossed className={iconClassName} />;
+      return <Utensils className={iconClassName} />;
     case "Dessert":
-      return <CakeSlice className={iconClassName} />;
+      return <Cake className={iconClassName} />;
     case "Walk":
       return <Footprints className={iconClassName} />;
     case "Jogging":
+      return <Activity className={iconClassName} />;
     case "Yoga":
-      return <PersonStanding className={iconClassName} />;
+      return <Smile className={iconClassName} />;
     case "Movie":
     case "Theater":
-      return <Clapperboard className={iconClassName} />;
+      return <Film className={iconClassName} />;
     case "Karaoke":
-      return <Mic2 className={iconClassName} />;
+      return <Mic className={iconClassName} />;
     case "Board Games":
+      return <Dice5 className={iconClassName} />;
     case "Gaming":
     case "Bowling":
-    case "Arcade":
       return <Gamepad2 className={iconClassName} />;
+    case "Arcade":
+      return <Target className={iconClassName} />;
     case "Study":
       return <BookOpen className={iconClassName} />;
     case "Work Together":
     case "Work":
-      return <BriefcaseBusiness className={iconClassName} />;
+      return <Laptop className={iconClassName} />;
     case "Book Talk":
     case "Book":
       return <Book className={iconClassName} />;

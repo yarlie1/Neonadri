@@ -5,16 +5,19 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import {
+  Activity,
   Coffee,
-  UtensilsCrossed,
-  CakeSlice,
+  Utensils,
+  Cake,
   Footprints,
-  PersonStanding,
-  Clapperboard,
-  Mic2,
+  Smile,
+  Film,
+  Mic,
+  Dice5,
   Gamepad2,
   BookOpen,
-  BriefcaseBusiness,
+  Target,
+  Laptop,
   Book,
   Camera,
   Clock3,
@@ -105,29 +108,32 @@ function getPurposeIcon(purpose: string | null) {
     case "Coffee":
       return <Coffee className={className} />;
     case "Meal":
-      return <UtensilsCrossed className={className} />;
+      return <Utensils className={className} />;
     case "Dessert":
-      return <CakeSlice className={className} />;
+      return <Cake className={className} />;
     case "Walk":
       return <Footprints className={className} />;
     case "Jogging":
+      return <Activity className={className} />;
     case "Yoga":
-      return <PersonStanding className={className} />;
+      return <Smile className={className} />;
     case "Movie":
     case "Theater":
-      return <Clapperboard className={className} />;
+      return <Film className={className} />;
     case "Karaoke":
-      return <Mic2 className={className} />;
+      return <Mic className={className} />;
     case "Board Games":
+      return <Dice5 className={className} />;
     case "Gaming":
     case "Bowling":
-    case "Arcade":
       return <Gamepad2 className={className} />;
+    case "Arcade":
+      return <Target className={className} />;
     case "Study":
       return <BookOpen className={className} />;
     case "Work Together":
     case "Work":
-      return <BriefcaseBusiness className={className} />;
+      return <Laptop className={className} />;
     case "Book Talk":
     case "Book":
       return <Book className={className} />;
