@@ -181,11 +181,19 @@ export default async function ProfilePage({ params }: PageProps) {
       <div className="mx-auto max-w-4xl space-y-5">
         <section className="rounded-[34px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] p-5 shadow-[0_18px_42px_rgba(92,69,52,0.08)] sm:p-6">
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] text-[#74675d]">
                 <UserCircle2 className="h-3.5 w-3.5" />
                 <span>{isMyProfile ? "My profile" : "Guest profile"}</span>
               </div>
+              {isMyProfile && (
+                <Link
+                  href={`/profile/${profile.id}/edit`}
+                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-4 py-[0.45rem] text-xs font-medium leading-none text-[#5f5347] transition hover:bg-[#f7eee6]"
+                >
+                  Edit Profile
+                </Link>
+              )}
             </div>
 
             <div className="min-w-0">
@@ -199,15 +207,6 @@ export default async function ProfilePage({ params }: PageProps) {
                     {averageRating.toFixed(1)}
                   </span>
                 </div>
-              </div>
-
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-[#6b5f52]">
-                <span className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
-                  {completedMeetups} completed meetups
-                </span>
-                <span className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
-                  {reviewCount} review{reviewCount === 1 ? "" : "s"}
-                </span>
               </div>
             </div>
 
@@ -233,26 +232,7 @@ export default async function ProfilePage({ params }: PageProps) {
 
         <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
           <section className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-6 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
-                  Profile
-                </h2>
-                <p className="mt-1 text-sm text-[#7a6d61]">
-                  The details that help this meetup feel clear and trustworthy.
-                </p>
-              </div>
-              {isMyProfile && (
-                <Link
-                  href={`/profile/${profile.id}/edit`}
-                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-4 py-[0.45rem] text-xs font-medium leading-none text-[#5f5347] transition hover:bg-[#f7eee6]"
-                >
-                  Edit Profile
-                </Link>
-              )}
-            </div>
-
-            <div className="mt-5 grid gap-3">
+            <div className="grid gap-3">
               {hasPreferredArea && (
                 <InfoItem
                   icon={<Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />}
