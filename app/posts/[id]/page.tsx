@@ -824,14 +824,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     });
   }
 
-  const mapUrl =
-    post.latitude !== null && post.longitude !== null
-      ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
-      : post.location
-      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-          post.location
-        )}`
-      : "";
+  const mapQuery = post.place_name || post.location || "";
+  const mapUrl = mapQuery
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
+    : post.latitude !== null && post.longitude !== null
+    ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
+    : "";
 
   const ownerProfileHref = post.user_id ? `/profile/${post.user_id}` : "#";
   const targetLabel = `${post.target_gender || "Any"} / ${
