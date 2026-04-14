@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../lib/supabase/client";
-import { Pencil, Save, X } from "lucide-react";
+import { Save } from "lucide-react";
 
 type ProfileRow = {
   id: string;
@@ -95,7 +96,6 @@ export default function ProfileEditForm({
   const supabase = createClient();
   const router = useRouter();
 
-  const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const [displayName, setDisplayName] = useState(profile.display_name || "");
@@ -162,8 +162,6 @@ export default function ProfileEditForm({
       }
 
       setMessage("Profile saved.");
-
-      setOpen(false);
       router.refresh();
       router.push(`/profile/${profile.id}`);
 
@@ -178,56 +176,23 @@ export default function ProfileEditForm({
     }
   };
 
-  if (!open) {
-    return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/70 px-4 py-2 text-sm font-medium text-[#5a5149] shadow-sm backdrop-blur transition hover:bg-white"
-      >
-        <Pencil className="h-4 w-4" />
-        Edit Profile
-      </button>
-    );
-  }
-
   return (
-    <div className="fixed inset-0 z-[100]">
-      <div
-        className="absolute inset-0 bg-black/30"
-        onClick={() => setOpen(false)}
-      />
+    <div className="rounded-[30px] border border-[#eadfd3] bg-white/95 shadow-[0_24px_60px_rgba(92,69,52,0.14)] backdrop-blur">
+      <div className="border-b border-[#efe6db] bg-[#fffaf6] px-6 py-5">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+          Edit profile
+        </div>
+        <h2 className="mt-1 text-xl font-black tracking-[-0.03em] text-[#2f2a26]">
+          Keep your profile feeling current
+        </h2>
+      </div>
 
-      <div className="absolute inset-0 flex items-end justify-center sm:items-center">
-        <div
-          className="relative z-[101] pointer-events-auto flex h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[30px] border border-[#eadfd3] bg-white/95 shadow-[0_24px_60px_rgba(92,69,52,0.22)] backdrop-blur sm:h-auto sm:max-h-[90vh] sm:rounded-[30px]"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="flex items-center justify-between gap-3 border-b border-[#efe6db] bg-[#fffaf6] px-6 py-5">
-            <div>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-                Edit profile
-              </div>
-              <h2 className="mt-1 text-xl font-black tracking-[-0.03em] text-[#2f2a26]">
-                Keep your profile feeling current
-              </h2>
-            </div>
+      <div className="px-6 py-5">
+        <div className="mb-5 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-4 text-sm leading-6 text-[#6b5f52]">
+          A clear, warm profile makes it easier for people to understand your energy before they send a request.
+        </div>
 
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#dccfc2] bg-white text-[#5a5149] transition hover:bg-[#f4ece4]"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto px-6 py-5">
-            <div className="mb-5 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-4 text-sm leading-6 text-[#6b5f52]">
-              A clear, warm profile makes it easier for people to understand your energy before they send a request.
-            </div>
-
-            <div className="space-y-4">
+        <div className="space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-medium text-[#5a5149]">
                   Display Name
@@ -362,31 +327,27 @@ export default function ProfileEditForm({
                   {message}
                 </p>
               )}
-            </div>
-          </div>
+        </div>
+      </div>
 
-          <div className="relative z-[102] border-t border-[#efe6db] bg-[#fffaf6] px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
-            <div className="flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={handleSave}
-                disabled={saving}
-                className="touch-manipulation inline-flex min-h-[48px] items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
-              >
-                <Save className="h-4 w-4" />
-                {saving ? "Saving..." : "Save"}
-              </button>
+      <div className="border-t border-[#efe6db] bg-[#fffaf6] px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving}
+            className="touch-manipulation inline-flex min-h-[48px] items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+          >
+            <Save className="h-4 w-4" />
+            {saving ? "Saving..." : "Save"}
+          </button>
 
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                disabled={saving}
-                className="touch-manipulation inline-flex min-h-[48px] items-center rounded-full border border-[#dccfc2] bg-white px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:opacity-50"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
+          <Link
+            href={`/profile/${profile.id}`}
+            className="touch-manipulation inline-flex min-h-[48px] items-center rounded-full border border-[#dccfc2] bg-white px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+          >
+            Cancel
+          </Link>
         </div>
       </div>
     </div>
