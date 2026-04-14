@@ -43,6 +43,69 @@ const SURFACE_CARD_CLASS =
   "rounded-[30px] border border-[#eadfd3] bg-white/92 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur";
 const SOFT_CARD_CLASS = "rounded-[24px] border border-[#eadfd3] bg-[#fcfaf7]";
 
+function getPurposeTheme(purpose: string | null) {
+  switch (purpose) {
+    case "Coffee Chat":
+    case "Coffee":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#8b5e4a_0%,#c98b67_100%)] text-white",
+      };
+    case "Meal":
+    case "Dessert":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#9f7440_0%,#d5a15a_100%)] text-white",
+      };
+    case "Walk":
+    case "Jogging":
+    case "Yoga":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#5d8c5f_0%,#87b377_100%)] text-white",
+      };
+    case "Movie":
+    case "Theater":
+    case "Karaoke":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#5d4f7d_0%,#8c75b6_100%)] text-white",
+      };
+    case "Board Games":
+    case "Gaming":
+    case "Bowling":
+    case "Arcade":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#64508a_0%,#8f73c6_100%)] text-white",
+      };
+    case "Study":
+    case "Book Talk":
+    case "Book":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#4e5f84_0%,#6d8fb8_100%)] text-white",
+      };
+    case "Work Together":
+    case "Work":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#4f4640_0%,#847467_100%)] text-white",
+      };
+    case "Photo Walk":
+    case "Photo":
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#8e5f5b_0%,#c8827f_100%)] text-white",
+      };
+    default:
+      return {
+        bandClass:
+          "bg-[linear-gradient(135deg,#2f2a26_0%,#5a4d45_100%)] text-white",
+      };
+  }
+}
+
 function getPurposeIcon(purpose: string | null) {
   const className = "h-5 w-5 shrink-0 text-[#7b7067]";
 
@@ -286,31 +349,44 @@ function CompactActionButton({
 function MiniPostPreview({ post }: { post?: PostRow }) {
   if (!post) {
     return (
-    <div className={`mt-3 ${SOFT_CARD_CLASS} px-4 py-3 text-sm text-[#8b7f74]`}>
+      <div className={`mt-3 ${SOFT_CARD_CLASS} px-4 py-3 text-sm text-[#8b7f74]`}>
         Post details unavailable
       </div>
     );
   }
 
+  const amount = parseBenefitAmount(post.benefit_amount);
+  const purposeTheme = getPurposeTheme(post.meeting_purpose);
+
   return (
     <div className="mt-3 rounded-[22px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-3">
       <div className="flex items-stretch gap-2">
-        <div className="inline-flex min-w-0 flex-1 items-center gap-2 rounded-[18px] bg-[#2f2a26] px-3 py-3 text-base font-semibold text-white">
-          {getPurposeIcon(post.meeting_purpose)}
-          <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
+        <div
+          className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
+        >
+          <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/18">
+            {getPurposeIcon(post.meeting_purpose)}
+          </div>
+          <span className="truncate text-sm font-semibold text-white">
+            {post.meeting_purpose || "Meetup"}
+          </span>
         </div>
 
         {formatDuration(post.duration_minutes) ? (
-          <div className="inline-flex shrink-0 items-center gap-2 rounded-[18px] bg-[#f4ece4] px-3 py-3 text-base font-semibold text-[#4f443b]">
+          <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] bg-[#f4ece4] px-1.5 py-2 text-[#4f443b]">
             <Clock3 className="h-4 w-4" />
-            <span>{formatDuration(post.duration_minutes)}</span>
+            <span className="mt-1 text-sm font-semibold">
+              {formatDuration(post.duration_minutes)}
+            </span>
           </div>
         ) : null}
 
-        {parseBenefitAmount(post.benefit_amount) !== null ? (
-          <div className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-3 text-base font-semibold text-[#6e4715] shadow-sm">
-            <span>Benefit</span>
-            <span>+${parseBenefitAmount(post.benefit_amount)!.toLocaleString()}</span>
+        {amount !== null ? (
+          <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[16px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-1.5 py-2 text-[#6e4715] shadow-sm">
+            <Coins className="h-4 w-4 shrink-0" />
+            <span className="mt-1 text-sm font-semibold">
+              +${amount.toLocaleString()}
+            </span>
           </div>
         ) : null}
       </div>
@@ -559,41 +635,36 @@ export default function DashboardClient({
 
             <div className="mt-4 space-y-3">
               {upcomingMatchedMeetups.map((item) => (
-                <div
+                <Link
                   key={item.match.id}
-                  className="rounded-[22px] border border-[#eadfd3] bg-white/75 p-4"
+                  href={`/posts/${item.post.id}`}
+                  className="block rounded-[22px] border border-[#eadfd3] bg-white/75 p-4 transition hover:bg-white/90"
                 >
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
-                        With {item.otherName}
-                      </div>
-                      <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-2 text-sm font-semibold text-white">
-                        <Clock3 className="h-4 w-4" />
-                        <span>{formatTime(item.post.meeting_time)}</span>
-                      </div>
-                      <div className="mt-3 flex min-w-0 flex-col gap-1 text-sm text-[#6f655c]">
-                        <div className="inline-flex min-w-0 items-center gap-2">
-                          <MapPin className="h-4 w-4 text-[#a27767]" />
-                          <span className="block min-w-0 truncate">
-                            {item.post.place_name || item.post.location || "your selected place"}
-                          </span>
-                        </div>
-                      </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-[#f8efe8] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9a6f5f]">
+                      {getPurposeIcon(item.post.meeting_purpose)}
+                      {item.post.meeting_purpose || "Meetup"}
                     </div>
 
-                    <div className="flex flex-wrap gap-2">
-                      <CompactActionButton href={`/posts/${item.post.id}`} primary>
-                        <Eye className="h-3.5 w-3.5" />
-                        Open Meetup
-                      </CompactActionButton>
-                      <CompactActionButton href={`/profile/${item.otherUserId}`}>
-                        <UserCircle2 className="h-3.5 w-3.5" />
-                        View Match
-                      </CompactActionButton>
+                    <div className="rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b5f52]">
+                      Matched
                     </div>
                   </div>
-                </div>
+
+                  <div className="mt-3 space-y-2 text-sm text-[#5f5347]">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-2 text-sm font-semibold text-white">
+                      <Clock3 className="h-4 w-4" />
+                      <span>{formatTime(item.post.meeting_time)}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-[#a27767]" />
+                      <span className="truncate">
+                        {item.post.place_name || item.post.location || "Selected place"}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -705,6 +776,7 @@ export default function DashboardClient({
             {filteredPosts.map((post) => {
               const postStatus = getPostMatchState(post, matchSummaryMap[post.id]);
               const amount = parseBenefitAmount(post.benefit_amount);
+              const purposeTheme = getPurposeTheme(post.meeting_purpose);
 
               return (
                 <div
@@ -712,12 +784,7 @@ export default function DashboardClient({
                   onClick={() => openPostDetail(post.id)}
                   className={`cursor-pointer ${SURFACE_CARD_CLASS} p-4`}
                 >
-                  <div className="mb-4 flex items-center justify-between gap-3">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-[#f8efe8] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9a6f5f]">
-                      {getPurposeIcon(post.meeting_purpose)}
-                      {post.meeting_purpose || "Meetup"}
-                    </div>
-
+                  <div className="mb-4 flex items-center justify-end gap-3">
                     <div
                       className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${getStatusBadgeClass(
                         postStatus
@@ -729,22 +796,32 @@ export default function DashboardClient({
 
                   <div className="rounded-[22px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-3">
                     <div className="flex items-stretch gap-2">
-                      <div className="inline-flex min-w-0 flex-1 items-center gap-2 rounded-[18px] bg-[#2f2a26] px-3 py-3 text-base font-semibold text-white">
-                        {getPurposeIcon(post.meeting_purpose)}
-                        <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
+                      <div
+                        className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
+                      >
+                        <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/18">
+                          {getPurposeIcon(post.meeting_purpose)}
+                        </div>
+                        <span className="truncate text-sm font-semibold text-white">
+                          {post.meeting_purpose || "Meetup"}
+                        </span>
                       </div>
 
                       {formatDuration(post.duration_minutes) ? (
-                        <div className="inline-flex shrink-0 items-center gap-2 rounded-[18px] bg-[#f4ece4] px-3 py-3 text-base font-semibold text-[#4f443b]">
+                        <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] bg-[#f4ece4] px-1.5 py-2 text-[#4f443b]">
                           <Clock3 className="h-4 w-4" />
-                          <span>{formatDuration(post.duration_minutes)}</span>
+                          <span className="mt-1 text-sm font-semibold">
+                            {formatDuration(post.duration_minutes)}
+                          </span>
                         </div>
                       ) : null}
 
                       {amount !== null && (
-                        <div className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-3 text-base font-semibold text-[#6e4715] shadow-sm">
+                        <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[16px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-1.5 py-2 text-[#6e4715] shadow-sm">
                           <Coins className="h-4 w-4 shrink-0" />
-                          <span>+${amount.toLocaleString()}</span>
+                          <span className="mt-1 text-sm font-semibold">
+                            +${amount.toLocaleString()}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -937,7 +1014,6 @@ export default function DashboardClient({
             {filteredMatches.map((item) => {
               const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
               const post = postMap[item.post_id];
-              const amount = post ? parseBenefitAmount(post.benefit_amount) : null;
               const mapHref = post?.location
                 ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
                     post.location
@@ -981,84 +1057,7 @@ export default function DashboardClient({
                     </span>
                   </div>
 
-                  {post ? (
-                    <div className="mt-4 rounded-[24px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-4">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <div className="inline-flex min-w-0 flex-1 items-center gap-2 rounded-[18px] bg-[#2f2a26] px-3 py-3 text-base font-semibold text-white">
-                          {getPurposeIcon(post.meeting_purpose)}
-                          <span className="truncate">{post.meeting_purpose || "Meetup"}</span>
-                        </div>
-
-                        {formatDuration(post.duration_minutes) ? (
-                          <div className="inline-flex shrink-0 items-center gap-2 rounded-[18px] bg-[#f4ece4] px-3 py-3 text-base font-semibold text-[#4f443b]">
-                            <Clock3 className="h-4 w-4" />
-                            <span>{formatDuration(post.duration_minutes)}</span>
-                          </div>
-                        ) : null}
-
-                        {amount !== null && (
-                          <div className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-[18px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-3 py-3 text-base font-semibold text-[#6e4715] shadow-sm">
-                            <Coins className="h-4 w-4" />
-                            <span>+${amount.toLocaleString()}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="mt-3 grid gap-2 text-[#7d7268] sm:grid-cols-2">
-                        {post.meeting_time && (
-                          <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
-                            <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                            <div className="min-w-0 leading-[1.2]">
-                              <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
-                                When
-                              </div>
-                              <div className="truncate text-[12px] font-medium text-[#554a42]">
-                                {formatTime(post.meeting_time)}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="flex min-w-0 items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
-                          <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                          <div className="min-w-0 leading-[1.2]">
-                            <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
-                              Place
-                            </div>
-                            <div className="block truncate text-[12px] font-medium text-[#554a42]">
-                              {post.place_name || post.location || "No place"}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
-                          <UserCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                          <div className="min-w-0 leading-[1.2]">
-                            <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
-                              Matched with
-                            </div>
-                            <div className="truncate text-[12px] font-medium text-[#554a42]">
-                              {profileMap[otherUserId] || "Unknown"}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
-                          <UserRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                          <div className="min-w-0 leading-[1.2]">
-                            <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
-                              Looking for
-                            </div>
-                            <div className="truncate text-[12px] font-medium text-[#554a42]">
-                              {post.target_gender || "Any"} / {post.target_age_group || "Any"}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <MiniPostPreview post={post} />
-                  )}
+                  <MiniPostPreview post={post} />
 
                   <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
                     <CompactActionButton href={`/posts/${item.post_id}`} primary>
