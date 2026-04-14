@@ -223,6 +223,7 @@ export default async function ProfilePage({ params }: PageProps) {
                   </span>
                 </div>
               </div>
+            </div>
 
             {isMyProfile && (
               <div className="flex justify-start sm:justify-end">
