@@ -312,7 +312,7 @@ export default function EditMeetupForm({
       return;
     }
 
-    router.push("/dashboard");
+    router.push(`/posts/${postId}`);
   };
 
   return (
@@ -335,7 +335,7 @@ export default function EditMeetupForm({
         </section>
 
         <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
-        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start gap-4">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
               Edit post
@@ -343,9 +343,6 @@ export default function EditMeetupForm({
             <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#2f2a26]">
               Update your meetup
             </h2>
-          </div>
-          <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
-            Keep place exact
           </div>
         </div>
 
@@ -554,12 +551,12 @@ export default function EditMeetupForm({
             {saving ? "Saving..." : "Save Meetup"}
           </button>
 
-          <button
-            type="button"
-            onClick={() => router.push("/dashboard")}
-            className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
-          >
-            Cancel
+            <button
+              type="button"
+              onClick={() => router.push(`/posts/${postId}`)}
+              className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
+            >
+              Cancel
           </button>
         </div>
 

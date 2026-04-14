@@ -130,7 +130,6 @@ export default function WriteForm({ userId }: { userId: string }) {
   const [locationConfirmed, setLocationConfirmed] = useState(false);
 
   const [message, setMessage] = useState("");
-  const [debugInfo, setDebugInfo] = useState("");
   const [saving, setSaving] = useState(false);
 
   const fieldClass =
@@ -181,7 +180,6 @@ export default function WriteForm({ userId }: { userId: string }) {
 
         if (!address || nextLat == null || nextLng == null) {
           setLocationConfirmed(false);
-          setDebugInfo("Place selected, but address or coordinates were missing.");
           return;
         }
 
@@ -191,7 +189,6 @@ export default function WriteForm({ userId }: { userId: string }) {
         setLongitude(nextLng);
         setLocationConfirmed(true);
         setMessage("");
-        setDebugInfo("Exact location selected from Google autocomplete.");
       });
 
       return true;
@@ -226,7 +223,6 @@ export default function WriteForm({ userId }: { userId: string }) {
       setLongitude(Number(qLng));
       setLocationConfirmed(true);
       setMessage("");
-      setDebugInfo("Exact location selected from map picker.");
     }
   }, []);
 
@@ -238,7 +234,6 @@ export default function WriteForm({ userId }: { userId: string }) {
     setLatitude(null);
     setLongitude(null);
     setLocationConfirmed(false);
-    setDebugInfo("Location text changed. Waiting for exact place selection.");
   };
 
   const handleOpenMapPicker = () => {
@@ -257,11 +252,8 @@ export default function WriteForm({ userId }: { userId: string }) {
 
   const handleCreate = async () => {
     setMessage("");
-    setDebugInfo("");
-
     if (!userId) {
       setMessage("Please sign in first.");
-      setDebugInfo("No userId prop was provided to WriteForm.");
       return;
     }
 
@@ -274,7 +266,6 @@ export default function WriteForm({ userId }: { userId: string }) {
       !benefitAmount.trim()
     ) {
       setMessage("Please fill in all required fields.");
-      setDebugInfo("Validation failed: one or more required fields are empty.");
       return;
     }
 
@@ -286,9 +277,6 @@ export default function WriteForm({ userId }: { userId: string }) {
     ) {
       setMessage(
         "Please choose one exact location from the dropdown or map picker."
-      );
-      setDebugInfo(
-        "Validation failed: location is not confirmed with latitude/longitude."
       );
       return;
     }
@@ -309,15 +297,6 @@ export default function WriteForm({ userId }: { userId: string }) {
         longitude,
       };
 
-      setDebugInfo(
-        [
-          "Step 1: sending request to /api/posts/create",
-          `server-passed userId: ${userId}`,
-          "Step 2: request payload",
-          JSON.stringify(payload, null, 2),
-        ].join("\n")
-      );
-
       const res = await fetch("/api/posts/create", {
         method: "POST",
         headers: {
@@ -328,40 +307,17 @@ export default function WriteForm({ userId }: { userId: string }) {
 
       const result = await res.json();
 
-      if (!res.ok) {
-        setSaving(false);
-        setMessage(result.error || "Failed to create meetup.");
-        setDebugInfo(
-          [
-            "API error:",
-            result.error || "",
-            result.details || "",
-            result.hint || "",
-            result.code || "",
-          ]
-            .filter(Boolean)
-            .join("\n")
-        );
+        if (!res.ok) {
+          setSaving(false);
+          setMessage(result.error || "Failed to create meetup.");
         return;
       }
-
-      setDebugInfo(
-        [
-          "Step 3: insert success.",
-          JSON.stringify(result.data, null, 2),
-        ].join("\n")
-      );
 
       router.push("/dashboard");
       router.refresh();
     } catch (e) {
       setSaving(false);
       setMessage(e instanceof Error ? e.message : "Something went wrong.");
-      setDebugInfo(
-        e instanceof Error
-          ? `Caught exception:\n${e.message}`
-          : "Caught unknown exception."
-      );
     }
   };
 
@@ -613,11 +569,6 @@ export default function WriteForm({ userId }: { userId: string }) {
           </p>
         )}
 
-        {debugInfo && (
-          <pre className="mt-4 overflow-x-auto whitespace-pre-wrap break-words rounded-[20px] border border-[#e7ddd2] bg-[#fffdfa] px-4 py-3 text-xs text-[#333]">
-            {debugInfo}
-          </pre>
-        )}
         </div>
       </div>
     </main>
