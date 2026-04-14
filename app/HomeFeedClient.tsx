@@ -987,22 +987,22 @@ export default function HomeFeedClient({
                   : "border-[#e8ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#fbf3eb_100%)] hover:-translate-y-0.5"
               }`}
             >
-              <div className="mb-4 flex items-center justify-between gap-3">
+              <div className="mb-3.5 flex items-center justify-between gap-2">
+                <div className="min-w-0 rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold tracking-[0.02em] text-[#6b5f52]">
+                  <div className="truncate">Hosted by {host.displayName}</div>
+                </div>
+
                 <div
                   className={`rounded-full px-3 py-1.5 text-[11px] font-semibold tracking-[0.02em] ${matchBadge.className}`}
                 >
                   {matchBadge.label}
-                </div>
-
-                <div className="min-w-0 rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold tracking-[0.02em] text-[#6b5f52]">
-                  <div className="truncate">Hosted by {host.displayName}</div>
                 </div>
               </div>
 
               <div className="rounded-[26px] border border-[#efe2d5] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e8_100%)] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
                 <div className="flex items-stretch gap-2">
                   <div
-                    className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[20px] px-4 py-3 ${purposeTheme.bandClass} shadow-[0_10px_24px_rgba(64,45,33,0.12)]`}
+                    className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[20px] px-4 py-3 ${purposeTheme.bandClass} shadow-[0_8px_18px_rgba(64,45,33,0.08)]`}
                   >
                     <div
                       className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] ${purposeTheme.iconWrapClass}`}
