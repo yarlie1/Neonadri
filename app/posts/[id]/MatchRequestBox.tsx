@@ -35,6 +35,11 @@ export default function MatchRequestBox({
   const hasMatchedRequest =
     isPostMatched || normalizedStatus === "matched" || normalizedStatus === "accepted";
   const isRejectedRequest = normalizedStatus === "rejected";
+  const headerEyebrow = hasMatchedRequest ? "Matched meetup" : "Join this meetup";
+  const headerTitle = hasMatchedRequest ? "You're matched" : "Request Match";
+  const headerDescription = hasMatchedRequest
+    ? "Your request was accepted and this meetup is now confirmed."
+    : "Send your request to the host and wait for approval.";
 
   const handleRequestMatch = async () => {
     setLoading(true);
@@ -164,10 +169,10 @@ export default function MatchRequestBox({
         </div>
         <div className="min-w-0">
           <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-            Join this meetup
+            {headerEyebrow}
           </div>
           <h2 className="mt-1 text-[1.45rem] font-black tracking-[-0.04em] text-[#2f2a26]">
-            Request Match
+            {headerTitle}
           </h2>
         </div>
       </div>
@@ -182,7 +187,7 @@ export default function MatchRequestBox({
       </div>
 
       <p className="mt-4 text-sm leading-6 text-[#6f655c]">
-        Send your request to the host and wait for approval.
+        {headerDescription}
       </p>
 
       <div className="mt-5 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-4">
@@ -191,7 +196,7 @@ export default function MatchRequestBox({
         </div>
         <div className="mt-2 text-sm leading-6 text-[#6b5f52]">
           {hasMatchedRequest
-            ? "This meetup already has a confirmed match."
+            ? "This meetup is confirmed. You can review the details above and connect with the host here."
             : hasPendingRequest
             ? "Your request is with the host now. You can leave it pending or cancel it here."
             : isRejectedRequest
