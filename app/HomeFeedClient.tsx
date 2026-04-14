@@ -104,6 +104,10 @@ const SORT_OPTIONS = [
 
 type SortValue = (typeof SORT_OPTIONS)[number]["value"];
 
+const SURFACE_CARD_CLASS =
+  "rounded-[28px] border border-[#e7ddd2] bg-white/92 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur";
+const SOFT_CARD_CLASS = "rounded-[22px] border border-[#eadfd3] bg-[#fffaf6]";
+
 function getPurposeIcon(purpose: string | null, className?: string) {
   const iconClassName = className || "h-[19px] w-[19px] shrink-0 text-[#7e746b]";
 
@@ -614,8 +618,8 @@ export default function HomeFeedClient({
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f9efe4_38%,#f7f1ea_100%)] px-4 py-4 text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl space-y-4 pb-24">
-        <section className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f6d8cb_38%,#e9b7a6_100%)] px-5 py-6 text-[#2a211d] shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:px-6 sm:py-7">
+      <div className="mx-auto max-w-2xl space-y-3 pb-24 sm:space-y-4">
+        <section className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f6d8cb_38%,#e9b7a6_100%)] px-4 py-5 text-[#2a211d] shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:px-6 sm:py-7">
           <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-white/35 blur-2xl" />
           <div className="absolute bottom-0 right-0 h-32 w-32 rounded-full bg-[#7b3f31]/10 blur-2xl" />
 
@@ -680,7 +684,7 @@ export default function HomeFeedClient({
         </section>
 
         {highlightedPost && (
-          <section className="overflow-hidden rounded-[28px] border border-[#eadfd2] bg-[#fffaf6] shadow-[0_16px_40px_rgba(92,69,52,0.08)]">
+          <section className={`overflow-hidden ${SURFACE_CARD_CLASS}`}>
             <div className="border-b border-[#f0e5db] px-5 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -703,7 +707,7 @@ export default function HomeFeedClient({
               </div>
             </div>
 
-            <div className="grid gap-3 px-5 py-4 sm:grid-cols-[1.4fr_1fr]">
+            <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.4fr_1fr] sm:px-5">
               <div className="rounded-[24px] bg-[linear-gradient(135deg,#382a25_0%,#805448_100%)] px-4 py-4 text-white">
                 <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white/90">
                   {getPurposeIcon(highlightedPost.meeting_purpose)}
@@ -755,7 +759,7 @@ export default function HomeFeedClient({
           <button
             type="button"
             onClick={() => setIsOpen((v) => !v)}
-            className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left"
+            className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left sm:py-4"
           >
             <div className="min-w-0">
               <div className="flex items-center gap-2 text-sm font-semibold text-[#2f2a26]">
@@ -928,7 +932,7 @@ export default function HomeFeedClient({
             </div>
           </div>
 
-          <div className="rounded-full bg-white/80 px-3 py-1.5 text-xs font-medium text-[#7a6b61] shadow-sm">
+          <div className={`${SOFT_CARD_CLASS} px-3 py-1.5 text-xs font-medium text-[#7a6b61] shadow-none`}>
             {posts.length} results
           </div>
         </div>
@@ -964,7 +968,7 @@ export default function HomeFeedClient({
             <Link
               key={post.id}
               href={`/posts/${post.id}`}
-              className={`block overflow-hidden rounded-[28px] border p-4 shadow-[0_14px_32px_rgba(92,69,52,0.08)] transition active:scale-[0.995] ${
+              className={`block overflow-hidden rounded-[28px] border p-3 shadow-[0_14px_32px_rgba(92,69,52,0.08)] transition active:scale-[0.995] sm:p-4 ${
                 isExpired
                   ? "border-[#ddd2c5] bg-[#f3eee8] opacity-80"
                   : "border-[#e7ddd2] bg-white hover:-translate-y-0.5 hover:bg-[#fffdf9]"
@@ -1080,7 +1084,7 @@ export default function HomeFeedClient({
         })}
 
         {posts.length === 0 && (
-          <div className="rounded-[28px] border border-[#eadfd3] bg-white px-6 py-12 text-center text-[#8b7f74] shadow-sm">
+          <div className={`${SURFACE_CARD_CLASS} px-5 py-10 text-center text-[#8b7f74] sm:px-6 sm:py-12`}>
             No meetups found.
           </div>
         )}

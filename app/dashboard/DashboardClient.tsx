@@ -39,6 +39,10 @@ type DashboardTab = "posts" | "received" | "sent" | "matches";
 type PostFilter = "all" | "open" | "matched" | "expired";
 type MatchFilter = "all" | "upcoming" | "expired";
 
+const SURFACE_CARD_CLASS =
+  "rounded-[30px] border border-[#eadfd3] bg-white/92 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur";
+const SOFT_CARD_CLASS = "rounded-[24px] border border-[#eadfd3] bg-[#fcfaf7]";
+
 function getPurposeIcon(purpose: string | null) {
   const className = "h-5 w-5 shrink-0 text-[#7b7067]";
 
@@ -185,7 +189,7 @@ function DashboardTabCard({
           : "bg-[#fcfaf7] border-[#e7ddd2] text-[#2f2a26] hover:bg-[#f6efe7]"
       }`}
     >
-      <div className="flex min-h-[120px] flex-col">
+      <div className="flex min-h-[108px] flex-col sm:min-h-[120px]">
         <div className="flex items-center gap-2 text-sm font-semibold">
           {icon}
           {label}
@@ -233,7 +237,7 @@ function SectionIntro({
   body: string;
 }) {
   return (
-    <div className="rounded-[24px] border border-[#eadfd3] bg-[#fcfaf7] px-4 py-4">
+    <div className={`${SOFT_CARD_CLASS} px-4 py-4`}>
       <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
         {eyebrow}
       </div>
@@ -260,8 +264,8 @@ function CompactActionButton({
 }) {
   const className = `inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition ${
     primary
-      ? "bg-[#a48f7a] text-white hover:bg-[#927d69]"
-      : "border border-[#dccfc2] bg-white text-[#5a5149] hover:bg-[#f4ece4]"
+      ? "bg-[#a48f7a] text-white shadow-sm hover:bg-[#927d69]"
+      : "border border-[#dccfc2] bg-[#fffdfa] text-[#5a5149] hover:bg-[#f4ece4]"
   } ${disabled ? "opacity-50" : ""}`;
 
   if (href) {
@@ -282,7 +286,7 @@ function CompactActionButton({
 function MiniPostPreview({ post }: { post?: PostRow }) {
   if (!post) {
     return (
-      <div className="mt-3 rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-3 text-sm text-[#8b7f74]">
+    <div className={`mt-3 ${SOFT_CARD_CLASS} px-4 py-3 text-sm text-[#8b7f74]`}>
         Post details unavailable
       </div>
     );
@@ -496,16 +500,16 @@ export default function DashboardClient({
   };
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl space-y-5">
+    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-5 text-[#2f2a26] sm:py-6">
+      <div className="mx-auto max-w-2xl space-y-4 sm:space-y-5">
         {showMatchSuccess && (
-          <div className="rounded-[20px] border border-[#dccfc2] bg-[#efe7dc] px-4 py-3 text-sm font-medium text-[#5f5347] shadow-sm">
+          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#5f5347] shadow-sm`}>
             Match created successfully.
           </div>
         )}
 
         {showReviewSuccess && (
-          <div className="rounded-[20px] border border-[#dccfc2] bg-[#efe7dc] px-4 py-3 text-sm font-medium text-[#5f5347] shadow-sm">
+          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#5f5347] shadow-sm`}>
             Review submitted successfully.
           </div>
         )}
@@ -538,7 +542,7 @@ export default function DashboardClient({
         </div>
 
         {upcomingMatchedMeetups.length > 0 && (
-          <div className="rounded-[28px] border border-[#dccfc2] bg-[linear-gradient(135deg,#fff9f3_0%,#f2e4d7_100%)] p-4 shadow-[0_14px_32px_rgba(92,69,52,0.08)]">
+          <div className="rounded-[28px] border border-[#dccfc2] bg-[linear-gradient(135deg,#fff9f3_0%,#f2e4d7_100%)] p-4 shadow-[0_14px_32px_rgba(92,69,52,0.08)] sm:p-5">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
@@ -628,7 +632,7 @@ export default function DashboardClient({
         </div>
 
         {activeTab === "posts" && (
-          <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+          <div className={`${SURFACE_CARD_CLASS} p-4`}>
             <div className="space-y-4">
               <SectionIntro
                 eyebrow="Hosting"
@@ -667,7 +671,7 @@ export default function DashboardClient({
         )}
 
         {activeTab === "matches" && (
-          <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+          <div className={`${SURFACE_CARD_CLASS} p-4`}>
             <div className="space-y-4">
               <SectionIntro
                 eyebrow="Connections"
@@ -706,7 +710,7 @@ export default function DashboardClient({
                 <div
                   key={post.id}
                   onClick={() => openPostDetail(post.id)}
-                  className="cursor-pointer rounded-[30px] border border-[#eadfd3] bg-white/92 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
+                  className={`cursor-pointer ${SURFACE_CARD_CLASS} p-4`}
                 >
                   <div className="mb-4 flex items-center justify-between gap-3">
                     <div className="inline-flex items-center gap-2 rounded-full bg-[#f8efe8] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9a6f5f]">
@@ -779,7 +783,7 @@ export default function DashboardClient({
             })}
 
             {filteredPosts.length === 0 && (
-              <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-10 text-center text-[#8b7f74] shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+              <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
                 {postFilter === "all"
                   ? "No meetups yet."
                   : postFilter === "open"
@@ -798,7 +802,7 @@ export default function DashboardClient({
               <div
                 key={item.id}
                 onClick={() => openPostDetail(item.post_id)}
-                className="cursor-pointer rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
+                className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
@@ -869,7 +873,7 @@ export default function DashboardClient({
             ))}
 
             {requestsReceived.length === 0 && (
-              <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-10 text-center text-[#8b7f74] shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+              <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
                 No requests received.
               </div>
             )}
@@ -882,7 +886,7 @@ export default function DashboardClient({
               <div
                 key={item.id}
                 onClick={() => openPostDetail(item.post_id)}
-                className="cursor-pointer rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
+                className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
@@ -921,7 +925,7 @@ export default function DashboardClient({
             ))}
 
             {requestsSent.length === 0 && (
-              <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-10 text-center text-[#8b7f74] shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+              <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
                 No requests sent.
               </div>
             )}
@@ -947,7 +951,7 @@ export default function DashboardClient({
                 <div
                   key={item.id}
                   onClick={() => openPostDetail(item.post_id)}
-                  className="cursor-pointer rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur"
+                className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
@@ -1101,7 +1105,7 @@ export default function DashboardClient({
             })}
 
             {filteredMatches.length === 0 && (
-              <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-10 text-center text-[#8b7f74] shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+              <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
                 {matchFilter === "all"
                   ? "No matches yet."
                   : matchFilter === "upcoming"

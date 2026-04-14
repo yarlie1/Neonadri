@@ -62,6 +62,16 @@ type Profile = {
   response_time_note: string | null;
 };
 
+const SURFACE_CARD_CLASS =
+  "rounded-[30px] border border-[#eadfd3] bg-white/92 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur";
+const SOFT_CARD_CLASS = "rounded-[22px] border border-[#eadfd3] bg-[#fffaf6]";
+const INPUT_CLASS =
+  "w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12";
+const PRIMARY_BUTTON_CLASS =
+  "rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50";
+const SECONDARY_BUTTON_CLASS =
+  "rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]";
+
 function ToggleChip({
   label,
   selected,
@@ -72,10 +82,10 @@ function ToggleChip({
   onClick: () => void;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-full px-3 py-2 text-sm font-medium transition ${
+      <button
+        type="button"
+        onClick={onClick}
+        className={`rounded-full px-3 py-2 text-sm font-medium transition ${
         selected
           ? "bg-[#a48f7a] text-white"
           : "bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
@@ -243,7 +253,7 @@ export default function AccountPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-6 py-8 text-[#2f2a26]">
-        <div className="mx-auto max-w-3xl rounded-[30px] border border-[#eadfd3] bg-white/90 p-8 text-center shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+        <div className={`mx-auto max-w-3xl ${SURFACE_CARD_CLASS} p-8 text-center`}>
           Loading...
         </div>
       </main>
@@ -269,7 +279,7 @@ export default function AccountPage() {
           </div>
         </section>
 
-        <div className="mx-auto rounded-[30px] border border-[#eadfd3] bg-white/90 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur md:p-8">
+        <div className={`mx-auto ${SURFACE_CARD_CLASS} p-5 md:p-8`}>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
@@ -285,7 +295,7 @@ export default function AccountPage() {
         </div>
 
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-[22px] border border-[#eadfd3] bg-[#fffaf6] p-4">
+          <div className={`${SOFT_CARD_CLASS} p-4`}>
             <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
               Account email
             </div>
@@ -293,7 +303,7 @@ export default function AccountPage() {
               {email || "Not available"}
             </div>
           </div>
-          <div className="rounded-[22px] border border-[#eadfd3] bg-[#fffaf6] p-4">
+          <div className={`${SOFT_CARD_CLASS} p-4`}>
             <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
               About you
             </div>
@@ -301,7 +311,7 @@ export default function AccountPage() {
               {aboutMeSummary || "Write a little about yourself"}
             </div>
           </div>
-          <div className="rounded-[22px] border border-[#eadfd3] bg-[#fffaf6] p-4">
+          <div className={`${SOFT_CARD_CLASS} p-4`}>
             <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
               Interests
             </div>
@@ -312,7 +322,7 @@ export default function AccountPage() {
         </div>
 
         <div className="mt-8 space-y-6">
-          <section className="rounded-[26px] border border-[#efe6db] bg-[#fcfaf7] p-5">
+          <section className="rounded-[26px] border border-[#efe6db] bg-[#fcfaf7] p-4 sm:p-5">
             <div className="mb-4">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
                 Basics
@@ -339,7 +349,7 @@ export default function AccountPage() {
             <input
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+              className={INPUT_CLASS}
               placeholder="Your name"
             />
           </div>
@@ -352,7 +362,7 @@ export default function AccountPage() {
               <select
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
-                className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                className={INPUT_CLASS}
               >
                 <option value="">Select gender</option>
                 <option value="Male">Male</option>
@@ -369,7 +379,7 @@ export default function AccountPage() {
               <select
                 value={ageGroup}
                 onChange={(e) => setAgeGroup(e.target.value)}
-                className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                className={INPUT_CLASS}
               >
                 <option value="">Select age group</option>
                 <option value="20s">20s</option>
@@ -381,7 +391,7 @@ export default function AccountPage() {
           </div>
           </section>
 
-          <section className="rounded-[26px] border border-[#efe6db] bg-[#fcfaf7] p-5">
+          <section className="rounded-[26px] border border-[#efe6db] bg-[#fcfaf7] p-4 sm:p-5">
             <div className="mb-4">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
                 Personality
@@ -398,7 +408,7 @@ export default function AccountPage() {
               value={aboutMe}
               onChange={(e) => setAboutMe(e.target.value)}
               rows={5}
-              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+              className={INPUT_CLASS}
               placeholder="Tell people more about your personality, interests, and meetup style"
             />
           </div>
@@ -410,13 +420,13 @@ export default function AccountPage() {
             <input
               value={preferredArea}
               onChange={(e) => setPreferredArea(e.target.value)}
-              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+              className={INPUT_CLASS}
               placeholder="Koreatown, Pasadena, DTLA..."
             />
           </div>
           </section>
 
-          <section className="rounded-[26px] border border-[#efe6db] bg-[#fcfaf7] p-5">
+          <section className="rounded-[26px] border border-[#efe6db] bg-[#fcfaf7] p-4 sm:p-5">
             <div className="mb-4">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
                 Preferences
@@ -432,7 +442,7 @@ export default function AccountPage() {
             <select
               value={meetingStyle}
               onChange={(e) => setMeetingStyle(e.target.value)}
-              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+              className={INPUT_CLASS}
             >
               <option value="">Select meeting style</option>
               {MEETING_STYLE_OPTIONS.map((option) => (
@@ -447,7 +457,7 @@ export default function AccountPage() {
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Languages
             </label>
-            <div className="flex flex-wrap gap-2 rounded-[22px] border border-[#e7ddd2] bg-white p-3">
+            <div className={`${SOFT_CARD_CLASS} flex flex-wrap gap-2 p-3`}>
               {LANGUAGE_OPTIONS.map((item) => (
                 <ToggleChip
                   key={item}
@@ -463,7 +473,7 @@ export default function AccountPage() {
             <label className="mb-2 block text-sm font-medium text-[#5a5149]">
               Interests
             </label>
-            <div className="flex flex-wrap gap-2 rounded-[22px] border border-[#e7ddd2] bg-white p-3">
+            <div className={`${SOFT_CARD_CLASS} flex flex-wrap gap-2 p-3`}>
               {INTEREST_OPTIONS.map((item) => (
                 <ToggleChip
                   key={item}
@@ -482,7 +492,7 @@ export default function AccountPage() {
             <select
               value={responseTimeNote}
               onChange={(e) => setResponseTimeNote(e.target.value)}
-              className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+              className={INPUT_CLASS}
             >
               <option value="">Select response note</option>
               {RESPONSE_NOTE_OPTIONS.map((option) => (
@@ -500,14 +510,14 @@ export default function AccountPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+            className={PRIMARY_BUTTON_CLASS}
           >
             {saving ? "Saving..." : "Save Profile"}
           </button>
 
           <a
             href="/"
-            className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+            className={SECONDARY_BUTTON_CLASS}
           >
             Back to Home
           </a>

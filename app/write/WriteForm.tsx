@@ -47,6 +47,14 @@ const PURPOSE_OPTIONS = [
   { value: "Photo Walk", icon: Camera },
 ] as const;
 
+const SURFACE_CARD_CLASS =
+  "rounded-[30px] border border-[#eadfd3] bg-white/92 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur";
+const SOFT_CARD_CLASS = "rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9]";
+const PRIMARY_BUTTON_CLASS =
+  "rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50";
+const SECONDARY_BUTTON_CLASS =
+  "rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]";
+
 const PURPOSE_HELP_TEXT: Record<string, string> = {
   "Coffee Chat": "Quick casual conversation over coffee.",
   Meal: "Enjoy food and conversation together.",
@@ -344,7 +352,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           </div>
         </section>
 
-        <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 p-5 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-6">
+        <div className={`${SURFACE_CARD_CLASS} p-4 sm:p-6`}>
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
@@ -354,12 +362,12 @@ export default function WriteForm({ userId }: { userId: string }) {
               Create your meetup
             </h2>
           </div>
-          <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+          <div className="rounded-full border border-[#eadfd3] bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
             Exact place required
           </div>
         </div>
 
-        <div className="mt-4 flex items-start gap-2 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
+        <div className={`mt-4 flex items-start gap-2 ${SOFT_CARD_CLASS} px-4 py-3 text-sm text-[#6b5f52]`}>
           <CheckCircle className="mt-0.5 h-4 w-4 shrink-0" />
           <p>
             {meetingPurpose
@@ -453,7 +461,7 @@ export default function WriteForm({ userId }: { userId: string }) {
             <button
               type="button"
               onClick={handleOpenMapPicker}
-              className="inline-flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-[20px] border border-[#eadfd3] bg-[#f6eee6] text-[#6b5f52] transition hover:bg-[#efe4d9]"
+              className={`inline-flex h-[50px] w-[50px] shrink-0 items-center justify-center ${SECONDARY_BUTTON_CLASS} rounded-[20px] px-0 py-0`}
               aria-label="Pick on map"
               title="Pick on map"
             >
@@ -462,7 +470,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           </div>
 
           {location && (
-            <div className="rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
+            <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm text-[#6b5f52]`}>
               <p className="font-medium text-[#2f2a26]">
                 {placeName || location}
               </p>
@@ -541,7 +549,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           type="button"
           onClick={handleCreate}
           disabled={saving}
-          className="mt-6 w-full rounded-full bg-[#a48f7a] py-4 text-base font-semibold text-white transition hover:bg-[#927d69] disabled:opacity-50"
+          className={`mt-6 w-full ${PRIMARY_BUTTON_CLASS} py-4 text-base font-semibold`}
         >
           {saving ? "Creating..." : "Create Meetup"}
         </button>
