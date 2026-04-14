@@ -69,7 +69,7 @@ export default async function EditProfilePage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-5">
-        <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e4b49d_100%)] p-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
+        <div className="relative overflow-hidden rounded-[36px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e4b49d_100%)] p-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:p-7">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
           <div className="relative">

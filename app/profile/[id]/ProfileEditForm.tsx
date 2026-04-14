@@ -172,7 +172,7 @@ export default function ProfileEditForm({
   };
 
   return (
-    <div className="rounded-[30px] border border-[#eadfd3] bg-white/95 shadow-[0_24px_60px_rgba(92,69,52,0.14)] backdrop-blur">
+    <div className="rounded-[34px] border border-[#eadfd3] bg-white/95 shadow-[0_24px_60px_rgba(92,69,52,0.14)] backdrop-blur">
       <div className="border-b border-[#efe6db] bg-[#fffaf6] px-6 py-5">
         <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
           Edit profile

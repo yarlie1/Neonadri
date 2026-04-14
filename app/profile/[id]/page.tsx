@@ -201,20 +201,11 @@ export default async function ProfilePage({ params }: PageProps) {
       <div className="mx-auto max-w-4xl space-y-5">
         <section className="rounded-[34px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff8f1_0%,#f5dac8_36%,#e0ad95_100%)] p-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:p-8">
           <div className="flex flex-col gap-5">
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
               <div className="inline-flex items-center gap-2 rounded-full bg-white/60 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
                 <UserCircle2 className="h-3.5 w-3.5" />
                 <span>{isMyProfile ? "My profile" : "Guest profile"}</span>
               </div>
-
-              {isMyProfile && (
-                <Link
-                  href={`/profile/${profile.id}/edit`}
-                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/60 bg-white/75 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647] shadow-sm backdrop-blur transition hover:bg-white"
-                >
-                  Edit Profile
-                </Link>
-              )}
             </div>
 
             <div className="min-w-0">
@@ -242,6 +233,14 @@ export default async function ProfilePage({ params }: PageProps) {
               <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
                 Profile
               </h2>
+              {isMyProfile && (
+                <Link
+                  href={`/profile/${profile.id}/edit`}
+                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#dccfc2] bg-[#f6eee6] px-4 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
+                >
+                  Edit Profile
+                </Link>
+              )}
             </div>
 
             <div className="mt-5 grid gap-3">
