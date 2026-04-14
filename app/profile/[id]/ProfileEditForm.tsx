@@ -187,8 +187,8 @@ export default function ProfileEditForm({
   };
 
   return (
-    <div className="rounded-[34px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] shadow-[0_18px_42px_rgba(92,69,52,0.08)] backdrop-blur">
-      <div className="border-b border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-6 py-5">
+    <div className="overflow-hidden rounded-[36px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] shadow-[0_18px_42px_rgba(92,69,52,0.08)] backdrop-blur">
+      <div className="bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-6 py-5">
         <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
           Edit profile
         </div>
@@ -197,7 +197,7 @@ export default function ProfileEditForm({
         </h2>
       </div>
 
-      <div className="px-6 py-5">
+      <div className="border-t border-[#eee3d8]/80 px-6 py-5">
         <div className="mb-5 rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-4 text-sm leading-6 text-[#6b5f52]">
           A clear, warm profile makes it easier for people to understand your energy before they send a request.
         </div>
