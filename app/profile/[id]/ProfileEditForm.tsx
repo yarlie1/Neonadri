@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { createClient } from "../../../lib/supabase/client";
+import { useState } from "react";
 import { Save } from "lucide-react";
 
 type ProfileRow = {
@@ -92,8 +91,6 @@ export default function ProfileEditForm({
 }: {
   profile: ProfileRow;
 }) {
-  const supabase = useMemo(() => createClient(), []);
-
   const [saving, setSaving] = useState(false);
 
   const [displayName, setDisplayName] = useState(profile.display_name || "");
@@ -149,10 +146,18 @@ export default function ProfileEditForm({
         updated_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase.from("profiles").upsert(payload);
+      const response = await fetch("/api/profile/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-      if (error) {
-        setMessage("ERROR: " + error.message);
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        setMessage("ERROR: " + (result.error || "Failed to save profile."));
         setSaving(false);
         return;
       }
