@@ -197,8 +197,8 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
 
             <div className="min-w-0 pl-1">
-              <div className="flex flex-wrap items-center gap-3">
-                <h1 className="truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
+              <div className="flex items-center justify-between gap-3">
+                <h1 className="min-w-0 truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
                   {profile.display_name || "Unknown"}
                 </h1>
                 <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
