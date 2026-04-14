@@ -843,45 +843,51 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       <div className="mx-auto max-w-3xl space-y-5">
         {isPostMatched && isViewerParticipant && (
           <div className="rounded-[26px] border border-[#dccfc2] bg-[linear-gradient(135deg,#fffaf5_0%,#f4e6d8_100%)] p-4 shadow-[0_14px_32px_rgba(92,69,52,0.08)] sm:p-5">
-            <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
                   Upcoming meetup
                 </div>
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <span
-                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold shadow-sm ${purposeTheme.bandClass}`}
-                  >
-                    {getPurposeIcon(
-                      post.meeting_purpose,
-                      "h-[15px] w-[15px] shrink-0 text-white"
-                    )}
-                    <span>{post.meeting_purpose || "Meetup"}</span>
-                  </span>
-                  <span className="rounded-full bg-white/75 px-3 py-1.5 text-sm font-semibold text-[#5f5347]">
-                    {meetupDurationLabel}
-                  </span>
+                <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#2f2a26]">
+                  Upcoming matched meetup
                 </div>
-                <div className="mt-3 rounded-[18px] border border-white/60 bg-white/62 px-4 py-3 backdrop-blur">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-[#2f2a26]">
-                      <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <span className="truncate">{meetupTimeLabel}</span>
-                    </div>
-                    <div className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8f6e5f]">
-                      {meetupCountdown || "Soon"}
-                    </div>
-                  </div>
-                  <div className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#5f5347]">
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#a27767]" />
-                    <span className="min-w-0 truncate">
-                      {post.place_name || post.location || "Selected place"}
-                    </span>
-                  </div>
+                <div className="mt-2 text-sm leading-6 text-[#6f655c]">
+                  Your next confirmed plan for this meetup.
                 </div>
               </div>
-              <div className="rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b5f52]">
-                Matched
+            </div>
+
+            <div className="mt-4 rounded-[22px] border border-[#eadfd3] bg-white/78 p-4 shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div
+                  className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] shadow-sm ${purposeTheme.bandClass}`}
+                >
+                  {getPurposeIcon(post.meeting_purpose)}
+                  {post.meeting_purpose || "Meetup"}
+                </div>
+
+                <div className="rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b5f52]">
+                  Matched
+                </div>
+              </div>
+
+              <div className="mt-3 rounded-[18px] border border-[#efe5db] bg-[#fcfaf7] px-4 py-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-[#2f2a26]">
+                    <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                    <span className="truncate">{meetupTimeLabel}</span>
+                  </div>
+                  <div className="shrink-0 rounded-full bg-[#f3e7da] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#7b6356]">
+                    {meetupCountdown || "Soon"}
+                  </div>
+                </div>
+
+                <div className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#5f5347]">
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#a27767]" />
+                  <span className="min-w-0 break-words line-clamp-2">
+                    {post.place_name || post.location || "Selected place"}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
