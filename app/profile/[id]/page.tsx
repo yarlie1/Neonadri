@@ -6,7 +6,6 @@ import {
   UserRound,
   Languages,
   MessageSquareText,
-  HeartHandshake,
   Clock3,
   Sparkles,
 } from "lucide-react";
@@ -212,14 +211,14 @@ export default async function ProfilePage({ params }: PageProps) {
                     </span>
                   </div>
                   <span className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
-                    {reviewCount} reviews
+                    {completedMeetups} completed meetups
                   </span>
                   <span className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
-                    {completedMeetups} completed meetups
+                    {reviewCount} review{reviewCount === 1 ? "" : "s"}
                   </span>
                 </div>
             </div>
-            {(hasResponseNote || hasPreferredArea || hasMeetingStyle) && (
+            {(hasResponseNote || hasPreferredArea) && (
               <div className="flex flex-wrap gap-2">
                 {hasResponseNote && (
                   <span className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f4ece3_100%)] px-3 py-1.5 text-xs font-medium text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
@@ -233,14 +232,9 @@ export default async function ProfilePage({ params }: PageProps) {
                     {profile.preferred_area}
                   </span>
                 )}
-                {hasMeetingStyle && (
-                  <span className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f4ece3_100%)] px-3 py-1.5 text-xs font-medium text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
-                    <HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />
-                    {profile.meeting_style}
-                  </span>
-                )}
               </div>
-            )}          </div>
+            )}
+          </div>
         </section>
 
         <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
@@ -265,23 +259,13 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
 
             <div className="mt-5 grid gap-3">
-              <div className="grid gap-3 sm:grid-cols-2">
-                {hasPreferredArea && (
-                  <InfoItem
-                    icon={<Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                    label="Preferred Area"
-                    value={profile.preferred_area!}
-                  />
-                )}
-
-                {hasMeetingStyle && (
-                  <InfoItem
-                    icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                    label="Meeting Style"
-                    value={profile.meeting_style!}
-                  />
-                )}
-              </div>
+              {hasPreferredArea && (
+                <InfoItem
+                  icon={<Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                  label="Preferred Area"
+                  value={profile.preferred_area!}
+                />
+              )}
 
               {(profile.gender || profile.age_group) && (
                 <InfoItem
@@ -299,10 +283,10 @@ export default async function ProfilePage({ params }: PageProps) {
                 />
               )}
 
-              <div className="rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-5">
+              <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4">
                 <div className="flex items-start gap-3">
-                  <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
-                  <div>
+                  <MessageSquareText className="mt-[1px] h-5 w-5 shrink-0 text-[#8a7f74]" />
+                  <div className="min-w-0">
                     <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
                       About me
                     </div>
@@ -314,7 +298,7 @@ export default async function ProfilePage({ params }: PageProps) {
               </div>
 
               {hasInterests && (
-                <div className="rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-5">
+                <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4">
                   <div className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
                     <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
                     Interests
@@ -346,8 +330,8 @@ export default async function ProfilePage({ params }: PageProps) {
               </div>
             </div>
 
-            <div className="mt-5 rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-5">
-              <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="mt-4 rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <StarRating value={roundedAverage} size="md" />
                   <div className="text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
@@ -359,8 +343,8 @@ export default async function ProfilePage({ params }: PageProps) {
                 </div>
               </div>
 
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-3">
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-2.5">
                   <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Reviews received
                   </div>
@@ -368,7 +352,7 @@ export default async function ProfilePage({ params }: PageProps) {
                     {reviewCount} total
                   </div>
                 </div>
-                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-3">
+                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-2.5">
                   <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Completed meetups
                   </div>
@@ -379,16 +363,16 @@ export default async function ProfilePage({ params }: PageProps) {
               </div>
             </div>
 
-            <div className="mt-4 space-y-4">
+            <div className="mt-3 space-y-3">
               {reviews.length === 0 ? (
-                <div className="rounded-[20px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-4 text-sm text-[#8b7f74]">
+                <div className="rounded-[20px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-3 text-sm text-[#8b7f74]">
                   No reviews yet.
                 </div>
               ) : (
                 reviews.map((review) => (
                   <div
                     key={review.id}
-                    className="rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-5"
+                    className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
@@ -415,5 +399,6 @@ export default async function ProfilePage({ params }: PageProps) {
     </main>
   );
 }
+
 
 
