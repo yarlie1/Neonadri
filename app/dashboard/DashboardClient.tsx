@@ -675,36 +675,15 @@ export default function DashboardClient({
                       </div>
                     </div>
 
-                    <div className="mt-3 grid gap-3 sm:grid-cols-[1.15fr_0.85fr]">
-                      <div className="rounded-[18px] border border-[#efe5db] bg-[#fcfaf7] px-4 py-3">
-                        <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                          When
-                        </div>
-                        <div className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-[#2f2a26]">
-                          <Clock3 className="h-4 w-4 text-[#8a7f74]" />
-                          <span>{formatTime(item.post.meeting_time)}</span>
-                        </div>
-                      </div>
-
-                      <div className="rounded-[18px] border border-[#efe5db] bg-[#fcfaf7] px-4 py-3 text-right sm:text-left">
-                        <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                          Starts in
-                        </div>
-                        {countdown ? (
-                          <div className="mt-2 text-base font-semibold text-[#8f6e5f]">
-                            {countdown}
-                          </div>
-                        ) : (
-                          <div className="mt-2 text-base font-semibold text-[#8f6e5f]">
-                            Soon
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
                     <div className="mt-3 rounded-[18px] border border-[#efe5db] bg-[#fcfaf7] px-4 py-3">
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                        Place
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-[#2f2a26]">
+                          <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                          <span className="truncate">{formatTime(item.post.meeting_time)}</span>
+                        </div>
+                        <div className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8f6e5f]">
+                          {countdown || "Soon"}
+                        </div>
                       </div>
                       <div className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#5f5347]">
                         <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#a27767]" />
