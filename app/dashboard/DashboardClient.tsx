@@ -168,9 +168,15 @@ function formatTime(meetingTime: string | null) {
 function formatTimeUntil(meetingTime: string | null) {
   if (!meetingTime) return "";
 
-  const now = new Date().getTime();
-  const target = new Date(meetingTime).getTime();
+  const nowDate = new Date();
+  const targetDate = new Date(meetingTime);
+  const now = nowDate.getTime();
+  const target = targetDate.getTime();
   if (Number.isNaN(target) || target <= now) return "";
+
+  if (nowDate.toDateString() === targetDate.toDateString()) {
+    return "D-0";
+  }
 
   const diffMs = target - now;
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
