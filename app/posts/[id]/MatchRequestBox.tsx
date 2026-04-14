@@ -158,34 +158,32 @@ export default function MatchRequestBox({
 
   return (
     <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex min-w-0 flex-1 items-start gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f6eee6]">
-            <Send className="h-5 w-5 text-[#8a7f74]" />
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-              Join this meetup
-            </div>
-            <h2 className="mt-2 text-[1.45rem] font-black tracking-[-0.04em] text-[#2f2a26]">
-              Request Match
-            </h2>
-            <p className="mt-1 text-sm leading-6 text-[#6f655c]">
-              Send your request to the host and wait for approval.
-            </p>
-          </div>
+      <div className="flex items-center gap-3">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f6eee6]">
+          <Send className="h-5 w-5 text-[#8a7f74]" />
         </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
-            {isPostMatched ? "Match complete" : "Host approval"}
+        <div className="min-w-0">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+            Join this meetup
           </div>
-          <div className="rounded-full border border-[#e7ddd2] bg-white px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
-            {requestCountLabel}
-          </div>
+          <h2 className="mt-1 text-[1.45rem] font-black tracking-[-0.04em] text-[#2f2a26]">
+            Request Match
+          </h2>
         </div>
       </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+          {isPostMatched ? "Match complete" : "Host approval"}
+        </div>
+        <div className="rounded-full border border-[#e7ddd2] bg-white px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+          {requestCountLabel}
+        </div>
+      </div>
+
+      <p className="mt-4 text-sm leading-6 text-[#6f655c]">
+        Send your request to the host and wait for approval.
+      </p>
 
       <div className="mt-5 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-4">
         <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
