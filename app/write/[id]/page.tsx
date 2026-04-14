@@ -75,6 +75,19 @@ function formatDateTimeLocalValue(date: Date) {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
+function getDatePart(dateTimeValue: string) {
+  return dateTimeValue ? dateTimeValue.slice(0, 10) : "";
+}
+
+function getTimePart(dateTimeValue: string) {
+  return dateTimeValue ? dateTimeValue.slice(11, 16) : "";
+}
+
+function combineDateAndTime(datePart: string, timePart: string) {
+  if (!datePart || !timePart) return "";
+  return `${datePart}T${timePart}`;
+}
+
 function getDefaultMeetingTime() {
   const now = new Date();
   const target = new Date(now.getTime() + 3 * 60 * 60 * 1000);
@@ -99,6 +112,8 @@ export default function EditWritePage() {
 
   const [meetingPurpose, setMeetingPurpose] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
+  const [meetingDate, setMeetingDate] = useState("");
+  const [meetingTimeSlot, setMeetingTimeSlot] = useState("");
   const [durationMinutes, setDurationMinutes] = useState("");
   const [location, setLocation] = useState("");
   const [placeName, setPlaceName] = useState("");
@@ -116,6 +131,12 @@ export default function EditWritePage() {
 
   const fieldClass =
     "w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 pl-16 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12";
+
+  useEffect(() => {
+    if (!meetingTime) return;
+    setMeetingDate(getDatePart(meetingTime));
+    setMeetingTimeSlot(getTimePart(meetingTime));
+  }, [meetingTime]);
 
   useEffect(() => {
     const loadUserAndPost = async () => {
@@ -251,6 +272,16 @@ export default function EditWritePage() {
 
   const handleOpenMapPicker = () => {
     router.push(`/write/location?returnTo=/write/${postId}`);
+  };
+
+  const handleMeetingDateChange = (value: string) => {
+    setMeetingDate(value);
+    setMeetingTime(combineDateAndTime(value, meetingTimeSlot || "00:00"));
+  };
+
+  const handleMeetingTimeSlotChange = (value: string) => {
+    setMeetingTimeSlot(value);
+    setMeetingTime(combineDateAndTime(meetingDate, value));
   };
 
   const handleSave = async () => {
@@ -392,17 +423,41 @@ export default function EditWritePage() {
         </h2>
 
         <div className="mt-3 space-y-3">
-          <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
-            <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
-              <Clock className="h-4 w-4" />
+          <div className="grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
+            <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
+                <Clock className="h-4 w-4" />
+              </div>
+              <input
+                type="date"
+                className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 text-sm text-[#2f2a26] !shadow-none !outline-none !ring-0"
+                value={meetingDate}
+                onChange={(e) => handleMeetingDateChange(e.target.value)}
+              />
             </div>
-            <input
-              type="datetime-local"
-              className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 text-sm text-[#2f2a26] !shadow-none !outline-none !ring-0"
-              value={meetingTime}
-              onChange={(e) => setMeetingTime(e.target.value)}
-              step={1800}
-            />
+
+            <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
+                <Clock className="h-4 w-4" />
+              </div>
+              <select
+                className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-10 text-sm text-[#2f2a26] outline-none"
+                value={meetingTimeSlot}
+                onChange={(e) => handleMeetingTimeSlotChange(e.target.value)}
+              >
+                <option value="">Select time</option>
+                {Array.from({ length: 48 }, (_, index) => {
+                  const hours = String(Math.floor(index / 2)).padStart(2, "0");
+                  const minutes = index % 2 === 0 ? "00" : "30";
+                  const value = `${hours}:${minutes}`;
+                  return (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
           </div>
 
           <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
