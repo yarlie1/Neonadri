@@ -26,7 +26,6 @@ import {
 } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import MatchRequestBox from "./MatchRequestBox";
-import ClientMap from "./ClientMap";
 import OwnerMatchPanel from "./OwnerMatchPanel";
 import DeletePostButton from "./DeletePostButton";
 
@@ -992,40 +991,32 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
                 Location
               </div>
-              <div className="mt-3 grid gap-3 lg:grid-cols-[0.9fr_1.1fr]">
-                <div className="space-y-3 text-[15px] text-[#5f5347]">
+              <div className="mt-3 text-[15px] text-[#5f5347]">
+                <div className="space-y-3">
                   {post.location && (
                     <div className="flex items-start gap-2">
                       <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <div>
-                        <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b8f84]">
-                          Address
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b8f84]">
+                            Address
+                          </div>
+                          {mapUrl && (
+                            <a
+                              href={mapUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#e7dbcf] bg-[#fbf6f0] px-3 py-1.5 text-[11px] font-medium text-[#6a5e54] transition hover:bg-[#f4eadf]"
+                            >
+                              Open in Maps
+                            </a>
+                          )}
                         </div>
                         <div className="mt-1 line-clamp-3">{post.location}</div>
                       </div>
                     </div>
                   )}
-                  {mapUrl && (
-                    <a
-                      href={mapUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-full border border-[#e7dbcf] bg-[#fbf6f0] px-3 py-1.5 text-xs font-medium text-[#6a5e54] transition hover:bg-[#f4eadf]"
-                    >
-                      Open in Maps
-                    </a>
-                  )}
                 </div>
-
-                {post.latitude !== null && post.longitude !== null ? (
-                  <div className="overflow-hidden rounded-[22px] border border-[#efe6db] bg-[#fcfaf7]">
-                    <ClientMap latitude={post.latitude} longitude={post.longitude} />
-                  </div>
-                ) : (
-                  <div className="rounded-[22px] border border-[#efe6db] bg-[#fcfaf7] px-4 py-8 text-sm text-[#8b7f74]">
-                    Map preview is not available for this meetup.
-                  </div>
-                )}
               </div>
             </div>
           </div>
