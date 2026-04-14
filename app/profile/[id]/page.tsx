@@ -179,12 +179,12 @@ export default async function ProfilePage({ params }: PageProps) {
   const hasPreferredArea = !!profile.preferred_area?.trim();
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
+      <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-4xl space-y-5">
-        <section className="rounded-[34px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff8f1_0%,#f5dac8_36%,#e0ad95_100%)] p-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:p-8">
+        <section className="rounded-[34px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] p-6 shadow-[0_18px_42px_rgba(92,69,52,0.08)] sm:p-8">
           <div className="flex flex-col gap-5">
             <div className="flex items-center gap-3">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/60 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] text-[#74675d]">
                 <UserCircle2 className="h-3.5 w-3.5" />
                 <span>{isMyProfile ? "My profile" : "Guest profile"}</span>
               </div>
@@ -201,10 +201,10 @@ export default async function ProfilePage({ params }: PageProps) {
                       {averageRating.toFixed(1)}
                     </span>
                   </div>
-                  <span className="rounded-full border border-white/60 bg-white/65 px-3 py-1 text-xs font-medium text-[#5f5347] shadow-sm">
+                  <span className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
                     {reviewCount} reviews
                   </span>
-                  <span className="rounded-full border border-white/60 bg-white/65 px-3 py-1 text-xs font-medium text-[#5f5347] shadow-sm">
+                  <span className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
                     {completedMeetups} completed meetups
                   </span>
                 </div>
@@ -235,7 +235,7 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
 
             {featuredReview && (
-              <div className="rounded-[24px] border border-white/65 bg-white/68 p-5 shadow-sm">
+              <div className="rounded-[24px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-5 shadow-[0_10px_22px_rgba(92,69,52,0.05)]">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <StarRating value={featuredReview.rating} size="md" />
@@ -256,7 +256,7 @@ export default async function ProfilePage({ params }: PageProps) {
         </section>
 
         <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-          <section className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+          <section className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-6 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
             <div className="flex items-center justify-between gap-3">
               <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
                 Profile
@@ -264,7 +264,7 @@ export default async function ProfilePage({ params }: PageProps) {
               {isMyProfile && (
                 <Link
                   href={`/profile/${profile.id}/edit`}
-                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#dccfc2] bg-[#f6eee6] px-4 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
+                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-4 py-[0.45rem] text-xs font-medium leading-none text-[#5f5347] transition hover:bg-[#f7eee6]"
                 >
                   Edit Profile
                 </Link>
@@ -288,7 +288,7 @@ export default async function ProfilePage({ params }: PageProps) {
                 />
               )}
 
-              <div className="rounded-[24px] border border-[#efe6db] bg-[#fcfaf7] p-5">
+              <div className="rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-5">
                 <div className="flex items-start gap-3">
                   <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
                   <div>
@@ -303,7 +303,7 @@ export default async function ProfilePage({ params }: PageProps) {
               </div>
 
               {hasInterests && (
-                <div className="rounded-[24px] border border-[#efe6db] bg-[#fcfaf7] p-5">
+                <div className="rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-5">
                   <div className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
                     <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
                     Interests
@@ -323,14 +323,14 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
           </section>
 
-          <section className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+          <section className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-6 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
             <div className="flex items-center justify-between gap-3">
               <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
                 Reviews
               </h2>
             </div>
 
-            <div className="mt-5 rounded-[24px] border border-[#efe6db] bg-[#fcfaf7] p-5">
+            <div className="mt-5 rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-5">
               <div className="flex items-center gap-3">
                 <StarRating value={roundedAverage} size="md" />
                 <div className="text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
@@ -346,14 +346,14 @@ export default async function ProfilePage({ params }: PageProps) {
 
             <div className="mt-4 space-y-4">
               {reviews.length === 0 ? (
-                <div className="rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-4 text-sm text-[#8b7f74]">
+                <div className="rounded-[20px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-4 text-sm text-[#8b7f74]">
                   No reviews yet.
                 </div>
               ) : (
                 reviews.map((review) => (
                   <div
                     key={review.id}
-                    className="rounded-[24px] border border-[#e7ddd2] bg-[#fcfaf7] p-5"
+                    className="rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-5"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">

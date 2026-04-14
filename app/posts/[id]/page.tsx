@@ -161,64 +161,57 @@ const getPurposeIcon = (purpose: string | null, className?: string) => {
 };
 
 const getPurposeTheme = (purpose: string | null) => {
+  const baseBandClass =
+    "border border-[#eadfd2] bg-[linear-gradient(180deg,#fbf5ef_0%,#f3e8dc_100%)] text-[#2f261f]";
   switch (purpose) {
     case "Coffee Chat":
     case "Coffee":
       return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#8b5e4a_0%,#c98b67_100%)] text-white",
+        bandClass: baseBandClass,
       };
     case "Meal":
     case "Dessert":
       return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#9f7440_0%,#d5a15a_100%)] text-white",
+        bandClass: baseBandClass,
       };
     case "Walk":
     case "Jogging":
     case "Yoga":
       return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#5d8c5f_0%,#87b377_100%)] text-white",
+        bandClass: baseBandClass,
       };
     case "Movie":
     case "Theater":
     case "Karaoke":
       return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#5d4f7d_0%,#8c75b6_100%)] text-white",
+        bandClass: baseBandClass,
       };
     case "Board Games":
     case "Gaming":
     case "Bowling":
     case "Arcade":
       return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#64508a_0%,#8f73c6_100%)] text-white",
+        bandClass: baseBandClass,
       };
     case "Study":
     case "Book Talk":
     case "Book":
       return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#4e5f84_0%,#6d8fb8_100%)] text-white",
+        bandClass: baseBandClass,
       };
     case "Work Together":
     case "Work":
       return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#4f4640_0%,#847467_100%)] text-white",
+        bandClass: baseBandClass,
       };
     case "Photo Walk":
     case "Photo":
       return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#8e5f5b_0%,#c8827f_100%)] text-white",
+        bandClass: baseBandClass,
       };
     default:
       return {
-        bandClass:
-          "bg-[linear-gradient(135deg,#2f2a26_0%,#5a4d45_100%)] text-white",
+        bandClass: baseBandClass,
       };
   }
 };
@@ -883,7 +876,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
       <div className="mx-auto max-w-3xl space-y-5">
         {isPostMatched && isViewerParticipant && (
-          <div className="rounded-[26px] border border-[#dccfc2] bg-[linear-gradient(135deg,#fffaf5_0%,#f4e6d8_100%)] p-4 shadow-[0_14px_32px_rgba(92,69,52,0.08)] sm:p-5">
+          <div className="rounded-[26px] border border-[#e9ddd1] bg-[linear-gradient(180deg,#fffdfa_0%,#f6ede5_100%)] p-4 shadow-[0_12px_28px_rgba(92,69,52,0.06)] sm:p-5">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
@@ -898,7 +891,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            <div className="mt-4 rounded-[22px] border border-[#eadfd3] bg-white/78 p-4 shadow-sm">
+            <div className="mt-4 rounded-[22px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-4 shadow-[0_10px_22px_rgba(92,69,52,0.05)]">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div
                   className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] shadow-sm ${purposeTheme.bandClass}`}
@@ -907,12 +900,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                   {post.meeting_purpose || "Meetup"}
                 </div>
 
-                <div className="rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b5f52]">
+                <div className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.12em] text-[#74675d]">
                   Matched
                 </div>
               </div>
 
-              <div className="mt-3 rounded-[18px] border border-[#efe5db] bg-[#fcfaf7] px-4 py-3">
+              <div className="mt-3 rounded-[18px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-[#2f2a26]">
                     <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
@@ -934,7 +927,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           </div>
         )}
 
-        <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e5b29e_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
+        <div className="relative overflow-hidden rounded-[32px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(92,69,52,0.08)]">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
           <div className="relative">
