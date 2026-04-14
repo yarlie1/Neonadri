@@ -178,69 +178,69 @@ function getPurposeTheme(purpose: string | null) {
     case "Coffee Chat":
     case "Coffee":
       return {
-        pillClass: "bg-[#f7eadf] text-[#9a6248]",
+        pillClass: "bg-[#f4ece6] text-[#836255]",
         bandClass:
-          "bg-[linear-gradient(135deg,#8b5e4a_0%,#c98b67_100%)] text-white",
+          "bg-[linear-gradient(135deg,#4c3f39_0%,#8a6a5c_100%)] text-white",
       };
     case "Meal":
     case "Dessert":
       return {
-        pillClass: "bg-[#f6ebdf] text-[#8f6a3a]",
+        pillClass: "bg-[#f4ede4] text-[#866a4b]",
         bandClass:
-          "bg-[linear-gradient(135deg,#9f7440_0%,#d5a15a_100%)] text-white",
+          "bg-[linear-gradient(135deg,#56463a_0%,#9a7a5e_100%)] text-white",
       };
     case "Walk":
     case "Jogging":
     case "Yoga":
       return {
-        pillClass: "bg-[#eaf4ea] text-[#4f8a54]",
+        pillClass: "bg-[#edf1ea] text-[#64705e]",
         bandClass:
-          "bg-[linear-gradient(135deg,#5d8c5f_0%,#87b377_100%)] text-white",
+          "bg-[linear-gradient(135deg,#3f4941_0%,#72816e_100%)] text-white",
       };
     case "Movie":
     case "Theater":
     case "Karaoke":
       return {
-        pillClass: "bg-[#eee7f6] text-[#6f5a92]",
+        pillClass: "bg-[#eeebf2] text-[#6d6178]",
         bandClass:
-          "bg-[linear-gradient(135deg,#5d4f7d_0%,#8c75b6_100%)] text-white",
+          "bg-[linear-gradient(135deg,#433d49_0%,#756a80_100%)] text-white",
       };
     case "Board Games":
     case "Gaming":
     case "Bowling":
     case "Arcade":
       return {
-        pillClass: "bg-[#efe8ff] text-[#6a5ea5]",
+        pillClass: "bg-[#edeaf3] text-[#675f78]",
         bandClass:
-          "bg-[linear-gradient(135deg,#64508a_0%,#8f73c6_100%)] text-white",
+          "bg-[linear-gradient(135deg,#413b49_0%,#72667f_100%)] text-white",
       };
     case "Study":
     case "Book Talk":
     case "Book":
       return {
-        pillClass: "bg-[#e8f0fb] text-[#5e79a6]",
+        pillClass: "bg-[#ebeff3] text-[#617080]",
         bandClass:
-          "bg-[linear-gradient(135deg,#4e5f84_0%,#6d8fb8_100%)] text-white",
+          "bg-[linear-gradient(135deg,#3e4451_0%,#6f7f92_100%)] text-white",
       };
     case "Work Together":
     case "Work":
       return {
-        pillClass: "bg-[#ece8e3] text-[#6d6258]",
+        pillClass: "bg-[#efe9e3] text-[#6d6258]",
         bandClass:
-          "bg-[linear-gradient(135deg,#4f4640_0%,#847467_100%)] text-white",
+          "bg-[linear-gradient(135deg,#3d3733_0%,#776b63_100%)] text-white",
       };
     case "Photo Walk":
     case "Photo":
       return {
-        pillClass: "bg-[#f9e8e5] text-[#9a5f57]",
+        pillClass: "bg-[#f2e9e6] text-[#84645e]",
         bandClass:
-          "bg-[linear-gradient(135deg,#8e5f5b_0%,#c8827f_100%)] text-white",
+          "bg-[linear-gradient(135deg,#4b3f3d_0%,#8a6d68_100%)] text-white",
       };
     default:
       return {
-        pillClass: "bg-[#f8efe8] text-[#9a6f5f]",
+        pillClass: "bg-[#f2ebe4] text-[#7e6659]",
         bandClass:
-          "bg-[linear-gradient(135deg,#2f2a26_0%,#5a4d45_100%)] text-white",
+          "bg-[linear-gradient(135deg,#2f2a26_0%,#64584f_100%)] text-white",
       };
   }
 }

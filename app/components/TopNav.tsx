@@ -236,24 +236,24 @@ export default function TopNav() {
   const navBtn = (active: boolean) =>
     `inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition ${
       active
-        ? "border-[#d6b79e] bg-[#f3e4d4] text-[#3f3226] shadow-[0_10px_24px_rgba(120,86,52,0.12)]"
-        : "border-[#dccfc2] bg-white/90 text-[#5a5149] hover:bg-[#f4ece4]"
+        ? "border-[#dfcaba] bg-[linear-gradient(180deg,#fffdf9_0%,#f3e7db_100%)] text-[#3f3226] shadow-[0_12px_28px_rgba(120,86,52,0.10)]"
+        : "border-[#e5d8cb] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e7_100%)] text-[#5a5149] shadow-[0_8px_18px_rgba(93,68,48,0.04)] hover:bg-[#f6eee6]"
     }`;
 
   const primary =
-    "inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white shadow-[0_12px_24px_rgba(108,77,48,0.22)] transition hover:bg-[#927d69]";
+    "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
 
   const mobileItem =
     "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#e7ddd2] bg-[#fffaf5]/88 backdrop-blur-xl">
-      <div className="border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(252,245,237,0.96),rgba(255,250,245,0.9))]">
+    <header className="sticky top-0 z-50 border-b border-[#ebdfd4] bg-[rgba(255,250,245,0.84)] backdrop-blur-xl">
+      <div className="border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(255,252,248,0.95),rgba(249,240,232,0.88))]">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f7d9bf,_#c89277_78%)] text-base font-bold tracking-[-0.05em] text-white shadow-[0_14px_30px_rgba(160,111,82,0.28)]"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#e6cdbb] bg-[radial-gradient(circle_at_top,_#f6e5d6,_#c99679_80%)] text-base font-bold tracking-[-0.05em] text-white shadow-[0_14px_30px_rgba(160,111,82,0.18)]"
               onClick={closeMenu}
               aria-label="Neonadri home"
             >
@@ -269,7 +269,7 @@ export default function TopNav() {
                 >
                   Neonadri
                 </Link>
-                <span className="hidden rounded-full border border-[#eadccd] bg-white/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a6e55] sm:inline-flex">
+                <span className="hidden rounded-full border border-[#eadccd] bg-[linear-gradient(180deg,#fffdfa_0%,#f7ede4_100%)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a6e55] shadow-sm sm:inline-flex">
                   Social meetup
                 </span>
               </div>
@@ -344,14 +344,14 @@ export default function TopNav() {
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#dccfc2] bg-white/95 text-[#5a5149] shadow-[0_10px_24px_rgba(90,70,48,0.12)] transition hover:bg-[#f4ece4]"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#e3d5c8] bg-[linear-gradient(180deg,#fffdfb_0%,#f6ede5_100%)] text-[#5a5149] shadow-[0_10px_24px_rgba(90,70,48,0.10)] transition hover:bg-[#f4ece4]"
             >
               {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 top-14 z-50 w-72 overflow-hidden rounded-[28px] border border-[#e7ddd2] bg-[#fffaf6] shadow-[0_22px_44px_rgba(80,60,40,0.18)]">
-                <div className="border-b border-[#efe3d8] bg-[linear-gradient(180deg,#fff5eb,#fffaf6)] px-5 py-4">
+              <div className="absolute right-0 top-14 z-50 w-72 overflow-hidden rounded-[30px] border border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#f7efe7_100%)] shadow-[0_24px_50px_rgba(80,60,40,0.16)]">
+                <div className="border-b border-[#efe3d8] bg-[linear-gradient(180deg,#fff8f0,#fffdf8)] px-5 py-4">
                   <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#b27f61]">
                     Neonadri
                   </div>
