@@ -988,12 +988,12 @@ export default function HomeFeedClient({
               }`}
             >
               <div className="mb-3 flex items-center justify-between gap-2">
-                <div className="min-w-0 rounded-full border border-[#efe4da] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-semibold leading-none tracking-[0.02em] text-[#74675d]">
+                <div className="min-w-0 rounded-full border border-[#efe4da] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-medium leading-none tracking-[0.02em] text-[#74675d]">
                   <div className="truncate">{host.displayName}</div>
                 </div>
 
                 <div
-                  className={`rounded-full px-3 py-[0.3125rem] text-[11px] font-semibold leading-none tracking-[0.02em] ${matchBadge.className}`}
+                  className={`rounded-full px-3 py-[0.3125rem] text-[11px] font-medium leading-none tracking-[0.02em] ${matchBadge.className}`}
                 >
                   {matchBadge.label}
                 </div>
