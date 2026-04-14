@@ -158,26 +158,26 @@ export default function MatchRequestBox({
 
   return (
     <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f6eee6]">
-          <Send className="h-5 w-5 text-[#8a7f74]" />
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-            Join this meetup
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex min-w-0 flex-1 items-start gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f6eee6]">
+            <Send className="h-5 w-5 text-[#8a7f74]" />
           </div>
-          <h2 className="mt-2 text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
-            Request Match
-          </h2>
-          <p className="mt-1 text-sm leading-6 text-[#6f655c]">
-            Send a request to the host if you want to join this meetup.
-          </p>
-        </div>
+
+          <div className="min-w-0 flex-1">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+              Join this meetup
+            </div>
+            <h2 className="mt-2 text-[1.45rem] font-black tracking-[-0.04em] text-[#2f2a26]">
+              Request Match
+            </h2>
+            <p className="mt-1 text-sm leading-6 text-[#6f655c]">
+              Send your request to the host and wait for approval.
+            </p>
+          </div>
         </div>
 
-        <div className="flex flex-col items-end gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
             {isPostMatched ? "Match complete" : "Host approval"}
           </div>
@@ -187,25 +187,30 @@ export default function MatchRequestBox({
         </div>
       </div>
 
-      <div className="mt-5 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-4 text-sm leading-6 text-[#6b5f52]">
-        {hasMatchedRequest
-          ? "This meetup already has a confirmed match."
-          : hasPendingRequest
-          ? "Your request is with the host now. You can leave it pending or cancel it here."
-          : isRejectedRequest
-          ? "This request was declined. You can review the meetup details, but the current request is closed."
-          : "Once you send a request, the host can review your profile and accept or decline from their dashboard."}
+      <div className="mt-5 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-4">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+          Status
+        </div>
+        <div className="mt-2 text-sm leading-6 text-[#6b5f52]">
+          {hasMatchedRequest
+            ? "This meetup already has a confirmed match."
+            : hasPendingRequest
+            ? "Your request is with the host now. You can leave it pending or cancel it here."
+            : isRejectedRequest
+            ? "This request was declined. You can review the meetup details, but the current request is closed."
+            : "Once you send a request, the host can review your profile and accept or decline from their dashboard."}
+        </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap gap-3">
+      <div className="mt-5 flex flex-wrap items-center gap-3">
         {hasMatchedRequest ? (
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-[#efe7dc] px-5 py-3 text-sm font-medium text-[#5f5347]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-[#efe7dc] px-4 py-2.5 text-sm font-medium text-[#5f5347]">
             <CheckCircle2 className="h-4 w-4" />
             Match completed
           </div>
         ) : hasPendingRequest ? (
           <>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-[#efe7dc] px-5 py-3 text-sm font-medium text-[#5f5347]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-[#efe7dc] px-4 py-2.5 text-sm font-medium text-[#5f5347]">
               <Clock3 className="h-4 w-4" />
               Request sent
             </div>
@@ -214,27 +219,27 @@ export default function MatchRequestBox({
               type="button"
               onClick={handleCancelRequest}
               disabled={cancelLoading}
-              className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:opacity-50"
             >
               <XCircle className="h-4 w-4" />
               {cancelLoading ? "Cancelling..." : "Cancel Request"}
             </button>
           </>
         ) : isRejectedRequest ? (
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#6b5f52]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-4 py-2.5 text-sm font-medium text-[#6b5f52]">
             <AlertCircle className="h-4 w-4" />
             Request declined
           </div>
         ) : (
           <button
-            type="button"
-            onClick={handleRequestMatch}
-            disabled={loading}
-            className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
-          >
-            <Send className="h-4 w-4" />
-            {loading ? "Sending..." : "Send Request"}
-          </button>
+              type="button"
+              onClick={handleRequestMatch}
+              disabled={loading}
+              className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+            >
+              <Send className="h-4 w-4" />
+              {loading ? "Sending..." : "Send Request"}
+            </button>
         )}
       </div>
 
