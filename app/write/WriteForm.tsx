@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  Activity,
   Coffee,
   Utensils,
   Cake,
   Footprints,
-  Dumbbell,
   Smile,
   Film,
   Mic,
@@ -35,7 +35,7 @@ const PURPOSE_OPTIONS = [
   { value: "Meal", icon: Utensils },
   { value: "Dessert", icon: Cake },
   { value: "Walk", icon: Footprints },
-  { value: "Jogging", icon: Dumbbell },
+  { value: "Jogging", icon: Activity },
   { value: "Yoga", icon: Smile },
   { value: "Movie", icon: Film },
   { value: "Karaoke", icon: Mic },
