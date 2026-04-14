@@ -987,13 +987,13 @@ export default function HomeFeedClient({
                   : "border-[#e8ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#fbf3eb_100%)] hover:-translate-y-0.5"
               }`}
             >
-              <div className="mb-3.5 flex items-center justify-between gap-2">
-                <div className="min-w-0 rounded-full border border-[#efe4da] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-1.5 text-[11px] font-semibold tracking-[0.02em] text-[#74675d]">
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <div className="min-w-0 rounded-full border border-[#efe4da] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-semibold leading-none tracking-[0.02em] text-[#74675d]">
                   <div className="truncate">{host.displayName}</div>
                 </div>
 
                 <div
-                  className={`rounded-full px-3 py-1.5 text-[11px] font-semibold tracking-[0.02em] ${matchBadge.className}`}
+                  className={`rounded-full px-3 py-[0.3125rem] text-[11px] font-semibold leading-none tracking-[0.02em] ${matchBadge.className}`}
                 >
                   {matchBadge.label}
                 </div>
