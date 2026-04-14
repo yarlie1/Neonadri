@@ -1027,7 +1027,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
         <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
           <div className="space-y-5">
             <ProfileShowcaseCard
-              title="About the Host"
+              title="Host"
               subtitle="Warm, low-pressure meetup host"
               profileHref={post.user_id ? ownerProfileHref : undefined}
               data={ownerProfileData}
@@ -1037,7 +1037,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
             {isPostMatched && isViewerParticipant && guestProfileData && (
               <ProfileShowcaseCard
-                title="About the Guest"
+                title="Guest"
                 subtitle="Confirmed guest for this meetup"
                 profileHref={matchedGuestUserId ? `/profile/${matchedGuestUserId}` : undefined}
                 data={guestProfileData}
