@@ -384,7 +384,7 @@ export default function WriteForm({ userId }: { userId: string }) {
         </section>
 
         <div className={`${SURFACE_CARD_CLASS} p-4 sm:p-6`}>
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start gap-4">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
               New post
@@ -392,9 +392,6 @@ export default function WriteForm({ userId }: { userId: string }) {
             <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#2f2a26]">
               Create your meetup
             </h2>
-          </div>
-          <div className="rounded-full border border-[#eadfd3] bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
-            Exact place required
           </div>
         </div>
 
