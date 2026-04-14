@@ -5,6 +5,10 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
 import { createClient } from "../../lib/supabase/client";
+import {
+  ABOUT_ME_RESTRICTION_MESSAGE,
+  validateAboutMeContent,
+} from "../../lib/profileContent";
 
 const LANGUAGE_OPTIONS = [
   "English",
@@ -160,6 +164,14 @@ export default function SignupPage() {
     try {
       setSubmitting(true);
       setMessage("");
+
+      const aboutMeValidation = validateAboutMeContent(aboutMe);
+
+      if (!aboutMeValidation.ok) {
+        setMessage(ABOUT_ME_RESTRICTION_MESSAGE);
+        setSubmitting(false);
+        return;
+      }
 
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
@@ -497,6 +509,9 @@ export default function SignupPage() {
                       rows={4}
                       className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                     />
+                    <p className="mt-2 text-xs text-[#8c7668]">
+                      Avoid prostitution, solicitation, or other unsafe sexual content.
+                    </p>
                   </div>
                 </>
               )}

@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Save } from "lucide-react";
+import {
+  ABOUT_ME_RESTRICTION_MESSAGE,
+  validateAboutMeContent,
+} from "../../../lib/profileContent";
 
 type ProfileRow = {
   id: string;
@@ -131,6 +135,14 @@ export default function ProfileEditForm({
       setSaving(true);
       setMessage("Saving profile...");
 
+      const aboutMeValidation = validateAboutMeContent(aboutMe);
+
+      if (!aboutMeValidation.ok) {
+        setMessage(ABOUT_ME_RESTRICTION_MESSAGE);
+        setSaving(false);
+        return;
+      }
+
       const payload = {
         id: profile.id,
         display_name: displayName.trim() || null,
@@ -201,9 +213,9 @@ export default function ProfileEditForm({
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-                  About Me
-                </label>
+              <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                About Me
+              </label>
                 <textarea
                   value={aboutMe}
                   onChange={(e) => setAboutMe(e.target.value)}
@@ -211,6 +223,9 @@ export default function ProfileEditForm({
                   className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                   placeholder="Tell people more about yourself"
                 />
+                <p className="mt-2 text-xs text-[#8c7668]">
+                  Avoid prostitution, solicitation, or other unsafe sexual content.
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">

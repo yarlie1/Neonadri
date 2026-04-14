@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
+import {
+  ABOUT_ME_RESTRICTION_MESSAGE,
+  validateAboutMeContent,
+} from "../../../../lib/profileContent";
 
 export async function POST(req: Request) {
   try {
@@ -19,6 +23,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const aboutMeValue =
+      typeof body.about_me === "string" && body.about_me.trim()
+        ? body.about_me.trim()
+        : "";
+    const aboutMeValidation = validateAboutMeContent(aboutMeValue);
+
+    if (!aboutMeValidation.ok) {
+      return NextResponse.json(
+        { error: ABOUT_ME_RESTRICTION_MESSAGE },
+        { status: 400 }
+      );
+    }
+
     const payload = {
       id: user.id,
       display_name:
@@ -27,10 +44,7 @@ export async function POST(req: Request) {
           : null,
       bio:
         typeof body.bio === "string" && body.bio.trim() ? body.bio.trim() : null,
-      about_me:
-        typeof body.about_me === "string" && body.about_me.trim()
-          ? body.about_me.trim()
-          : null,
+      about_me: aboutMeValue || null,
       gender:
         typeof body.gender === "string" && body.gender.trim()
           ? body.gender.trim()

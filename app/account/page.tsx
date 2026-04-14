@@ -3,6 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
+import {
+  ABOUT_ME_RESTRICTION_MESSAGE,
+  validateAboutMeContent,
+} from "../../lib/profileContent";
 
 const LANGUAGE_OPTIONS = [
   "English",
@@ -224,26 +228,41 @@ export default function AccountPage() {
     setMessage("");
     setSaving(true);
 
-    const { error } = await supabase.from("profiles").upsert({
-      id: userId,
-      display_name: displayName.trim() || null,
-      bio: aboutMeSummary || null,
-      gender: gender || null,
-      age_group: ageGroup || null,
-      is_public: true,
-      about_me: aboutMe.trim() || null,
-      preferred_area: preferredArea.trim() || null,
-      meeting_style: meetingStyle.trim() || null,
-      languages: languages.length > 0 ? languages : null,
-      interests: interests.length > 0 ? interests : null,
-      response_time_note: responseTimeNote.trim() || null,
-      updated_at: new Date().toISOString(),
+    const aboutMeValidation = validateAboutMeContent(aboutMe);
+
+    if (!aboutMeValidation.ok) {
+      setMessage(ABOUT_ME_RESTRICTION_MESSAGE);
+      setSaving(false);
+      return;
+    }
+
+    const response = await fetch("/api/profile/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: userId,
+        display_name: displayName.trim() || null,
+        bio: aboutMeSummary || null,
+        gender: gender || null,
+        age_group: ageGroup || null,
+        is_public: true,
+        about_me: aboutMe.trim() || null,
+        preferred_area: preferredArea.trim() || null,
+        meeting_style: meetingStyle.trim() || null,
+        languages: languages.length > 0 ? languages : null,
+        interests: interests.length > 0 ? interests : null,
+        response_time_note: responseTimeNote.trim() || null,
+        updated_at: new Date().toISOString(),
+      }),
     });
 
+    const result = await response.json().catch(() => ({}));
     setSaving(false);
 
-    if (error) {
-      setMessage(error.message);
+    if (!response.ok) {
+      setMessage(result.error || "Failed to save profile.");
       return;
     }
 
@@ -411,6 +430,9 @@ export default function AccountPage() {
               className={INPUT_CLASS}
               placeholder="Tell people more about your personality, interests, and meetup style"
             />
+            <p className="mt-2 text-xs text-[#8c7668]">
+              Avoid prostitution, solicitation, or other unsafe sexual content.
+            </p>
           </div>
 
           <div className="mt-5">
