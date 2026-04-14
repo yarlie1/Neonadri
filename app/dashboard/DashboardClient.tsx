@@ -660,11 +660,11 @@ export default function DashboardClient({
                   <Link
                     key={item.match.id}
                     href={`/posts/${item.post.id}`}
-                    className="block rounded-[22px] border border-[#eadfd3] bg-white/75 p-4 transition hover:bg-white/90"
+                    className="block rounded-[22px] border border-[#eadfd3] bg-white/78 p-4 shadow-sm transition hover:bg-white/92"
                   >
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
                       <div
-                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] ${purposeTheme.bandClass}`}
+                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] shadow-sm ${purposeTheme.bandClass}`}
                       >
                         {getPurposeIcon(item.post.meeting_purpose)}
                         {item.post.meeting_purpose || "Meetup"}
@@ -675,22 +675,40 @@ export default function DashboardClient({
                       </div>
                     </div>
 
-                    <div className="mt-3 space-y-2 text-sm text-[#5f5347]">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-2 text-sm font-semibold text-white">
-                          <Clock3 className="h-4 w-4" />
+                    <div className="mt-3 grid gap-3 sm:grid-cols-[1.15fr_0.85fr]">
+                      <div className="rounded-[18px] border border-[#efe5db] bg-[#fcfaf7] px-4 py-3">
+                        <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                          When
+                        </div>
+                        <div className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-[#2f2a26]">
+                          <Clock3 className="h-4 w-4 text-[#8a7f74]" />
                           <span>{formatTime(item.post.meeting_time)}</span>
                         </div>
-                        {countdown ? (
-                          <div className="pt-2 text-right text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8f6e5f]">
-                            {countdown}
-                          </div>
-                        ) : null}
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-[#a27767]" />
-                        <span className="truncate">
+                      <div className="rounded-[18px] border border-[#efe5db] bg-[#fcfaf7] px-4 py-3 text-right sm:text-left">
+                        <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                          Starts in
+                        </div>
+                        {countdown ? (
+                          <div className="mt-2 text-base font-semibold text-[#8f6e5f]">
+                            {countdown}
+                          </div>
+                        ) : (
+                          <div className="mt-2 text-base font-semibold text-[#8f6e5f]">
+                            Soon
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mt-3 rounded-[18px] border border-[#efe5db] bg-[#fcfaf7] px-4 py-3">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                        Place
+                      </div>
+                      <div className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#5f5347]">
+                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#a27767]" />
+                        <span className="min-w-0 truncate">
                           {item.post.place_name || item.post.location || "Selected place"}
                         </span>
                       </div>
