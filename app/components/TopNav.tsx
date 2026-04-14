@@ -297,8 +297,8 @@ export default function TopNav() {
                 </Link>
 
                 <Link
-                  href={`/profile/${user.id}`}
-                  className={navBtn(pathname.startsWith("/profile/"))}
+                  href="/profile"
+                  className={navBtn(pathname === "/profile" || pathname.startsWith("/profile/"))}
                 >
                   <UserCircle2 className="h-4 w-4" />
                   Profile
@@ -392,9 +392,9 @@ export default function TopNav() {
                       </Link>
 
                       <Link
-                        href={`/profile/${user.id}`}
+                        href="/profile"
                         onClick={closeMenu}
-                        className={`${mobileItem} ${pathname.startsWith("/profile/") ? "bg-[#f4e6d8] text-[#3f3226]" : ""}`}
+                        className={`${mobileItem} ${pathname === "/profile" || pathname.startsWith("/profile/") ? "bg-[#f4e6d8] text-[#3f3226]" : ""}`}
                       >
                         <UserCircle2 className="h-4 w-4" />
                         Profile
