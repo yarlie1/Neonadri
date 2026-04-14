@@ -1003,7 +1003,7 @@ export default function HomeFeedClient({
                       )}
                     </div>
                     <div className="min-w-0">
-                      <div className="truncate text-sm font-semibold text-white/95">
+                      <div className="truncate text-[1.15rem] font-black tracking-[-0.04em] text-white sm:text-[1.25rem]">
                         {post.meeting_purpose || "Social meetup"}
                       </div>
                     </div>
