@@ -365,6 +365,7 @@ function ProfileShowcaseCard({
   data,
   isCurrentUser = false,
   compact = false,
+  summaryOnly = false,
 }: {
   title: string;
   subtitle: string;
@@ -372,6 +373,7 @@ function ProfileShowcaseCard({
   data: ProfileCardData;
   isCurrentUser?: boolean;
   compact?: boolean;
+  summaryOnly?: boolean;
 }) {
   const hasAboutMe = !!data.aboutMe.trim();
   const hasLanguages = data.languages.length > 0;
@@ -384,8 +386,39 @@ function ProfileShowcaseCard({
       : `${data.aboutMe.replace(/\s+/g, " ").trim().slice(0, 137).trimEnd()}...`
     : "No introduction yet.";
   const roundedAverage = Math.round(data.averageRating);
+  const identityLine = `${data.gender || "Unknown"}${
+    data.gender && data.ageGroup ? " / " : ""
+  }${data.ageGroup || ""}`;
 
-  return (
+  const cardContent = summaryOnly ? (
+    <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e5b29e_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)] transition hover:-translate-y-0.5 hover:shadow-[0_28px_70px_rgba(120,76,52,0.18)]">
+      <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
+      <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+      <div className="relative">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+          {title}
+        </div>
+        <div className="mt-4 flex items-center gap-3">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-lg font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
+            {data.displayName.charAt(0).toUpperCase()}
+          </div>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="truncate text-[1.45rem] font-black tracking-[-0.04em] text-[#2b1f1a]">
+                {data.displayName}
+              </div>
+              {isCurrentUser && (
+                <span className="rounded-full border border-white/60 bg-white/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#7d6458]">
+                  You
+                </span>
+              )}
+            </div>
+            <div className="mt-1 text-sm text-[#5f453b]">{identityLine}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  ) : (
     <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e5b29e_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
       <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
       <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
@@ -433,7 +466,7 @@ function ProfileShowcaseCard({
             <InfoItem
               icon={<UserRound className="h-3.5 w-3.5 text-[#8a7f74]" />}
               label={title.includes("Guest") ? "Guest" : "Host"}
-              value={`${data.gender || "Unknown"}${data.gender && data.ageGroup ? " / " : ""}${data.ageGroup || ""}`}
+              value={identityLine}
             />
           )}
           {hasLanguages && (
@@ -537,6 +570,14 @@ function ProfileShowcaseCard({
         )}
       </div>
     </div>
+  );
+
+  return profileHref && summaryOnly ? (
+    <Link href={profileHref} className="block">
+      {cardContent}
+    </Link>
+  ) : (
+    cardContent
   );
 }
 
@@ -1010,6 +1051,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               profileHref={post.user_id ? ownerProfileHref : undefined}
               data={ownerProfileData}
               isCurrentUser={user?.id === post.user_id}
+              summaryOnly
             />
 
             {isPostMatched && isViewerParticipant && guestProfileData && (
@@ -1019,6 +1061,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 profileHref={matchedGuestUserId ? `/profile/${matchedGuestUserId}` : undefined}
                 data={guestProfileData}
                 isCurrentUser={user?.id === matchedGuestUserId}
+                summaryOnly
               />
             )}
           </div>
