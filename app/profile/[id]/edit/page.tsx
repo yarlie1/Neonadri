@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ChevronLeft, Sparkles } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { createClient } from "../../../../lib/supabase/server";
 import ProfileEditForm from "../ProfileEditForm";
 
@@ -81,12 +81,7 @@ export default async function EditProfilePage({ params }: PageProps) {
               Back to Profile
             </Link>
 
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/60 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Profile edit</span>
-            </div>
-
-            <h1 className="mt-4 text-3xl font-black tracking-[-0.04em] text-[#2b1f1a] sm:text-[2.2rem]">
+            <h1 className="mt-5 text-3xl font-black tracking-[-0.04em] text-[#2b1f1a] sm:text-[2.2rem]">
               Update your profile
             </h1>
             <p className="mt-3 max-w-xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
