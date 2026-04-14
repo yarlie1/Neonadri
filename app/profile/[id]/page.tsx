@@ -6,6 +6,7 @@ import {
   UserRound,
   Languages,
   MessageSquareText,
+  HeartHandshake,
   Clock3,
   Sparkles,
 } from "lucide-react";
