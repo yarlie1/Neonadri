@@ -174,73 +174,85 @@ function getPostStatus(meetingTime: string | null) {
 }
 
 function getPurposeTheme(purpose: string | null) {
+  const baseBandClass =
+    "border border-[#ebe0d4] bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%)] text-[#302720]";
+
   switch (purpose) {
     case "Coffee Chat":
     case "Coffee":
       return {
-        pillClass: "bg-[#f4ece6] text-[#836255]",
-        bandClass:
-          "bg-[linear-gradient(135deg,#4c3f39_0%,#8a6a5c_100%)] text-white",
+        pillClass: "bg-[#f4ede6] text-[#7f6555]",
+        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(135deg,rgba(128,94,72,0.08)_0,rgba(128,94,72,0.08)_10px,transparent_10px,transparent_22px)]`,
+        iconWrapClass:
+          "bg-[linear-gradient(180deg,#efe0d3_0%,#dcc0ab_100%)] text-[#7e5f4d]",
       };
     case "Meal":
     case "Dessert":
       return {
-        pillClass: "bg-[#f4ede4] text-[#866a4b]",
-        bandClass:
-          "bg-[linear-gradient(135deg,#56463a_0%,#9a7a5e_100%)] text-white",
+        pillClass: "bg-[#f4eee5] text-[#82674b]",
+        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(90deg,rgba(149,112,76,0.08)_0,rgba(149,112,76,0.08)_8px,transparent_8px,transparent_18px)]`,
+        iconWrapClass:
+          "bg-[linear-gradient(180deg,#f0e3d4_0%,#e1c9af_100%)] text-[#866849]",
       };
     case "Walk":
     case "Jogging":
     case "Yoga":
       return {
-        pillClass: "bg-[#edf1ea] text-[#64705e]",
-        bandClass:
-          "bg-[linear-gradient(135deg,#3f4941_0%,#72816e_100%)] text-white",
+        pillClass: "bg-[#eef0ea] text-[#64705f]",
+        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(135deg,rgba(95,116,92,0.08)_0,rgba(95,116,92,0.08)_8px,transparent_8px,transparent_18px)]`,
+        iconWrapClass:
+          "bg-[linear-gradient(180deg,#e3eadf_0%,#c8d6c2_100%)] text-[#5d6d59]",
       };
     case "Movie":
     case "Theater":
     case "Karaoke":
       return {
-        pillClass: "bg-[#eeebf2] text-[#6d6178]",
-        bandClass:
-          "bg-[linear-gradient(135deg,#433d49_0%,#756a80_100%)] text-white",
+        pillClass: "bg-[#efedf2] text-[#6c6278]",
+        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(135deg,rgba(110,97,126,0.08)_0,rgba(110,97,126,0.08)_7px,transparent_7px,transparent_17px)]`,
+        iconWrapClass:
+          "bg-[linear-gradient(180deg,#e4dfeb_0%,#cfc4dc_100%)] text-[#665d73]",
       };
     case "Board Games":
     case "Gaming":
     case "Bowling":
     case "Arcade":
       return {
-        pillClass: "bg-[#edeaf3] text-[#675f78]",
-        bandClass:
-          "bg-[linear-gradient(135deg,#413b49_0%,#72667f_100%)] text-white",
+        pillClass: "bg-[#efedf2] text-[#675f77]",
+        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(90deg,rgba(105,93,122,0.08)_0,rgba(105,93,122,0.08)_8px,transparent_8px,transparent_16px)]`,
+        iconWrapClass:
+          "bg-[linear-gradient(180deg,#e6e1eb_0%,#d1c7dd_100%)] text-[#665f74]",
       };
     case "Study":
     case "Book Talk":
     case "Book":
       return {
-        pillClass: "bg-[#ebeff3] text-[#617080]",
-        bandClass:
-          "bg-[linear-gradient(135deg,#3e4451_0%,#6f7f92_100%)] text-white",
+        pillClass: "bg-[#edf0f2] text-[#61707f]",
+        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(135deg,rgba(98,114,129,0.08)_0,rgba(98,114,129,0.08)_6px,transparent_6px,transparent_15px)]`,
+        iconWrapClass:
+          "bg-[linear-gradient(180deg,#e2e9ef_0%,#c4d2de_100%)] text-[#5f7080]",
       };
     case "Work Together":
     case "Work":
       return {
-        pillClass: "bg-[#efe9e3] text-[#6d6258]",
-        bandClass:
-          "bg-[linear-gradient(135deg,#3d3733_0%,#776b63_100%)] text-white",
+        pillClass: "bg-[#f1ece6] text-[#6f645a]",
+        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(90deg,rgba(110,98,90,0.08)_0,rgba(110,98,90,0.08)_7px,transparent_7px,transparent_18px)]`,
+        iconWrapClass:
+          "bg-[linear-gradient(180deg,#e8e0d8_0%,#d5c7ba_100%)] text-[#685c52]",
       };
     case "Photo Walk":
     case "Photo":
       return {
-        pillClass: "bg-[#f2e9e6] text-[#84645e]",
-        bandClass:
-          "bg-[linear-gradient(135deg,#4b3f3d_0%,#8a6d68_100%)] text-white",
+        pillClass: "bg-[#f4ece8] text-[#80625d]",
+        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(135deg,rgba(131,99,93,0.08)_0,rgba(131,99,93,0.08)_6px,transparent_6px,transparent_16px)]`,
+        iconWrapClass:
+          "bg-[linear-gradient(180deg,#ebdfdb_0%,#dcc4bc_100%)] text-[#7b615d]",
       };
     default:
       return {
-        pillClass: "bg-[#f2ebe4] text-[#7e6659]",
-        bandClass:
-          "bg-[linear-gradient(135deg,#2f2a26_0%,#64584f_100%)] text-white",
+        pillClass: "bg-[#f3ede7] text-[#7b665a]",
+        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(135deg,rgba(122,101,87,0.08)_0,rgba(122,101,87,0.08)_8px,transparent_8px,transparent_18px)]`,
+        iconWrapClass:
+          "bg-[linear-gradient(180deg,#ebe1d8_0%,#dac9bc_100%)] text-[#756154]",
       };
   }
 }
@@ -997,14 +1009,16 @@ export default function HomeFeedClient({
                   <div
                     className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[20px] px-4 py-3 ${purposeTheme.bandClass} shadow-[0_10px_24px_rgba(64,45,33,0.12)]`}
                   >
-                    <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/18">
+                    <div
+                      className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] ${purposeTheme.iconWrapClass}`}
+                    >
                       {getPurposeIcon(
                         post.meeting_purpose,
-                        "h-[19px] w-[19px] shrink-0 text-white"
+                        "h-[19px] w-[19px] shrink-0"
                       )}
                     </div>
                     <div className="min-w-0">
-                      <div className="truncate text-[1.15rem] font-black tracking-[-0.04em] text-white sm:text-[1.25rem]">
+                      <div className="truncate text-[1.15rem] font-black tracking-[-0.04em] text-[#302720] sm:text-[1.25rem]">
                         {post.meeting_purpose || "Social meetup"}
                       </div>
                     </div>
