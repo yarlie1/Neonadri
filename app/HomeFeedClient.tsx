@@ -182,7 +182,7 @@ function getPurposeTheme(purpose: string | null) {
     case "Coffee":
       return {
         pillClass: "bg-[#f4ede6] text-[#7f6555]",
-        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(135deg,rgba(128,94,72,0.08)_0,rgba(128,94,72,0.08)_10px,transparent_10px,transparent_22px)]`,
+        bandClass: baseBandClass,
         iconWrapClass:
           "bg-[linear-gradient(180deg,#efe0d3_0%,#dcc0ab_100%)] text-[#7e5f4d]",
       };
@@ -190,7 +190,7 @@ function getPurposeTheme(purpose: string | null) {
     case "Dessert":
       return {
         pillClass: "bg-[#f4eee5] text-[#82674b]",
-        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(90deg,rgba(149,112,76,0.08)_0,rgba(149,112,76,0.08)_8px,transparent_8px,transparent_18px)]`,
+        bandClass: baseBandClass,
         iconWrapClass:
           "bg-[linear-gradient(180deg,#f0e3d4_0%,#e1c9af_100%)] text-[#866849]",
       };
@@ -199,7 +199,7 @@ function getPurposeTheme(purpose: string | null) {
     case "Yoga":
       return {
         pillClass: "bg-[#eef0ea] text-[#64705f]",
-        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(135deg,rgba(95,116,92,0.08)_0,rgba(95,116,92,0.08)_8px,transparent_8px,transparent_18px)]`,
+        bandClass: baseBandClass,
         iconWrapClass:
           "bg-[linear-gradient(180deg,#e3eadf_0%,#c8d6c2_100%)] text-[#5d6d59]",
       };
@@ -208,7 +208,7 @@ function getPurposeTheme(purpose: string | null) {
     case "Karaoke":
       return {
         pillClass: "bg-[#efedf2] text-[#6c6278]",
-        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(135deg,rgba(110,97,126,0.08)_0,rgba(110,97,126,0.08)_7px,transparent_7px,transparent_17px)]`,
+        bandClass: baseBandClass,
         iconWrapClass:
           "bg-[linear-gradient(180deg,#e4dfeb_0%,#cfc4dc_100%)] text-[#665d73]",
       };
@@ -218,7 +218,7 @@ function getPurposeTheme(purpose: string | null) {
     case "Arcade":
       return {
         pillClass: "bg-[#efedf2] text-[#675f77]",
-        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(90deg,rgba(105,93,122,0.08)_0,rgba(105,93,122,0.08)_8px,transparent_8px,transparent_16px)]`,
+        bandClass: baseBandClass,
         iconWrapClass:
           "bg-[linear-gradient(180deg,#e6e1eb_0%,#d1c7dd_100%)] text-[#665f74]",
       };
@@ -227,7 +227,7 @@ function getPurposeTheme(purpose: string | null) {
     case "Book":
       return {
         pillClass: "bg-[#edf0f2] text-[#61707f]",
-        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(135deg,rgba(98,114,129,0.08)_0,rgba(98,114,129,0.08)_6px,transparent_6px,transparent_15px)]`,
+        bandClass: baseBandClass,
         iconWrapClass:
           "bg-[linear-gradient(180deg,#e2e9ef_0%,#c4d2de_100%)] text-[#5f7080]",
       };
@@ -235,7 +235,7 @@ function getPurposeTheme(purpose: string | null) {
     case "Work":
       return {
         pillClass: "bg-[#f1ece6] text-[#6f645a]",
-        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(90deg,rgba(110,98,90,0.08)_0,rgba(110,98,90,0.08)_7px,transparent_7px,transparent_18px)]`,
+        bandClass: baseBandClass,
         iconWrapClass:
           "bg-[linear-gradient(180deg,#e8e0d8_0%,#d5c7ba_100%)] text-[#685c52]",
       };
@@ -243,14 +243,14 @@ function getPurposeTheme(purpose: string | null) {
     case "Photo":
       return {
         pillClass: "bg-[#f4ece8] text-[#80625d]",
-        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(135deg,rgba(131,99,93,0.08)_0,rgba(131,99,93,0.08)_6px,transparent_6px,transparent_16px)]`,
+        bandClass: baseBandClass,
         iconWrapClass:
           "bg-[linear-gradient(180deg,#ebdfdb_0%,#dcc4bc_100%)] text-[#7b615d]",
       };
     default:
       return {
         pillClass: "bg-[#f3ede7] text-[#7b665a]",
-        bandClass: `${baseBandClass} bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%),repeating-linear-gradient(135deg,rgba(122,101,87,0.08)_0,rgba(122,101,87,0.08)_8px,transparent_8px,transparent_18px)]`,
+        bandClass: baseBandClass,
         iconWrapClass:
           "bg-[linear-gradient(180deg,#ebe1d8_0%,#dac9bc_100%)] text-[#756154]",
       };
@@ -994,13 +994,8 @@ export default function HomeFeedClient({
                   {matchBadge.label}
                 </div>
 
-                <div className="min-w-0 rounded-full border border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdf9_0%,#f4e9df_100%)] px-3 py-1.5 text-right shadow-sm">
-                  <div className="hidden text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71] sm:block">
-                    Hosted by
-                  </div>
-                  <div className="truncate text-[12px] font-medium text-[#6a5e54]">
-                    {host.displayName}
-                  </div>
+                <div className="min-w-0 rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold tracking-[0.02em] text-[#6b5f52]">
+                  <div className="truncate">Hosted by {host.displayName}</div>
                 </div>
               </div>
 
