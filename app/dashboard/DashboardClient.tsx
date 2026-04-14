@@ -21,14 +21,12 @@ import {
   MapPin,
   UserRound,
   Coins,
-  Map as MapIcon,
   FileText,
   Inbox,
   Send,
   HeartHandshake,
   CheckCircle2,
   XCircle,
-  Eye,
   Plus,
   Star,
   UserCircle2,
@@ -1080,11 +1078,6 @@ export default function DashboardClient({
             {filteredMatches.map((item) => {
               const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
               const post = postMap[item.post_id];
-              const mapHref = post?.location
-                ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                    post.location
-                  )}`
-                : "";
               const alreadyReviewed = reviewedMatchIds.includes(item.id);
               const meetupStatus = getPostStatus(post?.meeting_time || null).toLowerCase();
               const canLeaveReview = meetupStatus === "expired" && !alreadyReviewed;
@@ -1126,28 +1119,6 @@ export default function DashboardClient({
                   <MiniPostPreview post={post} />
 
                   <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
-                    <CompactActionButton href={`/posts/${item.post_id}`} primary>
-                      <Eye className="h-3.5 w-3.5" />
-                      View Meetup
-                    </CompactActionButton>
-
-                    <CompactActionButton href={`/profile/${otherUserId}`}>
-                      <UserRound className="h-3.5 w-3.5" />
-                      View Profile
-                    </CompactActionButton>
-
-                    {mapHref && (
-                      <a
-                        href={mapHref}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                      >
-                        <MapIcon className="h-3.5 w-3.5" />
-                        Open Map
-                      </a>
-                    )}
-
                     {canLeaveReview ? (
                       <CompactActionButton href={`/reviews/write/${item.id}`}>
                         <Star className="h-3.5 w-3.5" />
