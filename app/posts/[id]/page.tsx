@@ -250,7 +250,7 @@ const formatTimeUntil = (meetingTime: string | null) => {
 
   if (diffMs <= 0) return null;
 
-  if (now.toDateString() === target.toDateString()) return "D-0";
+  if (diffMs < 1000 * 60 * 60 * 24) return "D-0";
 
   const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
   if (diffHours < 24) return `H-${diffHours}`;

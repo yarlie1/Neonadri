@@ -174,7 +174,7 @@ function formatTimeUntil(meetingTime: string | null) {
   const target = targetDate.getTime();
   if (Number.isNaN(target) || target <= now) return "";
 
-  if (nowDate.toDateString() === targetDate.toDateString()) {
+  if (target - now < 1000 * 60 * 60 * 24) {
     return "D-0";
   }
 
