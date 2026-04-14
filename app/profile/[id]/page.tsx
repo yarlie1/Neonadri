@@ -200,14 +200,24 @@ export default async function ProfilePage({ params }: PageProps) {
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-4xl space-y-5">
         <section className="rounded-[34px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff8f1_0%,#f5dac8_36%,#e0ad95_100%)] p-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:p-8">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0">
+          <div className="flex flex-col gap-5">
+            <div className="flex items-center justify-between gap-3">
               <div className="inline-flex items-center gap-2 rounded-full bg-white/60 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
                 <UserCircle2 className="h-3.5 w-3.5" />
                 <span>{isMyProfile ? "My profile" : "Guest profile"}</span>
               </div>
 
-              <div className="mt-5 min-w-0">
+              {isMyProfile && (
+                <Link
+                  href={`/profile/${profile.id}/edit`}
+                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/60 bg-white/75 px-5 py-2.5 text-sm font-medium text-[#5a5149] shadow-sm backdrop-blur transition hover:bg-white"
+                >
+                  Edit Profile
+                </Link>
+              )}
+            </div>
+
+            <div className="min-w-0">
                 <h1 className="truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
                   {profile.display_name || "Unknown"}
                 </h1>
@@ -222,19 +232,7 @@ export default async function ProfilePage({ params }: PageProps) {
                     {reviewCount} reviews
                   </span>
                 </div>
-              </div>
             </div>
-
-            {isMyProfile && (
-              <div className="flex justify-start sm:justify-end">
-                <Link
-                  href={`/profile/${profile.id}/edit`}
-                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/60 bg-white/75 px-5 py-2.5 text-sm font-medium text-[#5a5149] shadow-sm backdrop-blur transition hover:bg-white"
-                >
-                  Edit Profile
-                </Link>
-              </div>
-            )}
           </div>
         </section>
 
