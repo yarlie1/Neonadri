@@ -988,30 +988,30 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             </div>
 
             <div className="mt-5 rounded-[26px] border border-white/55 bg-white/58 px-4 py-4 backdrop-blur">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
-                Location
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
+                  Location
+                </div>
+                {mapUrl && (
+                  <a
+                    href={mapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#e7dbcf] bg-[#fbf6f0] px-3 py-1.5 text-[11px] font-medium text-[#6a5e54] transition hover:bg-[#f4eadf]"
+                  >
+                    Open in Maps
+                  </a>
+                )}
               </div>
               <div className="mt-3 text-[15px] text-[#5f5347]">
                 <div className="space-y-3">
                   {post.location && (
                     <div className="min-w-0">
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="flex min-w-0 items-center gap-2">
-                          <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                          <div className="text-[11px] font-semibold uppercase leading-none tracking-[0.12em] text-[#9b8f84]">
-                            Address
-                          </div>
+                      <div className="flex min-w-0 items-center gap-2">
+                        <MapPin className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                        <div className="text-[11px] font-semibold uppercase leading-none tracking-[0.12em] text-[#9b8f84]">
+                          Address
                         </div>
-                        {mapUrl && (
-                          <a
-                            href={mapUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#e7dbcf] bg-[#fbf6f0] px-3 py-1.5 text-[11px] font-medium text-[#6a5e54] transition hover:bg-[#f4eadf]"
-                          >
-                            Open in Maps
-                          </a>
-                        )}
                       </div>
                       <div className="mt-1 pl-6 line-clamp-3">
                         {post.location}
