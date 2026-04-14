@@ -420,11 +420,13 @@ function MiniPostPreview({ post }: { post?: PostRow }) {
           </div>
         )}
 
-        <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+        <div className="flex min-w-0 items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
           <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
           <div className="min-w-0 leading-[1.2]">
             <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Place</div>
-            <div className="truncate text-[12px] font-medium text-[#554a42]">{post.place_name || post.location || "No place"}</div>
+            <div className="line-clamp-2 break-words text-[12px] font-medium text-[#554a42]">
+              {post.place_name || post.location || "No place"}
+            </div>
           </div>
         </div>
 
@@ -468,6 +470,7 @@ export default function DashboardClient({
   const router = useRouter();
 
   const [posts] = useState(initialPosts);
+  const [receivedItems, setReceivedItems] = useState(requestsReceived);
   const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
   const [matchFilter, setMatchFilter] = useState<MatchFilter>("all");
@@ -527,8 +530,8 @@ export default function DashboardClient({
   }, [matches, matchFilter, postMap]);
 
   const pendingReceived = useMemo(
-    () => requestsReceived.filter((item) => item.status === "pending").length,
-    [requestsReceived]
+    () => receivedItems.filter((item) => item.status === "pending").length,
+    [receivedItems]
   );
 
   const upcomingMatchedMeetups = useMemo(() => {
@@ -560,6 +563,9 @@ export default function DashboardClient({
   ) => {
     if (processingRequestId !== null) return;
 
+    const targetRequest = receivedItems.find((item) => item.id === requestId);
+    if (!targetRequest) return;
+
     setProcessingRequestId(requestId);
     setProcessingRequestAction(nextStatus);
 
@@ -586,11 +592,30 @@ export default function DashboardClient({
     }
 
     if (nextStatus === "accepted") {
-      window.location.href = "/dashboard?tab=matches&success=1";
+      setReceivedItems((prev) =>
+        prev.map((item) =>
+          item.post_id === targetRequest.post_id
+            ? { ...item, status: item.id === requestId ? "accepted" : "rejected" }
+            : item
+        )
+      );
+    } else {
+      setReceivedItems((prev) =>
+        prev.map((item) =>
+          item.id === requestId ? { ...item, status: "rejected" } : item
+        )
+      );
+    }
+
+    if (nextStatus === "accepted") {
+      router.replace("/dashboard?tab=matches&success=1");
+      router.refresh();
       return;
     }
 
-    window.location.reload();
+    setProcessingRequestId(null);
+    setProcessingRequestAction(null);
+    router.refresh();
   };
 
   return (
@@ -710,7 +735,7 @@ export default function DashboardClient({
           <DashboardTabCard
             active={activeTab === "received"}
             label="Requests Received"
-            value={requestsReceived.length}
+            value={receivedItems.length}
             subtext={pendingReceived > 0 ? `${pendingReceived} pending` : "No pending"}
             icon={<Inbox className="h-4 w-4" />}
             onClick={() => setActiveTab("received")}
@@ -904,81 +929,93 @@ export default function DashboardClient({
 
         {activeTab === "received" && (
           <div className="space-y-4">
-            {requestsReceived.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => openPostDetail(item.post_id)}
-                className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-                      Incoming request
-                    </div>
-                    <div className="mt-2 text-lg font-semibold text-[#2f2a26]">Someone wants to join your meetup.</div>
+            {receivedItems.map((item) => {
+              const requesterName = profileMap[item.requester_user_id] || "Unknown";
+              const statusLine =
+                item.status === "pending"
+                  ? `${requesterName} wants to join this meetup.`
+                  : item.status === "accepted"
+                  ? `You matched with ${requesterName}.`
+                  : `${requesterName}'s request is closed.`;
 
-                    <div className="mt-1 text-sm text-[#6f655c]">
-                      From {profileMap[item.requester_user_id] || "Unknown"}
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => openPostDetail(item.post_id)}
+                  className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                        Incoming request
+                      </div>
+                      <div className="mt-2 text-lg font-semibold text-[#2f2a26]">
+                        {statusLine}
+                      </div>
+
+                      <div className="mt-1 text-sm text-[#6f655c]">
+                        From {requesterName}
+                      </div>
+
+                      <div className="mt-1 text-sm text-[#8b7f74]">
+                        {new Date(item.created_at).toLocaleString()}
+                      </div>
                     </div>
 
-                    <div className="mt-1 text-sm text-[#8b7f74]">
-                      {new Date(item.created_at).toLocaleString()}
-                    </div>
+                    <span
+                      className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                        item.status
+                      )}`}
+                    >
+                      {item.status}
+                    </span>
                   </div>
 
-                  <span
-                    className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
-                      item.status
-                    )}`}
-                  >
-                    {item.status}
-                  </span>
+                  <MiniPostPreview post={postMap[item.post_id]} />
+
+                  {item.status === "pending" ? (
+                    <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
+                      <CompactActionButton href={`/profile/${item.requester_user_id}`}>
+                        <UserCircle2 className="h-3.5 w-3.5" />
+                        View {requesterName}
+                      </CompactActionButton>
+
+                      <CompactActionButton
+                        onClick={() => updateRequestStatus(item.id, "accepted")}
+                        disabled={processingRequestId !== null}
+                        primary
+                      >
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                        {processingRequestId === item.id &&
+                        processingRequestAction === "accepted"
+                          ? "Accepting..."
+                          : "Accept"}
+                      </CompactActionButton>
+
+                      <CompactActionButton
+                        onClick={() => updateRequestStatus(item.id, "rejected")}
+                        disabled={processingRequestId !== null}
+                      >
+                        <XCircle className="h-3.5 w-3.5" />
+                        {processingRequestId === item.id &&
+                        processingRequestAction === "rejected"
+                          ? "Rejecting..."
+                          : "Reject"}
+                      </CompactActionButton>
+                    </div>
+                  ) : (
+                    <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
+                      <CompactActionButton href={`/profile/${item.requester_user_id}`}>
+                        <UserCircle2 className="h-3.5 w-3.5" />
+                        View {requesterName}
+                      </CompactActionButton>
+                    </div>
+                  )}
                 </div>
+              );
+            })}
 
-                <MiniPostPreview post={postMap[item.post_id]} />
-
-                {item.status === "pending" ? (
-                  <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
-                    <CompactActionButton href={`/profile/${item.requester_user_id}`}>
-                      <UserCircle2 className="h-3.5 w-3.5" />
-                      View Profile
-                    </CompactActionButton>
-
-                    <CompactActionButton
-                      onClick={() => updateRequestStatus(item.id, "accepted")}
-                      disabled={processingRequestId !== null}
-                      primary
-                    >
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      {processingRequestId === item.id &&
-                      processingRequestAction === "accepted"
-                        ? "Accepting..."
-                        : "Accept"}
-                    </CompactActionButton>
-
-                    <CompactActionButton
-                      onClick={() => updateRequestStatus(item.id, "rejected")}
-                      disabled={processingRequestId !== null}
-                    >
-                      <XCircle className="h-3.5 w-3.5" />
-                      {processingRequestId === item.id &&
-                      processingRequestAction === "rejected"
-                        ? "Rejecting..."
-                        : "Reject"}
-                    </CompactActionButton>
-                  </div>
-                ) : (
-                  <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
-                    <CompactActionButton href={`/profile/${item.requester_user_id}`}>
-                      <UserCircle2 className="h-3.5 w-3.5" />
-                      View Profile
-                    </CompactActionButton>
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {requestsReceived.length === 0 && (
+            {receivedItems.length === 0 && (
               <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
                 No requests received.
               </div>

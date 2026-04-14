@@ -202,6 +202,9 @@ export default function TopNav() {
     setPendingCount(0);
 
     try {
+      sessionStorage.clear();
+      localStorage.removeItem("tagline_variant");
+
       const controller = new AbortController();
       const timeoutId = window.setTimeout(() => controller.abort(), 2500);
 
@@ -220,7 +223,7 @@ export default function TopNav() {
     } catch (error) {
       console.error("TopNav logout error:", error);
     } finally {
-      window.location.assign("/");
+      window.location.replace("/?logged_out=1");
       window.setTimeout(() => {
         setIsLoggingOut(false);
         loggingOutRef.current = false;
