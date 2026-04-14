@@ -83,12 +83,12 @@ function InfoItem({
   value: string;
 }) {
   return (
-    <div className="rounded-[18px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-3">
-      <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+    <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4">
+      <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
         {icon}
         <span>{label}</span>
       </div>
-      <div className="mt-1 text-sm font-medium leading-6 text-[#4f443b]">
+      <div className="mt-2 text-sm leading-7 text-[#5f5347]">
         {value}
       </div>
     </div>
@@ -262,11 +262,7 @@ export default async function ProfilePage({ params }: PageProps) {
               <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4">
                 <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
                   <MessageSquareText className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                  <div className="min-w-0">
-                    <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                      About me
-                    </div>
-                  </div>
+                  <span>About me</span>
                 </div>
                 <div className="mt-2 text-sm leading-7 text-[#5f5347]">
                   {hasAboutMe ? profile.about_me : "No introduction yet."}
