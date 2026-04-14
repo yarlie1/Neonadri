@@ -325,23 +325,9 @@ export default async function ProfilePage({ params }: PageProps) {
 
           <section className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
             <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
-                  Reviews
-                </h2>
-                <p className="mt-1 text-sm text-[#7a6b61]">
-                  Signals people notice before they decide to meet.
-                </p>
-              </div>
-
-              {isMyProfile && (
-                <Link
-                  href="/dashboard?tab=matches"
-                  className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-4 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
-                >
-                  Go to Matches
-                </Link>
-              )}
+              <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
+                Reviews
+              </h2>
             </div>
 
             <div className="mt-5 rounded-[24px] border border-[#efe6db] bg-[#fcfaf7] p-5">
