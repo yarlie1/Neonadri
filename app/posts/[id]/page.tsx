@@ -241,6 +241,22 @@ const formatDuration = (minutes: number | null) => {
   return `${minutes}m`;
 };
 
+const formatTimeUntil = (meetingTime: string | null) => {
+  if (!meetingTime) return null;
+
+  const now = new Date();
+  const target = new Date(meetingTime);
+  const diffMs = target.getTime() - now.getTime();
+
+  if (diffMs <= 0) return null;
+
+  const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
+  if (diffHours < 24) return `H-${diffHours}`;
+
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  return `D-${diffDays}`;
+};
+
 const getFriendlyStatusLabel = (status: string) => {
   const normalized = status.toLowerCase();
 
@@ -786,6 +802,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }`;
   const meetupTimeLabel = formatTime(post.meeting_time) || "Time not set";
   const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
+  const meetupCountdown = formatTimeUntil(post.meeting_time);
   const benefitExplanation = post.benefit_amount
     ? `During this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host gives ${post.benefit_amount} to the guest.`
     : `During this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host has not listed a guest benefit yet.`;
@@ -828,46 +845,35 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
                   Upcoming meetup
                 </div>
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-[18px] border border-white/60 bg-white/62 px-4 py-3 backdrop-blur">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                      Type
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <span
+                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold shadow-sm ${purposeTheme.bandClass}`}
+                  >
+                    {getPurposeIcon(
+                      post.meeting_purpose,
+                      "h-[15px] w-[15px] shrink-0 text-white"
+                    )}
+                    <span>{post.meeting_purpose || "Meetup"}</span>
+                  </span>
+                  <span className="rounded-full bg-white/75 px-3 py-1.5 text-sm font-semibold text-[#5f5347]">
+                    {meetupDurationLabel}
+                  </span>
+                </div>
+                <div className="mt-3 rounded-[18px] border border-white/60 bg-white/62 px-4 py-3 backdrop-blur">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-[#2f2a26]">
+                      <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                      <span className="truncate">{meetupTimeLabel}</span>
                     </div>
-                    <div className="mt-2">
-                      <span
-                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold shadow-sm ${purposeTheme.bandClass}`}
-                      >
-                        {getPurposeIcon(
-                          post.meeting_purpose,
-                          "h-[15px] w-[15px] shrink-0 text-white"
-                        )}
-                        <span>{post.meeting_purpose || "Meetup"}</span>
-                      </span>
-                    </div>
-                  </div>
-                  <div className="rounded-[18px] border border-white/60 bg-white/62 px-4 py-3 backdrop-blur">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                      Duration
-                    </div>
-                    <div className="mt-2 text-base font-semibold text-[#2f2a26]">
-                      {meetupDurationLabel}
-                    </div>
-                  </div>
-                  <div className="rounded-[18px] border border-white/60 bg-white/62 px-4 py-3 backdrop-blur">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                      When
-                    </div>
-                    <div className="mt-2 text-sm leading-6 text-[#5f5347]">
-                      {meetupTimeLabel}
+                    <div className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8f6e5f]">
+                      {meetupCountdown || "Soon"}
                     </div>
                   </div>
-                  <div className="rounded-[18px] border border-white/60 bg-white/62 px-4 py-3 backdrop-blur">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                      Place
-                    </div>
-                    <div className="mt-2 text-sm leading-6 text-[#5f5347]">
+                  <div className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#5f5347]">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#a27767]" />
+                    <span className="min-w-0 truncate">
                       {post.place_name || post.location || "Selected place"}
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
