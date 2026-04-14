@@ -264,14 +264,14 @@ function getMatchBadge(post: PostRow, summary?: MatchSummaryMap[number]) {
   if (summary?.isMatched) {
     return {
       label: "Matched / confirmed",
-      className: "bg-[#efe7dc] text-[#6b5f52]",
+      className: "bg-[#eee4d8] text-[#6f6256]",
     };
   }
 
   if (isExpired) {
     return {
       label: "Expired / closed",
-      className: "bg-[#e6ddd4] text-[#8b7f74]",
+      className: "bg-[#ebe2d9] text-[#85786d]",
     };
   }
 
@@ -280,7 +280,7 @@ function getMatchBadge(post: PostRow, summary?: MatchSummaryMap[number]) {
       requestCount > 0
         ? `Open / ${requestCount} request${requestCount === 1 ? "" : "s"}`
         : "Open / no requests yet",
-    className: "bg-[#eef7ee] text-[#4f8a54]",
+    className: "bg-[#edf1ea] text-[#5e6f5f]",
   };
 }
 
@@ -989,7 +989,7 @@ export default function HomeFeedClient({
             >
               <div className="mb-3.5 flex items-center justify-between gap-2">
                 <div className="min-w-0 rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold tracking-[0.02em] text-[#6b5f52]">
-                  <div className="truncate">Hosted by {host.displayName}</div>
+                  <div className="truncate">{host.displayName}</div>
                 </div>
 
                 <div
