@@ -542,12 +542,12 @@ export default function EditMeetupForm({
           </div>
 
           <p className="px-1 text-xs leading-5 text-[#8b7f74]">
-            If this meetup is matched and completed, the host pays this amount to the guest.
+            If this meetup is matched and completed, you pay this amount to the guest.
           </p>
 
           {benefitAmount && (
             <div className="rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#5f5347]">
-              The host pays <span className="font-semibold text-[#2f2a26]">{benefitAmount}</span> to the guest after the meetup is completed.
+              You pay <span className="font-semibold text-[#2f2a26]">{benefitAmount}</span> to the guest after the meetup is completed.
             </div>
           )}
         </div>
