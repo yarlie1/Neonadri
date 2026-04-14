@@ -174,7 +174,6 @@ export default async function ProfilePage({ params }: PageProps) {
   const hasMeetingStyle = !!profile.meeting_style?.trim();
   const hasInterests = !!profile.interests && profile.interests.length > 0;
   const hasResponseNote = !!profile.response_time_note?.trim();
-  const hasPreferredArea = !!profile.preferred_area?.trim();
 
   return (
       <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
@@ -282,13 +281,6 @@ export default async function ProfilePage({ params }: PageProps) {
                 />
               )}
 
-              {hasPreferredArea && (
-                <InfoItem
-                  icon={<Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                  label="Preferred Area"
-                  value={profile.preferred_area!}
-                />
-              )}
             </div>
           </section>
 
