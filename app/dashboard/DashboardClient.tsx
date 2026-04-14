@@ -165,6 +165,24 @@ function formatTime(meetingTime: string | null) {
   })}`;
 }
 
+function formatTimeUntil(meetingTime: string | null) {
+  if (!meetingTime) return "";
+
+  const now = new Date().getTime();
+  const target = new Date(meetingTime).getTime();
+  if (Number.isNaN(target) || target <= now) return "";
+
+  const diffMs = target - now;
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffHours < 24) {
+    return `${Math.max(1, diffHours)}h left`;
+  }
+
+  return `${Math.max(1, diffDays)}d left`;
+}
+
 function getPostStatus(meetingTime: string | null) {
   if (!meetingTime) return "Upcoming";
   const now = new Date();
@@ -652,9 +670,16 @@ export default function DashboardClient({
                   </div>
 
                   <div className="mt-3 space-y-2 text-sm text-[#5f5347]">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-2 text-sm font-semibold text-white">
-                      <Clock3 className="h-4 w-4" />
-                      <span>{formatTime(item.post.meeting_time)}</span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-2 text-sm font-semibold text-white">
+                        <Clock3 className="h-4 w-4" />
+                        <span>{formatTime(item.post.meeting_time)}</span>
+                      </div>
+                      {formatTimeUntil(item.post.meeting_time) ? (
+                        <div className="inline-flex items-center rounded-full bg-[#f8efe8] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#8f6e5f]">
+                          {formatTimeUntil(item.post.meeting_time)}
+                        </div>
+                      ) : null}
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -784,7 +809,7 @@ export default function DashboardClient({
                   onClick={() => openPostDetail(post.id)}
                   className={`cursor-pointer ${SURFACE_CARD_CLASS} p-4`}
                 >
-                  <div className="mb-4 flex items-center justify-end gap-3">
+                  <div className="mb-4 flex items-center justify-start gap-3">
                     <div
                       className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${getStatusBadgeClass(
                         postStatus
