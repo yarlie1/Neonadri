@@ -207,29 +207,22 @@ export default async function ProfilePage({ params }: PageProps) {
                 <span>{isMyProfile ? "My profile" : "Guest profile"}</span>
               </div>
 
-              <div className="mt-5 flex items-center gap-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-[22px] border border-white/55 bg-white/60 shadow-sm backdrop-blur">
-                  <UserCircle2 className="h-9 w-9 text-[#8a7f74]" />
-                </div>
-
-                <div className="min-w-0">
-                  <h1 className="truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
-                    {profile.display_name || "Unknown"}
-                  </h1>
-                  <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-[#6b5f52]">
-                    <div className="flex items-center gap-2">
-                      <StarRating value={roundedAverage} size="md" />
-                      <span className="font-semibold text-[#4f4339]">
-                        {averageRating.toFixed(1)}
-                      </span>
-                    </div>
-                    <span className="rounded-full border border-white/60 bg-white/65 px-3 py-1 text-xs font-medium text-[#5f5347] shadow-sm">
-                      {reviewCount} reviews
+              <div className="mt-5 min-w-0">
+                <h1 className="truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
+                  {profile.display_name || "Unknown"}
+                </h1>
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-[#6b5f52]">
+                  <div className="flex items-center gap-2">
+                    <StarRating value={roundedAverage} size="md" />
+                    <span className="font-semibold text-[#4f4339]">
+                      {averageRating.toFixed(1)}
                     </span>
                   </div>
+                  <span className="rounded-full border border-white/60 bg-white/65 px-3 py-1 text-xs font-medium text-[#5f5347] shadow-sm">
+                    {reviewCount} reviews
+                  </span>
                 </div>
               </div>
-            </div>
 
             {isMyProfile && (
               <div className="flex justify-start sm:justify-end">
