@@ -1,0 +1,575 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createClient } from "../../../lib/supabase/client";
+import { useRouter } from "next/navigation";
+import {
+  Coffee,
+  Utensils,
+  Cake,
+  Footprints,
+  Dumbbell,
+  Smile,
+  Film,
+  Mic,
+  Dice5,
+  Gamepad2,
+  Target,
+  BookOpen,
+  Laptop,
+  Camera,
+  MapPin,
+  Clock,
+  User,
+  Coins,
+  CheckCircle,
+} from "lucide-react";
+
+declare global {
+  interface Window {
+    google: any;
+  }
+}
+
+const PURPOSE_OPTIONS = [
+  { value: "Coffee Chat", icon: Coffee },
+  { value: "Meal", icon: Utensils },
+  { value: "Dessert", icon: Cake },
+  { value: "Walk", icon: Footprints },
+  { value: "Jogging", icon: Dumbbell },
+  { value: "Yoga", icon: Smile },
+  { value: "Movie", icon: Film },
+  { value: "Karaoke", icon: Mic },
+  { value: "Board Games", icon: Dice5 },
+  { value: "Gaming", icon: Gamepad2 },
+  { value: "Arcade", icon: Target },
+  { value: "Study", icon: BookOpen },
+  { value: "Work Together", icon: Laptop },
+  { value: "Photo Walk", icon: Camera },
+] as const;
+
+const PURPOSE_HELP_TEXT: Record<string, string> = {
+  "Coffee Chat": "Quick casual conversation over coffee.",
+  Meal: "Enjoy food and conversation together.",
+  Dessert: "Meet for dessert, cafe time, and easy conversation.",
+  Walk: "Light walk and chat outdoors.",
+  Jogging: "Go for a jog together and stay active.",
+  Yoga: "Join a calm and healthy yoga session together.",
+  Movie: "Watch a movie together and chat after.",
+  Karaoke: "Sing and have fun together.",
+  "Board Games": "Play board games and enjoy a relaxed meetup.",
+  Gaming: "Play video games together.",
+  Arcade: "Have fun with arcade games together.",
+  Study: "Focus together in a quiet place.",
+  "Work Together": "Work side by side in a cafe or shared space.",
+  "Photo Walk": "Walk around and take photos together.",
+};
+
+function formatDateTimeLocalValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+function getDatePart(dateTimeValue: string) {
+  return dateTimeValue ? dateTimeValue.slice(0, 10) : "";
+}
+
+function getTimePart(dateTimeValue: string) {
+  return dateTimeValue ? dateTimeValue.slice(11, 16) : "";
+}
+
+function combineDateAndTime(datePart: string, timePart: string) {
+  if (!datePart || !timePart) return "";
+  return `${datePart}T${timePart}`;
+}
+
+function getDefaultMeetingTime() {
+  const now = new Date();
+  const target = new Date(now.getTime() + 3 * 60 * 60 * 1000);
+
+  target.setMinutes(0, 0, 0);
+
+  if (target.getTime() < now.getTime() + 3 * 60 * 60 * 1000) {
+    target.setHours(target.getHours() + 1);
+  }
+
+  return formatDateTimeLocalValue(target);
+}
+
+type EditMeetupFormProps = {
+  postId: string;
+  userId: string;
+  initialPost: {
+    meeting_purpose: string | null;
+    meeting_time: string | null;
+    duration_minutes: number | null;
+    location: string | null;
+    place_name: string | null;
+    latitude: number | null;
+    longitude: number | null;
+    target_gender: string | null;
+    target_age_group: string | null;
+    benefit_amount: string | null;
+  };
+};
+
+export default function EditMeetupForm({
+  postId,
+  userId,
+  initialPost,
+}: EditMeetupFormProps) {
+  const supabase = useMemo(() => createClient(), []);
+  const router = useRouter();
+
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const autocompleteRef = useRef<any>(null);
+
+  const initialMeetingTime = initialPost.meeting_time
+    ? formatDateTimeLocalValue(new Date(initialPost.meeting_time))
+    : getDefaultMeetingTime();
+
+  const [meetingPurpose, setMeetingPurpose] = useState(
+    initialPost.meeting_purpose || ""
+  );
+  const [meetingTime, setMeetingTime] = useState(initialMeetingTime);
+  const [meetingDate, setMeetingDate] = useState(getDatePart(initialMeetingTime));
+  const [meetingTimeSlot, setMeetingTimeSlot] = useState(
+    getTimePart(initialMeetingTime)
+  );
+  const [durationMinutes, setDurationMinutes] = useState(
+    initialPost.duration_minutes ? String(initialPost.duration_minutes) : ""
+  );
+  const [location, setLocation] = useState(initialPost.location || "");
+  const [placeName, setPlaceName] = useState(initialPost.place_name || "");
+  const [targetGender, setTargetGender] = useState(
+    initialPost.target_gender || ""
+  );
+  const [targetAgeGroup, setTargetAgeGroup] = useState(
+    initialPost.target_age_group || ""
+  );
+  const [benefitAmount, setBenefitAmount] = useState(
+    initialPost.benefit_amount || ""
+  );
+  const [latitude, setLatitude] = useState(initialPost.latitude ?? null);
+  const [longitude, setLongitude] = useState(initialPost.longitude ?? null);
+  const [locationConfirmed, setLocationConfirmed] = useState(
+    !!initialPost.location &&
+      initialPost.latitude !== null &&
+      initialPost.longitude !== null
+  );
+
+  const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const fieldClass =
+    "w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 pl-16 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12";
+
+  useEffect(() => {
+    if (!meetingTime) return;
+    setMeetingDate(getDatePart(meetingTime));
+    setMeetingTimeSlot(getTimePart(meetingTime));
+  }, [meetingTime]);
+
+  useEffect(() => {
+    if (!window.google || !searchInputRef.current) return;
+
+    if (!autocompleteRef.current) {
+      autocompleteRef.current = new window.google.maps.places.Autocomplete(
+        searchInputRef.current,
+        {
+          fields: ["formatted_address", "name", "geometry"],
+        }
+      );
+
+      autocompleteRef.current.addListener("place_changed", () => {
+        const place = autocompleteRef.current.getPlace();
+
+        const address = place?.formatted_address || "";
+        const name = place?.name || address;
+        const nextLat = place?.geometry?.location?.lat?.();
+        const nextLng = place?.geometry?.location?.lng?.();
+
+        if (nextLat == null || nextLng == null) {
+          setLocationConfirmed(false);
+          return;
+        }
+
+        setPlaceName(name);
+        setLocation(address);
+        setLatitude(nextLat);
+        setLongitude(nextLng);
+        setLocationConfirmed(true);
+        setMessage("");
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const query = new URLSearchParams(window.location.search);
+    const qName = query.get("name");
+    const qLocation = query.get("location");
+    const qLat = query.get("lat");
+    const qLng = query.get("lng");
+
+    if (qLocation && qLat && qLng) {
+      setPlaceName(qName || qLocation);
+      setLocation(qLocation);
+      setLatitude(Number(qLat));
+      setLongitude(Number(qLng));
+      setLocationConfirmed(true);
+      setMessage("");
+    }
+  }, []);
+
+  const purposeHelpText = useMemo(() => {
+    if (!meetingPurpose) {
+      return "Choose the kind of meetup you want, and a short description will appear here.";
+    }
+    return PURPOSE_HELP_TEXT[meetingPurpose] || "";
+  }, [meetingPurpose]);
+
+  const handleLocationInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setPlaceName("");
+    setLocation(e.target.value);
+    setLatitude(null);
+    setLongitude(null);
+    setLocationConfirmed(false);
+  };
+
+  const handleOpenMapPicker = () => {
+    router.push(`/write/location?returnTo=/write/${postId}`);
+  };
+
+  const handleMeetingDateChange = (value: string) => {
+    setMeetingDate(value);
+    setMeetingTime(combineDateAndTime(value, meetingTimeSlot || "00:00"));
+  };
+
+  const handleMeetingTimeSlotChange = (value: string) => {
+    setMeetingTimeSlot(value);
+    setMeetingTime(combineDateAndTime(meetingDate, value));
+  };
+
+  const handleSave = async () => {
+    setMessage("");
+
+    if (
+      !meetingTime.trim() ||
+      !durationMinutes.trim() ||
+      !targetGender.trim() ||
+      !targetAgeGroup.trim() ||
+      !meetingPurpose.trim() ||
+      !benefitAmount.trim()
+    ) {
+      setMessage("Please fill in all required fields.");
+      return;
+    }
+
+    if (
+      !location.trim() ||
+      latitude === null ||
+      longitude === null ||
+      !locationConfirmed
+    ) {
+      setMessage(
+        "Please choose one exact location from the dropdown or map picker."
+      );
+      return;
+    }
+
+    setSaving(true);
+
+    const { error } = await supabase
+      .from("posts")
+      .update({
+        meeting_purpose: meetingPurpose,
+        meeting_time: meetingTime,
+        duration_minutes: Number(durationMinutes),
+        location,
+        place_name: placeName || location,
+        latitude,
+        longitude,
+        target_gender: targetGender,
+        target_age_group: targetAgeGroup,
+        benefit_amount: benefitAmount,
+      })
+      .eq("id", postId)
+      .eq("user_id", userId);
+
+    setSaving(false);
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    router.push("/dashboard");
+  };
+
+  return (
+    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-5 py-6 text-[#2f2a26]">
+      <div className="mx-auto max-w-2xl space-y-4">
+        <section className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f5dacd_38%,#e8b9a7_100%)] px-5 py-6 text-[#2a211d] shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:px-6 sm:py-7">
+          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
+          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+          <div className="relative">
+            <div className="inline-flex items-center rounded-full bg-white/70 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+              Edit meetup
+            </div>
+            <h1 className="mt-4 max-w-md text-[32px] font-black leading-[0.98] tracking-[-0.05em] text-[#2b1f1a] sm:text-[38px]">
+              Refine the plan without losing the vibe.
+            </h1>
+            <p className="mt-3 max-w-lg text-sm leading-6 text-[#5f453b] sm:text-[15px]">
+              Update the details, keep the tone clear, and make sure the meetup still feels easy to say yes to.
+            </p>
+          </div>
+        </section>
+
+        <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+              Edit post
+            </div>
+            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#2f2a26]">
+              Update your meetup
+            </h2>
+          </div>
+          <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+            Keep place exact
+          </div>
+        </div>
+
+        <div className="mt-4 flex items-start gap-2 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
+          <CheckCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          <p>{purposeHelpText}</p>
+        </div>
+
+        <div className="mt-6">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#8e7a6b]">
+            Choose Activity
+          </h2>
+
+          <div className="grid grid-cols-2 gap-3">
+            {PURPOSE_OPTIONS.map((item) => {
+              const Icon = item.icon;
+              const isSelected = meetingPurpose === item.value;
+
+              return (
+                <button
+                  key={item.value}
+                  type="button"
+                  onClick={() => setMeetingPurpose(item.value)}
+                  className={`flex items-center gap-2 rounded-[20px] border px-4 py-3 text-left text-sm font-medium transition ${
+                    isSelected
+                      ? "border-[#a48f7a] bg-[#a48f7a] text-white shadow-sm"
+                      : "border-[#e7ddd2] bg-[#fffdfa] text-[#5a5149] hover:bg-[#faf4ee]"
+                  }`}
+                >
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span>{item.value}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <h2 className="mt-6 text-sm font-semibold uppercase tracking-[0.14em] text-[#8e7a6b]">
+          Meetup Details
+        </h2>
+
+        <div className="mt-3 space-y-3">
+          <div className="grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
+            <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
+                <Clock className="h-4 w-4" />
+              </div>
+              <input
+                type="date"
+                className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 text-sm text-[#2f2a26] !shadow-none !outline-none !ring-0"
+                value={meetingDate}
+                onChange={(e) => handleMeetingDateChange(e.target.value)}
+              />
+            </div>
+
+            <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
+                <Clock className="h-4 w-4" />
+              </div>
+              <select
+                className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-10 text-sm text-[#2f2a26] outline-none"
+                value={meetingTimeSlot}
+                onChange={(e) => handleMeetingTimeSlotChange(e.target.value)}
+              >
+                <option value="">Select time</option>
+                {Array.from({ length: 48 }, (_, index) => {
+                  const hours = String(Math.floor(index / 2)).padStart(2, "0");
+                  const minutes = index % 2 === 0 ? "00" : "30";
+                  const value = `${hours}:${minutes}`;
+                  return (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+
+          <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
+            <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
+              <Clock className="h-4 w-4" />
+            </div>
+            <select
+              className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-10 text-sm text-[#2f2a26] outline-none"
+              value={durationMinutes}
+              onChange={(e) => setDurationMinutes(e.target.value)}
+            >
+              <option value="">Select meeting duration</option>
+              <option value="30">30 min</option>
+              <option value="60">1 hour</option>
+              <option value="90">1 hour 30 min</option>
+              <option value="120">2 hours</option>
+              <option value="180">3 hours</option>
+              <option value="240">4 hours</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="flex flex-1 overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
+                <MapPin className="h-4 w-4" />
+              </div>
+              <input
+                ref={searchInputRef}
+                className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 pr-5 text-sm text-[#2f2a26] !shadow-none !outline-none !ring-0"
+                placeholder="Search exact place or address"
+                value={location}
+                onChange={handleLocationInputChange}
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={handleOpenMapPicker}
+              className="inline-flex h-[50px] w-[50px] items-center justify-center rounded-[20px] border border-[#eadfd3] bg-[#f6eee6] text-[#6b5f52] transition hover:bg-[#efe4d9]"
+              aria-label="Pick on map"
+              title="Pick on map"
+            >
+              <MapPin className="h-5 w-5" />
+            </button>
+          </div>
+
+          {location && (
+            <div className="rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
+              <p className="font-medium text-[#2f2a26]">
+                {placeName || location}
+              </p>
+              <p className="mt-1">{location}</p>
+
+              {latitude !== null && longitude !== null && (
+                <p className="mt-1 text-xs text-[#8b7f74]">
+                  Lat: {latitude.toFixed(6)}, Lng: {longitude.toFixed(6)}
+                </p>
+              )}
+
+              <p className="mt-1 text-xs">
+                {locationConfirmed
+                  ? "Exact location selected."
+                  : "Select from dropdown or use the map picker."}
+              </p>
+            </div>
+          )}
+        </div>
+
+        <h2 className="mt-6 text-sm font-semibold uppercase tracking-[0.14em] text-[#8e7a6b]">
+          Target & Benefit
+        </h2>
+
+        <div className="mt-3 space-y-3">
+          <div className="relative">
+            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <select
+              className={`${fieldClass} pr-10`}
+              value={targetGender}
+              onChange={(e) => setTargetGender(e.target.value)}
+            >
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Any">Any</option>
+            </select>
+          </div>
+
+          <div className="relative">
+            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <select
+              className={`${fieldClass} pr-10`}
+              value={targetAgeGroup}
+              onChange={(e) => setTargetAgeGroup(e.target.value)}
+            >
+              <option value="">Select age</option>
+              <option value="20s">20s</option>
+              <option value="30s">30s</option>
+              <option value="40s">40s</option>
+              <option value="50s+">50s+</option>
+              <option value="Any">Any</option>
+            </select>
+          </div>
+
+          <div className="relative">
+            <Coins className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <select
+              className={`${fieldClass} pr-10`}
+              value={benefitAmount}
+              onChange={(e) => setBenefitAmount(e.target.value)}
+            >
+              <option value="">Select benefit</option>
+              <option value="$0">$0</option>
+              <option value="$10">$10</option>
+              <option value="$20">$20</option>
+              <option value="$30">$30</option>
+              <option value="$50">$50</option>
+              <option value="$100">$100</option>
+              <option value="$200+">$200+</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="mt-6 flex gap-2">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="flex-1 rounded-full bg-[#a48f7a] py-4 text-base font-semibold text-white transition hover:bg-[#927d69] disabled:opacity-50"
+          >
+            {saving ? "Saving..." : "Save Meetup"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => router.push("/dashboard")}
+            className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
+          >
+            Cancel
+          </button>
+        </div>
+
+        {message && (
+          <p className="mt-4 rounded-[20px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
+            {message}
+          </p>
+        )}
+        </div>
+      </div>
+    </main>
+  );
+}
