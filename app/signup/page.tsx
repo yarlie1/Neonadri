@@ -252,12 +252,12 @@ export default function SignupPage() {
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-4 lg:grid-cols-[1.02fr_0.98fr]">
-          <section className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e4b49d_100%)] px-6 py-7 text-[#2a211d] shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:px-8 sm:py-9">
+          <section className="relative overflow-hidden rounded-[32px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] px-6 py-7 text-[#2a211d] shadow-[0_18px_42px_rgba(92,69,52,0.08)] sm:px-8 sm:py-9">
             <div className="absolute -left-10 bottom-0 h-36 w-36 rounded-full bg-white/25 blur-2xl" />
             <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
 
             <div className="relative">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] text-[#74675d]">
                 <Sparkles className="h-3.5 w-3.5" />
                 Join the vibe
               </div>

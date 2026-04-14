@@ -85,13 +85,13 @@ export default function OwnerMatchPanel({
   };
 
   return (
-    <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e5b29e_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
+    <div className="relative overflow-hidden rounded-[32px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(92,69,52,0.08)]">
       <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
       <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
       <div className="relative">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#74675d]">
               Host controls
             </div>
             <h2 className="mt-2 text-[1.7rem] font-black tracking-[-0.04em] text-[#2b1f1a]">
@@ -107,14 +107,14 @@ export default function OwnerMatchPanel({
           </div>
 
           {!isMatched && (
-            <div className="rounded-full border border-white/60 bg-white/60 px-4 py-2 text-sm font-medium text-[#6b5f52] backdrop-blur">
+            <div className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-4 py-[0.45rem] text-sm font-medium leading-none text-[#6b5f52] backdrop-blur">
               {`${pendingRequestCount} pending`}
             </div>
           )}
         </div>
 
         {isMatched && matchedPartner ? (
-          <div className="mt-5 rounded-[24px] border border-white/60 bg-white/58 p-4 backdrop-blur">
+          <div className="mt-5 rounded-[24px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4 backdrop-blur">
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
                 Match completed
@@ -137,7 +137,7 @@ export default function OwnerMatchPanel({
               return (
                 <div
                   key={request.id}
-                  className="rounded-[22px] border border-white/60 bg-white/58 p-4 backdrop-blur"
+                  className="rounded-[22px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4 backdrop-blur"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
@@ -157,7 +157,7 @@ export default function OwnerMatchPanel({
                       </div>
                     </div>
 
-                    <div className="rounded-full border border-[#e7ddd2] bg-white/85 px-3 py-1.5 text-xs font-medium uppercase tracking-[0.12em] text-[#7b7067]">
+                    <div className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium uppercase leading-none tracking-[0.12em] text-[#7b7067]">
                       {request.status}
                     </div>
                   </div>
@@ -165,7 +165,7 @@ export default function OwnerMatchPanel({
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Link
                       href={`/profile/${request.requesterUserId}`}
-                      className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                      className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#fbf4ed]"
                     >
                       <UserCircle2 className="h-4 w-4" />
                       View Profile
@@ -177,7 +177,7 @@ export default function OwnerMatchPanel({
                           type="button"
                           onClick={() => handleRequestAction(request.id, "accepted")}
                           disabled={processingRequestId !== null}
-                          className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+                          className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2 text-sm font-medium text-white shadow-[0_10px_18px_rgba(92,69,52,0.10)] transition hover:bg-[#927d69] disabled:opacity-50"
                         >
                           <CheckCircle2 className="h-4 w-4" />
                           {processingRequestId === request.id && processingAction === "accepted"
@@ -189,7 +189,7 @@ export default function OwnerMatchPanel({
                           type="button"
                           onClick={() => handleRequestAction(request.id, "rejected")}
                           disabled={processingRequestId !== null}
-                          className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:opacity-50"
+                          className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#fbf4ed] disabled:opacity-50"
                         >
                           <XCircle className="h-4 w-4" />
                           {processingRequestId === request.id && processingAction === "rejected"
@@ -198,7 +198,7 @@ export default function OwnerMatchPanel({
                         </button>
                       </>
                     ) : (
-                      <div className="inline-flex items-center gap-2 rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-4 py-2 text-sm font-medium text-[#6b5f52]">
+                      <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2 text-sm font-medium text-[#6b5f52]">
                         <Clock3 className="h-4 w-4" />
                         {request.status}
                       </div>
@@ -211,13 +211,13 @@ export default function OwnerMatchPanel({
         )}
 
         {!isMatched && requests.length === 0 && (
-          <div className="mt-5 rounded-[22px] border border-white/60 bg-white/58 px-4 py-4 text-sm leading-6 text-[#6b5f52] backdrop-blur">
+          <div className="mt-5 rounded-[22px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-4 text-sm leading-6 text-[#6b5f52] backdrop-blur">
             No one has requested this meetup yet. You can keep it open or edit the details first.
           </div>
         )}
 
         {isMatched && !matchedPartner && (
-          <div className="mt-5 rounded-[22px] border border-white/60 bg-white/58 px-4 py-4 text-sm leading-6 text-[#6b5f52] backdrop-blur">
+          <div className="mt-5 rounded-[22px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-4 text-sm leading-6 text-[#6b5f52] backdrop-blur">
             A match has been recorded for this meetup.
           </div>
         )}

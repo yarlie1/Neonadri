@@ -942,16 +942,16 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </div>
               <div className="mt-4 flex flex-wrap items-stretch gap-3">
                 <div
-                  className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 text-white shadow-[0_16px_30px_rgba(47,42,38,0.18)] ${purposeTheme.bandClass}`}
+                  className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 shadow-[0_10px_20px_rgba(64,45,33,0.06)] ${purposeTheme.bandClass}`}
                 >
-                  <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/14">
+                  <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
                     {getPurposeIcon(
                       post.meeting_purpose,
-                      "h-[18px] w-[18px] shrink-0 text-white"
+                      "h-[18px] w-[18px] shrink-0 text-[#7e746b]"
                     )}
                   </div>
                   <div className="min-w-0">
-                    <div className="truncate text-[1.35rem] font-black tracking-[-0.04em] text-white sm:text-[1.55rem]">
+                    <div className="truncate text-[1.35rem] font-black tracking-[-0.04em] text-[#2f261f] sm:text-[1.55rem]">
                       {post.meeting_purpose || "Meetup"}
                     </div>
                   </div>

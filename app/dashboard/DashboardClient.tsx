@@ -382,10 +382,10 @@ function MiniPostPreview({ post }: { post?: PostRow }) {
         <div
           className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
         >
-          <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/18">
+          <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
             {getPurposeIcon(post.meeting_purpose)}
           </div>
-          <span className="truncate text-sm font-semibold text-white">
+          <span className="truncate text-sm font-semibold text-[#2f261f]">
             {post.meeting_purpose || "Meetup"}
           </span>
         </div>

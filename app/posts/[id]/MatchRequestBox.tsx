@@ -162,9 +162,9 @@ export default function MatchRequestBox({
     requestCount === 1 ? "1 request so far" : `${requestCount} requests so far`;
 
   return (
-    <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 px-6 py-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+    <div className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] px-6 py-6 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
       <div className="flex items-center gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f6eee6]">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)]">
           <Send className="h-5 w-5 text-[#8a7f74]" />
         </div>
         <div className="min-w-0">
@@ -178,10 +178,10 @@ export default function MatchRequestBox({
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+        <div className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium leading-none text-[#7a6b61]">
           {isPostMatched ? "Match complete" : "Host approval"}
         </div>
-        <div className="rounded-full border border-[#e7ddd2] bg-white px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+        <div className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3 py-[0.3125rem] text-xs font-medium leading-none text-[#7a6b61]">
           {requestCountLabel}
         </div>
       </div>
@@ -190,7 +190,7 @@ export default function MatchRequestBox({
         {headerDescription}
       </p>
 
-      <div className="mt-5 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-4">
+      <div className="mt-5 rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-4">
         <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
           Status
         </div>
@@ -207,7 +207,7 @@ export default function MatchRequestBox({
 
       <div className="mt-5 flex flex-wrap items-center gap-3">
         {hasMatchedRequest ? (
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-[#efe7dc] px-4 py-2.5 text-sm font-medium text-[#5f5347]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-4 py-2.5 text-sm font-medium text-[#5f5347]">
             <CheckCircle2 className="h-4 w-4" />
             Match completed
           </div>
@@ -222,14 +222,14 @@ export default function MatchRequestBox({
               type="button"
               onClick={handleCancelRequest}
               disabled={cancelLoading}
-              className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2.5 text-sm font-medium text-[#5a5149] transition hover:bg-[#fbf4ed] disabled:opacity-50"
             >
               <XCircle className="h-4 w-4" />
               {cancelLoading ? "Cancelling..." : "Cancel Request"}
             </button>
           </>
         ) : isRejectedRequest ? (
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-4 py-2.5 text-sm font-medium text-[#6b5f52]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2.5 text-sm font-medium text-[#6b5f52]">
             <AlertCircle className="h-4 w-4" />
             Request declined
           </div>
@@ -238,7 +238,7 @@ export default function MatchRequestBox({
               type="button"
               onClick={handleRequestMatch}
               disabled={loading}
-              className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2.5 text-sm font-medium text-white shadow-[0_10px_18px_rgba(92,69,52,0.10)] transition hover:bg-[#927d69] disabled:opacity-50"
             >
               <Send className="h-4 w-4" />
               {loading ? "Sending..." : "Send Request"}
@@ -250,8 +250,8 @@ export default function MatchRequestBox({
         <div
           className={`mt-5 rounded-[22px] border px-4 py-3 text-sm ${
             messageType === "success"
-              ? "border-[#dccfc2] bg-[#efe7dc] text-[#5f5347]"
-              : "border-[#e7ddd2] bg-[#f4ece4] text-[#6b5f52]"
+              ? "border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] text-[#5f5347]"
+              : "border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] text-[#6b5f52]"
           }`}
         >
           <div className="flex items-start gap-2">

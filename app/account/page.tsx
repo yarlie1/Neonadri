@@ -67,14 +67,15 @@ type Profile = {
 };
 
 const SURFACE_CARD_CLASS =
-  "rounded-[30px] border border-[#eadfd3] bg-white/92 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur";
-const SOFT_CARD_CLASS = "rounded-[22px] border border-[#eadfd3] bg-[#fffaf6]";
+  "rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur";
+const SOFT_CARD_CLASS =
+  "rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)]";
 const INPUT_CLASS =
   "w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12";
 const PRIMARY_BUTTON_CLASS =
-  "rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50";
+  "rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white shadow-[0_10px_18px_rgba(92,69,52,0.10)] transition hover:bg-[#927d69] disabled:opacity-50";
 const SECONDARY_BUTTON_CLASS =
-  "rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]";
+  "rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-5 py-3 text-sm font-medium text-[#5f5347] transition hover:bg-[#f7eee6]";
 
 function ToggleChip({
   label,
