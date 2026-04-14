@@ -95,25 +95,6 @@ function InfoItem({
   );
 }
 
-function StatPill({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-[20px] border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f5ece3_100%)] px-4 py-3 shadow-[0_8px_18px_rgba(92,69,52,0.04)]">
-      <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9b8f84]">
-        {label}
-      </div>
-      <div className="mt-1 text-base font-bold tracking-[-0.03em] text-[#3f332b]">
-        {value}
-      </div>
-    </div>
-  );
-}
-
 export default async function ProfilePage({ params }: PageProps) {
   const supabase = await createClient();
   const userId = params.id;
@@ -188,8 +169,6 @@ export default async function ProfilePage({ params }: PageProps) {
   const reviewCount = Number(stats.review_count ?? 0);
   const completedMeetups = Number(stats.completed_meetups ?? 0);
   const roundedAverage = Math.round(averageRating);
-  const featuredReview = reviews[0] ?? null;
-
   const hasAboutMe = !!profile.about_me?.trim();
   const hasLanguages = !!profile.languages && profile.languages.length > 0;
   const hasMeetingStyle = !!profile.meeting_style?.trim();
@@ -207,8 +186,8 @@ export default async function ProfilePage({ params }: PageProps) {
   return (
       <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-4xl space-y-5">
-        <section className="rounded-[34px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] p-6 shadow-[0_18px_42px_rgba(92,69,52,0.08)] sm:p-8">
-          <div className="flex flex-col gap-5">
+        <section className="rounded-[34px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] p-5 shadow-[0_18px_42px_rgba(92,69,52,0.08)] sm:p-6">
+          <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] text-[#74675d]">
                 <UserCircle2 className="h-3.5 w-3.5" />
@@ -221,7 +200,7 @@ export default async function ProfilePage({ params }: PageProps) {
                   {profile.display_name || "Unknown"}
                 </h1>
                 {profileSummary && (
-                  <p className="mt-2 max-w-2xl text-sm leading-6 text-[#6b5f52] sm:text-[15px]">
+                  <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[#6b5f52] sm:text-[15px]">
                     {profileSummary}
                   </p>
                 )}
@@ -240,65 +219,28 @@ export default async function ProfilePage({ params }: PageProps) {
                   </span>
                 </div>
             </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              <StatPill
-                label="Rating"
-                value={reviewCount > 0 ? averageRating.toFixed(1) : "New"}
-              />
-              <StatPill
-                label="Reviews"
-                value={`${reviewCount}`}
-              />
-              <StatPill
-                label="Meetups"
-                value={`${completedMeetups}`}
-              />
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {hasResponseNote && (
-                <InfoItem
-                  icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                  label="Response"
-                  value={profile.response_time_note!}
-                />
-              )}
-              {hasPreferredArea && (
-                <InfoItem
-                  icon={<Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                  label="Preferred Area"
-                  value={profile.preferred_area!}
-                />
-              )}
-              {hasMeetingStyle && (
-                <InfoItem
-                  icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                  label="Meeting Style"
-                  value={profile.meeting_style!}
-                />
-              )}
-            </div>
-
-            {featuredReview && (
-              <div className="rounded-[24px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-5 shadow-[0_10px_22px_rgba(92,69,52,0.05)]">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <StarRating value={featuredReview.rating} size="md" />
-                    <div className="text-sm font-semibold text-[#5f5347]">
-                      Recent review
-                    </div>
-                  </div>
-                  <div className="text-xs text-[#8f7d70]">
-                    {new Date(featuredReview.created_at).toLocaleDateString()}
-                  </div>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-[#5f5347]">
-                  {featuredReview.review_text || "A meetup partner left a positive rating."}
-                </p>
+            {(hasResponseNote || hasPreferredArea || hasMeetingStyle) && (
+              <div className="flex flex-wrap gap-2">
+                {hasResponseNote && (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f4ece3_100%)] px-3 py-1.5 text-xs font-medium text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                    <Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />
+                    {profile.response_time_note}
+                  </span>
+                )}
+                {hasPreferredArea && (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f4ece3_100%)] px-3 py-1.5 text-xs font-medium text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                    <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
+                    {profile.preferred_area}
+                  </span>
+                )}
+                {hasMeetingStyle && (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f4ece3_100%)] px-3 py-1.5 text-xs font-medium text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                    <HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />
+                    {profile.meeting_style}
+                  </span>
+                )}
               </div>
-            )}
-          </div>
+            )}          </div>
         </section>
 
         <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
@@ -473,4 +415,5 @@ export default async function ProfilePage({ params }: PageProps) {
     </main>
   );
 }
+
 
