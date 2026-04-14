@@ -95,6 +95,25 @@ function InfoItem({
   );
 }
 
+function StatPill({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-[20px] border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f5ece3_100%)] px-4 py-3 shadow-[0_8px_18px_rgba(92,69,52,0.04)]">
+      <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9b8f84]">
+        {label}
+      </div>
+      <div className="mt-1 text-base font-bold tracking-[-0.03em] text-[#3f332b]">
+        {value}
+      </div>
+    </div>
+  );
+}
+
 export default async function ProfilePage({ params }: PageProps) {
   const supabase = await createClient();
   const userId = params.id;
@@ -177,6 +196,13 @@ export default async function ProfilePage({ params }: PageProps) {
   const hasInterests = !!profile.interests && profile.interests.length > 0;
   const hasResponseNote = !!profile.response_time_note?.trim();
   const hasPreferredArea = !!profile.preferred_area?.trim();
+  const profileSummary = [
+    hasMeetingStyle ? profile.meeting_style : null,
+    hasPreferredArea ? `Usually around ${profile.preferred_area}` : null,
+    hasResponseNote ? profile.response_time_note : null,
+  ]
+    .filter(Boolean)
+    .join(" • ");
 
   return (
       <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
@@ -194,6 +220,11 @@ export default async function ProfilePage({ params }: PageProps) {
                 <h1 className="truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
                   {profile.display_name || "Unknown"}
                 </h1>
+                {profileSummary && (
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-[#6b5f52] sm:text-[15px]">
+                    {profileSummary}
+                  </p>
+                )}
                 <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-[#6b5f52]">
                   <div className="flex items-center gap-2">
                     <StarRating value={roundedAverage} size="md" />
@@ -208,6 +239,21 @@ export default async function ProfilePage({ params }: PageProps) {
                     {completedMeetups} completed meetups
                   </span>
                 </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              <StatPill
+                label="Rating"
+                value={reviewCount > 0 ? averageRating.toFixed(1) : "New"}
+              />
+              <StatPill
+                label="Reviews"
+                value={`${reviewCount}`}
+              />
+              <StatPill
+                label="Meetups"
+                value={`${completedMeetups}`}
+              />
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -258,9 +304,14 @@ export default async function ProfilePage({ params }: PageProps) {
         <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
           <section className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-6 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
-                Profile
-              </h2>
+              <div>
+                <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
+                  Profile
+                </h2>
+                <p className="mt-1 text-sm text-[#7a6d61]">
+                  The details that help this meetup feel clear and trustworthy.
+                </p>
+              </div>
               {isMyProfile && (
                 <Link
                   href={`/profile/${profile.id}/edit`}
@@ -272,6 +323,24 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
 
             <div className="mt-5 grid gap-3">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {hasPreferredArea && (
+                  <InfoItem
+                    icon={<Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                    label="Preferred Area"
+                    value={profile.preferred_area!}
+                  />
+                )}
+
+                {hasMeetingStyle && (
+                  <InfoItem
+                    icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                    label="Meeting Style"
+                    value={profile.meeting_style!}
+                  />
+                )}
+              </div>
+
               {(profile.gender || profile.age_group) && (
                 <InfoItem
                   icon={<UserRound className="h-3.5 w-3.5 text-[#8a7f74]" />}
@@ -325,22 +394,46 @@ export default async function ProfilePage({ params }: PageProps) {
 
           <section className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-6 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
-                Reviews
-              </h2>
+              <div>
+                <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
+                  Reviews
+                </h2>
+                <p className="mt-1 text-sm text-[#7a6d61]">
+                  Signals from past meetups and how people felt afterward.
+                </p>
+              </div>
             </div>
 
             <div className="mt-5 rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-5">
-              <div className="flex items-center gap-3">
-                <StarRating value={roundedAverage} size="md" />
-                <div className="text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
-                  {averageRating.toFixed(1)}
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <StarRating value={roundedAverage} size="md" />
+                  <div className="text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
+                    {averageRating.toFixed(1)}
+                  </div>
+                </div>
+                <div className="rounded-full border border-[#ece0d4] bg-[#fbf5ee] px-3 py-1 text-xs font-medium text-[#6b5f52]">
+                  {reviewCount > 0 ? "Reviewed by meetup partners" : "No written reviews yet"}
                 </div>
               </div>
 
-              <div className="mt-4 space-y-2 text-sm text-[#6b5f52]">
-                <div>{reviewCount} reviews received</div>
-                <div>{completedMeetups} meetups completed</div>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-3">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                    Reviews received
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-[#5f5347]">
+                    {reviewCount} total
+                  </div>
+                </div>
+                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-3">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                    Completed meetups
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-[#5f5347]">
+                    {completedMeetups} meetups
+                  </div>
+                </div>
               </div>
             </div>
 
