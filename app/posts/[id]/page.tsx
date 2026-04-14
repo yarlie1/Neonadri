@@ -384,30 +384,27 @@ function ProfileShowcaseCard({
   }${data.ageGroup || ""}`;
 
   const cardContent = summaryOnly ? (
-    <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e5b29e_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)] transition hover:-translate-y-0.5 hover:shadow-[0_28px_70px_rgba(120,76,52,0.18)]">
-      <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
-      <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
-      <div className="relative">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
-          {title}
-        </div>
-        <div className="mt-4 flex items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-lg font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
-            {data.displayName.charAt(0).toUpperCase()}
+    <div className="rounded-[28px] border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f7eee6_100%)] px-5 py-4 shadow-[0_10px_24px_rgba(92,69,52,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(92,69,52,0.08)]">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+            {title}
           </div>
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="truncate text-[1.45rem] font-black tracking-[-0.04em] text-[#2b1f1a]">
-                {data.displayName}
-              </div>
-              {isCurrentUser && (
-                <span className="rounded-full border border-white/60 bg-white/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#7d6458]">
-                  You
-                </span>
-              )}
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <div className="truncate text-[1.15rem] font-black tracking-[-0.03em] text-[#2b1f1a]">
+              {data.displayName}
             </div>
-            <div className="mt-1 text-sm text-[#5f453b]">{identityLine}</div>
+            <span className="inline-flex items-center gap-1 rounded-full border border-[#e9ddd0] bg-[#fbf6f0] px-2.5 py-1 text-[11px] font-medium text-[#6c5f54]">
+              <Star className="h-3.5 w-3.5 fill-current text-[#b08b5d]" />
+              {data.averageRating.toFixed(1)}
+            </span>
+            {isCurrentUser && (
+              <span className="rounded-full border border-[#ece1d4] bg-[#faf5ef] px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-[#7d6458]">
+                You
+              </span>
+            )}
           </div>
+          <div className="mt-2 text-sm text-[#5f5347]">{identityLine}</div>
         </div>
       </div>
     </div>
@@ -1013,7 +1010,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                       href={mapUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-[#f6eee6] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
+                      className="inline-flex items-center gap-2 rounded-full border border-[#e7dbcf] bg-[#fbf6f0] px-3 py-1.5 text-xs font-medium text-[#6a5e54] transition hover:bg-[#f4eadf]"
                     >
                       Open in Maps
                     </a>

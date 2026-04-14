@@ -122,9 +122,6 @@ export default function OwnerMatchPanel({
               <div className="mt-2 text-lg font-semibold text-[#2b1f1a]">
                 You matched with {matchedPartner.displayName}
               </div>
-              <div className="mt-2 text-sm text-[#6b5f52]">
-                Guest details are shown below.
-              </div>
             </div>
           </div>
         ) : null}
