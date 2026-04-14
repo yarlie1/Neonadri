@@ -177,10 +177,10 @@ function formatTimeUntil(meetingTime: string | null) {
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
   if (diffHours < 24) {
-    return `${Math.max(1, diffHours)}h left`;
+    return `H-${Math.max(1, diffHours)}`;
   }
 
-  return `${Math.max(1, diffDays)}d left`;
+  return `D-${Math.max(1, diffDays)}`;
 }
 
 function getPostStatus(meetingTime: string | null) {
@@ -652,45 +652,52 @@ export default function DashboardClient({
             </div>
 
             <div className="mt-4 space-y-3">
-              {upcomingMatchedMeetups.map((item) => (
-                <Link
-                  key={item.match.id}
-                  href={`/posts/${item.post.id}`}
-                  className="block rounded-[22px] border border-[#eadfd3] bg-white/75 p-4 transition hover:bg-white/90"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-[#f8efe8] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9a6f5f]">
-                      {getPurposeIcon(item.post.meeting_purpose)}
-                      {item.post.meeting_purpose || "Meetup"}
-                    </div>
+              {upcomingMatchedMeetups.map((item) => {
+                const purposeTheme = getPurposeTheme(item.post.meeting_purpose);
+                const countdown = formatTimeUntil(item.post.meeting_time);
 
-                    <div className="rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b5f52]">
-                      Matched
-                    </div>
-                  </div>
-
-                  <div className="mt-3 space-y-2 text-sm text-[#5f5347]">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <div className="inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-2 text-sm font-semibold text-white">
-                        <Clock3 className="h-4 w-4" />
-                        <span>{formatTime(item.post.meeting_time)}</span>
+                return (
+                  <Link
+                    key={item.match.id}
+                    href={`/posts/${item.post.id}`}
+                    className="block rounded-[22px] border border-[#eadfd3] bg-white/75 p-4 transition hover:bg-white/90"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div
+                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] ${purposeTheme.bandClass}`}
+                      >
+                        {getPurposeIcon(item.post.meeting_purpose)}
+                        {item.post.meeting_purpose || "Meetup"}
                       </div>
-                      {formatTimeUntil(item.post.meeting_time) ? (
-                        <div className="inline-flex items-center rounded-full bg-[#f8efe8] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#8f6e5f]">
-                          {formatTimeUntil(item.post.meeting_time)}
-                        </div>
-                      ) : null}
+
+                      <div className="rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b5f52]">
+                        Matched
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-[#a27767]" />
-                      <span className="truncate">
-                        {item.post.place_name || item.post.location || "Selected place"}
-                      </span>
+                    <div className="mt-3 space-y-2 text-sm text-[#5f5347]">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="inline-flex items-center gap-2 rounded-full bg-[#2f2a26] px-3 py-2 text-sm font-semibold text-white">
+                          <Clock3 className="h-4 w-4" />
+                          <span>{formatTime(item.post.meeting_time)}</span>
+                        </div>
+                        {countdown ? (
+                          <div className="pt-2 text-right text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8f6e5f]">
+                            {countdown}
+                          </div>
+                        ) : null}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-[#a27767]" />
+                        <span className="truncate">
+                          {item.post.place_name || item.post.location || "Selected place"}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}
