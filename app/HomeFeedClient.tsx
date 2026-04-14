@@ -988,7 +988,7 @@ export default function HomeFeedClient({
               }`}
             >
               <div className="mb-3.5 flex items-center justify-between gap-2">
-                <div className="min-w-0 rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold tracking-[0.02em] text-[#6b5f52]">
+                <div className="min-w-0 rounded-full border border-[#efe4da] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-1.5 text-[11px] font-semibold tracking-[0.02em] text-[#74675d]">
                   <div className="truncate">{host.displayName}</div>
                 </div>
 
@@ -1020,7 +1020,7 @@ export default function HomeFeedClient({
                   </div>
 
                   {formatDuration(post.duration_minutes) ? (
-                    <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[18px] border border-[#eaded2] bg-[linear-gradient(180deg,#fffdf9_0%,#f1e6dc_100%)] px-1.5 py-2 text-[#4f443b] shadow-sm">
+                    <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[18px] border border-[#eee4d9] bg-[linear-gradient(180deg,#fffdfb_0%,#f6eee6_100%)] px-1.5 py-2 text-[#5d5147] shadow-[0_4px_10px_rgba(86,65,47,0.04)]">
                       <Clock3 className="h-4 w-4" />
                       <span className="mt-1 text-sm font-semibold">
                         {formatDuration(post.duration_minutes)}
@@ -1029,7 +1029,7 @@ export default function HomeFeedClient({
                   ) : null}
 
                   {amount !== null && (
-                    <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[18px] border border-[#f2d7aa] bg-[linear-gradient(180deg,#ffe9c1_0%,#ffd290_100%)] px-1.5 py-2 text-[#6e4715] shadow-[0_8px_18px_rgba(184,124,38,0.12)]">
+                    <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[18px] border border-[#efdcb8] bg-[linear-gradient(180deg,#f9ebcb_0%,#f3dba9_100%)] px-1.5 py-2 text-[#795527] shadow-[0_4px_10px_rgba(160,112,44,0.07)]">
                       <Coins className="h-4 w-4 shrink-0" />
                       <span className="mt-1 text-sm font-semibold">
                         +${amount.toLocaleString()}
