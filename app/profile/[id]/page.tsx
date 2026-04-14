@@ -188,6 +188,7 @@ export default async function ProfilePage({ params }: PageProps) {
   const reviewCount = Number(stats.review_count ?? 0);
   const completedMeetups = Number(stats.completed_meetups ?? 0);
   const roundedAverage = Math.round(averageRating);
+  const featuredReview = reviews[0] ?? null;
 
   const hasAboutMe = !!profile.about_me?.trim();
   const hasLanguages = !!profile.languages && profile.languages.length > 0;
@@ -222,8 +223,58 @@ export default async function ProfilePage({ params }: PageProps) {
                   <span className="rounded-full border border-white/60 bg-white/65 px-3 py-1 text-xs font-medium text-[#5f5347] shadow-sm">
                     {reviewCount} reviews
                   </span>
+                  <span className="rounded-full border border-white/60 bg-white/65 px-3 py-1 text-xs font-medium text-[#5f5347] shadow-sm">
+                    {completedMeetups} completed meetups
+                  </span>
                 </div>
             </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {hasResponseNote && (
+                <InfoItem
+                  icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                  label="Response"
+                  value={profile.response_time_note!}
+                />
+              )}
+              {hasPreferredArea && (
+                <InfoItem
+                  icon={<Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                  label="Preferred Area"
+                  value={profile.preferred_area!}
+                />
+              )}
+              {hasMeetingStyle && (
+                <InfoItem
+                  icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                  label="Meeting Style"
+                  value={profile.meeting_style!}
+                />
+              )}
+              <StatCard
+                label="Trust Signals"
+                value={`${completedMeetups} / ${reviewCount}`}
+              />
+            </div>
+
+            {featuredReview && (
+              <div className="rounded-[24px] border border-white/65 bg-white/68 p-5 shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <StarRating value={featuredReview.rating} size="md" />
+                    <div className="text-sm font-semibold text-[#5f5347]">
+                      Recent review
+                    </div>
+                  </div>
+                  <div className="text-xs text-[#8f7d70]">
+                    {new Date(featuredReview.created_at).toLocaleDateString()}
+                  </div>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-[#5f5347]">
+                  {featuredReview.review_text || "A meetup partner left a positive rating."}
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -257,30 +308,6 @@ export default async function ProfilePage({ params }: PageProps) {
                   icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
                   label="Languages"
                   value={profile.languages!.join(", ")}
-                />
-              )}
-
-              {hasMeetingStyle && (
-                <InfoItem
-                  icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                  label="Meeting Style"
-                  value={profile.meeting_style!}
-                />
-              )}
-
-              {hasResponseNote && (
-                <InfoItem
-                  icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                  label="Response Note"
-                  value={profile.response_time_note!}
-                />
-              )}
-
-              {hasPreferredArea && (
-                <InfoItem
-                  icon={<Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                  label="Preferred Area"
-                  value={profile.preferred_area!}
                 />
               )}
 
