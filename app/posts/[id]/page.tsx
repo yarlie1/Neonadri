@@ -642,6 +642,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   isPostMatched = !!summary?.is_matched;
   pendingRequestCount = Number(summary?.pending_request_count || 0);
   totalRequestCount = Number(summary?.total_request_count || 0);
+  const hasAnyRequests = totalRequestCount > 0;
 
   if (user && post.user_id && user.id !== post.user_id) {
     const [{ data: requestData }, { data: matchData }] = await Promise.all([
@@ -1035,7 +1036,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               />
             ) : null}
 
-            {user && user.id === post.user_id && !isPostMatched && (
+            {user && user.id === post.user_id && !isPostMatched && !hasAnyRequests && (
               <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-5 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
                   Meetup actions
