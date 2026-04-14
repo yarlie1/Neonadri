@@ -105,8 +105,9 @@ const SORT_OPTIONS = [
 type SortValue = (typeof SORT_OPTIONS)[number]["value"];
 
 const SURFACE_CARD_CLASS =
-  "rounded-[28px] border border-[#e7ddd2] bg-white/92 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur";
-const SOFT_CARD_CLASS = "rounded-[22px] border border-[#eadfd3] bg-[#fffaf6]";
+  "rounded-[32px] border border-[#eee2d6] bg-[linear-gradient(180deg,rgba(255,253,250,0.97)_0%,rgba(250,244,237,0.94)_100%)] shadow-[0_24px_70px_rgba(86,63,44,0.12)] backdrop-blur";
+const SOFT_CARD_CLASS =
+  "rounded-[24px] border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdf9_0%,#f8efe6_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]";
 
 function getPurposeIcon(purpose: string | null, className?: string) {
   const iconClassName = className || "h-[19px] w-[19px] shrink-0 text-[#7e746b]";
@@ -617,29 +618,29 @@ export default function HomeFeedClient({
   };
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f9efe4_38%,#f7f1ea_100%)] px-4 py-4 text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl space-y-3 pb-24 sm:space-y-4">
-        <section className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f6d8cb_38%,#e9b7a6_100%)] px-4 py-5 text-[#2a211d] shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:px-6 sm:py-7">
-          <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-white/35 blur-2xl" />
-          <div className="absolute bottom-0 right-0 h-32 w-32 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,#fffefb_0%,#fbf3eb_34%,#f2e5d8_100%)] px-4 py-5 text-[#2f2a26]">
+      <div className="mx-auto max-w-2xl space-y-4 pb-24 sm:space-y-5">
+        <section className="relative overflow-hidden rounded-[36px] border border-[#ead8c8] bg-[linear-gradient(145deg,#fffdf8_0%,#f5e7d8_47%,#e4c1ab_100%)] px-5 py-6 text-[#2a211d] shadow-[0_28px_90px_rgba(103,71,49,0.16)] sm:px-7 sm:py-8">
+          <div className="absolute -right-10 -top-10 h-44 w-44 rounded-full bg-white/45 blur-3xl" />
+          <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-[#8b5f4f]/10 blur-3xl" />
 
           <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/78 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8a5647] shadow-sm">
               <Sparkles className="h-3.5 w-3.5" />
               Social meetups near you
             </div>
 
-            <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#2b1f1a] sm:text-[40px]">
+            <h1 className="mt-4 max-w-md text-[35px] font-black leading-[0.94] tracking-[-0.06em] text-[#241915] sm:text-[42px]">
               Meet someone new without the awkward start.
             </h1>
 
-            <p className="mt-3 max-w-lg text-sm leading-6 text-[#5f453b] sm:text-[15px]">
+            <p className="mt-4 max-w-lg text-[14px] leading-6 text-[#5f453b] sm:text-[15px]">
               Browse warm, low-pressure meetups around you. Coffee, walks,
               study sessions, game nights. Pick a mood and step in.
             </p>
 
-            <div className="mt-5 grid grid-cols-3 gap-2.5">
-              <div className="rounded-[22px] border border-white/70 bg-white/70 px-3 py-3 shadow-sm backdrop-blur">
+            <div className="mt-6 grid grid-cols-3 gap-3">
+              <div className="rounded-[24px] border border-white/75 bg-white/76 px-3 py-3.5 shadow-[0_10px_26px_rgba(115,82,61,0.08)] backdrop-blur">
                 <div className="text-[11px] uppercase tracking-[0.12em] text-[#906556]">
                   Live now
                 </div>
@@ -648,7 +649,7 @@ export default function HomeFeedClient({
                 </div>
               </div>
 
-              <div className="rounded-[22px] border border-white/70 bg-white/70 px-3 py-3 shadow-sm backdrop-blur">
+              <div className="rounded-[24px] border border-white/75 bg-white/76 px-3 py-3.5 shadow-[0_10px_26px_rgba(115,82,61,0.08)] backdrop-blur">
                 <div className="text-[11px] uppercase tracking-[0.12em] text-[#906556]">
                   Hosts
                 </div>
@@ -657,7 +658,7 @@ export default function HomeFeedClient({
                 </div>
               </div>
 
-              <div className="rounded-[22px] border border-white/70 bg-white/70 px-3 py-3 shadow-sm backdrop-blur">
+              <div className="rounded-[24px] border border-white/75 bg-white/76 px-3 py-3.5 shadow-[0_10px_26px_rgba(115,82,61,0.08)] backdrop-blur">
                 <div className="text-[11px] uppercase tracking-[0.12em] text-[#906556]">
                   Mood
                 </div>
@@ -669,14 +670,14 @@ export default function HomeFeedClient({
               </div>
             </div>
 
-            <div className="mt-5 flex flex-wrap gap-2">
-              <span className="rounded-full border border-white/70 bg-white/65 px-3 py-2 text-xs font-medium text-[#6a4b40]">
+            <div className="mt-6 flex flex-wrap gap-2">
+              <span className="rounded-full border border-white/75 bg-white/70 px-3 py-2 text-xs font-medium text-[#6a4b40] shadow-sm">
                 Coffee chats
               </span>
-              <span className="rounded-full border border-white/70 bg-white/65 px-3 py-2 text-xs font-medium text-[#6a4b40]">
+              <span className="rounded-full border border-white/75 bg-white/70 px-3 py-2 text-xs font-medium text-[#6a4b40] shadow-sm">
                 Walk dates
               </span>
-              <span className="rounded-full border border-white/70 bg-white/65 px-3 py-2 text-xs font-medium text-[#6a4b40]">
+              <span className="rounded-full border border-white/75 bg-white/70 px-3 py-2 text-xs font-medium text-[#6a4b40] shadow-sm">
                 Game nights
               </span>
             </div>
@@ -685,7 +686,7 @@ export default function HomeFeedClient({
 
         {highlightedPost && (
           <section className={`overflow-hidden ${SURFACE_CARD_CLASS}`}>
-            <div className="border-b border-[#f0e5db] px-5 py-4">
+            <div className="border-b border-[#efe2d5] px-5 py-[18px]">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
@@ -699,7 +700,7 @@ export default function HomeFeedClient({
 
                 <Link
                   href={`/posts/${highlightedPost.id}`}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#d9c9bc] bg-[#fff6ee] text-[#6f5649] shadow-sm transition hover:bg-[#f7eadf]"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#e4d3c5] bg-[linear-gradient(180deg,#fffdf9_0%,#f5e8dc_100%)] text-[#6f5649] shadow-[0_8px_20px_rgba(109,78,57,0.08)] transition hover:bg-[#f7eadf]"
                   aria-label="Open featured meetup"
                 >
                   <ArrowUpRight className="h-4 w-4" />
@@ -708,7 +709,7 @@ export default function HomeFeedClient({
             </div>
 
             <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.4fr_1fr] sm:px-5">
-              <div className="rounded-[24px] bg-[linear-gradient(135deg,#382a25_0%,#805448_100%)] px-4 py-4 text-white">
+              <div className="rounded-[26px] bg-[linear-gradient(135deg,#2b211d_0%,#6f4d40_100%)] px-4 py-4 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
                 <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white/90">
                   {getPurposeIcon(highlightedPost.meeting_purpose)}
                   {highlightedPost.meeting_purpose || "Meetup"}
@@ -723,7 +724,7 @@ export default function HomeFeedClient({
                 </div>
               </div>
 
-              <div className="space-y-2.5 rounded-[24px] border border-[#efe2d7] bg-white px-4 py-4">
+              <div className="space-y-2.5 rounded-[24px] border border-[#efe2d7] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e8_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
                 <div className="flex items-center gap-2 text-sm text-[#5a5149]">
                   <Clock3 className="h-4 w-4 text-[#a27767]" />
                   <span>{formatTime(highlightedPost.meeting_time) || "Time TBD"}</span>
@@ -750,10 +751,10 @@ export default function HomeFeedClient({
 
         <div
           ref={filterRef}
-          className={`sticky top-16 z-20 rounded-[24px] transition ${
+          className={`sticky top-16 z-20 rounded-[28px] transition ${
             isFilterPinned
-              ? "border border-[#eadfd3] bg-[#fffdf9] shadow-[0_10px_24px_rgba(92,69,52,0.1)]"
-              : "border border-[#eadfd3] bg-[#fffaf5] shadow-none"
+              ? "border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdf9_0%,#faf1e8_100%)] shadow-[0_18px_40px_rgba(92,69,52,0.12)]"
+              : "border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdf9_0%,#fbf3eb_100%)] shadow-[0_8px_20px_rgba(92,69,52,0.04)]"
           }`}
         >
           <button
@@ -780,7 +781,7 @@ export default function HomeFeedClient({
             </div>
 
               <span
-                className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e7ddd2] bg-[#fff7ef] text-[#6b5f52] transition ${
+                className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdf9_0%,#f5e8dc_100%)] text-[#6b5f52] shadow-sm transition ${
                   isOpen ? "rotate-180" : ""
                 }`}
               >
@@ -968,10 +969,10 @@ export default function HomeFeedClient({
             <Link
               key={post.id}
               href={`/posts/${post.id}`}
-              className={`block overflow-hidden rounded-[28px] border p-3 shadow-[0_14px_32px_rgba(92,69,52,0.08)] transition active:scale-[0.995] sm:p-4 ${
+              className={`block overflow-hidden rounded-[32px] border p-[14px] shadow-[0_20px_48px_rgba(92,69,52,0.10)] transition active:scale-[0.995] sm:p-4 ${
                 isExpired
-                  ? "border-[#ddd2c5] bg-[#f3eee8] opacity-80"
-                  : "border-[#e7ddd2] bg-white hover:-translate-y-0.5 hover:bg-[#fffdf9]"
+                  ? "border-[#ddd2c5] bg-[linear-gradient(180deg,#f4efe9_0%,#eee6dd_100%)] opacity-80"
+                  : "border-[#e8ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#fbf3eb_100%)] hover:-translate-y-0.5"
               }`}
             >
               <div className="mb-4 flex items-center justify-between gap-3">
@@ -981,7 +982,7 @@ export default function HomeFeedClient({
                   {matchBadge.label}
                 </div>
 
-                <div className="min-w-0 rounded-full border border-[#e7ddd2] bg-[#faf3ec] px-3 py-1.5 text-right">
+                <div className="min-w-0 rounded-full border border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdf9_0%,#f4e9df_100%)] px-3 py-1.5 text-right shadow-sm">
                   <div className="hidden text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71] sm:block">
                     Hosted by
                   </div>
@@ -991,10 +992,10 @@ export default function HomeFeedClient({
                 </div>
               </div>
 
-              <div className="rounded-[22px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-3">
+              <div className="rounded-[26px] border border-[#efe2d5] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e8_100%)] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
                 <div className="flex items-stretch gap-2">
                   <div
-                    className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
+                    className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[20px] px-4 py-3 ${purposeTheme.bandClass} shadow-[0_10px_24px_rgba(64,45,33,0.12)]`}
                   >
                     <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/18">
                       {getPurposeIcon(
@@ -1010,7 +1011,7 @@ export default function HomeFeedClient({
                   </div>
 
                   {formatDuration(post.duration_minutes) ? (
-                    <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] bg-[#f4ece4] px-1.5 py-2 text-[#4f443b]">
+                    <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[18px] border border-[#eaded2] bg-[linear-gradient(180deg,#fffdf9_0%,#f1e6dc_100%)] px-1.5 py-2 text-[#4f443b] shadow-sm">
                       <Clock3 className="h-4 w-4" />
                       <span className="mt-1 text-sm font-semibold">
                         {formatDuration(post.duration_minutes)}
@@ -1019,7 +1020,7 @@ export default function HomeFeedClient({
                   ) : null}
 
                   {amount !== null && (
-                    <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[16px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-1.5 py-2 text-[#6e4715] shadow-sm">
+                    <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[18px] border border-[#f2d7aa] bg-[linear-gradient(180deg,#ffe9c1_0%,#ffd290_100%)] px-1.5 py-2 text-[#6e4715] shadow-[0_8px_18px_rgba(184,124,38,0.12)]">
                       <Coins className="h-4 w-4 shrink-0" />
                       <span className="mt-1 text-sm font-semibold">
                         +${amount.toLocaleString()}
@@ -1028,9 +1029,9 @@ export default function HomeFeedClient({
                   )}
                 </div>
 
-                <div className="mt-3 grid gap-2 text-[#7d7268] sm:grid-cols-2">
+                <div className="mt-3 grid gap-2.5 text-[#7d7268] sm:grid-cols-2">
                   {post.meeting_time && (
-                    <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                    <div className="flex items-start gap-2 rounded-[18px] bg-[linear-gradient(180deg,#fffdf9_0%,#f5ebe1_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
                       <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                       <div className="min-w-0 leading-[1.2]">
                         <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">When</div>
@@ -1039,7 +1040,7 @@ export default function HomeFeedClient({
                     </div>
                   )}
 
-                  <div className="flex min-w-0 items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                  <div className="flex min-w-0 items-start gap-2 rounded-[18px] bg-[linear-gradient(180deg,#fffdf9_0%,#f5ebe1_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
                     <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                     <div className="min-w-0 leading-[1.2]">
                       <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Place</div>
@@ -1047,7 +1048,7 @@ export default function HomeFeedClient({
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                  <div className="flex items-start gap-2 rounded-[18px] bg-[linear-gradient(180deg,#fffdf9_0%,#f5ebe1_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
                     <UserCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                     <div className="min-w-0 leading-[1.2]">
                       <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Hosted by</div>
@@ -1060,7 +1061,7 @@ export default function HomeFeedClient({
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                  <div className="flex items-start gap-2 rounded-[18px] bg-[linear-gradient(180deg,#fffdf9_0%,#f5ebe1_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
                     <UserRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                     <div className="min-w-0 leading-[1.2]">
                       <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Looking for</div>
@@ -1069,7 +1070,7 @@ export default function HomeFeedClient({
                   </div>
 
                   {distanceText && (
-                    <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2 sm:col-span-2">
+                    <div className="flex items-start gap-2 rounded-[18px] bg-[linear-gradient(180deg,#fffdf9_0%,#f5ebe1_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] sm:col-span-2">
                       <LocateFixed className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
                       <div className="leading-[1.2]">
                         <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Distance</div>
@@ -1092,7 +1093,7 @@ export default function HomeFeedClient({
 
       <Link
         href="/write"
-        className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2e2420_0%,#a36c5a_100%)] text-white shadow-[0_18px_34px_rgba(80,60,40,0.28)] transition hover:scale-[1.02]"
+        className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-full border border-[#d6b8a3] bg-[linear-gradient(135deg,#342621_0%,#9b6a58_100%)] text-white shadow-[0_22px_46px_rgba(80,60,40,0.30)] transition hover:scale-[1.02]"
         aria-label="Create meetup"
       >
         <Plus className="h-6 w-6" />
