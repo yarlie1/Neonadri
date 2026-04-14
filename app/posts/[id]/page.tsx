@@ -951,7 +951,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                     )}
                   </div>
                   <div className="min-w-0">
-                    <div className="truncate text-[1.35rem] font-black tracking-[-0.04em] text-[#2f261f] sm:text-[1.55rem]">
+                    <div className="truncate text-[1.18rem] font-black tracking-[-0.03em] text-[#2f261f] sm:text-[1.28rem]">
                       {post.meeting_purpose || "Meetup"}
                     </div>
                   </div>
