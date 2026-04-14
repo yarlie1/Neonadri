@@ -346,12 +346,14 @@ function ProfileShowcaseCard({
   profileHref,
   data,
   isCurrentUser = false,
+  compact = false,
 }: {
   title: string;
   subtitle: string;
   profileHref?: string;
   data: ProfileCardData;
   isCurrentUser?: boolean;
+  compact?: boolean;
 }) {
   const hasAboutMe = !!data.aboutMe.trim();
   const hasLanguages = data.languages.length > 0;
@@ -451,7 +453,7 @@ function ProfileShowcaseCard({
           </div>
         </div>
 
-        {hasInterests && (
+        {!compact && hasInterests && (
           <div className="mt-4">
             <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
               <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
@@ -488,31 +490,33 @@ function ProfileShowcaseCard({
           </div>
         </div>
 
-        <div className="mt-4 rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
-          <div className="text-sm font-semibold text-[#2f2a26]">Recent Reviews</div>
-          <div className="mt-3 space-y-3">
-            {data.recentReviews.length === 0 ? (
-              <div className="text-sm text-[#8b7f74]">No reviews yet.</div>
-            ) : (
-              data.recentReviews.map((review) => (
-                <div
-                  key={review.id}
-                  className="rounded-[1rem] border border-[#eee4d9] bg-white px-3 py-3"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <StarRating value={review.rating} size="md" />
-                    <div className="text-[11px] text-[#9b8f84]">
-                      {new Date(review.created_at).toLocaleDateString()}
+        {!compact && (
+          <div className="mt-4 rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
+            <div className="text-sm font-semibold text-[#2f2a26]">Recent Reviews</div>
+            <div className="mt-3 space-y-3">
+              {data.recentReviews.length === 0 ? (
+                <div className="text-sm text-[#8b7f74]">No reviews yet.</div>
+              ) : (
+                data.recentReviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="rounded-[1rem] border border-[#eee4d9] bg-white px-3 py-3"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <StarRating value={review.rating} size="md" />
+                      <div className="text-[11px] text-[#9b8f84]">
+                        {new Date(review.created_at).toLocaleDateString()}
+                      </div>
                     </div>
+                    <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#5f5347]">
+                      {review.review_text || "No comment."}
+                    </p>
                   </div>
-                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#5f5347]">
-                    {review.review_text || "No comment."}
-                  </p>
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -818,20 +822,31 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
       <div className="mx-auto max-w-3xl space-y-5">
         {isPostMatched && isViewerParticipant && (
-          <div className="rounded-[28px] border border-[#dccfc2] bg-[linear-gradient(135deg,#fff9f3_0%,#f2e4d7_100%)] p-4 shadow-[0_14px_32px_rgba(92,69,52,0.08)] sm:p-5">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="rounded-[26px] border border-[#dccfc2] bg-[linear-gradient(135deg,#fffaf5_0%,#f4e6d8_100%)] p-4 shadow-[0_14px_32px_rgba(92,69,52,0.08)] sm:p-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
                   Upcoming meetup
                 </div>
-                <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#2f2a26]">
-                  {post.meeting_purpose || "Meetup"} is confirmed
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <span
+                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold shadow-sm ${purposeTheme.bandClass}`}
+                  >
+                    {getPurposeIcon(
+                      post.meeting_purpose,
+                      "h-[15px] w-[15px] shrink-0 text-white"
+                    )}
+                    <span>{post.meeting_purpose || "Meetup"}</span>
+                  </span>
+                  <span className="rounded-full bg-white/75 px-3 py-1.5 text-sm font-semibold text-[#5f5347]">
+                    {meetupDurationLabel}
+                  </span>
                 </div>
-                <div className="mt-2 text-sm leading-6 text-[#6f655c]">
-                  {meetupTimeLabel}
-                </div>
-                <div className="text-sm leading-6 text-[#6f655c]">
-                  {post.place_name || post.location || "Selected place"}
+                <div className="mt-3 grid gap-1 text-sm leading-6 text-[#6f655c] sm:grid-cols-[auto_1fr] sm:gap-x-3">
+                  <div className="font-medium text-[#8b7f74]">When</div>
+                  <div>{meetupTimeLabel}</div>
+                  <div className="font-medium text-[#8b7f74]">Place</div>
+                  <div>{post.place_name || post.location || "Selected place"}</div>
                 </div>
               </div>
               <div className="rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b5f52]">
@@ -967,6 +982,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 profileHref={matchedGuestUserId ? `/profile/${matchedGuestUserId}` : undefined}
                 data={guestProfileData}
                 isCurrentUser={user?.id === matchedGuestUserId}
+                compact
               />
             )}
           </div>
