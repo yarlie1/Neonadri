@@ -176,6 +176,7 @@ function getPostStatus(meetingTime: string | null) {
 function getPurposeTheme(purpose: string | null) {
   const baseBandClass =
     "border border-[#eadfd2] bg-[linear-gradient(180deg,#fbf5ef_0%,#f3e8dc_100%)] text-[#2f261f]";
+  const baseIconWrapClass = "text-[#7e746b]";
 
   switch (purpose) {
     case "Coffee Chat":
@@ -183,16 +184,14 @@ function getPurposeTheme(purpose: string | null) {
       return {
         pillClass: "bg-[#f4ede6] text-[#7f6555]",
         bandClass: baseBandClass,
-        iconWrapClass:
-          "bg-[linear-gradient(180deg,#efe0d3_0%,#dcc0ab_100%)] text-[#7e5f4d]",
+        iconWrapClass: baseIconWrapClass,
       };
     case "Meal":
     case "Dessert":
       return {
         pillClass: "bg-[#f4eee5] text-[#82674b]",
         bandClass: baseBandClass,
-        iconWrapClass:
-          "bg-[linear-gradient(180deg,#f0e3d4_0%,#e1c9af_100%)] text-[#866849]",
+        iconWrapClass: baseIconWrapClass,
       };
     case "Walk":
     case "Jogging":
@@ -200,8 +199,7 @@ function getPurposeTheme(purpose: string | null) {
       return {
         pillClass: "bg-[#eef0ea] text-[#64705f]",
         bandClass: baseBandClass,
-        iconWrapClass:
-          "bg-[linear-gradient(180deg,#e3eadf_0%,#c8d6c2_100%)] text-[#5d6d59]",
+        iconWrapClass: baseIconWrapClass,
       };
     case "Movie":
     case "Theater":
@@ -209,8 +207,7 @@ function getPurposeTheme(purpose: string | null) {
       return {
         pillClass: "bg-[#efedf2] text-[#6c6278]",
         bandClass: baseBandClass,
-        iconWrapClass:
-          "bg-[linear-gradient(180deg,#e4dfeb_0%,#cfc4dc_100%)] text-[#665d73]",
+        iconWrapClass: baseIconWrapClass,
       };
     case "Board Games":
     case "Gaming":
@@ -219,8 +216,7 @@ function getPurposeTheme(purpose: string | null) {
       return {
         pillClass: "bg-[#efedf2] text-[#675f77]",
         bandClass: baseBandClass,
-        iconWrapClass:
-          "bg-[linear-gradient(180deg,#e6e1eb_0%,#d1c7dd_100%)] text-[#665f74]",
+        iconWrapClass: baseIconWrapClass,
       };
     case "Study":
     case "Book Talk":
@@ -228,31 +224,27 @@ function getPurposeTheme(purpose: string | null) {
       return {
         pillClass: "bg-[#edf0f2] text-[#61707f]",
         bandClass: baseBandClass,
-        iconWrapClass:
-          "bg-[linear-gradient(180deg,#e2e9ef_0%,#c4d2de_100%)] text-[#5f7080]",
+        iconWrapClass: baseIconWrapClass,
       };
     case "Work Together":
     case "Work":
       return {
         pillClass: "bg-[#f1ece6] text-[#6f645a]",
         bandClass: baseBandClass,
-        iconWrapClass:
-          "bg-[linear-gradient(180deg,#e8e0d8_0%,#d5c7ba_100%)] text-[#685c52]",
+        iconWrapClass: baseIconWrapClass,
       };
     case "Photo Walk":
     case "Photo":
       return {
         pillClass: "bg-[#f4ece8] text-[#80625d]",
         bandClass: baseBandClass,
-        iconWrapClass:
-          "bg-[linear-gradient(180deg,#ebdfdb_0%,#dcc4bc_100%)] text-[#7b615d]",
+        iconWrapClass: baseIconWrapClass,
       };
     default:
       return {
         pillClass: "bg-[#f3ede7] text-[#7b665a]",
         bandClass: baseBandClass,
-        iconWrapClass:
-          "bg-[linear-gradient(180deg,#ebe1d8_0%,#dac9bc_100%)] text-[#756154]",
+        iconWrapClass: baseIconWrapClass,
       };
   }
 }
