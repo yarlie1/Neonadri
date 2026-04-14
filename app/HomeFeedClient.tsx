@@ -176,7 +176,8 @@ function getPostStatus(meetingTime: string | null) {
 function getPurposeTheme(purpose: string | null) {
   const baseBandClass =
     "border border-[#eadfd2] bg-[linear-gradient(180deg,#fbf5ef_0%,#f3e8dc_100%)] text-[#2f261f]";
-  const baseIconWrapClass = "text-[#7e746b]";
+  const baseIconWrapClass =
+    "bg-[linear-gradient(180deg,#f7efe6_0%,#efe3d7_100%)] text-[#7e746b]";
 
   switch (purpose) {
     case "Coffee Chat":

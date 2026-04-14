@@ -944,7 +944,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 <div
                   className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 shadow-[0_10px_20px_rgba(64,45,33,0.06)] ${purposeTheme.bandClass}`}
                 >
-                  <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
+                  <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 bg-[linear-gradient(180deg,#f7efe6_0%,#efe3d7_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
                     {getPurposeIcon(
                       post.meeting_purpose,
                       "h-[18px] w-[18px] shrink-0 text-[#7e746b]"

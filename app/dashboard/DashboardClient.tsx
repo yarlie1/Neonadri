@@ -382,7 +382,7 @@ function MiniPostPreview({ post }: { post?: PostRow }) {
         <div
           className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
         >
-          <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
+          <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 bg-[linear-gradient(180deg,#f7efe6_0%,#efe3d7_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
             {getPurposeIcon(post.meeting_purpose)}
           </div>
           <span className="truncate text-[1.02rem] font-black tracking-[-0.03em] text-[#2f261f]">
@@ -853,7 +853,7 @@ export default function DashboardClient({
                       <div
                         className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
                       >
-                        <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
+                        <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 bg-[linear-gradient(180deg,#f7efe6_0%,#efe3d7_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
                           {getPurposeIcon(post.meeting_purpose)}
                         </div>
                         <span className="truncate text-[1.02rem] font-black tracking-[-0.03em] text-[#2f261f]">
