@@ -1019,7 +1019,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 profileHref={matchedGuestUserId ? `/profile/${matchedGuestUserId}` : undefined}
                 data={guestProfileData}
                 isCurrentUser={user?.id === matchedGuestUserId}
-                compact
               />
             )}
           </div>

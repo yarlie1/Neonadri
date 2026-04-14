@@ -1,12 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   CheckCircle2,
   Clock3,
-  Eye,
   UserCircle2,
   XCircle,
 } from "lucide-react";
@@ -98,23 +96,24 @@ export default function OwnerMatchPanel({
             <h2 className="mt-2 text-[1.7rem] font-black tracking-[-0.04em] text-[#2b1f1a]">
               {isMatched ? "This meetup is matched" : "Choose your guest"}
             </h2>
-            <p className="mt-1 max-w-xl text-sm leading-6 text-[#5f453b]">
-              {isMatched
-                ? "You already confirmed this meetup. Review who matched and keep the plan locked in."
-                : pendingRequestCount > 0
-                ? `${pendingRequestCount} pending request${pendingRequestCount === 1 ? "" : "s"} waiting for your decision.`
-                : "No requests yet. You can still edit the meetup while it is open."}
-            </p>
+            {!isMatched && (
+              <p className="mt-1 max-w-xl text-sm leading-6 text-[#5f453b]">
+                {pendingRequestCount > 0
+                  ? `${pendingRequestCount} pending request${pendingRequestCount === 1 ? "" : "s"} waiting for your decision.`
+                  : "No requests yet. You can still edit the meetup while it is open."}
+              </p>
+            )}
           </div>
 
-          <div className="rounded-full border border-white/60 bg-white/60 px-4 py-2 text-sm font-medium text-[#6b5f52] backdrop-blur">
-            {isMatched ? "Match locked in" : `${pendingRequestCount} pending`}
-          </div>
+          {!isMatched && (
+            <div className="rounded-full border border-white/60 bg-white/60 px-4 py-2 text-sm font-medium text-[#6b5f52] backdrop-blur">
+              {`${pendingRequestCount} pending`}
+            </div>
+          )}
         </div>
 
         {isMatched && matchedPartner ? (
           <div className="mt-5 rounded-[24px] border border-white/60 bg-white/58 p-4 backdrop-blur">
-          <div className="flex items-start justify-between gap-4">
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
                 Match completed
@@ -123,22 +122,9 @@ export default function OwnerMatchPanel({
                 You matched with {matchedPartner.displayName}
               </div>
               <div className="mt-2 text-sm text-[#6b5f52]">
-                {[matchedPartner.gender || "Unknown", matchedPartner.ageGroup || null]
-                  .filter(Boolean)
-                  .join(" / ")}
+                Guest details are shown below.
               </div>
             </div>
-
-            <div className="flex flex-wrap gap-2">
-              <Link
-                href={`/profile/${matchedPartner.userId}`}
-                className="inline-flex items-center gap-2 rounded-full border border-[#ccb9a9] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-              >
-                <Eye className="h-4 w-4" />
-                View Profile
-              </Link>
-            </div>
-          </div>
           </div>
         ) : null}
 
