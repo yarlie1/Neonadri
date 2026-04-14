@@ -552,6 +552,16 @@ export default function WriteForm({ userId }: { userId: string }) {
               <option value="$200+">$200+</option>
             </select>
           </div>
+
+          <p className="px-1 text-xs leading-5 text-[#8b7f74]">
+            If this meetup is matched and completed, you will pay this amount to your guest.
+          </p>
+
+          {benefitAmount && (
+            <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm text-[#5f5347]`}>
+              You will pay <span className="font-semibold text-[#2f2a26]">{benefitAmount}</span> to your guest after the meetup is completed.
+            </div>
+          )}
         </div>
 
         <button
