@@ -135,6 +135,7 @@ export default function ProfileEditForm({
       setMessage("Saving profile...");
 
       const payload = {
+        id: profile.id,
         display_name: displayName.trim() || null,
         bio: aboutMeSummary || null,
         about_me: aboutMe.trim() || null,
@@ -148,10 +149,7 @@ export default function ProfileEditForm({
         updated_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase
-        .from("profiles")
-        .update(payload)
-        .eq("id", profile.id);
+      const { error } = await supabase.from("profiles").upsert(payload);
 
       if (error) {
         setMessage("ERROR: " + error.message);
