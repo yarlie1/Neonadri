@@ -101,6 +101,9 @@ export default function ProfileEditForm({
   const [aboutMe, setAboutMe] = useState(profile.about_me || "");
   const [gender, setGender] = useState(profile.gender || "");
   const [ageGroup, setAgeGroup] = useState(profile.age_group || "");
+  const [preferredArea, setPreferredArea] = useState(
+    profile.preferred_area || ""
+  );
   const [languages, setLanguages] = useState<string[]>(profile.languages || []);
   const [meetingStyle, setMeetingStyle] = useState(profile.meeting_style || "");
   const [interests, setInterests] = useState<string[]>(profile.interests || []);
@@ -150,7 +153,7 @@ export default function ProfileEditForm({
         about_me: aboutMe.trim() || null,
         gender: gender || null,
         age_group: ageGroup || null,
-        preferred_area: null,
+        preferred_area: preferredArea.trim() || null,
         languages: languages.length > 0 ? languages : null,
         meeting_style: meetingStyle || null,
         interests: interests.length > 0 ? interests : null,
@@ -262,6 +265,18 @@ export default function ProfileEditForm({
                     <option value="50s+">50s+</option>
                   </select>
                 </div>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                  Preferred Area
+                </label>
+                <input
+                  value={preferredArea}
+                  onChange={(e) => setPreferredArea(e.target.value)}
+                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                  placeholder="Koreatown, Pasadena, DTLA..."
+                />
               </div>
 
               <div>

@@ -180,14 +180,6 @@ export default function SignupPage() {
           data: {
             full_name: displayName.trim(),
             display_name: displayName.trim(),
-            bio: profileSummary || "",
-            about_me: aboutMe.trim(),
-            gender: gender || "",
-            age_group: ageGroup || "",
-            languages,
-            meeting_style: meetingStyle || "",
-            interests,
-            is_public: true,
           },
         },
       });
@@ -221,16 +213,20 @@ export default function SignupPage() {
           meeting_style: meetingStyle || null,
           interests: interests.length > 0 ? interests : null,
           response_time_note: null,
-          is_public: true,
-          updated_at: new Date().toISOString(),
         };
 
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .upsert(payload);
+        const response = await fetch("/api/profile/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
 
-        if (profileError) {
-          setMessage(profileError.message);
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          setMessage(result.error || "Failed to save your profile.");
           setSubmitting(false);
           return;
         }
