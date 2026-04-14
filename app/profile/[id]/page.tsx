@@ -210,7 +210,7 @@ export default async function ProfilePage({ params }: PageProps) {
               {isMyProfile && (
                 <Link
                   href={`/profile/${profile.id}/edit`}
-                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/60 bg-white/75 px-5 py-2.5 text-sm font-medium text-[#5a5149] shadow-sm backdrop-blur transition hover:bg-white"
+                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/60 bg-white/75 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647] shadow-sm backdrop-blur transition hover:bg-white"
                 >
                   Edit Profile
                 </Link>
@@ -242,9 +242,6 @@ export default async function ProfilePage({ params }: PageProps) {
               <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
                 Profile
               </h2>
-              <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
-                Details
-              </div>
             </div>
 
             <div className="mt-5 grid gap-3">
