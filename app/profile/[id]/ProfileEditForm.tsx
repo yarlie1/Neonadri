@@ -269,18 +269,6 @@ export default function ProfileEditForm({
 
               <div>
                 <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-                  Preferred Area
-                </label>
-                <input
-                  value={preferredArea}
-                  onChange={(e) => setPreferredArea(e.target.value)}
-                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-                  placeholder="Koreatown, Pasadena, DTLA..."
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-[#5a5149]">
                   Languages
                 </label>
                 <div className="flex flex-wrap gap-2 rounded-[22px] border border-[#e7ddd2] bg-[#fcfaf7] p-3">
