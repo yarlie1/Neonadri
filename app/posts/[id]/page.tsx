@@ -85,6 +85,22 @@ type ProfileStats = {
   completed_meetups?: number | null;
 };
 
+type ProfileCardData = {
+  userId: string;
+  displayName: string;
+  aboutMe: string;
+  gender: string;
+  ageGroup: string;
+  languages: string[];
+  meetingStyle: string;
+  interests: string[];
+  responseNote: string;
+  averageRating: number;
+  reviewCount: number;
+  completedMeetups: number;
+  recentReviews: ReviewRow[];
+};
+
 type PostRow = {
   id: number;
   user_id: string;
@@ -324,6 +340,184 @@ function StatCard({
   );
 }
 
+function ProfileShowcaseCard({
+  title,
+  subtitle,
+  profileHref,
+  data,
+  isCurrentUser = false,
+}: {
+  title: string;
+  subtitle: string;
+  profileHref?: string;
+  data: ProfileCardData;
+  isCurrentUser?: boolean;
+}) {
+  const hasAboutMe = !!data.aboutMe.trim();
+  const hasLanguages = data.languages.length > 0;
+  const hasMeetingStyle = !!data.meetingStyle.trim();
+  const hasInterests = data.interests.length > 0;
+  const hasResponseNote = !!data.responseNote.trim();
+  const summary = hasAboutMe
+    ? data.aboutMe.replace(/\s+/g, " ").trim().length <= 140
+      ? data.aboutMe.replace(/\s+/g, " ").trim()
+      : `${data.aboutMe.replace(/\s+/g, " ").trim().slice(0, 137).trimEnd()}...`
+    : "No introduction yet.";
+  const roundedAverage = Math.round(data.averageRating);
+
+  return (
+    <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e5b29e_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
+      <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
+      <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+      <div className="relative">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+              {title}
+            </div>
+            <div className="mt-3 flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-lg font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
+                {data.displayName.charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  {profileHref ? (
+                    <Link
+                      href={profileHref}
+                      className="block truncate text-[1.7rem] font-black tracking-[-0.04em] text-[#2b1f1a] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
+                    >
+                      {data.displayName}
+                    </Link>
+                  ) : (
+                    <div className="truncate text-[1.7rem] font-black tracking-[-0.04em] text-[#2b1f1a]">
+                      {data.displayName}
+                    </div>
+                  )}
+                  {isCurrentUser && (
+                    <span className="rounded-full border border-white/60 bg-white/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#7d6458]">
+                      You
+                    </span>
+                  )}
+                </div>
+                <div className="mt-1 text-sm text-[#5f453b]">{subtitle}</div>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-full border border-white/60 bg-white/60 px-4 py-2 text-sm font-medium text-[#6b5f52] backdrop-blur">
+            {data.averageRating.toFixed(1)} rating / {data.reviewCount} reviews
+          </div>
+        </div>
+
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          {(data.gender || data.ageGroup) && (
+            <InfoItem
+              icon={<UserRound className="h-3.5 w-3.5 text-[#8a7f74]" />}
+              label={title.includes("Guest") ? "Guest" : "Host"}
+              value={`${data.gender || "Unknown"}${data.gender && data.ageGroup ? " / " : ""}${data.ageGroup || ""}`}
+            />
+          )}
+          {hasLanguages && (
+            <InfoItem
+              icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
+              label="Languages"
+              value={data.languages.join(", ")}
+            />
+          )}
+          {hasMeetingStyle && (
+            <InfoItem
+              icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
+              label="Meeting Style"
+              value={data.meetingStyle}
+            />
+          )}
+          {hasResponseNote && (
+            <InfoItem
+              icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
+              label="Response Note"
+              value={data.responseNote}
+            />
+          )}
+        </div>
+
+        <div className="mt-4 rounded-[1.4rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
+          <div className="flex items-start gap-3">
+            <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
+            <div>
+              <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
+                About Me
+              </div>
+              <div className="mt-2 text-[15px] leading-7 text-[#5f5347]">{summary}</div>
+            </div>
+          </div>
+        </div>
+
+        {hasInterests && (
+          <div className="mt-4">
+            <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
+              <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
+              Interests
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {data.interests.map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full bg-[#f4ece4] px-3 py-1.5 text-xs font-medium text-[#6b5f52]"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="mt-4 grid grid-cols-3 gap-3">
+          <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
+            <div className="text-xs text-[#8b7f74]">Rating</div>
+            <div className="mt-1 text-xl font-bold text-[#2f2a26]">{data.averageRating.toFixed(1)}</div>
+            <div className="mt-1 flex justify-center">
+              <StarRating value={roundedAverage} size="sm" />
+            </div>
+          </div>
+          <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
+            <div className="text-xs text-[#8b7f74]">Reviews</div>
+            <div className="mt-2 text-xl font-bold text-[#2f2a26]">{data.reviewCount}</div>
+          </div>
+          <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
+            <div className="text-xs text-[#8b7f74]">Meetups</div>
+            <div className="mt-2 text-xl font-bold text-[#2f2a26]">{data.completedMeetups}</div>
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
+          <div className="text-sm font-semibold text-[#2f2a26]">Recent Reviews</div>
+          <div className="mt-3 space-y-3">
+            {data.recentReviews.length === 0 ? (
+              <div className="text-sm text-[#8b7f74]">No reviews yet.</div>
+            ) : (
+              data.recentReviews.map((review) => (
+                <div
+                  key={review.id}
+                  className="rounded-[1rem] border border-[#eee4d9] bg-white px-3 py-3"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <StarRating value={review.rating} size="md" />
+                    <div className="text-[11px] text-[#9b8f84]">
+                      {new Date(review.created_at).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#5f5347]">
+                    {review.review_text || "No comment."}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default async function MeetupDetailPage({ params }: PageProps) {
   const supabase = await createClient();
   const id = params.id;
@@ -359,6 +553,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   let ownerReviewCount = 0;
   let ownerCompletedMeetups = 0;
   let ownerRecentReviews: ReviewRow[] = [];
+  let guestProfileData: ProfileCardData | null = null;
+  let matchedGuestUserId: string | null = null;
 
   if (post.user_id) {
     const [ownerProfileRes, ownerStatsRes, ownerReviewsRes] = await Promise.all([
@@ -467,34 +663,79 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       .order("created_at", { ascending: false });
 
     ownerRequests = (ownerRequestData || []) as MatchRequestRow[];
+  }
 
-    if (isPostMatched) {
-      const { data: ownerMatchData } = await supabase
-        .from("matches")
-        .select("id, user_a, user_b, status")
-        .eq("post_id", post.id)
-        .maybeSingle();
+  let matchedRecord: MatchRow | null = null;
+  if (isPostMatched) {
+    const { data: matchRecordData } = await supabase
+      .from("matches")
+      .select("id, user_a, user_b, status")
+      .eq("post_id", post.id)
+      .maybeSingle();
 
-      const match = ownerMatchData as MatchRow | null;
-      const matchedPartnerId =
-        match?.user_a === user.id ? match?.user_b : match?.user_b === user.id ? match?.user_a : null;
+    matchedRecord = (matchRecordData as MatchRow | null) || null;
+  }
 
-      if (matchedPartnerId) {
-        const { data: partnerProfile } = await supabase
-          .from("profiles")
-          .select("id, display_name, gender, age_group")
-          .eq("id", matchedPartnerId)
-          .maybeSingle();
+  const matchedGuestId =
+    matchedRecord?.user_a && matchedRecord.user_a !== post.user_id
+      ? matchedRecord.user_a
+      : matchedRecord?.user_b && matchedRecord.user_b !== post.user_id
+      ? matchedRecord.user_b
+      : null;
 
-        if (partnerProfile) {
-          matchedPartner = {
-            userId: partnerProfile.id,
-            displayName: partnerProfile.display_name || "Unknown",
-            gender: partnerProfile.gender || "",
-            ageGroup: partnerProfile.age_group || "",
-          };
-        }
-      }
+  const isViewerParticipant = !!user && !!matchedRecord && (user.id === post.user_id || user.id === matchedGuestId);
+
+  if (matchedGuestId) {
+    matchedGuestUserId = matchedGuestId;
+  }
+
+  if (matchedGuestId) {
+    const [guestProfileRes, guestStatsRes, guestReviewsRes] = await Promise.all([
+      supabase
+        .from("profiles")
+        .select(
+          "id, display_name, bio, about_me, gender, age_group, preferred_area, languages, meeting_style, interests, response_time_note"
+        )
+        .eq("id", matchedGuestId)
+        .maybeSingle(),
+      supabase.rpc("get_profile_stats", {
+        p_user_id: matchedGuestId,
+      }),
+      supabase
+        .from("match_reviews")
+        .select("id, rating, review_text, created_at")
+        .eq("reviewee_user_id", matchedGuestId)
+        .order("created_at", { ascending: false })
+        .limit(3),
+    ]);
+
+    const guestProfile = guestProfileRes.data as ProfileRow | null;
+    const guestStats = guestStatsRes.data as ProfileStats | null;
+    const guestReviews = (guestReviewsRes.data || []) as ReviewRow[];
+
+    if (guestProfile) {
+      guestProfileData = {
+        userId: guestProfile.id,
+        displayName: guestProfile.display_name || "Unknown",
+        aboutMe: guestProfile.about_me || "",
+        gender: guestProfile.gender || "",
+        ageGroup: guestProfile.age_group || "",
+        languages: guestProfile.languages || [],
+        meetingStyle: guestProfile.meeting_style || "",
+        interests: guestProfile.interests || [],
+        responseNote: guestProfile.response_time_note || "",
+        averageRating: Number(guestStats?.average_rating ?? 0),
+        reviewCount: Number(guestStats?.review_count ?? 0),
+        completedMeetups: Number(guestStats?.completed_meetups ?? 0),
+        recentReviews: guestReviews,
+      };
+
+      matchedPartner = {
+        userId: guestProfile.id,
+        displayName: guestProfile.display_name || "Unknown",
+        gender: guestProfile.gender || "",
+        ageGroup: guestProfile.age_group || "",
+      };
     }
   }
 
@@ -536,20 +777,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       : "";
 
   const ownerProfileHref = post.user_id ? `/profile/${post.user_id}` : "#";
-  const roundedAverage = Math.round(ownerAverageRating);
-
-  const hasAboutMe = !!ownerAboutMe.trim();
-  const hasLanguages = ownerLanguages.length > 0;
-  const hasMeetingStyle = !!ownerMeetingStyle.trim();
-  const hasInterests = ownerInterests.length > 0;
-  const hasResponseNote = !!ownerResponseNote.trim();
-  const ownerSummary = hasAboutMe
-    ? ownerAboutMe.replace(/\s+/g, " ").trim().length <= 140
-      ? ownerAboutMe.replace(/\s+/g, " ").trim()
-      : `${ownerAboutMe.replace(/\s+/g, " ").trim().slice(0, 137).trimEnd()}...`
-    : "No introduction yet.";
-
-  const locationLabel = post.place_name || post.location || "No place";
   const targetLabel = `${post.target_gender || "Any"} / ${
     post.target_age_group || "Any"
   }`;
@@ -559,6 +786,21 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     ? `During this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host gives ${post.benefit_amount} to the guest.`
     : `During this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host has not listed a guest benefit yet.`;
   const purposeTheme = getPurposeTheme(post.meeting_purpose);
+  const ownerProfileData: ProfileCardData = {
+    userId: post.user_id,
+    displayName: ownerName,
+    aboutMe: ownerAboutMe,
+    gender: ownerGender,
+    ageGroup: ownerAgeGroup,
+    languages: ownerLanguages,
+    meetingStyle: ownerMeetingStyle,
+    interests: ownerInterests,
+    responseNote: ownerResponseNote,
+    averageRating: ownerAverageRating,
+    reviewCount: ownerReviewCount,
+    completedMeetups: ownerCompletedMeetups,
+    recentReviews: ownerRecentReviews,
+  };
   const ownerRequestItems = ownerRequests.map((request) => {
     const profile = requesterProfileMap.get(request.requester_user_id);
 
@@ -575,6 +817,30 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
       <div className="mx-auto max-w-3xl space-y-5">
+        {isPostMatched && isViewerParticipant && (
+          <div className="rounded-[28px] border border-[#dccfc2] bg-[linear-gradient(135deg,#fff9f3_0%,#f2e4d7_100%)] p-4 shadow-[0_14px_32px_rgba(92,69,52,0.08)] sm:p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                  Upcoming meetup
+                </div>
+                <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#2f2a26]">
+                  {post.meeting_purpose || "Meetup"} is confirmed
+                </div>
+                <div className="mt-2 text-sm leading-6 text-[#6f655c]">
+                  {meetupTimeLabel}
+                </div>
+                <div className="text-sm leading-6 text-[#6f655c]">
+                  {post.place_name || post.location || "Selected place"}
+                </div>
+              </div>
+              <div className="rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b5f52]">
+                Matched
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e5b29e_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
@@ -686,150 +952,23 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
         <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
           <div className="space-y-5">
-            <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e5b29e_100%)] px-6 py-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
-              <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
-              <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
-              <div className="relative">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
-                      About the Host
-                    </div>
-                    <div className="mt-3 flex items-center gap-3">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#f5d8bf,_#c18f73_78%)] text-lg font-bold text-white shadow-[0_12px_24px_rgba(160,111,82,0.18)]">
-                        {ownerName.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="min-w-0">
-                        {post.user_id ? (
-                          <Link
-                            href={ownerProfileHref}
-                            className="block truncate text-[1.7rem] font-black tracking-[-0.04em] text-[#2b1f1a] underline-offset-4 transition hover:text-[#6b5f52] hover:underline"
-                          >
-                            {ownerName}
-                          </Link>
-                        ) : (
-                          <div className="truncate text-[1.7rem] font-black tracking-[-0.04em] text-[#2b1f1a]">
-                            {ownerName}
-                          </div>
-                        )}
-                        <div className="mt-1 text-sm text-[#5f453b]">
-                          Warm, low-pressure meetup host
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="rounded-full border border-white/60 bg-white/60 px-4 py-2 text-sm font-medium text-[#6b5f52] backdrop-blur">
-                    {ownerAverageRating.toFixed(1)} rating / {ownerReviewCount} reviews
-                  </div>
-                </div>
+            <ProfileShowcaseCard
+              title="About the Host"
+              subtitle="Warm, low-pressure meetup host"
+              profileHref={post.user_id ? ownerProfileHref : undefined}
+              data={ownerProfileData}
+              isCurrentUser={user?.id === post.user_id}
+            />
 
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                  {(ownerGender || ownerAgeGroup) && (
-                    <InfoItem
-                      icon={<UserRound className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                      label="Host"
-                      value={`${ownerGender || "Unknown"}${ownerGender && ownerAgeGroup ? " / " : ""}${ownerAgeGroup || ""}`}
-                    />
-                  )}
-                  {hasLanguages && (
-                    <InfoItem
-                      icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                      label="Languages"
-                      value={ownerLanguages.join(", ")}
-                    />
-                  )}
-                  {hasMeetingStyle && (
-                    <InfoItem
-                      icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                      label="Meeting Style"
-                      value={ownerMeetingStyle}
-                    />
-                  )}
-                  {hasResponseNote && (
-                    <InfoItem
-                      icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                      label="Response Note"
-                      value={ownerResponseNote}
-                    />
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-4 rounded-[1.4rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
-                <div className="flex items-start gap-3">
-                  <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
-                  <div>
-                    <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                      About Me
-                    </div>
-                    <div className="mt-2 text-[15px] leading-7 text-[#5f5347]">{ownerSummary}</div>
-                  </div>
-                </div>
-              </div>
-
-              {hasInterests && (
-                <div className="mt-4">
-                  <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                    <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
-                    Interests
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {ownerInterests.map((item) => (
-                      <span
-                        key={item}
-                        className="rounded-full bg-[#f4ece4] px-3 py-1.5 text-xs font-medium text-[#6b5f52]"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="mt-4 grid grid-cols-3 gap-3">
-                <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
-                  <div className="text-xs text-[#8b7f74]">Rating</div>
-                  <div className="mt-1 text-xl font-bold text-[#2f2a26]">{ownerAverageRating.toFixed(1)}</div>
-                  <div className="mt-1 flex justify-center">
-                    <StarRating value={roundedAverage} size="sm" />
-                  </div>
-                </div>
-                <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
-                  <div className="text-xs text-[#8b7f74]">Reviews</div>
-                  <div className="mt-2 text-xl font-bold text-[#2f2a26]">{ownerReviewCount}</div>
-                </div>
-                <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
-                  <div className="text-xs text-[#8b7f74]">Meetups</div>
-                  <div className="mt-2 text-xl font-bold text-[#2f2a26]">{ownerCompletedMeetups}</div>
-                </div>
-              </div>
-
-              <div className="mt-4 rounded-[1.25rem] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
-                <div className="text-sm font-semibold text-[#2f2a26]">Recent Reviews</div>
-                <div className="mt-3 space-y-3">
-                  {ownerRecentReviews.length === 0 ? (
-                    <div className="text-sm text-[#8b7f74]">No reviews yet.</div>
-                  ) : (
-                    ownerRecentReviews.map((review) => (
-                      <div
-                        key={review.id}
-                        className="rounded-[1rem] border border-[#eee4d9] bg-white px-3 py-3"
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <StarRating value={review.rating} size="md" />
-                          <div className="text-[11px] text-[#9b8f84]">
-                            {new Date(review.created_at).toLocaleDateString()}
-                          </div>
-                        </div>
-                        <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#5f5347]">
-                          {review.review_text || "No comment."}
-                        </p>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
+            {isPostMatched && isViewerParticipant && guestProfileData && (
+              <ProfileShowcaseCard
+                title="About the Guest"
+                subtitle="Confirmed guest for this meetup"
+                profileHref={matchedGuestUserId ? `/profile/${matchedGuestUserId}` : undefined}
+                data={guestProfileData}
+                isCurrentUser={user?.id === matchedGuestUserId}
+              />
+            )}
           </div>
 
           <div className="space-y-5 lg:sticky lg:top-36">
