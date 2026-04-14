@@ -194,6 +194,7 @@ export default async function ProfilePage({ params }: PageProps) {
   const hasMeetingStyle = !!profile.meeting_style?.trim();
   const hasInterests = !!profile.interests && profile.interests.length > 0;
   const hasResponseNote = !!profile.response_time_note?.trim();
+  const hasPreferredArea = !!profile.preferred_area?.trim();
   const profileSummary = hasAboutMe
     ? profile.about_me!.replace(/\s+/g, " ").trim().length <= 140
       ? profile.about_me!.replace(/\s+/g, " ").trim()
@@ -202,131 +203,234 @@ export default async function ProfilePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
-      <div className="mx-auto max-w-2xl space-y-5">
-        <div className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f3d6c5_38%,#e4b49d_100%)] p-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)]">
+      <div className="mx-auto max-w-5xl space-y-5">
+        <div className="relative overflow-hidden rounded-[36px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff8f1_0%,#f5dac8_36%,#e0ad95_100%)] p-6 shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:p-8">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
           <div className="relative">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+              <div className="min-w-0 flex-1">
                 <div className="inline-flex items-center gap-2 rounded-full bg-white/60 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
                   <UserCircle2 className="h-3.5 w-3.5" />
                   <span>{isMyProfile ? "My profile" : "Guest profile"}</span>
                 </div>
 
-                <div className="mt-4 flex items-center gap-3">
-                  <UserCircle2 className="h-8 w-8 shrink-0 text-[#8a7f74]" />
-                  <h1 className="truncate text-3xl font-black tracking-[-0.04em] text-[#2b1f1a] sm:text-[2.2rem]">
-                    {profile.display_name || "Unknown"}
-                  </h1>
+                <div className="mt-5 flex flex-wrap items-center gap-4">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-[22px] border border-white/55 bg-white/60 shadow-sm backdrop-blur">
+                    <UserCircle2 className="h-9 w-9 text-[#8a7f74]" />
+                  </div>
+                  <div className="min-w-0">
+                    <h1 className="truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
+                      {profile.display_name || "Unknown"}
+                    </h1>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {(profile.gender || profile.age_group) && (
+                        <span className="rounded-full border border-white/60 bg-white/65 px-3 py-1.5 text-xs font-medium text-[#5f5347] shadow-sm">
+                          {[profile.gender, profile.age_group].filter(Boolean).join(" / ")}
+                        </span>
+                      )}
+                      {hasMeetingStyle && (
+                        <span className="rounded-full border border-white/60 bg-white/65 px-3 py-1.5 text-xs font-medium text-[#5f5347] shadow-sm">
+                          {profile.meeting_style}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
-                <p className="mt-3 max-w-xl text-sm leading-6 text-[#5f453b] sm:text-[15px]">
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-[#5f453b] sm:text-[15px]">
                   {profileSummary}
                 </p>
-              </div>
 
-              <div className="flex flex-col items-end gap-2">
-                {isMyProfile && (
-                  <Link
-                    href={`/profile/${profile.id}/edit`}
-                    className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/60 bg-white/70 px-4 py-2 text-sm font-medium text-[#5a5149] shadow-sm backdrop-blur transition hover:bg-white"
-                  >
-                    Edit Profile
-                  </Link>
-                )}
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-3 gap-3">
-              <StatCard label="Rating" value={averageRating.toFixed(1)} />
-              <StatCard label="Reviews" value={String(reviewCount)} />
-              <StatCard label="Meetups" value={String(completedMeetups)} />
-            </div>
-
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-[24px] border border-white/50 bg-white/55 px-4 py-4 backdrop-blur">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
-                  Profile snapshot
-                </div>
-                <div className="mt-3 space-y-2 text-sm text-[#5f5347]">
-                  {(profile.gender || profile.age_group) && (
-                    <div className="flex items-center gap-2">
-                      <UserRound className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <span>
-                        {profile.gender || "Unknown"}
-                        {profile.gender && profile.age_group ? " / " : ""}
-                        {profile.age_group || ""}
-                      </span>
-                    </div>
-                  )}
-
-                  {hasLanguages && (
-                    <div className="flex items-center gap-2">
-                      <Languages className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <span>{profile.languages!.join(", ")}</span>
-                    </div>
-                  )}
-
-                  {hasMeetingStyle && (
-                    <div className="flex items-center gap-2">
-                      <HeartHandshake className="h-4 w-4 shrink-0 text-[#8a7f74]" />
-                      <span>{profile.meeting_style}</span>
-                    </div>
-                  )}
+                <div className="mt-6 grid grid-cols-3 gap-3 sm:max-w-xl">
+                  <StatCard label="Rating" value={averageRating.toFixed(1)} />
+                  <StatCard label="Reviews" value={String(reviewCount)} />
+                  <StatCard label="Meetups" value={String(completedMeetups)} />
                 </div>
               </div>
 
-              <div className="rounded-[24px] border border-white/50 bg-white/55 px-4 py-4 backdrop-blur">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
-                  Reputation
-                </div>
-                <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-                  <div className="flex items-center gap-2">
-                    <StarRating value={roundedAverage} size="md" />
-                    <span className="text-base font-semibold">
-                      {averageRating.toFixed(1)}
-                    </span>
+              <div className="w-full lg:max-w-sm">
+                <div className="rounded-[28px] border border-white/50 bg-white/55 p-5 shadow-sm backdrop-blur">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8a5647]">
+                        Snapshot
+                      </div>
+                      <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#2f2a26]">
+                        Quick read before the first message
+                      </div>
+                    </div>
+                    <div className="rounded-full bg-[#fff7ef] px-3 py-1 text-xs font-medium text-[#8a5647]">
+                      {isMyProfile ? "Editable" : "Public view"}
+                    </div>
                   </div>
-                  <span className="text-sm text-[#8b7f74]">
-                    {reviewCount} reviews
-                  </span>
-                  <span className="text-sm text-[#8b7f74]">
-                    {completedMeetups} meetups completed
-                  </span>
+
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    {hasLanguages && (
+                      <InfoItem
+                        icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                        label="Languages"
+                        value={profile.languages!.join(", ")}
+                      />
+                    )}
+                    {hasResponseNote && (
+                      <InfoItem
+                        icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                        label="Response Note"
+                        value={profile.response_time_note!}
+                      />
+                    )}
+                    {hasPreferredArea && (
+                      <InfoItem
+                        icon={<Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                        label="Preferred Area"
+                        value={profile.preferred_area!}
+                      />
+                    )}
+                    <InfoItem
+                      icon={<HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                      label="Reputation"
+                      value={`${averageRating.toFixed(1)} average from ${reviewCount} reviews`}
+                    />
+                  </div>
                 </div>
+
+                {isMyProfile && (
+                  <div className="mt-3 flex justify-end">
+                    <Link
+                      href={`/profile/${profile.id}/edit`}
+                      className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/60 bg-white/75 px-5 py-2.5 text-sm font-medium text-[#5a5149] shadow-sm backdrop-blur transition hover:bg-white"
+                    >
+                      Edit Profile
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-[1.75rem] font-black tracking-[-0.04em] text-[#2f2a26]">
-              About
-            </h2>
-            <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
-              Personal context
-            </div>
-          </div>
+        <div className="grid gap-5 lg:grid-cols-[1.45fr_0.95fr]">
+          <div className="space-y-5">
+            <section className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-[1.75rem] font-black tracking-[-0.04em] text-[#2f2a26]">
+                  About
+                </h2>
+                <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+                  Personal context
+                </div>
+              </div>
 
-          <div className="mt-5 space-y-4">
-            <div className="rounded-[22px] border border-[#efe6db] bg-[#fcfaf7] px-4 py-4">
-              <div className="flex items-start gap-3">
-                <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
-                <div>
-                  <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                    About me
-                  </div>
-                  <div className="mt-1 leading-7 text-[#5f5347]">
-                    {hasAboutMe ? profile.about_me : "No introduction yet."}
+              <div className="mt-5 rounded-[24px] border border-[#efe6db] bg-[#fcfaf7] p-5">
+                <div className="flex items-start gap-3">
+                  <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7f74]" />
+                  <div>
+                    <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
+                      About me
+                    </div>
+                    <div className="mt-2 text-sm leading-7 text-[#5f5347]">
+                      {hasAboutMe ? profile.about_me : "No introduction yet."}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {(hasLanguages || hasMeetingStyle || hasResponseNote) && (
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {hasInterests && (
+                <div className="mt-4">
+                  <div className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
+                    <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
+                    Interests
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {profile.interests!.map((item) => (
+                      <span
+                        key={item}
+                        className="rounded-full bg-[#f4ece4] px-3 py-1.5 text-xs font-medium text-[#6b5f52]"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </section>
+
+            <section className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-[1.75rem] font-black tracking-[-0.04em] text-[#2f2a26]">
+                    Reviews
+                  </h2>
+                  <p className="mt-1 text-sm text-[#7a6b61]">
+                    Signals people notice before they decide to meet.
+                  </p>
+                </div>
+
+                {isMyProfile && (
+                  <Link
+                    href="/dashboard?tab=matches"
+                    className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-4 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
+                  >
+                    Go to Matches
+                  </Link>
+                )}
+              </div>
+
+              <div className="mt-4 space-y-4">
+                {reviews.length === 0 ? (
+                  <div className="rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-4 text-sm text-[#8b7f74]">
+                    No reviews yet.
+                  </div>
+                ) : (
+                  reviews.map((review) => (
+                    <div
+                      key={review.id}
+                      className="rounded-[24px] border border-[#e7ddd2] bg-[#fcfaf7] p-5"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <StarRating value={review.rating} size="md" />
+                          <div className="text-sm font-semibold text-[#6b5f52]">
+                            {review.rating}.0 / 5
+                          </div>
+                        </div>
+                        <div className="text-xs text-[#9b8f84]">
+                          {new Date(review.created_at).toLocaleDateString()}
+                        </div>
+                      </div>
+
+                      <p className="mt-3 text-sm leading-6 text-[#5f5347]">
+                        {review.review_text || "No comment."}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </section>
+          </div>
+
+          <aside className="space-y-5">
+            <section className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-[1.55rem] font-black tracking-[-0.04em] text-[#2f2a26]">
+                  Details
+                </h2>
+                <div className="rounded-full bg-[#f6eee6] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+                  Easy to scan
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-3">
+                {(profile.gender || profile.age_group) && (
+                  <InfoItem
+                    icon={<UserRound className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                    label="Identity"
+                    value={[profile.gender, profile.age_group].filter(Boolean).join(" / ")}
+                  />
+                )}
+
                 {hasLanguages && (
                   <InfoItem
                     icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
@@ -350,76 +454,37 @@ export default async function ProfilePage({ params }: PageProps) {
                     value={profile.response_time_note!}
                   />
                 )}
+
+                {hasPreferredArea && (
+                  <InfoItem
+                    icon={<Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                    label="Preferred Area"
+                    value={profile.preferred_area!}
+                  />
+                )}
               </div>
-            )}
+            </section>
 
-            {hasInterests && (
-              <div>
-                <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                  <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
-                  Interests
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {profile.interests!.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-full bg-[#f4ece4] px-3 py-1.5 text-xs font-medium text-[#6b5f52]"
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </div>
+            <section className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9b8f84]">
+                Reputation snapshot
               </div>
-            )}
-          </div>
-        </div>
 
-        <div className="rounded-[30px] border border-[#eadfd3] bg-white/92 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-[1.75rem] font-black tracking-[-0.04em] text-[#2f2a26]">
-              Reviews
-            </h2>
-
-            {isMyProfile && (
-              <Link
-                href="/dashboard?tab=matches"
-                className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-4 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
-              >
-                Go to Matches
-              </Link>
-            )}
-          </div>
-
-          <div className="mt-4 space-y-4">
-            {reviews.length === 0 ? (
-              <div className="rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] px-4 py-4 text-sm text-[#8b7f74]">
-                No reviews yet.
-              </div>
-            ) : (
-              reviews.map((review) => (
-                <div
-                  key={review.id}
-                  className="rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] p-4"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <StarRating value={review.rating} size="md" />
-                    <div className="text-xs text-[#9b8f84]">
-                      {new Date(review.created_at).toLocaleDateString()}
-                    </div>
+              <div className="mt-4 rounded-[24px] border border-[#efe6db] bg-[#fcfaf7] p-5">
+                <div className="flex items-center gap-3">
+                  <StarRating value={roundedAverage} size="md" />
+                  <div className="text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
+                    {averageRating.toFixed(1)}
                   </div>
-
-                  <div className="mt-2 text-sm font-medium text-[#6b5f52]">
-                    {review.rating}.0 / 5
-                  </div>
-
-                  <p className="mt-2 text-sm leading-6 text-[#5f5347]">
-                    {review.review_text || "No comment."}
-                  </p>
                 </div>
-              ))
-            )}
-          </div>
+
+                <div className="mt-4 space-y-2 text-sm text-[#6b5f52]">
+                  <div>{reviewCount} reviews received</div>
+                  <div>{completedMeetups} meetups completed</div>
+                </div>
+              </div>
+            </section>
+          </aside>
         </div>
       </div>
     </main>
