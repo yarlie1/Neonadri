@@ -175,7 +175,7 @@ function getPostStatus(meetingTime: string | null) {
 
 function getPurposeTheme(purpose: string | null) {
   const baseBandClass =
-    "border border-[#ebe0d4] bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%)] text-[#302720]";
+    "border border-[#f1e8df] bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%)] text-[#302720]";
 
   switch (purpose) {
     case "Coffee Chat":
@@ -263,14 +263,14 @@ function getMatchBadge(post: PostRow, summary?: MatchSummaryMap[number]) {
 
   if (summary?.isMatched) {
     return {
-      label: "Matched / confirmed",
+      label: "Matched",
       className: "bg-[#eee4d8] text-[#6f6256]",
     };
   }
 
   if (isExpired) {
     return {
-      label: "Expired / closed",
+      label: "Expired",
       className: "bg-[#ebe2d9] text-[#85786d]",
     };
   }
@@ -278,8 +278,8 @@ function getMatchBadge(post: PostRow, summary?: MatchSummaryMap[number]) {
   return {
     label:
       requestCount > 0
-        ? `Open / ${requestCount} request${requestCount === 1 ? "" : "s"}`
-        : "Open / no requests yet",
+        ? `Open · ${requestCount}`
+        : "Open",
     className: "bg-[#edf1ea] text-[#5e6f5f]",
   };
 }
