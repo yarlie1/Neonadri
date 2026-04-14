@@ -175,7 +175,7 @@ function getPostStatus(meetingTime: string | null) {
 
 function getPurposeTheme(purpose: string | null) {
   const baseBandClass =
-    "border border-[#f1e8df] bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%)] text-[#302720]";
+    "border border-[#eadfd2] bg-[linear-gradient(180deg,#fbf5ef_0%,#f3e8dc_100%)] text-[#2f261f]";
 
   switch (purpose) {
     case "Coffee Chat":
@@ -1002,18 +1002,18 @@ export default function HomeFeedClient({
               <div className="rounded-[26px] border border-[#efe2d5] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e8_100%)] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
                 <div className="flex items-stretch gap-2">
                   <div
-                    className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[20px] px-4 py-3 ${purposeTheme.bandClass} shadow-[0_8px_18px_rgba(64,45,33,0.08)]`}
+                    className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[20px] px-4 py-3 ${purposeTheme.bandClass} shadow-[0_10px_20px_rgba(64,45,33,0.06)]`}
                   >
                     <div
-                      className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] ${purposeTheme.iconWrapClass}`}
+                      className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] ${purposeTheme.iconWrapClass}`}
                     >
                       {getPurposeIcon(
                         post.meeting_purpose,
-                        "h-[19px] w-[19px] shrink-0"
+                        "h-5 w-5 shrink-0"
                       )}
                     </div>
                     <div className="min-w-0">
-                      <div className="truncate text-[1.15rem] font-black tracking-[-0.04em] text-[#302720] sm:text-[1.25rem]">
+                      <div className="truncate text-[1.18rem] font-black tracking-[-0.03em] text-[#2f261f] sm:text-[1.28rem]">
                         {post.meeting_purpose || "Social meetup"}
                       </div>
                     </div>
