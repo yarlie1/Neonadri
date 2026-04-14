@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { createClient } from "../../../lib/supabase/client";
 import { Save } from "lucide-react";
 
@@ -93,8 +92,7 @@ export default function ProfileEditForm({
 }: {
   profile: ProfileRow;
 }) {
-  const supabase = createClient();
-  const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
 
   const [saving, setSaving] = useState(false);
 
@@ -161,14 +159,8 @@ export default function ProfileEditForm({
         return;
       }
 
-      setMessage("Profile saved.");
-      router.refresh();
-      router.push(`/profile/${profile.id}`);
-
-      setTimeout(() => {
-        setSaving(false);
-        setMessage("");
-      }, 300);
+      setMessage("Profile saved. Redirecting...");
+      window.location.replace(`/profile/${profile.id}`);
     } catch (err) {
       console.error(err);
       setMessage("Something went wrong while saving.");
