@@ -196,7 +196,7 @@ export default async function ProfilePage({ params }: PageProps) {
               )}
             </div>
 
-            <div className="min-w-0">
+            <div className="min-w-0 pl-1">
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
                   {profile.display_name || "Unknown"}
@@ -233,14 +233,6 @@ export default async function ProfilePage({ params }: PageProps) {
         <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
           <section className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-6 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
             <div className="grid gap-3">
-              {hasPreferredArea && (
-                <InfoItem
-                  icon={<Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                  label="Preferred Area"
-                  value={profile.preferred_area!}
-                />
-              )}
-
               {(profile.gender || profile.age_group) && (
                 <InfoItem
                   icon={<UserRound className="h-3.5 w-3.5 text-[#8a7f74]" />}
@@ -248,28 +240,6 @@ export default async function ProfilePage({ params }: PageProps) {
                   value={[profile.gender, profile.age_group].filter(Boolean).join(" / ")}
                 />
               )}
-
-              {hasLanguages && (
-                <InfoItem
-                  icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
-                  label="Languages"
-                  value={profile.languages!.join(", ")}
-                />
-              )}
-
-              <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4">
-                <div className="flex items-start gap-3">
-                  <MessageSquareText className="mt-[1px] h-5 w-5 shrink-0 text-[#8a7f74]" />
-                  <div className="min-w-0">
-                    <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                      About me
-                    </div>
-                    <div className="mt-2 text-sm leading-7 text-[#5f5347]">
-                      {hasAboutMe ? profile.about_me : "No introduction yet."}
-                    </div>
-                  </div>
-                </div>
-              </div>
 
               {hasInterests && (
                 <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4">
@@ -288,6 +258,36 @@ export default async function ProfilePage({ params }: PageProps) {
                     ))}
                   </div>
                 </div>
+              )}
+
+              <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4">
+                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
+                  <MessageSquareText className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
+                      About me
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-2 text-sm leading-7 text-[#5f5347]">
+                  {hasAboutMe ? profile.about_me : "No introduction yet."}
+                </div>
+              </div>
+
+              {hasLanguages && (
+                <InfoItem
+                  icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                  label="Languages"
+                  value={profile.languages!.join(", ")}
+                />
+              )}
+
+              {hasPreferredArea && (
+                <InfoItem
+                  icon={<Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                  label="Preferred Area"
+                  value={profile.preferred_area!}
+                />
               )}
             </div>
           </section>
