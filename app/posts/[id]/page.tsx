@@ -828,25 +828,47 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
                   Upcoming meetup
                 </div>
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <span
-                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold shadow-sm ${purposeTheme.bandClass}`}
-                  >
-                    {getPurposeIcon(
-                      post.meeting_purpose,
-                      "h-[15px] w-[15px] shrink-0 text-white"
-                    )}
-                    <span>{post.meeting_purpose || "Meetup"}</span>
-                  </span>
-                  <span className="rounded-full bg-white/75 px-3 py-1.5 text-sm font-semibold text-[#5f5347]">
-                    {meetupDurationLabel}
-                  </span>
-                </div>
-                <div className="mt-3 grid gap-1 text-sm leading-6 text-[#6f655c] sm:grid-cols-[auto_1fr] sm:gap-x-3">
-                  <div className="font-medium text-[#8b7f74]">When</div>
-                  <div>{meetupTimeLabel}</div>
-                  <div className="font-medium text-[#8b7f74]">Place</div>
-                  <div>{post.place_name || post.location || "Selected place"}</div>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-[18px] border border-white/60 bg-white/62 px-4 py-3 backdrop-blur">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                      Type
+                    </div>
+                    <div className="mt-2">
+                      <span
+                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold shadow-sm ${purposeTheme.bandClass}`}
+                      >
+                        {getPurposeIcon(
+                          post.meeting_purpose,
+                          "h-[15px] w-[15px] shrink-0 text-white"
+                        )}
+                        <span>{post.meeting_purpose || "Meetup"}</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div className="rounded-[18px] border border-white/60 bg-white/62 px-4 py-3 backdrop-blur">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                      Duration
+                    </div>
+                    <div className="mt-2 text-base font-semibold text-[#2f2a26]">
+                      {meetupDurationLabel}
+                    </div>
+                  </div>
+                  <div className="rounded-[18px] border border-white/60 bg-white/62 px-4 py-3 backdrop-blur">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                      When
+                    </div>
+                    <div className="mt-2 text-sm leading-6 text-[#5f5347]">
+                      {meetupTimeLabel}
+                    </div>
+                  </div>
+                  <div className="rounded-[18px] border border-white/60 bg-white/62 px-4 py-3 backdrop-blur">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                      Place
+                    </div>
+                    <div className="mt-2 text-sm leading-6 text-[#5f5347]">
+                      {post.place_name || post.location || "Selected place"}
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="rounded-full bg-[#efe7dc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b5f52]">
