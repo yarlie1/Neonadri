@@ -95,25 +95,6 @@ function InfoItem({
   );
 }
 
-function StatCard({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-[22px] border border-[#eadfd3] bg-[#fffdfa] p-4 text-center shadow-sm">
-      <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-        {label}
-      </div>
-      <div className="mt-2 text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
-        {value}
-      </div>
-    </div>
-  );
-}
-
 export default async function ProfilePage({ params }: PageProps) {
   const supabase = await createClient();
   const userId = params.id;
@@ -229,7 +210,7 @@ export default async function ProfilePage({ params }: PageProps) {
                 </div>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {hasResponseNote && (
                 <InfoItem
                   icon={<Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />}
@@ -251,10 +232,6 @@ export default async function ProfilePage({ params }: PageProps) {
                   value={profile.meeting_style!}
                 />
               )}
-              <StatCard
-                label="Trust Signals"
-                value={`${completedMeetups} / ${reviewCount}`}
-              />
             </div>
 
             {featuredReview && (
