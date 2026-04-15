@@ -190,10 +190,10 @@ function getStatusBadgeClass(status: string) {
 }
 
 function getPostMatchState(
-  post: PostRow,
+  postStatus: "Upcoming" | "Expired",
   summary?: { isMatched: boolean }
 ) {
-  const isExpired = getPostStatus(post.meeting_time) === "Expired";
+  const isExpired = postStatus === "Expired";
 
   if (summary?.isMatched) {
     return "Matched";
@@ -498,7 +498,11 @@ export default function DashboardClient({
   const filteredPosts = useMemo(() => {
     if (postFilter === "all") return posts;
     return posts.filter(
-      (post) => getPostMatchState(post, matchSummaryMap[post.id]).toLowerCase() === postFilter
+      (post) =>
+        getPostMatchState(
+          getPostStatus(post.meeting_time) as "Upcoming" | "Expired",
+          matchSummaryMap[post.id]
+        ).toLowerCase() === postFilter
     );
   }, [posts, postFilter, matchSummaryMap]);
 
@@ -811,7 +815,10 @@ export default function DashboardClient({
         {activeTab === "posts" && (
           <div className="space-y-4">
             {filteredPosts.map((post) => {
-              const postStatus = getPostMatchState(post, matchSummaryMap[post.id]);
+              const postStatus = getPostMatchState(
+                getPostStatus(post.meeting_time) as "Upcoming" | "Expired",
+                matchSummaryMap[post.id]
+              );
               const amount = parseBenefitAmount(post.benefit_amount);
               const purposeTheme = getPurposeTheme(post.meeting_purpose);
 
