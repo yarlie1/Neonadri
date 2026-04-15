@@ -18,6 +18,31 @@ function isAddressLikeName(name: string) {
   return /^\d/.test(name.trim());
 }
 
+const PLACE_TYPE_PRIORITY = [
+  "restaurant",
+  "cafe",
+  "bakery",
+  "meal_takeaway",
+  "meal_delivery",
+  "bar",
+  "store",
+  "shopping_mall",
+  "gym",
+  "park",
+  "library",
+  "movie_theater",
+  "establishment",
+  "point_of_interest",
+];
+
+function getPlacePriorityScore(types: string[] = []) {
+  const matchedIndex = PLACE_TYPE_PRIORITY.findIndex((type) =>
+    types.includes(type)
+  );
+
+  return matchedIndex === -1 ? Number.MAX_SAFE_INTEGER : matchedIndex;
+}
+
 export default function WriteLocationPage() {
   const router = useRouter();
 
@@ -138,22 +163,23 @@ export default function WriteLocationPage() {
             const updateFromNearbyResults = (placeResults: any[]) => {
               if (!placeResults || placeResults.length === 0) return false;
 
-              const preferredPlace =
-                placeResults.find(
-                  (item) =>
-                    item?.name &&
-                    !isAddressLikeName(item.name) &&
-                    (item.types || []).includes("establishment")
-                ) ||
-                placeResults.find(
-                  (item) =>
-                    item?.name &&
-                    !isAddressLikeName(item.name) &&
-                    (item.types || []).includes("point_of_interest")
-                ) ||
-                placeResults.find(
-                  (item) => item?.name && !isAddressLikeName(item.name)
-                );
+              const preferredPlace = [...placeResults]
+                .filter((item) => item?.name && !isAddressLikeName(item.name))
+                .sort((a, b) => {
+                  const aScore = getPlacePriorityScore(a.types || []);
+                  const bScore = getPlacePriorityScore(b.types || []);
+
+                  if (aScore !== bScore) return aScore - bScore;
+
+                  const aRating =
+                    typeof a.rating === "number" ? a.rating : -1;
+                  const bRating =
+                    typeof b.rating === "number" ? b.rating : -1;
+
+                  if (aRating !== bRating) return bRating - aRating;
+
+                  return 0;
+                })[0];
 
               if (preferredPlace?.name) {
                 applySelection(preferredPlace.name);
