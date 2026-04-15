@@ -18,6 +18,7 @@ import {
   Laptop,
   Camera,
   MapPin,
+  Map,
   Clock,
   User,
   Coins,
@@ -474,7 +475,7 @@ export default function WriteForm({ userId }: { userId: string }) {
               aria-label="Pick on map"
               title="Pick on map"
             >
-              <MapPin className="h-5 w-5" />
+              <Map className="h-5 w-5" />
             </button>
           </div>
 
