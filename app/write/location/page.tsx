@@ -14,6 +14,10 @@ type LatLng = {
   lng: number;
 };
 
+function isAddressLikeName(name: string) {
+  return /^\d/.test(name.trim());
+}
+
 export default function WriteLocationPage() {
   const router = useRouter();
 
@@ -118,55 +122,69 @@ export default function WriteLocationPage() {
       (geocodeResults: any[], status: string) => {
         if (status === "OK" && geocodeResults && geocodeResults[0]) {
           const fallbackAddress = geocodeResults[0].formatted_address || "";
-          const fallbackName =
-            geocodeResults[0].address_components?.[0]?.long_name ||
-            geocodeResults[0].formatted_address ||
-            "Selected Location";
+          const fallbackName = fallbackAddress || "Selected Location";
 
           setSelectedAddress(fallbackAddress);
           setSelectedPlaceName(fallbackName);
 
           if (placesServiceRef.current && window.google?.maps?.places) {
-            const preferredTypes = new Set([
-              "establishment",
-              "point_of_interest",
-              "store",
-              "restaurant",
-              "cafe",
-              "gym",
-              "park",
-              "school",
-              "bar",
-              "bakery",
-              "library",
-              "shopping_mall",
-              "movie_theater",
-            ]);
+            const updateFromNearbyResults = (placeResults: any[]) => {
+              if (!placeResults || placeResults.length === 0) return false;
+
+              const preferredPlace =
+                placeResults.find(
+                  (item) =>
+                    item?.name &&
+                    !isAddressLikeName(item.name) &&
+                    (item.types || []).includes("establishment")
+                ) ||
+                placeResults.find(
+                  (item) =>
+                    item?.name &&
+                    !isAddressLikeName(item.name) &&
+                    (item.types || []).includes("point_of_interest")
+                ) ||
+                placeResults.find(
+                  (item) => item?.name && !isAddressLikeName(item.name)
+                );
+
+              if (preferredPlace?.name) {
+                setSelectedPlaceName(preferredPlace.name);
+                return true;
+              }
+
+              return false;
+            };
 
             placesServiceRef.current.nearbySearch(
               {
                 location: { lat, lng },
-                rankBy: window.google.maps.places.RankBy.DISTANCE,
+                radius: 120,
+                type: "establishment",
               },
               (placeResults: any[], placeStatus: string) => {
                 if (
-                  placeStatus !== window.google.maps.places.PlacesServiceStatus.OK ||
-                  !placeResults ||
-                  placeResults.length === 0
+                  placeStatus === window.google.maps.places.PlacesServiceStatus.OK &&
+                  updateFromNearbyResults(placeResults)
                 ) {
                   return;
                 }
 
-                const preferredPlace =
-                  placeResults.find((item) =>
-                    (item.types || []).some((type: string) =>
-                      preferredTypes.has(type)
-                    )
-                  ) || placeResults[0];
-
-                if (preferredPlace?.name) {
-                  setSelectedPlaceName(preferredPlace.name);
-                }
+                placesServiceRef.current.nearbySearch(
+                  {
+                    location: { lat, lng },
+                    radius: 180,
+                    type: "point_of_interest",
+                  },
+                  (poiResults: any[], poiStatus: string) => {
+                    if (
+                      poiStatus ===
+                      window.google.maps.places.PlacesServiceStatus.OK
+                    ) {
+                      updateFromNearbyResults(poiResults);
+                    }
+                  }
+                );
               }
             );
           }
