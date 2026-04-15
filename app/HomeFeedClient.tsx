@@ -241,8 +241,11 @@ function getPurposeTheme(purpose: string | null) {
   }
 }
 
-function getMatchBadge(post: PostRow, summary?: MatchSummaryMap[number]) {
-  const isExpired = getPostStatus(post.meeting_time) === "Expired";
+function getMatchBadge(
+  postStatus: "Upcoming" | "Expired",
+  summary?: MatchSummaryMap[number]
+) {
+  const isExpired = postStatus === "Expired";
   const requestCount = summary?.pendingRequestCount ?? summary?.totalRequestCount ?? 0;
 
   if (summary?.isMatched) {
@@ -260,10 +263,7 @@ function getMatchBadge(post: PostRow, summary?: MatchSummaryMap[number]) {
   }
 
   return {
-    label:
-      requestCount > 0
-        ? `Open Â· ${requestCount}`
-        : "Open",
+    label: requestCount > 0 ? `Open ¡¤ ${requestCount}` : "Open",
     className: "bg-[#edf1ea] text-[#5e6f5f]",
   };
 }
@@ -958,7 +958,7 @@ export default function HomeFeedClient({
           };
           const status = getPostStatus(post.meeting_time);
           const isExpired = status === "Expired";
-          const matchBadge = getMatchBadge(post, matchSummaryMap[post.id]);
+          const matchBadge = getMatchBadge(status as "Upcoming" | "Expired", matchSummaryMap[post.id]);
           const purposeTheme = getPurposeTheme(post.meeting_purpose);
 
           const distanceText =
@@ -1109,4 +1109,6 @@ export default function HomeFeedClient({
     </main>
   );
 }
+
+
 
