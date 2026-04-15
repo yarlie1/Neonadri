@@ -147,6 +147,9 @@ export default function EditMeetupForm({
   );
   const [location, setLocation] = useState(initialPost.location || "");
   const [placeName, setPlaceName] = useState(initialPost.place_name || "");
+  const [confirmedAddress, setConfirmedAddress] = useState(
+    initialPost.location || ""
+  );
   const [targetGender, setTargetGender] = useState(
     initialPost.target_gender || ""
   );
@@ -201,7 +204,8 @@ export default function EditMeetupForm({
         }
 
         setPlaceName(name);
-        setLocation(address);
+        setLocation(name);
+        setConfirmedAddress(address);
         setLatitude(nextLat);
         setLongitude(nextLng);
         setLocationConfirmed(true);
@@ -221,13 +225,25 @@ export default function EditMeetupForm({
 
     if (qLocation && qLat && qLng) {
       setPlaceName(qName || qLocation);
-      setLocation(qLocation);
+      setLocation(qName || qLocation);
+      setConfirmedAddress(qLocation);
       setLatitude(Number(qLat));
       setLongitude(Number(qLng));
       setLocationConfirmed(true);
       setMessage("");
+
+      query.delete("name");
+      query.delete("location");
+      query.delete("lat");
+      query.delete("lng");
+      const nextQuery = query.toString();
+      window.history.replaceState(
+        {},
+        "",
+        nextQuery ? `/write/${postId}?${nextQuery}` : `/write/${postId}`
+      );
     }
-  }, []);
+  }, [postId]);
 
   const purposeHelpText = useMemo(() => {
     if (!meetingPurpose) {
@@ -241,6 +257,7 @@ export default function EditMeetupForm({
   ) => {
     setPlaceName("");
     setLocation(e.target.value);
+    setConfirmedAddress("");
     setLatitude(null);
     setLongitude(null);
     setLocationConfirmed(false);
@@ -277,6 +294,7 @@ export default function EditMeetupForm({
 
     if (
       !location.trim() ||
+      !confirmedAddress.trim() ||
       latitude === null ||
       longitude === null ||
       !locationConfirmed
@@ -295,7 +313,7 @@ export default function EditMeetupForm({
         meeting_purpose: meetingPurpose,
         meeting_time: meetingTime,
         duration_minutes: Number(durationMinutes),
-        location,
+        location: confirmedAddress || location,
         place_name: placeName || location,
         latitude,
         longitude,
@@ -472,7 +490,7 @@ export default function EditMeetupForm({
               <p className="font-medium text-[#2f2a26]">
                 {placeName || location}
               </p>
-              <p className="mt-1">{location}</p>
+              <p className="mt-1">{confirmedAddress || location}</p>
 
               {latitude !== null && longitude !== null && (
                 <p className="mt-1 text-xs text-[#8b7f74]">
