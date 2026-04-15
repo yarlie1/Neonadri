@@ -81,6 +81,15 @@ type ReviewRow = {
   created_at: string;
 };
 
+type MatchReviewRow = {
+  id: number;
+  rating: number;
+  review_text: string | null;
+  created_at: string;
+  reviewer_user_id: string;
+  reviewee_user_id: string;
+};
+
 type ProfileStats = {
   average_rating?: number | null;
   review_count?: number | null;
@@ -255,6 +264,11 @@ const formatTimeUntil = (meetingTime: string | null) => {
 
   const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
   return `D-${diffDays}`;
+};
+
+const isMeetupFinished = (meetingTime: string | null) => {
+  if (!meetingTime) return false;
+  return new Date(meetingTime).getTime() < Date.now();
 };
 
 const getFriendlyStatusLabel = (status: string) => {
@@ -663,6 +677,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   let pendingRequestCount = 0;
   let totalRequestCount = 0;
   let ownerRequests: MatchRequestRow[] = [];
+  let matchReviews: MatchReviewRow[] = [];
   let matchedPartner:
     | {
         userId: string;
@@ -746,6 +761,18 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   if (matchedGuestId) {
     matchedGuestUserId = matchedGuestId;
+  }
+
+  if (matchedRecord?.id) {
+    const { data: matchReviewData } = await supabase
+      .from("match_reviews")
+      .select(
+        "id, rating, review_text, created_at, reviewer_user_id, reviewee_user_id"
+      )
+      .eq("match_id", matchedRecord.id)
+      .order("created_at", { ascending: false });
+
+    matchReviews = (matchReviewData || []) as MatchReviewRow[];
   }
 
   if (matchedGuestId) {
@@ -840,6 +867,16 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const meetupTimeLabel = formatTime(post.meeting_time) || "Time not set";
   const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
   const meetupCountdown = formatTimeUntil(post.meeting_time);
+  const meetupFinished = isMeetupFinished(post.meeting_time);
+  const viewerHasReview =
+    !!user &&
+    matchReviews.some((review) => review.reviewer_user_id === user.id);
+  const canLeaveReview =
+    !!user &&
+    !!matchedRecord?.id &&
+    isViewerParticipant &&
+    meetupFinished &&
+    !viewerHasReview;
   const benefitExplanation = post.benefit_amount
     ? `After this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host will give ${post.benefit_amount} to the guest.`
     : `After this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host has not listed a guest benefit yet.`;
@@ -872,6 +909,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       status: request.status,
     };
   });
+  const getMatchReviewAuthorLabel = (review: MatchReviewRow) => {
+    if (user && review.reviewer_user_id === user.id) return "You";
+    if (review.reviewer_user_id === post.user_id) return "Host";
+    if (matchedGuestId && review.reviewer_user_id === matchedGuestId) return "Guest";
+    return "Participant";
+  };
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
       <div className="mx-auto max-w-3xl space-y-5">
@@ -1072,6 +1115,68 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 myRequestStatus={myRequestStatus}
               />
             ) : null}
+
+            {isPostMatched && isViewerParticipant && matchedRecord?.id && (
+              <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-5 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
+                      Reviews
+                    </div>
+                    <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
+                      Match review
+                    </div>
+                  </div>
+                  {canLeaveReview && (
+                    <Link
+                      href={`/reviews/write/${matchedRecord.id}`}
+                      className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                    >
+                      <Star className="h-4 w-4 text-[#a48f7a]" />
+                      Leave Review
+                    </Link>
+                  )}
+                </div>
+
+                <div className="mt-4 rounded-[18px] border border-[#ece1d4] bg-[#fbf6f0] px-4 py-3 text-sm leading-6 text-[#6a5e54]">
+                  {meetupFinished
+                    ? viewerHasReview
+                      ? "You already submitted your review for this meetup."
+                      : matchReviews.length > 0
+                      ? "Reviews from this matched meetup are shown below."
+                      : "This meetup is complete. You can leave a review now."
+                    : "Reviews open after the meetup is completed."}
+                </div>
+
+                {matchReviews.length > 0 && (
+                  <div className="mt-4 space-y-3">
+                    {matchReviews.map((review) => (
+                      <div
+                        key={review.id}
+                        className="rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] px-4 py-3"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                              {getMatchReviewAuthorLabel(review)}
+                            </div>
+                            <div className="mt-1">
+                              <StarRating value={review.rating} size="sm" />
+                            </div>
+                          </div>
+                          <div className="text-xs text-[#9b8f84]">
+                            {new Date(review.created_at).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <div className="mt-3 text-sm leading-6 text-[#4f443b]">
+                          {review.review_text || "No written comment."}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {user && user.id === post.user_id && !isPostMatched && !hasAnyRequests && (
               <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-5 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
