@@ -1,5 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import {
+  normalizeUserTimeZone,
+  USER_TIME_ZONE_COOKIE,
+} from "./lib/userTimeZone";
 
 const PROTECTED_PATHS = ["/dashboard", "/write", "/account", "/reviews/write"];
 
@@ -15,6 +19,22 @@ export async function middleware(request: NextRequest) {
       headers: request.headers,
     },
   });
+
+  const existingTimeZone = request.cookies.get(USER_TIME_ZONE_COOKIE)?.value;
+  const headerTimeZone = request.headers.get("x-vercel-ip-timezone");
+  const resolvedTimeZone = normalizeUserTimeZone(
+    existingTimeZone || headerTimeZone
+  );
+
+  if (existingTimeZone !== resolvedTimeZone) {
+    response.cookies.set({
+      name: USER_TIME_ZONE_COOKIE,
+      value: resolvedTimeZone,
+      path: "/",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

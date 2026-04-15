@@ -15,6 +15,10 @@ import {
   UserCircle2,
   Plus,
 } from "lucide-react";
+import {
+  normalizeUserTimeZone,
+  USER_TIME_ZONE_COOKIE,
+} from "../../lib/userTimeZone";
 
 type SimpleUser = {
   id: string;
@@ -84,6 +88,15 @@ export default function TopNav() {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const loggingOutRef = useRef(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const browserTimeZone = normalizeUserTimeZone(
+      Intl.DateTimeFormat().resolvedOptions().timeZone
+    );
+    document.cookie = `${USER_TIME_ZONE_COOKIE}=${encodeURIComponent(
+      browserTimeZone
+    )}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
+  }, []);
 
   useEffect(() => {
     let mounted = true;

@@ -1,4 +1,6 @@
-const MEETING_TIME_ZONE = "America/Los_Angeles";
+import { FALLBACK_TIME_ZONE } from "./userTimeZone";
+
+const MEETING_TIME_ZONE = FALLBACK_TIME_ZONE;
 
 function getTimeZoneOffsetMs(date: Date, timeZone: string) {
   const parts = new Intl.DateTimeFormat("en-US", {

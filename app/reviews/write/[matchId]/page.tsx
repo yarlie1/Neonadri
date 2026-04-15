@@ -1,6 +1,11 @@
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { createClient } from "../../../../lib/supabase/server";
 import { isMeetingFinished } from "../../../../lib/meetingTime";
+import {
+  normalizeUserTimeZone,
+  USER_TIME_ZONE_COOKIE,
+} from "../../../../lib/userTimeZone";
 import ReviewWriteForm from "./ReviewWriteForm";
 
 type MatchRow = {
@@ -30,6 +35,10 @@ type PageProps = {
 
 export default async function WriteReviewPage({ params }: PageProps) {
   const supabase = await createClient();
+  const cookieStore = cookies();
+  const userTimeZone = normalizeUserTimeZone(
+    cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
+  );
   const matchId = Number(params.matchId);
 
   if (Number.isNaN(matchId)) {
@@ -104,7 +113,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
 
   const postInfo = (postData as PostRow | null) || null;
 
-  if (!postInfo || !isMeetingFinished(postInfo.meeting_time)) {
+  if (!postInfo || !isMeetingFinished(postInfo.meeting_time, userTimeZone)) {
     return (
       <ReviewWriteForm
         matchId={params.matchId}

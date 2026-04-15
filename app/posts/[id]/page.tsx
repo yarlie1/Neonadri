@@ -1,5 +1,6 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import {
   Activity,
   Clock3,
@@ -33,6 +34,10 @@ import {
   formatMeetingTime,
   isMeetingFinished,
 } from "../../../lib/meetingTime";
+import {
+  normalizeUserTimeZone,
+  USER_TIME_ZONE_COOKIE,
+} from "../../../lib/userTimeZone";
 import MatchRequestBox from "./MatchRequestBox";
 import OwnerMatchPanel from "./OwnerMatchPanel";
 import DeletePostButton from "./DeletePostButton";
@@ -564,6 +569,10 @@ function ProfileShowcaseCard({
 
 export default async function MeetupDetailPage({ params }: PageProps) {
   const supabase = await createClient();
+  const cookieStore = cookies();
+  const userTimeZone = normalizeUserTimeZone(
+    cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
+  );
   const id = params.id;
 
   const {
@@ -836,10 +845,11 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const targetLabel = `${post.target_gender || "Any"} / ${
     post.target_age_group || "Any"
   }`;
-  const meetupTimeLabel = formatMeetingTime(post.meeting_time) || "Time not set";
+  const meetupTimeLabel =
+    formatMeetingTime(post.meeting_time, userTimeZone) || "Time not set";
   const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
-  const meetupCountdown = formatMeetingCountdown(post.meeting_time);
-  const meetupFinished = isMeetingFinished(post.meeting_time);
+  const meetupCountdown = formatMeetingCountdown(post.meeting_time, userTimeZone);
+  const meetupFinished = isMeetingFinished(post.meeting_time, userTimeZone);
   const viewerHasReview =
     !!user &&
     matchReviews.some((review) => review.reviewer_user_id === user.id);
@@ -1185,3 +1195,4 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     </main>
   );
 }
+
