@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Activity,
@@ -24,6 +24,7 @@ import {
   Coins,
   CheckCircle,
 } from "lucide-react";
+import { useCreateMeetupDraft } from "./useCreateMeetupDraft";
 
 declare global {
   interface Window {
@@ -56,8 +57,6 @@ const PRIMARY_BUTTON_CLASS =
   "rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white shadow-[0_10px_18px_rgba(92,69,52,0.10)] transition hover:bg-[#927d69] disabled:opacity-50";
 const SECONDARY_BUTTON_CLASS =
   "rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-5 py-3 text-sm font-medium text-[#5f5347] transition hover:bg-[#f7eee6]";
-const CREATE_DRAFT_KEY = "neonadri:create-meetup-draft";
-const CREATE_DRAFT_RETURN_KEY = "neonadri:create-meetup-restore-once";
 
 const PURPOSE_HELP_TEXT: Record<string, string> = {
   "Coffee Chat": "Quick casual conversation over coffee.",
@@ -135,64 +134,114 @@ export default function WriteForm({ userId }: { userId: string }) {
 
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
-  const [draftReady, setDraftReady] = useState(false);
 
   const fieldClass =
     "w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 pl-12 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12";
+
+  const applyDraft = useCallback(
+    (draft: {
+      meetingPurpose?: string;
+      meetingTime?: string;
+      meetingDate?: string;
+      meetingTimeSlot?: string;
+      durationMinutes?: string;
+      location?: string;
+      placeName?: string;
+      confirmedAddress?: string;
+      targetGender?: string;
+      targetAgeGroup?: string;
+      benefitAmount?: string;
+      latitude?: number | null;
+      longitude?: number | null;
+      locationConfirmed?: boolean;
+    }) => {
+      setMeetingPurpose(draft.meetingPurpose || "");
+      setMeetingTime(draft.meetingTime || "");
+      setMeetingDate(draft.meetingDate || "");
+      setMeetingTimeSlot(draft.meetingTimeSlot || "");
+      setDurationMinutes(draft.durationMinutes || "");
+      setLocation(draft.location || "");
+      setPlaceName(draft.placeName || "");
+      setConfirmedAddress(draft.confirmedAddress || "");
+      setTargetGender(draft.targetGender || "");
+      setTargetAgeGroup(draft.targetAgeGroup || "");
+      setBenefitAmount(draft.benefitAmount || "");
+      setLatitude(typeof draft.latitude === "number" ? draft.latitude : null);
+      setLongitude(typeof draft.longitude === "number" ? draft.longitude : null);
+      setLocationConfirmed(Boolean(draft.locationConfirmed));
+    },
+    []
+  );
+
+  const applyMapSelection = useCallback(
+    ({
+      placeName: nextPlaceName,
+      address,
+      latitude: nextLat,
+      longitude: nextLng,
+    }: {
+      placeName: string;
+      address: string;
+      latitude: number;
+      longitude: number;
+    }) => {
+      setPlaceName(nextPlaceName);
+      setLocation(nextPlaceName);
+      setConfirmedAddress(address);
+      setLatitude(nextLat);
+      setLongitude(nextLng);
+      setLocationConfirmed(true);
+      setMessage("");
+    },
+    []
+  );
+
+  const draftState = useMemo(
+    () => ({
+      meetingPurpose,
+      meetingTime,
+      meetingDate,
+      meetingTimeSlot,
+      durationMinutes,
+      location,
+      placeName,
+      confirmedAddress,
+      targetGender,
+      targetAgeGroup,
+      benefitAmount,
+      latitude,
+      longitude,
+      locationConfirmed,
+    }),
+    [
+      benefitAmount,
+      confirmedAddress,
+      durationMinutes,
+      latitude,
+      location,
+      locationConfirmed,
+      longitude,
+      meetingDate,
+      meetingPurpose,
+      meetingTime,
+      meetingTimeSlot,
+      placeName,
+      targetAgeGroup,
+      targetGender,
+    ]
+  );
+
+  const { markReturnFromMap, clearDraft } = useCreateMeetupDraft({
+    draft: draftState,
+    applyDraft,
+    applyMapSelection,
+  });
 
   useEffect(() => {
     if (!meetingTime) {
       setMeetingTime(getDefaultMeetingTime());
     }
   }, [meetingTime]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const params = new URLSearchParams(window.location.search);
-    const savedDraft = window.sessionStorage.getItem(CREATE_DRAFT_KEY);
-    const shouldRestoreDraft =
-      params.has("location") ||
-      window.sessionStorage.getItem(CREATE_DRAFT_RETURN_KEY) === "1";
-
-    if (!shouldRestoreDraft) {
-      window.sessionStorage.removeItem(CREATE_DRAFT_KEY);
-      window.sessionStorage.removeItem(CREATE_DRAFT_RETURN_KEY);
-      setDraftReady(true);
-      return;
-    }
-
-    window.sessionStorage.removeItem(CREATE_DRAFT_RETURN_KEY);
-
-    if (savedDraft) {
-      try {
-        const draft = JSON.parse(savedDraft);
-
-        setMeetingPurpose(draft.meetingPurpose || "");
-        setMeetingTime(draft.meetingTime || "");
-        setMeetingDate(draft.meetingDate || "");
-        setMeetingTimeSlot(draft.meetingTimeSlot || "");
-        setDurationMinutes(draft.durationMinutes || "");
-        setLocation(draft.location || "");
-        setPlaceName(draft.placeName || "");
-        setConfirmedAddress(draft.confirmedAddress || "");
-        setTargetGender(draft.targetGender || "");
-        setTargetAgeGroup(draft.targetAgeGroup || "");
-        setBenefitAmount(draft.benefitAmount || "");
-        setLatitude(
-          typeof draft.latitude === "number" ? draft.latitude : null
-        );
-        setLongitude(
-          typeof draft.longitude === "number" ? draft.longitude : null
-        );
-        setLocationConfirmed(Boolean(draft.locationConfirmed));
-      } catch {
-        window.sessionStorage.removeItem(CREATE_DRAFT_KEY);
-      }
-    }
-
-    setDraftReady(true);
-  }, []);
 
   useEffect(() => {
     if (!meetingTime) return;
@@ -261,76 +310,6 @@ export default function WriteForm({ userId }: { userId: string }) {
     };
   }, []);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const query = new URLSearchParams(window.location.search);
-    const qName = query.get("name");
-    const qLocation = query.get("location");
-    const qLat = query.get("lat");
-    const qLng = query.get("lng");
-
-    if (qLocation && qLat && qLng) {
-      setPlaceName(qName || qLocation);
-      setLocation(qName || qLocation);
-      setConfirmedAddress(qLocation);
-      setLatitude(Number(qLat));
-      setLongitude(Number(qLng));
-      setLocationConfirmed(true);
-      setMessage("");
-
-      query.delete("name");
-      query.delete("location");
-      query.delete("lat");
-      query.delete("lng");
-      const nextQuery = query.toString();
-      window.history.replaceState(
-        {},
-        "",
-        nextQuery ? `/write?${nextQuery}` : "/write"
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !draftReady) return;
-
-    const draft = {
-      meetingPurpose,
-      meetingTime,
-      meetingDate,
-      meetingTimeSlot,
-      durationMinutes,
-      location,
-      placeName,
-      confirmedAddress,
-      targetGender,
-      targetAgeGroup,
-      benefitAmount,
-      latitude,
-      longitude,
-      locationConfirmed,
-    };
-
-    window.sessionStorage.setItem(CREATE_DRAFT_KEY, JSON.stringify(draft));
-  }, [
-    benefitAmount,
-    draftReady,
-    durationMinutes,
-    latitude,
-    location,
-    locationConfirmed,
-    longitude,
-    meetingDate,
-    meetingPurpose,
-    meetingTime,
-    meetingTimeSlot,
-    confirmedAddress,
-    placeName,
-    targetAgeGroup,
-    targetGender,
-  ]);
-
   const handleLocationInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -343,28 +322,7 @@ export default function WriteForm({ userId }: { userId: string }) {
   };
 
   const handleOpenMapPicker = () => {
-    if (typeof window !== "undefined") {
-      window.sessionStorage.setItem(CREATE_DRAFT_RETURN_KEY, "1");
-      window.sessionStorage.setItem(
-        CREATE_DRAFT_KEY,
-        JSON.stringify({
-          meetingPurpose,
-          meetingTime,
-          meetingDate,
-          meetingTimeSlot,
-          durationMinutes,
-          location,
-          placeName,
-          confirmedAddress,
-          targetGender,
-          targetAgeGroup,
-          benefitAmount,
-          latitude,
-          longitude,
-          locationConfirmed,
-        })
-      );
-    }
+    markReturnFromMap();
     router.push("/write/location?returnTo=/write");
   };
 
@@ -442,9 +400,7 @@ export default function WriteForm({ userId }: { userId: string }) {
         return;
       }
 
-      if (typeof window !== "undefined") {
-        window.sessionStorage.removeItem(CREATE_DRAFT_KEY);
-      }
+      clearDraft();
       router.push("/dashboard");
       router.refresh();
     } catch (e) {
