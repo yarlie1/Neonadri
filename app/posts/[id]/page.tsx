@@ -909,11 +909,17 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       status: request.status,
     };
   });
-  const getMatchReviewAuthorLabel = (review: MatchReviewRow) => {
-    if (user && review.reviewer_user_id === user.id) return "You";
-    if (review.reviewer_user_id === post.user_id) return "Host";
-    if (matchedGuestId && review.reviewer_user_id === matchedGuestId) return "Guest";
+  const getParticipantRoleLabel = (userId: string) => {
+    if (user && userId === user.id) return "You";
+    if (userId === post.user_id) return "Host";
+    if (matchedGuestId && userId === matchedGuestId) return "Guest";
     return "Participant";
+  };
+
+  const getMatchReviewAuthorLabel = (review: MatchReviewRow) => {
+    const reviewerLabel = getParticipantRoleLabel(review.reviewer_user_id);
+    const revieweeLabel = getParticipantRoleLabel(review.reviewee_user_id);
+    return `${reviewerLabel} reviewed ${revieweeLabel}`;
   };
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
