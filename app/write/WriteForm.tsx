@@ -3,20 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  Activity,
-  Coffee,
-  Utensils,
-  Cake,
-  Footprints,
-  Smile,
-  Film,
-  Mic,
-  Dice5,
-  Gamepad2,
-  Target,
-  BookOpen,
-  Laptop,
-  Camera,
   Map,
   MapPin,
   Clock,
@@ -25,29 +11,20 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { useCreateMeetupDraft } from "./useCreateMeetupDraft";
+import {
+  combineDateAndTime,
+  getDatePart,
+  getDefaultMeetingTime,
+  getTimePart,
+  PURPOSE_HELP_TEXT,
+  PURPOSE_OPTIONS,
+} from "./meetupFormShared";
 
 declare global {
   interface Window {
     google: any;
   }
 }
-
-const PURPOSE_OPTIONS = [
-  { value: "Coffee Chat", icon: Coffee },
-  { value: "Meal", icon: Utensils },
-  { value: "Dessert", icon: Cake },
-  { value: "Walk", icon: Footprints },
-  { value: "Jogging", icon: Activity },
-  { value: "Yoga", icon: Smile },
-  { value: "Movie", icon: Film },
-  { value: "Karaoke", icon: Mic },
-  { value: "Board Games", icon: Dice5 },
-  { value: "Gaming", icon: Gamepad2 },
-  { value: "Arcade", icon: Target },
-  { value: "Study", icon: BookOpen },
-  { value: "Work Together", icon: Laptop },
-  { value: "Photo Walk", icon: Camera },
-] as const;
 
 const SURFACE_CARD_CLASS =
   "rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur";
@@ -57,59 +34,6 @@ const PRIMARY_BUTTON_CLASS =
   "rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white shadow-[0_10px_18px_rgba(92,69,52,0.10)] transition hover:bg-[#927d69] disabled:opacity-50";
 const SECONDARY_BUTTON_CLASS =
   "rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-5 py-3 text-sm font-medium text-[#5f5347] transition hover:bg-[#f7eee6]";
-
-const PURPOSE_HELP_TEXT: Record<string, string> = {
-  "Coffee Chat": "Quick casual conversation over coffee.",
-  Meal: "Enjoy food and conversation together.",
-  Dessert: "Meet for dessert, cafe time, and easy conversation.",
-  Walk: "Light walk and chat outdoors.",
-  Jogging: "Go for a jog together and stay active.",
-  Yoga: "Join a calm and healthy yoga session together.",
-  Movie: "Watch a movie together and chat after.",
-  Karaoke: "Sing and have fun together.",
-  "Board Games": "Play board games and enjoy a relaxed meetup.",
-  Gaming: "Play video games together.",
-  Arcade: "Have fun with arcade games together.",
-  Study: "Focus together in a quiet place.",
-  "Work Together": "Work side by side in a cafe or shared space.",
-  "Photo Walk": "Walk around and take photos together.",
-};
-
-function formatDateTimeLocalValue(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
-
-function getDatePart(dateTimeValue: string) {
-  return dateTimeValue ? dateTimeValue.slice(0, 10) : "";
-}
-
-function getTimePart(dateTimeValue: string) {
-  return dateTimeValue ? dateTimeValue.slice(11, 16) : "";
-}
-
-function combineDateAndTime(datePart: string, timePart: string) {
-  if (!datePart || !timePart) return "";
-  return `${datePart}T${timePart}`;
-}
-
-function getDefaultMeetingTime() {
-  const now = new Date();
-  const target = new Date(now.getTime() + 3 * 60 * 60 * 1000);
-
-  target.setMinutes(0, 0, 0);
-
-  if (target.getTime() < now.getTime() + 3 * 60 * 60 * 1000) {
-    target.setHours(target.getHours() + 1);
-  }
-
-  return formatDateTimeLocalValue(target);
-}
 
 export default function WriteForm({ userId }: { userId: string }) {
   const router = useRouter();
