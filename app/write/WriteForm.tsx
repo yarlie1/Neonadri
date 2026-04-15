@@ -124,6 +124,7 @@ export default function WriteForm({ userId }: { userId: string }) {
   const [durationMinutes, setDurationMinutes] = useState("");
   const [location, setLocation] = useState("");
   const [placeName, setPlaceName] = useState("");
+  const [confirmedAddress, setConfirmedAddress] = useState("");
   const [targetGender, setTargetGender] = useState("");
   const [targetAgeGroup, setTargetAgeGroup] = useState("");
   const [benefitAmount, setBenefitAmount] = useState("");
@@ -160,6 +161,7 @@ export default function WriteForm({ userId }: { userId: string }) {
         setDurationMinutes(draft.durationMinutes || "");
         setLocation(draft.location || "");
         setPlaceName(draft.placeName || "");
+        setConfirmedAddress(draft.confirmedAddress || "");
         setTargetGender(draft.targetGender || "");
         setTargetAgeGroup(draft.targetAgeGroup || "");
         setBenefitAmount(draft.benefitAmount || "");
@@ -221,7 +223,8 @@ export default function WriteForm({ userId }: { userId: string }) {
         }
 
         setPlaceName(name);
-        setLocation(address);
+        setLocation(name);
+        setConfirmedAddress(address);
         setLatitude(nextLat);
         setLongitude(nextLng);
         setLocationConfirmed(true);
@@ -255,7 +258,8 @@ export default function WriteForm({ userId }: { userId: string }) {
 
     if (qLocation && qLat && qLng) {
       setPlaceName(qName || qLocation);
-      setLocation(qLocation);
+      setLocation(qName || qLocation);
+      setConfirmedAddress(qLocation);
       setLatitude(Number(qLat));
       setLongitude(Number(qLng));
       setLocationConfirmed(true);
@@ -285,6 +289,7 @@ export default function WriteForm({ userId }: { userId: string }) {
       durationMinutes,
       location,
       placeName,
+      confirmedAddress,
       targetGender,
       targetAgeGroup,
       benefitAmount,
@@ -306,6 +311,7 @@ export default function WriteForm({ userId }: { userId: string }) {
     meetingPurpose,
     meetingTime,
     meetingTimeSlot,
+    confirmedAddress,
     placeName,
     targetAgeGroup,
     targetGender,
@@ -316,6 +322,7 @@ export default function WriteForm({ userId }: { userId: string }) {
   ) => {
     setPlaceName("");
     setLocation(e.target.value);
+    setConfirmedAddress("");
     setLatitude(null);
     setLongitude(null);
     setLocationConfirmed(false);
@@ -333,6 +340,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           durationMinutes,
           location,
           placeName,
+          confirmedAddress,
           targetGender,
           targetAgeGroup,
           benefitAmount,
@@ -376,6 +384,7 @@ export default function WriteForm({ userId }: { userId: string }) {
 
     if (
       !location.trim() ||
+      !confirmedAddress.trim() ||
       latitude === null ||
       longitude === null ||
       !locationConfirmed
@@ -391,7 +400,7 @@ export default function WriteForm({ userId }: { userId: string }) {
 
       const payload = {
         place_name: placeName || location,
-        location,
+        location: confirmedAddress || location,
         meeting_time: meetingTime,
         duration_minutes: Number(durationMinutes),
         target_gender: targetGender,
@@ -591,7 +600,7 @@ export default function WriteForm({ userId }: { userId: string }) {
               <p className="font-medium text-[#2f2a26]">
                 {placeName || location}
               </p>
-              <p className="mt-1 break-words">{location}</p>
+              <p className="mt-1 break-words">{confirmedAddress || location}</p>
 
               {latitude !== null && longitude !== null && (
                 <p className="mt-1 text-xs text-[#8b7f74]">
