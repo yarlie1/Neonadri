@@ -258,33 +258,40 @@ export default function WriteLocationPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-6 py-8 text-[#2f2a26]">
-      <div className="mx-auto max-w-3xl rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-8 shadow-[0_10px_30px_rgba(80,60,40,0.08)] md:p-10">
-        <h1 className="text-4xl font-semibold tracking-tight text-[#2f2a26]">
+    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f7ede2_42%,#f5efe7_100%)] px-4 py-5 text-[#2f2a26] sm:px-6 sm:py-8">
+      <div className="mx-auto max-w-3xl rounded-[32px] border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f7eee6_100%)] p-5 shadow-[0_16px_38px_rgba(92,69,52,0.08)] sm:p-7">
+        <div className="inline-flex items-center rounded-full bg-[#fbf4ed] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
           Pick on Map
+        </div>
+        <h1 className="mt-4 text-[30px] font-black tracking-[-0.04em] text-[#2f2a26] sm:text-[34px]">
+          Choose an exact meetup spot.
         </h1>
+        <p className="mt-2 max-w-xl text-sm leading-6 text-[#6b5f52]">
+          Search for a place or tap the map once. We keep the exact address and
+          try to use the nearest recognizable place name.
+        </p>
 
-        <div className="mt-8 space-y-4">
+        <div className="mt-6 space-y-4">
           <div className="flex gap-3">
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Enter place or address"
-              className="flex-1 rounded-2xl border border-[#dccfc2] bg-white px-4 py-3 text-sm text-[#2f2a26]"
+              className="flex-1 rounded-[22px] border border-[#ded1c4] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
             />
 
             <button
               type="button"
               onClick={handleSearch}
               disabled={searching}
-              className="rounded-2xl bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+              className="rounded-[22px] bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white shadow-[0_10px_18px_rgba(92,69,52,0.10)] transition hover:bg-[#927d69] disabled:opacity-50"
             >
               {searching ? "Searching..." : "Search"}
             </button>
           </div>
 
           {results.length > 0 && (
-            <div className="rounded-2xl border border-[#e7ddd2] bg-white p-2">
+            <div className="rounded-[24px] border border-[#ece0d4] bg-[#fffdfa] p-2 shadow-[0_10px_20px_rgba(92,69,52,0.05)]">
               <div className="max-h-64 overflow-y-auto">
                 {results.map((item, index) => (
                   <button
@@ -305,8 +312,8 @@ export default function WriteLocationPage() {
             </div>
           )}
 
-          <div className="overflow-hidden rounded-[2rem] border border-[#e7ddd2] bg-white">
-            <div ref={mapContainerRef} className="h-[28rem] w-full" />
+          <div className="overflow-hidden rounded-[28px] border border-[#ece0d4] bg-[#fffdfa] shadow-[0_12px_24px_rgba(92,69,52,0.06)]">
+            <div ref={mapContainerRef} className="h-[22rem] w-full sm:h-[24rem]" />
           </div>
 
           {loadingMap && (
@@ -314,11 +321,13 @@ export default function WriteLocationPage() {
           )}
 
           {(selectedAddress || selectedLatLng) && (
-            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-4 text-sm text-[#6b5f52]">
-              <p className="font-medium text-[#2f2a26]">Selected place</p>
+            <div className="rounded-[24px] border border-[#ece0d4] bg-[linear-gradient(180deg,#fbf4ed_0%,#f3e7dc_100%)] px-4 py-4 text-sm text-[#6b5f52]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                Selected place
+              </p>
 
               {selectedPlaceName && (
-                <p className="mt-1 text-base font-semibold text-[#2f2a26]">
+                <p className="mt-2 text-base font-semibold text-[#2f2a26]">
                   {selectedPlaceName}
                 </p>
               )}
@@ -335,26 +344,26 @@ export default function WriteLocationPage() {
           )}
 
           {message && (
-            <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+            <div className="rounded-[22px] border border-[#ece0d4] bg-[#f7eee6] px-4 py-3 text-sm text-[#6b5f52]">
               {message}
             </div>
           )}
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex items-center justify-between gap-3">
             <button
               type="button"
-              onClick={handleConfirm}
-              className="rounded-2xl bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#5b5046]"
+              onClick={() => router.push(returnTo)}
+              className="rounded-[22px] border border-[#ded1c4] bg-[#f6eee5] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
             >
-              Confirm Location
+              Cancel
             </button>
 
             <button
               type="button"
-              onClick={() => router.push(returnTo)}
-              className="rounded-2xl border border-[#dccfc2] bg-[#f4ece4] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#ede3da]"
+              onClick={handleConfirm}
+              className="rounded-[22px] bg-[#6b5f52] px-5 py-3 text-sm font-medium text-white shadow-[0_10px_18px_rgba(92,69,52,0.10)] transition hover:bg-[#5b5046]"
             >
-              Cancel
+              Confirm Location
             </button>
           </div>
         </div>
