@@ -419,6 +419,385 @@ function MiniPostPreview({
   );
 }
 
+function PostsTabPanel({
+  filteredPosts,
+  matchSummaryMap,
+  getPostStatus,
+  formatTime,
+  openPostDetail,
+}: {
+  filteredPosts: PostRow[];
+  matchSummaryMap: Record<
+    number,
+    { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
+  >;
+  getPostStatus: (meetingTime: string | null) => "Upcoming" | "Expired";
+  formatTime: (meetingTime: string | null) => string;
+  openPostDetail: (postId: number) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      {filteredPosts.map((post) => {
+        const postStatus = getPostMatchState(
+          getPostStatus(post.meeting_time),
+          matchSummaryMap[post.id]
+        );
+        const amount = parseBenefitAmount(post.benefit_amount);
+        const purposeTheme = getPurposeTheme(post.meeting_purpose);
+
+        return (
+          <div
+            key={post.id}
+            onClick={() => openPostDetail(post.id)}
+            className={`cursor-pointer ${SURFACE_CARD_CLASS} p-4`}
+          >
+            <div className="mb-4 flex items-center justify-start gap-3">
+              <div
+                className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${getStatusBadgeClass(
+                  postStatus
+                )}`}
+              >
+                {postStatus}
+              </div>
+            </div>
+
+            <div className="rounded-[22px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-3">
+              <div className="flex items-stretch gap-2">
+                <div
+                  className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
+                >
+                  <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 bg-[linear-gradient(180deg,#f7efe6_0%,#efe3d7_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
+                    {getPurposeIcon(post.meeting_purpose)}
+                  </div>
+                  <span className="truncate text-[1.02rem] font-black tracking-[-0.03em] text-[#2f261f]">
+                    {post.meeting_purpose || "Meetup"}
+                  </span>
+                </div>
+
+                {formatDuration(post.duration_minutes) ? (
+                  <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] bg-[#f4ece4] px-1.5 py-2 text-[#4f443b]">
+                    <Clock3 className="h-4 w-4" />
+                    <span className="mt-1 text-sm font-semibold">
+                      {formatDuration(post.duration_minutes)}
+                    </span>
+                  </div>
+                ) : null}
+
+                {amount !== null && (
+                  <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[16px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-1.5 py-2 text-[#6e4715] shadow-sm">
+                    <Coins className="h-4 w-4 shrink-0" />
+                    <span className="mt-1 text-sm font-semibold">
+                      +${amount.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-3 grid gap-2 text-[#7d7268] sm:grid-cols-2">
+                {post.meeting_time && (
+                  <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                    <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                    <div className="min-w-0 leading-[1.2]">
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
+                        When
+                      </div>
+                      <div className="truncate text-[12px] font-medium text-[#554a42]">
+                        {formatTime(post.meeting_time)}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex min-w-0 items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
+                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                  <div className="min-w-0 leading-[1.2]">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
+                      Place
+                    </div>
+                    <div className="block truncate text-[12px] font-medium text-[#554a42]">
+                      {post.place_name || post.location || "No place"}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2 sm:col-span-2">
+                  <UserRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                  <div className="min-w-0 leading-[1.2]">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
+                      Looking for
+                    </div>
+                    <div className="truncate text-[12px] font-medium text-[#554a42]">
+                      {post.target_gender || "Any"} / {post.target_age_group || "Any"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+
+      {filteredPosts.length === 0 && (
+        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
+          No meetups in this filter.
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ReceivedTabPanel({
+  receivedItems,
+  profileMap,
+  postMap,
+  userTimeZone,
+  processingRequestId,
+  processingRequestAction,
+  updateRequestStatus,
+  openPostDetail,
+  stopCardClick,
+}: {
+  receivedItems: MatchRequestRow[];
+  profileMap: Record<string, string>;
+  postMap: Record<number, PostRow>;
+  userTimeZone: string;
+  processingRequestId: number | null;
+  processingRequestAction: "accepted" | "rejected" | null;
+  updateRequestStatus: (requestId: number, nextStatus: "accepted" | "rejected") => Promise<void>;
+  openPostDetail: (postId: number) => void;
+  stopCardClick: (event: React.MouseEvent<HTMLElement>) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      {receivedItems.map((item) => {
+        const requesterName = profileMap[item.requester_user_id] || "Unknown";
+        const statusLine =
+          item.status === "pending"
+            ? `${requesterName} wants to join this meetup.`
+            : item.status === "accepted"
+            ? `You matched with ${requesterName}.`
+            : `${requesterName}'s request is closed.`;
+
+        return (
+          <div
+            key={item.id}
+            onClick={() => openPostDetail(item.post_id)}
+            className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                  Incoming request
+                </div>
+                <div className="mt-2 text-lg font-semibold text-[#2f2a26]">{statusLine}</div>
+                <div className="mt-1 text-sm text-[#6f655c]">From {requesterName}</div>
+                <div className="mt-1 text-sm text-[#8b7f74]">
+                  {new Date(item.created_at).toLocaleString()}
+                </div>
+              </div>
+
+              <span
+                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                  item.status
+                )}`}
+              >
+                {item.status}
+              </span>
+            </div>
+
+            <MiniPostPreview post={postMap[item.post_id]} timeZone={userTimeZone} />
+
+            {item.status === "pending" ? (
+              <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
+                <CompactActionButton
+                  onClick={() => updateRequestStatus(item.id, "accepted")}
+                  disabled={processingRequestId !== null}
+                  primary
+                >
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  {processingRequestId === item.id && processingRequestAction === "accepted"
+                    ? "Accepting..."
+                    : "Accept"}
+                </CompactActionButton>
+
+                <CompactActionButton
+                  onClick={() => updateRequestStatus(item.id, "rejected")}
+                  disabled={processingRequestId !== null}
+                >
+                  <XCircle className="h-3.5 w-3.5" />
+                  {processingRequestId === item.id && processingRequestAction === "rejected"
+                    ? "Rejecting..."
+                    : "Reject"}
+                </CompactActionButton>
+              </div>
+            ) : null}
+          </div>
+        );
+      })}
+
+      {receivedItems.length === 0 && (
+        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
+          No requests received.
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SentTabPanel({
+  requestsSent,
+  profileMap,
+  postMap,
+  userTimeZone,
+  openPostDetail,
+}: {
+  requestsSent: MatchRequestRow[];
+  profileMap: Record<string, string>;
+  postMap: Record<number, PostRow>;
+  userTimeZone: string;
+  openPostDetail: (postId: number) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      {requestsSent.map((item) => (
+        <div
+          key={item.id}
+          onClick={() => openPostDetail(item.post_id)}
+          className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                Outgoing request
+              </div>
+              <div className="mt-2 text-lg font-semibold text-[#2f2a26]">
+                You asked to join this meetup.
+              </div>
+              <div className="mt-1 text-sm text-[#6f655c]">
+                Sent to {profileMap[item.post_owner_user_id] || "Unknown"}
+              </div>
+              <div className="mt-1 text-sm text-[#8b7f74]">
+                {new Date(item.created_at).toLocaleString()}
+              </div>
+            </div>
+
+            <span
+              className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                item.status
+              )}`}
+            >
+              {item.status}
+            </span>
+          </div>
+
+          <MiniPostPreview post={postMap[item.post_id]} timeZone={userTimeZone} />
+        </div>
+      ))}
+
+      {requestsSent.length === 0 && (
+        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
+          No requests sent.
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MatchesTabPanel({
+  filteredMatches,
+  userId,
+  profileMap,
+  postMap,
+  reviewedMatchIds,
+  userTimeZone,
+  getPostStatus,
+  openPostDetail,
+  stopCardClick,
+}: {
+  filteredMatches: MatchRow[];
+  userId: string;
+  profileMap: Record<string, string>;
+  postMap: Record<number, PostRow>;
+  reviewedMatchIds: number[];
+  userTimeZone: string;
+  getPostStatus: (meetingTime: string | null) => "Upcoming" | "Expired";
+  openPostDetail: (postId: number) => void;
+  stopCardClick: (event: React.MouseEvent<HTMLElement>) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      {filteredMatches.map((item) => {
+        const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
+        const post = postMap[item.post_id];
+        const alreadyReviewed = reviewedMatchIds.includes(item.id);
+        const meetupStatus = getPostStatus(post?.meeting_time || null).toLowerCase();
+        const canLeaveReview = meetupStatus === "expired" && !alreadyReviewed;
+
+        return (
+          <div
+            key={item.id}
+            onClick={() => openPostDetail(item.post_id)}
+            className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                  Match status
+                </div>
+                <div className="mt-2 flex items-center gap-2 text-lg font-semibold text-[#2f2a26]">
+                  <HeartHandshake className="h-5 w-5 text-[#a48f7a]" />
+                  <span>Match confirmed</span>
+                </div>
+                <div className="mt-1 text-sm text-[#6f655c]">
+                  You are matched with {profileMap[otherUserId] || "Unknown"}.
+                </div>
+                <div className="mt-1 text-sm text-[#8b7f74]">
+                  Matched on {new Date(item.created_at).toLocaleString()}
+                </div>
+              </div>
+
+              <span
+                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                  meetupStatus
+                )}`}
+              >
+                {meetupStatus === "upcoming" ? "Matched" : "Expired"}
+              </span>
+            </div>
+
+            <MiniPostPreview post={post} timeZone={userTimeZone} />
+
+            <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
+              {canLeaveReview ? (
+                <CompactActionButton href={`/reviews/write/${item.id}`}>
+                  <Star className="h-3.5 w-3.5" />
+                  Leave Review
+                </CompactActionButton>
+              ) : alreadyReviewed ? (
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-[#fcfaf7] px-3 py-2 text-xs font-medium text-[#8b7f74]">
+                  <Star className="h-3.5 w-3.5" />
+                  Review submitted
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-[#fcfaf7] px-3 py-2 text-xs font-medium text-[#8b7f74]">
+                  <Star className="h-3.5 w-3.5" />
+                  Review after meetup
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+
+      {filteredMatches.length === 0 && (
+        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
+          No matches in this filter.
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function DashboardClient({
   userId,
   posts: initialPosts,
@@ -821,317 +1200,51 @@ export default function DashboardClient({
         )}
 
         {activeTab === "posts" && (
-          <div className="space-y-4">
-            {filteredPosts.map((post) => {
-              const postStatus = getPostMatchState(
-                getPostStatus(post.meeting_time) as "Upcoming" | "Expired",
-                matchSummaryMap[post.id]
-              );
-              const amount = parseBenefitAmount(post.benefit_amount);
-              const purposeTheme = getPurposeTheme(post.meeting_purpose);
-
-              return (
-                <div
-                  key={post.id}
-                  onClick={() => openPostDetail(post.id)}
-                  className={`cursor-pointer ${SURFACE_CARD_CLASS} p-4`}
-                >
-                  <div className="mb-4 flex items-center justify-start gap-3">
-                    <div
-                      className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${getStatusBadgeClass(
-                        postStatus
-                      )}`}
-                    >
-                      {postStatus}
-                    </div>
-                  </div>
-
-                  <div className="rounded-[22px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-3">
-                    <div className="flex items-stretch gap-2">
-                      <div
-                        className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
-                      >
-                        <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 bg-[linear-gradient(180deg,#f7efe6_0%,#efe3d7_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
-                          {getPurposeIcon(post.meeting_purpose)}
-                        </div>
-                        <span className="truncate text-[1.02rem] font-black tracking-[-0.03em] text-[#2f261f]">
-                          {post.meeting_purpose || "Meetup"}
-                        </span>
-                      </div>
-
-                      {formatDuration(post.duration_minutes) ? (
-                        <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] bg-[#f4ece4] px-1.5 py-2 text-[#4f443b]">
-                          <Clock3 className="h-4 w-4" />
-                          <span className="mt-1 text-sm font-semibold">
-                            {formatDuration(post.duration_minutes)}
-                          </span>
-                        </div>
-                      ) : null}
-
-                      {amount !== null && (
-                        <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[16px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-1.5 py-2 text-[#6e4715] shadow-sm">
-                          <Coins className="h-4 w-4 shrink-0" />
-                          <span className="mt-1 text-sm font-semibold">
-                            +${amount.toLocaleString()}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="mt-3 grid gap-2 text-[#7d7268] sm:grid-cols-2">
-                      {post.meeting_time && (
-                        <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
-                          <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                          <div className="min-w-0 leading-[1.2]">
-                            <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">When</div>
-                            <div className="truncate text-[12px] font-medium text-[#554a42]">{formatTime(post.meeting_time)}</div>
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex min-w-0 items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
-                        <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                        <div className="min-w-0 leading-[1.2]">
-                          <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Place</div>
-                          <div className="block truncate text-[12px] font-medium text-[#554a42]">{post.place_name || post.location || "No place"}</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2 sm:col-span-2">
-                        <UserRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                        <div className="min-w-0 leading-[1.2]">
-                          <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Looking for</div>
-                          <div className="truncate text-[12px] font-medium text-[#554a42]">{post.target_gender || "Any"} / {post.target_age_group || "Any"}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              );
-            })}
-
-            {filteredPosts.length === 0 && (
-              <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
-                {postFilter === "all"
-                  ? "No meetups yet."
-                  : postFilter === "open"
-                  ? "No open meetups."
-                  : postFilter === "matched"
-                  ? "No matched meetups."
-                  : "No expired meetups."}
-              </div>
-            )}
-          </div>
+          <PostsTabPanel
+            filteredPosts={filteredPosts}
+            matchSummaryMap={matchSummaryMap}
+            getPostStatus={getPostStatus}
+            formatTime={formatTime}
+            openPostDetail={openPostDetail}
+          />
         )}
 
         {activeTab === "received" && (
-          <div className="space-y-4">
-            {receivedItems.map((item) => {
-              const requesterName = profileMap[item.requester_user_id] || "Unknown";
-              const statusLine =
-                item.status === "pending"
-                  ? `${requesterName} wants to join this meetup.`
-                  : item.status === "accepted"
-                  ? `You matched with ${requesterName}.`
-                  : `${requesterName}'s request is closed.`;
-
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => openPostDetail(item.post_id)}
-                  className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-                        Incoming request
-                      </div>
-                      <div className="mt-2 text-lg font-semibold text-[#2f2a26]">
-                        {statusLine}
-                      </div>
-
-                      <div className="mt-1 text-sm text-[#6f655c]">
-                        From {requesterName}
-                      </div>
-
-                      <div className="mt-1 text-sm text-[#8b7f74]">
-                        {new Date(item.created_at).toLocaleString()}
-                      </div>
-                    </div>
-
-                    <span
-                      className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
-                        item.status
-                      )}`}
-                    >
-                      {item.status}
-                    </span>
-                  </div>
-
-                  <MiniPostPreview post={postMap[item.post_id]} timeZone={userTimeZone} />
-
-                  {item.status === "pending" ? (
-                    <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
-                      <CompactActionButton
-                        onClick={() => updateRequestStatus(item.id, "accepted")}
-                        disabled={processingRequestId !== null}
-                        primary
-                      >
-                        <CheckCircle2 className="h-3.5 w-3.5" />
-                        {processingRequestId === item.id &&
-                        processingRequestAction === "accepted"
-                          ? "Accepting..."
-                          : "Accept"}
-                      </CompactActionButton>
-
-                      <CompactActionButton
-                        onClick={() => updateRequestStatus(item.id, "rejected")}
-                        disabled={processingRequestId !== null}
-                      >
-                        <XCircle className="h-3.5 w-3.5" />
-                        {processingRequestId === item.id &&
-                        processingRequestAction === "rejected"
-                          ? "Rejecting..."
-                          : "Reject"}
-                      </CompactActionButton>
-                    </div>
-                  ) : null}
-                </div>
-              );
-            })}
-
-            {receivedItems.length === 0 && (
-              <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
-                No requests received.
-              </div>
-            )}
-          </div>
+          <ReceivedTabPanel
+            receivedItems={receivedItems}
+            profileMap={profileMap}
+            postMap={postMap}
+            userTimeZone={userTimeZone}
+            processingRequestId={processingRequestId}
+            processingRequestAction={processingRequestAction}
+            updateRequestStatus={updateRequestStatus}
+            openPostDetail={openPostDetail}
+            stopCardClick={stopCardClick}
+          />
         )}
 
         {activeTab === "sent" && (
-          <div className="space-y-4">
-            {requestsSent.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => openPostDetail(item.post_id)}
-                className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-                      Outgoing request
-                    </div>
-                    <div className="mt-2 text-lg font-semibold text-[#2f2a26]">You asked to join this meetup.</div>
-
-                    <div className="mt-1 text-sm text-[#6f655c]">
-                      Sent to {profileMap[item.post_owner_user_id] || "Unknown"}
-                    </div>
-
-                    <div className="mt-1 text-sm text-[#8b7f74]">
-                      {new Date(item.created_at).toLocaleString()}
-                    </div>
-                  </div>
-
-                  <span
-                    className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
-                      item.status
-                    )}`}
-                  >
-                    {item.status}
-                  </span>
-                </div>
-
-                <MiniPostPreview post={postMap[item.post_id]} timeZone={userTimeZone} />
-
-              </div>
-            ))}
-
-            {requestsSent.length === 0 && (
-              <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
-                No requests sent.
-              </div>
-            )}
-          </div>
+          <SentTabPanel
+            requestsSent={requestsSent}
+            profileMap={profileMap}
+            postMap={postMap}
+            userTimeZone={userTimeZone}
+            openPostDetail={openPostDetail}
+          />
         )}
 
         {activeTab === "matches" && (
-          <div className="space-y-4">
-            {filteredMatches.map((item) => {
-              const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
-              const post = postMap[item.post_id];
-              const alreadyReviewed = reviewedMatchIds.includes(item.id);
-              const meetupStatus = getPostStatus(post?.meeting_time || null).toLowerCase();
-              const canLeaveReview = meetupStatus === "expired" && !alreadyReviewed;
-
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => openPostDetail(item.post_id)}
-                className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-                        Match status
-                      </div>
-                      <div className="mt-2 flex items-center gap-2 text-lg font-semibold text-[#2f2a26]">
-                        <HeartHandshake className="h-5 w-5 text-[#a48f7a]" />
-                        <span>Match confirmed</span>
-                      </div>
-
-                      <div className="mt-1 text-sm text-[#6f655c]">
-                        You are matched with {profileMap[otherUserId] || "Unknown"}.
-                      </div>
-
-                      <div className="mt-1 text-sm text-[#8b7f74]">
-                        Matched on {new Date(item.created_at).toLocaleString()}
-                      </div>
-                    </div>
-
-                    <span
-                      className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
-                        meetupStatus
-                      )}`}
-                    >
-                      {meetupStatus === "upcoming" ? "Matched" : "Expired"}
-                    </span>
-                  </div>
-
-                  <MiniPostPreview post={post} timeZone={userTimeZone} />
-
-                  <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
-                    {canLeaveReview ? (
-                      <CompactActionButton href={`/reviews/write/${item.id}`}>
-                        <Star className="h-3.5 w-3.5" />
-                        Leave Review
-                      </CompactActionButton>
-                    ) : alreadyReviewed ? (
-                      <div className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-[#fcfaf7] px-3 py-2 text-xs font-medium text-[#8b7f74]">
-                        <Star className="h-3.5 w-3.5" />
-                        Review submitted
-                      </div>
-                    ) : (
-                      <div className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-[#fcfaf7] px-3 py-2 text-xs font-medium text-[#8b7f74]">
-                        <Star className="h-3.5 w-3.5" />
-                        Review after meetup
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-
-            {filteredMatches.length === 0 && (
-              <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
-                {matchFilter === "all"
-                  ? "No matches yet."
-                  : matchFilter === "upcoming"
-                  ? "No upcoming matches."
-                  : "No expired matches."}
-              </div>
-            )}
-          </div>
+          <MatchesTabPanel
+            filteredMatches={filteredMatches}
+            userId={userId}
+            profileMap={profileMap}
+            postMap={postMap}
+            reviewedMatchIds={reviewedMatchIds}
+            userTimeZone={userTimeZone}
+            getPostStatus={getPostStatus}
+            openPostDetail={openPostDetail}
+            stopCardClick={stopCardClick}
+          />
         )}
       </div>
     </main>
