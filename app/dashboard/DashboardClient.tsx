@@ -3,6 +3,12 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import {
+  formatMeetingCountdown,
+  formatMeetingTime,
+  getMeetingStatus,
+  parseMeetingTime,
+} from "../../lib/meetingTime";
 import { createClient } from "../../lib/supabase/client";
 import {
   Activity,
@@ -151,46 +157,6 @@ function formatDuration(minutes: number | null) {
   if (minutes === 90) return "1.5h";
   if (minutes === 120) return "2h";
   return `${minutes}m`;
-}
-
-function formatTime(meetingTime: string | null) {
-  if (!meetingTime) return "";
-  const date = new Date(meetingTime);
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  })}`;
-}
-
-function formatTimeUntil(meetingTime: string | null) {
-  if (!meetingTime) return "";
-
-  const nowDate = new Date();
-  const targetDate = new Date(meetingTime);
-  const now = nowDate.getTime();
-  const target = targetDate.getTime();
-  if (Number.isNaN(target) || target <= now) return "";
-
-  if (target - now < 1000 * 60 * 60 * 24) {
-    return "D-0";
-  }
-
-  const diffMs = target - now;
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffHours < 24) {
-    return `H-${Math.max(1, diffHours)}`;
-  }
-
-  return `D-${Math.max(1, diffDays)}`;
-}
-
-function getPostStatus(meetingTime: string | null) {
-  if (!meetingTime) return "Upcoming";
-  const now = new Date();
-  const target = new Date(meetingTime);
-  return target.getTime() >= now.getTime() ? "Upcoming" : "Expired";
 }
 
 function getStatusBadgeClass(status: string) {
@@ -471,6 +437,19 @@ export default function DashboardClient({
 }) {
   const supabase = createClient();
   const router = useRouter();
+  const userTimeZone = useMemo(
+    () => Intl.DateTimeFormat().resolvedOptions().timeZone,
+    []
+  );
+
+  const formatTime = (meetingTime: string | null) =>
+    formatMeetingTime(meetingTime, userTimeZone) || "";
+
+  const formatTimeUntil = (meetingTime: string | null) =>
+    formatMeetingCountdown(meetingTime, userTimeZone) || "";
+
+  const getPostStatus = (meetingTime: string | null) =>
+    getMeetingStatus(meetingTime, userTimeZone);
 
   const [posts] = useState(initialPosts);
   const [receivedItems, setReceivedItems] = useState(requestsReceived);
@@ -543,7 +522,8 @@ export default function DashboardClient({
         const post = postMap[match.post_id];
         if (!post?.meeting_time) return null;
 
-        const time = new Date(post.meeting_time).getTime();
+        const time =
+          parseMeetingTime(post.meeting_time, userTimeZone)?.getTime() ?? NaN;
         if (Number.isNaN(time) || time < Date.now()) return null;
 
         const otherUserId = match.user_a === userId ? match.user_b : match.user_a;
@@ -558,7 +538,7 @@ export default function DashboardClient({
       })
       .filter(Boolean)
       .sort((a, b) => a!.time - b!.time);
-  }, [matches, postMap, profileMap, userId]);
+  }, [matches, postMap, profileMap, userId, userTimeZone]);
 
   const updateRequestStatus = async (
     requestId: number,

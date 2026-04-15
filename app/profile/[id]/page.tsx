@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -11,6 +12,11 @@ import {
   Sparkles,
 } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
+import {
+  FALLBACK_TIME_ZONE,
+  normalizeUserTimeZone,
+  USER_TIME_ZONE_COOKIE,
+} from "../../../lib/userTimeZone";
 
 type PageProps = {
   params: {
@@ -97,7 +103,11 @@ function InfoItem({
 
 export default async function ProfilePage({ params }: PageProps) {
   const supabase = await createClient();
+  const cookieStore = await cookies();
   const userId = params.id;
+  const userTimeZone = normalizeUserTimeZone(
+    cookieStore.get(USER_TIME_ZONE_COOKIE)?.value || FALLBACK_TIME_ZONE
+  );
 
   const {
     data: { user },
@@ -344,7 +354,9 @@ export default async function ProfilePage({ params }: PageProps) {
                         </div>
                       </div>
                       <div className="text-xs text-[#9b8f84]">
-                        {new Date(review.created_at).toLocaleDateString()}
+                        {new Date(review.created_at).toLocaleDateString(undefined, {
+                          timeZone: userTimeZone,
+                        })}
                       </div>
                     </div>
 

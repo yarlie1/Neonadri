@@ -110,3 +110,10 @@ export function formatMeetingCountdown(
   const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
   return `D-${diffDays}`;
 }
+
+export function getMeetingStatus(
+  meetingTime: string | null,
+  timeZone = MEETING_TIME_ZONE
+) {
+  return isMeetingFinished(meetingTime, timeZone) ? "Expired" : "Upcoming";
+}
