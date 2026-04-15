@@ -16,6 +16,14 @@ import MatchRequestBox from "./MatchRequestBox";
 import OwnerMatchPanel from "./OwnerMatchPanel";
 import DeletePostButton from "./DeletePostButton";
 import {
+  fetchProfileShowcaseData,
+  fetchRequesterProfileMap,
+  getMatchedGuestId,
+  type MatchRequestRow,
+  type MatchRow,
+  type MatchSummaryRow,
+} from "./detailData";
+import {
   MatchReviewPanel,
   MeetupOverviewCard,
   ProfileShowcaseCard,
@@ -32,48 +40,6 @@ type PageProps = {
   params: {
     id: string;
   };
-};
-
-type ProfileRow = {
-  id: string;
-  display_name: string | null;
-  bio: string | null;
-  about_me: string | null;
-  gender: string | null;
-  age_group: string | null;
-  preferred_area: string | null;
-  languages: string[] | null;
-  meeting_style: string | null;
-  interests: string[] | null;
-  response_time_note: string | null;
-};
-
-type MatchRequestRow = {
-  id: number;
-  requester_user_id: string;
-  post_owner_user_id: string;
-  status: string;
-  created_at: string;
-};
-
-type MatchRow = {
-  id: number;
-  user_a?: string;
-  user_b?: string;
-  status: string;
-};
-
-type MatchSummaryRow = {
-  post_id: number;
-  is_matched: boolean;
-  pending_request_count: number;
-  total_request_count: number;
-};
-
-type ProfileStats = {
-  average_rating?: number | null;
-  review_count?: number | null;
-  completed_meetups?: number | null;
 };
 
 export default async function MeetupDetailPage({ params }: PageProps) {
@@ -119,46 +85,19 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   let matchedGuestUserId: string | null = null;
 
   if (post.user_id) {
-    const [ownerProfileRes, ownerStatsRes, ownerReviewsRes] = await Promise.all([
-      supabase
-        .from("profiles")
-        .select(
-          "id, display_name, bio, about_me, gender, age_group, preferred_area, languages, meeting_style, interests, response_time_note"
-        )
-        .eq("id", post.user_id)
-        .maybeSingle(),
-
-      supabase.rpc("get_profile_stats", {
-        p_user_id: post.user_id,
-      }),
-
-      supabase
-        .from("match_reviews")
-        .select("id, rating, review_text, created_at")
-        .eq("reviewee_user_id", post.user_id)
-        .order("created_at", { ascending: false })
-        .limit(3),
-    ]);
-
-    const profile = ownerProfileRes.data as ProfileRow | null;
-    const stats = ownerStatsRes.data as ProfileStats | null;
-    const reviews = (ownerReviewsRes.data || []) as ReviewRow[];
-
-    if (profile) {
-      ownerName = profile.display_name || "Unknown";
-      ownerAboutMe = profile.about_me || "";
-      ownerGender = profile.gender || "";
-      ownerAgeGroup = profile.age_group || "";
-      ownerLanguages = profile.languages || [];
-      ownerMeetingStyle = profile.meeting_style || "";
-      ownerInterests = profile.interests || [];
-      ownerResponseNote = profile.response_time_note || "";
-    }
-
-    ownerAverageRating = Number(stats?.average_rating ?? 0);
-    ownerReviewCount = Number(stats?.review_count ?? 0);
-    ownerCompletedMeetups = Number(stats?.completed_meetups ?? 0);
-    ownerRecentReviews = reviews;
+    const ownerData = await fetchProfileShowcaseData(supabase, post.user_id);
+    ownerName = ownerData.displayName;
+    ownerAboutMe = ownerData.aboutMe;
+    ownerGender = ownerData.gender;
+    ownerAgeGroup = ownerData.ageGroup;
+    ownerLanguages = ownerData.languages;
+    ownerMeetingStyle = ownerData.meetingStyle;
+    ownerInterests = ownerData.interests;
+    ownerResponseNote = ownerData.responseNote;
+    ownerAverageRating = ownerData.averageRating;
+    ownerReviewCount = ownerData.reviewCount;
+    ownerCompletedMeetups = ownerData.completedMeetups;
+    ownerRecentReviews = ownerData.recentReviews;
   }
 
   let myRequestStatus = "No request yet";
@@ -240,12 +179,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     matchedRecord = (matchRecordData as MatchRow | null) || null;
   }
 
-  const matchedGuestId =
-    matchedRecord?.user_a && matchedRecord.user_a !== post.user_id
-      ? matchedRecord.user_a
-      : matchedRecord?.user_b && matchedRecord.user_b !== post.user_id
-      ? matchedRecord.user_b
-      : null;
+  const matchedGuestId = getMatchedGuestId(matchedRecord, post.user_id);
 
   const isViewerParticipant = !!user && !!matchedRecord && (user.id === post.user_id || user.id === matchedGuestId);
 
@@ -266,51 +200,14 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }
 
   if (matchedGuestId) {
-    const [guestProfileRes, guestStatsRes, guestReviewsRes] = await Promise.all([
-      supabase
-        .from("profiles")
-        .select(
-          "id, display_name, bio, about_me, gender, age_group, preferred_area, languages, meeting_style, interests, response_time_note"
-        )
-        .eq("id", matchedGuestId)
-        .maybeSingle(),
-      supabase.rpc("get_profile_stats", {
-        p_user_id: matchedGuestId,
-      }),
-      supabase
-        .from("match_reviews")
-        .select("id, rating, review_text, created_at")
-        .eq("reviewee_user_id", matchedGuestId)
-        .order("created_at", { ascending: false })
-        .limit(3),
-    ]);
-
-    const guestProfile = guestProfileRes.data as ProfileRow | null;
-    const guestStats = guestStatsRes.data as ProfileStats | null;
-    const guestReviews = (guestReviewsRes.data || []) as ReviewRow[];
-
-    if (guestProfile) {
-      guestProfileData = {
-        userId: guestProfile.id,
-        displayName: guestProfile.display_name || "Unknown",
-        aboutMe: guestProfile.about_me || "",
-        gender: guestProfile.gender || "",
-        ageGroup: guestProfile.age_group || "",
-        languages: guestProfile.languages || [],
-        meetingStyle: guestProfile.meeting_style || "",
-        interests: guestProfile.interests || [],
-        responseNote: guestProfile.response_time_note || "",
-        averageRating: Number(guestStats?.average_rating ?? 0),
-        reviewCount: Number(guestStats?.review_count ?? 0),
-        completedMeetups: Number(guestStats?.completed_meetups ?? 0),
-        recentReviews: guestReviews,
-      };
-
+    const guestData = await fetchProfileShowcaseData(supabase, matchedGuestId);
+    guestProfileData = guestData.profileCardData;
+    if (guestProfileData) {
       matchedPartner = {
-        userId: guestProfile.id,
-        displayName: guestProfile.display_name || "Unknown",
-        gender: guestProfile.gender || "",
-        ageGroup: guestProfile.age_group || "",
+        userId: matchedGuestId,
+        displayName: guestData.displayName,
+        gender: guestData.gender,
+        ageGroup: guestData.ageGroup,
       };
     }
   }
@@ -318,30 +215,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const requesterIds = Array.from(
     new Set(ownerRequests.map((request) => request.requester_user_id).filter(Boolean))
   );
-  const requesterProfileMap = new Map<
-    string,
-    { displayName: string; gender: string; ageGroup: string }
-  >();
-
-  if (requesterIds.length > 0) {
-    const { data: requesterProfiles } = await supabase
-      .from("profiles")
-      .select("id, display_name, gender, age_group")
-      .in("id", requesterIds);
-
-    ((requesterProfiles || []) as Array<{
-      id: string;
-      display_name: string | null;
-      gender: string | null;
-      age_group: string | null;
-    }>).forEach((profile) => {
-      requesterProfileMap.set(profile.id, {
-        displayName: profile.display_name || "Unknown",
-        gender: profile.gender || "",
-        ageGroup: profile.age_group || "",
-      });
-    });
-  }
+  const requesterProfileMap = await fetchRequesterProfileMap(supabase, requesterIds);
 
   const mapQuery = post.place_name || post.location || "";
   const mapUrl = mapQuery
