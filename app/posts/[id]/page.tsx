@@ -4,11 +4,6 @@ import { cookies } from "next/headers";
 import { Sparkles } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import {
-  formatMeetingCountdown,
-  formatMeetingTime,
-  isMeetingFinished,
-} from "../../../lib/meetingTime";
-import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
 } from "../../../lib/userTimeZone";
@@ -16,6 +11,7 @@ import MatchRequestBox from "./MatchRequestBox";
 import OwnerMatchPanel from "./OwnerMatchPanel";
 import DeletePostButton from "./DeletePostButton";
 import {
+  buildDetailViewModel,
   fetchProfileShowcaseData,
   fetchRequesterProfileMap,
   getMatchedGuestId,
@@ -32,8 +28,6 @@ import {
   type ProfileCardData,
   type ReviewRow,
   UpcomingMeetupCard,
-  formatDuration,
-  getPurposeTheme,
 } from "./detailComponents";
 
 type PageProps = {
@@ -217,38 +211,29 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   );
   const requesterProfileMap = await fetchRequesterProfileMap(supabase, requesterIds);
 
-  const mapQuery = post.place_name || post.location || "";
-  const mapUrl = mapQuery
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
-    : post.latitude !== null && post.longitude !== null
-    ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
-    : "";
-
   const ownerProfileHref = post.user_id ? `/profile/${post.user_id}` : "#";
-  const targetLabel = `${post.target_gender || "Any"} / ${
-    post.target_age_group || "Any"
-  }`;
-  const hostIdentityLabel = `${ownerGender || "Unknown"}${
-    ownerGender && ownerAgeGroup ? " / " : ""
-  }${ownerAgeGroup || ""}`;
-  const meetupTimeLabel =
-    formatMeetingTime(post.meeting_time, userTimeZone) || "Time not set";
-  const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
-  const meetupCountdown = formatMeetingCountdown(post.meeting_time, userTimeZone);
-  const meetupFinished = isMeetingFinished(post.meeting_time, userTimeZone);
-  const viewerHasReview =
-    !!user &&
-    matchReviews.some((review) => review.reviewer_user_id === user.id);
-  const canLeaveReview =
-    !!user &&
-    !!matchedRecord?.id &&
-    isViewerParticipant &&
-    meetupFinished &&
-    !viewerHasReview;
-  const benefitExplanation = post.benefit_amount
-    ? `After this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host will give ${post.benefit_amount} to the guest.`
-    : `After this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host has not listed a guest benefit yet.`;
-  const purposeTheme = getPurposeTheme(post.meeting_purpose);
+  const {
+    mapUrl,
+    targetLabel,
+    hostIdentityLabel,
+    meetupTimeLabel,
+    meetupDurationLabel,
+    meetupCountdown,
+    meetupFinished,
+    canLeaveReview,
+    viewerHasReview,
+    benefitExplanation,
+    purposeTheme,
+  } = buildDetailViewModel({
+    post,
+    userTimeZone,
+    ownerGender,
+    ownerAgeGroup,
+    isViewerParticipant,
+    matchedRecordId: matchedRecord?.id,
+    userId: user?.id,
+    matchReviews,
+  });
   const ownerProfileData: ProfileCardData = {
     userId: post.user_id,
     displayName: ownerName,

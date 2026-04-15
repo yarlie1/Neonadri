@@ -1,3 +1,14 @@
+import {
+  formatMeetingCountdown,
+  formatMeetingTime,
+  isMeetingFinished,
+} from "../../../lib/meetingTime";
+import {
+  formatDuration,
+  getPurposeTheme,
+  type MatchReviewRow,
+  type PostRow,
+} from "./detailComponents";
 import type { ProfileCardData, ReviewRow } from "./detailComponents";
 
 export type ProfileRow = {
@@ -56,6 +67,20 @@ export type LoadedProfileData = {
   completedMeetups: number;
   recentReviews: ReviewRow[];
   profileCardData: ProfileCardData;
+};
+
+export type DetailViewModel = {
+  mapUrl: string;
+  targetLabel: string;
+  hostIdentityLabel: string;
+  meetupTimeLabel: string;
+  meetupDurationLabel: string;
+  meetupCountdown: string | null;
+  meetupFinished: boolean;
+  canLeaveReview: boolean;
+  viewerHasReview: boolean;
+  benefitExplanation: string;
+  purposeTheme: { bandClass: string };
 };
 
 export async function fetchProfileShowcaseData(
@@ -177,4 +202,69 @@ export function getMatchedGuestId(
   }
 
   return null;
+}
+
+export function buildDetailViewModel({
+  post,
+  userTimeZone,
+  ownerGender,
+  ownerAgeGroup,
+  isViewerParticipant,
+  matchedRecordId,
+  userId,
+  matchReviews,
+}: {
+  post: PostRow;
+  userTimeZone: string;
+  ownerGender: string;
+  ownerAgeGroup: string;
+  isViewerParticipant: boolean;
+  matchedRecordId?: number | null;
+  userId?: string;
+  matchReviews: MatchReviewRow[];
+}): DetailViewModel {
+  const mapQuery = post.place_name || post.location || "";
+  const mapUrl = mapQuery
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
+    : post.latitude !== null && post.longitude !== null
+    ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
+    : "";
+
+  const targetLabel = `${post.target_gender || "Any"} / ${
+    post.target_age_group || "Any"
+  }`;
+  const hostIdentityLabel = `${ownerGender || "Unknown"}${
+    ownerGender && ownerAgeGroup ? " / " : ""
+  }${ownerAgeGroup || ""}`;
+  const meetupTimeLabel =
+    formatMeetingTime(post.meeting_time, userTimeZone) || "Time not set";
+  const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
+  const meetupCountdown = formatMeetingCountdown(post.meeting_time, userTimeZone);
+  const meetupFinished = isMeetingFinished(post.meeting_time, userTimeZone);
+  const viewerHasReview =
+    !!userId && matchReviews.some((review) => review.reviewer_user_id === userId);
+  const canLeaveReview =
+    !!userId &&
+    !!matchedRecordId &&
+    isViewerParticipant &&
+    meetupFinished &&
+    !viewerHasReview;
+  const benefitExplanation = post.benefit_amount
+    ? `After this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host will give ${post.benefit_amount} to the guest.`
+    : `After this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host has not listed a guest benefit yet.`;
+  const purposeTheme = getPurposeTheme(post.meeting_purpose);
+
+  return {
+    mapUrl,
+    targetLabel,
+    hostIdentityLabel,
+    meetupTimeLabel,
+    meetupDurationLabel,
+    meetupCountdown,
+    meetupFinished,
+    canLeaveReview,
+    viewerHasReview,
+    benefitExplanation,
+    purposeTheme,
+  };
 }
