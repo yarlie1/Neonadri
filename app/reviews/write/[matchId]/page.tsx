@@ -17,6 +17,10 @@ type PostRow = {
   meeting_purpose: string | null;
 };
 
+type ProfileRow = {
+  display_name: string | null;
+};
+
 type PageProps = {
   params: {
     matchId: string;
@@ -40,6 +44,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialMessage="Match not found."
         initialPostInfo={null}
         initialRevieweeUserId=""
+        initialRevieweeName=""
       />
     );
   }
@@ -66,6 +71,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialMessage="Match not found."
         initialPostInfo={null}
         initialRevieweeUserId=""
+        initialRevieweeName=""
       />
     );
   }
@@ -80,11 +86,19 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialMessage="You do not have access to this review."
         initialPostInfo={null}
         initialRevieweeUserId=""
+        initialRevieweeName=""
       />
     );
   }
 
   const revieweeUserId = match.user_a === user.id ? match.user_b : match.user_a;
+  const { data: revieweeProfileData } = await supabase
+    .from("profiles")
+    .select("display_name")
+    .eq("id", revieweeUserId)
+    .maybeSingle();
+  const revieweeName =
+    (revieweeProfileData as ProfileRow | null)?.display_name || "your match";
 
   const { data: postData } = await supabase
     .from("posts")
@@ -102,6 +116,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialMessage="Review is available only after the meetup is finished."
         initialPostInfo={postInfo}
         initialRevieweeUserId={revieweeUserId}
+        initialRevieweeName={revieweeName}
       />
     );
   }
@@ -121,6 +136,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialMessage="You already submitted a review for this meetup."
         initialPostInfo={postInfo}
         initialRevieweeUserId={revieweeUserId}
+        initialRevieweeName={revieweeName}
       />
     );
   }
@@ -132,6 +148,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
       initialMessage=""
       initialPostInfo={postInfo}
       initialRevieweeUserId={revieweeUserId}
+      initialRevieweeName={revieweeName}
     />
   );
 }

@@ -17,6 +17,7 @@ type ReviewWriteFormProps = {
   initialMessage: string;
   initialPostInfo: PostRow | null;
   initialRevieweeUserId: string;
+  initialRevieweeName: string;
 };
 
 const formatTime = (meetingTime: string | null) => {
@@ -34,6 +35,7 @@ export default function ReviewWriteForm({
   initialMessage,
   initialPostInfo,
   initialRevieweeUserId,
+  initialRevieweeName,
 }: ReviewWriteFormProps) {
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
@@ -84,6 +86,9 @@ export default function ReviewWriteForm({
 
           {initialPostInfo && (
             <div className="mt-4 rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] p-4">
+              <div className="text-sm font-medium text-[#7a6f65]">
+                Review for {initialRevieweeName || "your match"}
+              </div>
               <div className="text-base font-semibold text-[#2f2a26]">
                 {initialPostInfo.meeting_purpose || "Meetup"}
               </div>
