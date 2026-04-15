@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "../../../../lib/supabase/server";
+import { isMeetingFinished } from "../../../../lib/meetingTime";
 import ReviewWriteForm from "./ReviewWriteForm";
 
 type MatchRow = {
@@ -25,11 +26,6 @@ type PageProps = {
   params: {
     matchId: string;
   };
-};
-
-const isMeetupExpired = (meetingTime: string | null) => {
-  if (!meetingTime) return false;
-  return new Date(meetingTime).getTime() < Date.now();
 };
 
 export default async function WriteReviewPage({ params }: PageProps) {
@@ -108,7 +104,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
 
   const postInfo = (postData as PostRow | null) || null;
 
-  if (!postInfo || !isMeetupExpired(postInfo.meeting_time)) {
+  if (!postInfo || !isMeetingFinished(postInfo.meeting_time)) {
     return (
       <ReviewWriteForm
         matchId={params.matchId}

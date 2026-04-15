@@ -28,6 +28,11 @@ import {
   Camera,
 } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
+import {
+  formatMeetingCountdown,
+  formatMeetingTime,
+  isMeetingFinished,
+} from "../../../lib/meetingTime";
 import MatchRequestBox from "./MatchRequestBox";
 import OwnerMatchPanel from "./OwnerMatchPanel";
 import DeletePostButton from "./DeletePostButton";
@@ -230,45 +235,12 @@ const getPurposeTheme = (purpose: string | null) => {
   }
 };
 
-const formatTime = (meetingTime: string | null) => {
-  if (!meetingTime) return null;
-
-  const date = new Date(meetingTime);
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  })}`;
-};
-
 const formatDuration = (minutes: number | null) => {
   if (!minutes) return null;
   if (minutes === 60) return "1h";
   if (minutes === 90) return "1.5h";
   if (minutes === 120) return "2h";
   return `${minutes}m`;
-};
-
-const formatTimeUntil = (meetingTime: string | null) => {
-  if (!meetingTime) return null;
-
-  const now = new Date();
-  const target = new Date(meetingTime);
-  const diffMs = target.getTime() - now.getTime();
-
-  if (diffMs <= 0) return null;
-
-  if (diffMs < 1000 * 60 * 60 * 24) return "D-0";
-
-  const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
-  if (diffHours < 24) return `H-${diffHours}`;
-
-  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-  return `D-${diffDays}`;
-};
-
-const isMeetupFinished = (meetingTime: string | null) => {
-  if (!meetingTime) return false;
-  return new Date(meetingTime).getTime() < Date.now();
 };
 
 const getFriendlyStatusLabel = (status: string) => {
@@ -864,10 +836,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const targetLabel = `${post.target_gender || "Any"} / ${
     post.target_age_group || "Any"
   }`;
-  const meetupTimeLabel = formatTime(post.meeting_time) || "Time not set";
+  const meetupTimeLabel = formatMeetingTime(post.meeting_time) || "Time not set";
   const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
-  const meetupCountdown = formatTimeUntil(post.meeting_time);
-  const meetupFinished = isMeetupFinished(post.meeting_time);
+  const meetupCountdown = formatMeetingCountdown(post.meeting_time);
+  const meetupFinished = isMeetingFinished(post.meeting_time);
   const viewerHasReview =
     !!user &&
     matchReviews.some((review) => review.reviewer_user_id === user.id);
