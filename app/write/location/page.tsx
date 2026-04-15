@@ -117,12 +117,59 @@ export default function WriteLocationPage() {
       { location: { lat, lng } },
       (geocodeResults: any[], status: string) => {
         if (status === "OK" && geocodeResults && geocodeResults[0]) {
-          setSelectedAddress(geocodeResults[0].formatted_address || "");
-          setSelectedPlaceName(
+          const fallbackAddress = geocodeResults[0].formatted_address || "";
+          const fallbackName =
             geocodeResults[0].address_components?.[0]?.long_name ||
-              geocodeResults[0].formatted_address ||
-              "Selected Location"
-          );
+            geocodeResults[0].formatted_address ||
+            "Selected Location";
+
+          setSelectedAddress(fallbackAddress);
+          setSelectedPlaceName(fallbackName);
+
+          if (placesServiceRef.current && window.google?.maps?.places) {
+            const preferredTypes = new Set([
+              "establishment",
+              "point_of_interest",
+              "store",
+              "restaurant",
+              "cafe",
+              "gym",
+              "park",
+              "school",
+              "bar",
+              "bakery",
+              "library",
+              "shopping_mall",
+              "movie_theater",
+            ]);
+
+            placesServiceRef.current.nearbySearch(
+              {
+                location: { lat, lng },
+                rankBy: window.google.maps.places.RankBy.DISTANCE,
+              },
+              (placeResults: any[], placeStatus: string) => {
+                if (
+                  placeStatus !== window.google.maps.places.PlacesServiceStatus.OK ||
+                  !placeResults ||
+                  placeResults.length === 0
+                ) {
+                  return;
+                }
+
+                const preferredPlace =
+                  placeResults.find((item) =>
+                    (item.types || []).some((type: string) =>
+                      preferredTypes.has(type)
+                    )
+                  ) || placeResults[0];
+
+                if (preferredPlace?.name) {
+                  setSelectedPlaceName(preferredPlace.name);
+                }
+              }
+            );
+          }
         } else {
           setSelectedAddress("");
           setSelectedPlaceName("Selected Location");
