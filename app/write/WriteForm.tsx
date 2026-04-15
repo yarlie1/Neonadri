@@ -17,6 +17,7 @@ import {
   BookOpen,
   Laptop,
   Camera,
+  Map,
   MapPin,
   Clock,
   User,
