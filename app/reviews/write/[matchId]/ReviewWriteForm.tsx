@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { createClient } from "../../../../lib/supabase/client";
+import { useState } from "react";
 import { Clock3, Star } from "lucide-react";
 
 type PostRow = {
@@ -36,8 +35,6 @@ export default function ReviewWriteForm({
   initialPostInfo,
   initialRevieweeUserId,
 }: ReviewWriteFormProps) {
-  const supabase = useMemo(() => createClient(), []);
-
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
   const [saving, setSaving] = useState(false);
@@ -46,35 +43,37 @@ export default function ReviewWriteForm({
   const handleSubmit = async () => {
     if (!initialCanReview) return;
 
-    setSaving(true);
-    setMessage("");
+    try {
+      setSaving(true);
+      setMessage("");
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+      const response = await fetch("/api/reviews/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          match_id: matchId,
+          review_text: reviewText,
+          rating,
+          reviewee_user_id: initialRevieweeUserId,
+        }),
+      });
 
-    if (!user) {
-      setMessage("Please sign in first.");
+      const result = await response.json();
+
       setSaving(false);
-      return;
+
+      if (!response.ok) {
+        setMessage(result.error || "Failed to submit review.");
+        return;
+      }
+
+      window.location.href = "/dashboard?tab=matches&review=1";
+    } catch (error) {
+      setSaving(false);
+      setMessage(error instanceof Error ? error.message : "Server error");
     }
-
-    const { error } = await supabase.from("match_reviews").insert({
-      match_id: Number(matchId),
-      reviewer_user_id: user.id,
-      reviewee_user_id: initialRevieweeUserId,
-      rating,
-      review_text: reviewText.trim() || null,
-    });
-
-    setSaving(false);
-
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    window.location.href = "/dashboard?tab=matches&review=1";
   };
 
   return (
