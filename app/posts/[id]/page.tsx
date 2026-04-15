@@ -926,7 +926,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
       <div className="mx-auto max-w-3xl space-y-5">
-        {isPostMatched && isViewerParticipant && (
+        {isPostMatched && isViewerParticipant && !meetupFinished && (
           <div className="rounded-[26px] border border-[#e9ddd1] bg-[linear-gradient(180deg,#fffdfa_0%,#f6ede5_100%)] p-4 shadow-[0_12px_28px_rgba(92,69,52,0.06)] sm:p-5">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
