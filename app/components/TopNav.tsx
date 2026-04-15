@@ -204,30 +204,17 @@ export default function TopNav() {
     try {
       sessionStorage.clear();
       localStorage.removeItem("tagline_variant");
-
-      const controller = new AbortController();
-      const timeoutId = window.setTimeout(() => controller.abort(), 2500);
-
-      try {
-        await fetch("/api/auth/logout", {
-          method: "POST",
-          credentials: "include",
-          cache: "no-store",
-          signal: controller.signal,
-        });
-      } finally {
-        window.clearTimeout(timeoutId);
-      }
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+        cache: "no-store",
+      });
 
       await supabase.auth.signOut({ scope: "local" });
     } catch (error) {
       console.error("TopNav logout error:", error);
     } finally {
-      window.location.replace("/?logged_out=1");
-      window.setTimeout(() => {
-        setIsLoggingOut(false);
-        loggingOutRef.current = false;
-      }, 2000);
+      window.location.replace("/");
     }
   };
 
