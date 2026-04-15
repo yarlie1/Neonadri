@@ -909,16 +909,18 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       status: request.status,
     };
   });
-  const getParticipantRoleLabel = (userId: string) => {
+  const getParticipantDisplayLabel = (userId: string) => {
+    if (userId === post.user_id) return ownerName;
+    if (matchedGuestId && userId === matchedGuestId) {
+      return guestProfileData?.displayName || "Guest";
+    }
     if (user && userId === user.id) return "You";
-    if (userId === post.user_id) return "Host";
-    if (matchedGuestId && userId === matchedGuestId) return "Guest";
     return "Participant";
   };
 
   const getMatchReviewAuthorLabel = (review: MatchReviewRow) => {
-    const reviewerLabel = getParticipantRoleLabel(review.reviewer_user_id);
-    const revieweeLabel = getParticipantRoleLabel(review.reviewee_user_id);
+    const reviewerLabel = getParticipantDisplayLabel(review.reviewer_user_id);
+    const revieweeLabel = getParticipantDisplayLabel(review.reviewee_user_id);
     return `${reviewerLabel} reviewed ${revieweeLabel}`;
   };
   return (
