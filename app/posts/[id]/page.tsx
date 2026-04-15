@@ -841,8 +841,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";
   const meetupCountdown = formatTimeUntil(post.meeting_time);
   const benefitExplanation = post.benefit_amount
-    ? `During this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host gives ${post.benefit_amount} to the guest.`
-    : `During this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host has not listed a guest benefit yet.`;
+    ? `After this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host will give ${post.benefit_amount} to the guest.`
+    : `After this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host has not listed a guest benefit yet.`;
   const purposeTheme = getPurposeTheme(post.meeting_purpose);
   const ownerProfileData: ProfileCardData = {
     userId: post.user_id,

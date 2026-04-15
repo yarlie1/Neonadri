@@ -296,14 +296,6 @@ export default function WriteLocationPage() {
         <div className="inline-flex items-center rounded-full bg-[#fbf4ed] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
           Pick on Map
         </div>
-        <h1 className="mt-4 text-[30px] font-black tracking-[-0.04em] text-[#2f2a26] sm:text-[34px]">
-          Choose an exact meetup spot.
-        </h1>
-        <p className="mt-2 max-w-xl text-sm leading-6 text-[#6b5f52]">
-          Search for a place or tap the map once. We keep the exact address and
-          try to use the nearest recognizable place name.
-        </p>
-
         <div className="mt-6 space-y-4">
           <div className="flex gap-3">
             <input
