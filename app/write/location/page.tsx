@@ -26,6 +26,7 @@ export default function WriteLocationPage() {
   const markerRef = useRef<any>(null);
   const geocoderRef = useRef<any>(null);
   const placesServiceRef = useRef<any>(null);
+  const selectionRequestRef = useRef(0);
 
   const [returnTo, setReturnTo] = useState("/write");
   const [query, setQuery] = useState("");
@@ -116,18 +117,24 @@ export default function WriteLocationPage() {
 
   const reverseGeocode = (lat: number, lng: number) => {
     if (!geocoderRef.current) return;
+    const requestId = ++selectionRequestRef.current;
 
     geocoderRef.current.geocode(
       { location: { lat, lng } },
       (geocodeResults: any[], status: string) => {
+        if (requestId !== selectionRequestRef.current) return;
+
         if (status === "OK" && geocodeResults && geocodeResults[0]) {
           const fallbackAddress = geocodeResults[0].formatted_address || "";
           const fallbackName = fallbackAddress || "Selected Location";
 
-          setSelectedAddress(fallbackAddress);
-          setSelectedPlaceName(fallbackName);
-
           if (placesServiceRef.current && window.google?.maps?.places) {
+            const applySelection = (name: string) => {
+              if (requestId !== selectionRequestRef.current) return;
+              setSelectedAddress(fallbackAddress);
+              setSelectedPlaceName(name);
+            };
+
             const updateFromNearbyResults = (placeResults: any[]) => {
               if (!placeResults || placeResults.length === 0) return false;
 
@@ -149,7 +156,7 @@ export default function WriteLocationPage() {
                 );
 
               if (preferredPlace?.name) {
-                setSelectedPlaceName(preferredPlace.name);
+                applySelection(preferredPlace.name);
                 return true;
               }
 
@@ -181,13 +188,21 @@ export default function WriteLocationPage() {
                       poiStatus ===
                       window.google.maps.places.PlacesServiceStatus.OK
                     ) {
-                      updateFromNearbyResults(poiResults);
+                      if (updateFromNearbyResults(poiResults)) {
+                        return;
+                      }
                     }
+                    applySelection(fallbackName);
                   }
                 );
               }
             );
+            return;
           }
+
+          setSelectedAddress(fallbackAddress);
+          setSelectedPlaceName(fallbackName);
+          return;
         } else {
           setSelectedAddress("");
           setSelectedPlaceName("Selected Location");
