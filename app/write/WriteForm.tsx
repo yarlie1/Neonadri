@@ -57,6 +57,7 @@ const PRIMARY_BUTTON_CLASS =
 const SECONDARY_BUTTON_CLASS =
   "rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-5 py-3 text-sm font-medium text-[#5f5347] transition hover:bg-[#f7eee6]";
 const CREATE_DRAFT_KEY = "neonadri:create-meetup-draft";
+const CREATE_DRAFT_RETURN_KEY = "neonadri:create-meetup-restore-once";
 
 const PURPOSE_HELP_TEXT: Record<string, string> = {
   "Coffee Chat": "Quick casual conversation over coffee.",
@@ -148,7 +149,20 @@ export default function WriteForm({ userId }: { userId: string }) {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    const params = new URLSearchParams(window.location.search);
     const savedDraft = window.sessionStorage.getItem(CREATE_DRAFT_KEY);
+    const shouldRestoreDraft =
+      params.has("location") ||
+      window.sessionStorage.getItem(CREATE_DRAFT_RETURN_KEY) === "1";
+
+    if (!shouldRestoreDraft) {
+      window.sessionStorage.removeItem(CREATE_DRAFT_KEY);
+      window.sessionStorage.removeItem(CREATE_DRAFT_RETURN_KEY);
+      setDraftReady(true);
+      return;
+    }
+
+    window.sessionStorage.removeItem(CREATE_DRAFT_RETURN_KEY);
 
     if (savedDraft) {
       try {
@@ -330,6 +344,7 @@ export default function WriteForm({ userId }: { userId: string }) {
 
   const handleOpenMapPicker = () => {
     if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(CREATE_DRAFT_RETURN_KEY, "1");
       window.sessionStorage.setItem(
         CREATE_DRAFT_KEY,
         JSON.stringify({
