@@ -475,7 +475,7 @@ export default function WriteForm({ userId }: { userId: string }) {
               aria-label="Pick on map"
               title="Pick on map"
             >
-              <Map className="h-5 w-5" />
+              <Map className="h-4 w-4" />
             </button>
           </div>
 
