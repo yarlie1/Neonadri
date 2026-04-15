@@ -458,12 +458,11 @@ export default function EditMeetupForm({
             <button
               type="button"
               onClick={handleOpenMapPicker}
-              className="inline-flex h-[46px] shrink-0 items-center gap-2 rounded-[18px] border border-[#eadfd3] bg-[#f6eee6] px-3 text-sm font-medium text-[#6b5f52] transition hover:bg-[#efe4d9]"
+              className="inline-flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[18px] border border-[#eee3d7] bg-[#f8f1ea] text-[#9d8f81] transition hover:bg-[#f2e8de] hover:text-[#857565]"
               aria-label="Pick on map"
               title="Pick on map"
             >
-              <MapPin className="h-[18px] w-[18px]" strokeWidth={2.4} />
-              <span>Map</span>
+              <Map className="h-[18px] w-[18px]" strokeWidth={2.2} />
             </button>
           </div>
 
