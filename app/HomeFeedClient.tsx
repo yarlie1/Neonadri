@@ -3,6 +3,11 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  formatMeetingTime,
+  getMeetingStatus,
+  parseMeetingTime,
+} from "../lib/meetingTime";
+import {
   Activity,
   Clock3,
   MapPin,
@@ -70,26 +75,20 @@ type MatchSummaryMap = Record<
 
 const PURPOSE_OPTIONS = [
   "All",
-  "Coffee",
+  "Coffee Chat",
   "Meal",
   "Dessert",
   "Walk",
   "Jogging",
   "Yoga",
   "Movie",
-  "Theater",
   "Karaoke",
   "Board Games",
   "Gaming",
-  "Bowling",
   "Arcade",
   "Study",
   "Work Together",
-  "Work",
-  "Book Talk",
-  "Book",
   "Photo Walk",
-  "Photo",
 ];
 
 const GENDER_OPTIONS = ["All", "Male", "Female", "Other", "Prefer not to say"];
@@ -163,20 +162,6 @@ function formatDuration(minutes: number | null) {
   if (minutes === 90) return "1.5h";
   if (minutes === 120) return "2h";
   return `${minutes}m`;
-}
-
-function formatTime(meetingTime: string | null) {
-  if (!meetingTime) return "";
-  const date = new Date(meetingTime);
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  })}`;
-}
-
-function getPostStatus(meetingTime: string | null) {
-  if (!meetingTime) return "Upcoming";
-  return new Date(meetingTime).getTime() >= Date.now() ? "Upcoming" : "Expired";
 }
 
 function getPurposeTheme(purpose: string | null) {
@@ -443,6 +428,17 @@ export default function HomeFeedClient({
   matchSummaryMap: MatchSummaryMap;
   viewerPreference: { gender: string; ageGroup: string } | null;
 }) {
+  const userTimeZone = useMemo(
+    () => Intl.DateTimeFormat().resolvedOptions().timeZone,
+    []
+  );
+
+  const formatTime = (meetingTime: string | null) =>
+    formatMeetingTime(meetingTime, userTimeZone) || "";
+
+  const getPostStatus = (meetingTime: string | null) =>
+    getMeetingStatus(meetingTime, userTimeZone);
+
   const [matchState, setMatchState] = useState("All");
   const [audience, setAudience] = useState<(typeof AUDIENCE_OPTIONS)[number]>("All");
   const [purpose, setPurpose] = useState("All");
@@ -572,25 +568,29 @@ export default function HomeFeedClient({
 
         if (aDistance !== bDistance) return aDistance - bDistance;
 
-        const aTime = a.meeting_time ? new Date(a.meeting_time).getTime() : 0;
-        const bTime = b.meeting_time ? new Date(b.meeting_time).getTime() : 0;
+        const aTime =
+          parseMeetingTime(a.meeting_time, userTimeZone)?.getTime() ?? 0;
+        const bTime =
+          parseMeetingTime(b.meeting_time, userTimeZone)?.getTime() ?? 0;
         return aTime - bTime;
       }
 
-      const aTime = a.meeting_time ? new Date(a.meeting_time).getTime() : 0;
-      const bTime = b.meeting_time ? new Date(b.meeting_time).getTime() : 0;
+      const aTime =
+        parseMeetingTime(a.meeting_time, userTimeZone)?.getTime() ?? 0;
+      const bTime =
+        parseMeetingTime(b.meeting_time, userTimeZone)?.getTime() ?? 0;
       return aTime - bTime;
     });
 
     return next;
-  }, [initialPosts, matchState, purpose, gender, ageGroup, sort, userLocation, matchSummaryMap]);
+  }, [ageGroup, gender, initialPosts, matchState, matchSummaryMap, purpose, sort, userLocation, userTimeZone]);
 
   const upcomingCount = useMemo(
     () =>
       initialPosts.filter(
         (post) => getPostStatus(post.meeting_time) === "Upcoming"
       ).length,
-    [initialPosts]
+    [initialPosts, userTimeZone]
   );
 
   const hostCount = useMemo(
@@ -801,7 +801,7 @@ export default function HomeFeedClient({
           </button>
 
           {isOpen && (
-            <div className="max-h-[calc(100vh-14rem)] overflow-y-auto border-t border-[#efe6db] px-4 py-4 pb-28">
+            <div className="max-h-[calc(100vh-14rem)] overflow-y-auto border-t border-[#efe6db] px-4 py-4 pb-16 sm:pb-12">
               <div>
                 <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
                   Status
