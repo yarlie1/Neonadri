@@ -29,7 +29,7 @@ const isMeetupExpired = (meetingTime: string | null) => {
 };
 
 export default async function WriteReviewPage({ params }: PageProps) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const matchId = Number(params.matchId);
 
   if (Number.isNaN(matchId)) {
