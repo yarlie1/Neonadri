@@ -19,7 +19,6 @@ import {
   Laptop,
   Camera,
   MapPin,
-  Map,
   Clock,
   User,
   Coins,
@@ -463,7 +462,7 @@ export default function EditMeetupForm({
               aria-label="Pick on map"
               title="Pick on map"
             >
-              <Map className="h-[22px] w-[22px]" strokeWidth={2.4} />
+              <MapPin className="h-[20px] w-[20px]" strokeWidth={2.4} />
             </button>
           </div>
 
