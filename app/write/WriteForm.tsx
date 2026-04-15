@@ -470,11 +470,12 @@ export default function WriteForm({ userId }: { userId: string }) {
             <button
               type="button"
               onClick={handleOpenMapPicker}
-              className={`inline-flex h-[46px] w-[46px] shrink-0 items-center justify-center ${SECONDARY_BUTTON_CLASS} rounded-full px-0 py-0`}
+              className={`inline-flex h-[46px] shrink-0 items-center gap-2 ${SECONDARY_BUTTON_CLASS} rounded-[18px] px-3 text-sm font-medium text-[#6b5f52]`}
               aria-label="Pick on map"
               title="Pick on map"
             >
-              <MapPin className="h-[22px] w-[22px]" strokeWidth={2.6} />
+              <MapPin className="h-[18px] w-[18px]" strokeWidth={2.4} />
+              <span>Map</span>
             </button>
           </div>
 
