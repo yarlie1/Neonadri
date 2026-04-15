@@ -263,7 +263,7 @@ function getMatchBadge(
   }
 
   return {
-    label: requestCount > 0 ? `Open ¡¤ ${requestCount}` : "Open",
+    label: requestCount > 0 ? `Open / ${requestCount}` : "Open",
     className: "bg-[#edf1ea] text-[#5e6f5f]",
   };
 }
@@ -604,7 +604,6 @@ export default function HomeFeedClient({
     fn();
     setIsOpen(false);
   };
-
   const applyAudience = (option: (typeof AUDIENCE_OPTIONS)[number]) => {
     setAudience(option);
 
@@ -617,7 +616,6 @@ export default function HomeFeedClient({
     setGender(viewerPreference?.gender || "All");
     setAgeGroup(viewerPreference?.ageGroup || "All");
   };
-
   const resetAll = () => {
     setMatchState("All");
     setAudience("All");
@@ -627,7 +625,6 @@ export default function HomeFeedClient({
     setSort("newest");
     setIsOpen(false);
   };
-
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#fffefb_0%,#fbf3eb_34%,#f2e5d8_100%)] px-4 py-5 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-4 pb-24 sm:space-y-5">
