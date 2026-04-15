@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Clock3, Star } from "lucide-react";
+import { Clock3, MapPin, Sparkles, Star } from "lucide-react";
 
 type PostRow = {
   id: number;
@@ -86,17 +86,25 @@ export default function ReviewWriteForm({
 
           {initialPostInfo && (
             <div className="mt-4 rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] p-4">
-              <div className="text-sm font-medium text-[#7a6f65]">
-                Review for {initialRevieweeName || "your match"}
-              </div>
-              <div className="text-base font-semibold text-[#2f2a26]">
-                {initialPostInfo.meeting_purpose || "Meetup"}
+              <div className="text-sm font-medium text-[#7a6f65]">Review for</div>
+              <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
+                {initialRevieweeName || "your match"}
               </div>
 
-              <div className="mt-1 text-lg font-bold text-[#5f5347]">
-                {initialPostInfo.place_name ||
-                  initialPostInfo.location ||
-                  "No place"}
+              <div className="mt-3 space-y-2">
+                <div className="flex items-center gap-2 text-sm text-[#766c62]">
+                  <Sparkles className="h-4 w-4 text-[#8a7f74]" />
+                  <span>{initialPostInfo.meeting_purpose || "Meetup"}</span>
+                </div>
+
+                <div className="flex items-center gap-2 text-sm text-[#766c62]">
+                  <MapPin className="h-4 w-4 text-[#8a7f74]" />
+                  <span>
+                    {initialPostInfo.place_name ||
+                      initialPostInfo.location ||
+                      "No place"}
+                  </span>
+                </div>
               </div>
 
               {initialPostInfo.meeting_time && (

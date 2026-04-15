@@ -1153,7 +1153,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                       : matchReviews.length > 0
                       ? "Reviews from this matched meetup are shown below."
                       : "This meetup is complete. You can leave a review now."
-                    : "Reviews open after the meetup is completed."}
+                    : "This meetup is still upcoming. Reviews open after it is completed."}
                 </div>
 
                 {matchReviews.length > 0 && (
