@@ -333,7 +333,13 @@ function CompactActionButton({
   );
 }
 
-function MiniPostPreview({ post }: { post?: PostRow }) {
+function MiniPostPreview({
+  post,
+  timeZone,
+}: {
+  post?: PostRow;
+  timeZone: string;
+}) {
   if (!post) {
     return (
       <div className={`mt-3 ${SOFT_CARD_CLASS} px-4 py-3 text-sm text-[#8b7f74]`}>
@@ -384,7 +390,9 @@ function MiniPostPreview({ post }: { post?: PostRow }) {
             <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
             <div className="min-w-0 leading-[1.2]">
               <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">When</div>
-              <div className="truncate text-[12px] font-medium text-[#554a42]">{formatTime(post.meeting_time)}</div>
+              <div className="truncate text-[12px] font-medium text-[#554a42]">
+                {formatMeetingTime(post.meeting_time, timeZone) || ""}
+              </div>
             </div>
           </div>
         )}
@@ -961,7 +969,7 @@ export default function DashboardClient({
                     </span>
                   </div>
 
-                  <MiniPostPreview post={postMap[item.post_id]} />
+                  <MiniPostPreview post={postMap[item.post_id]} timeZone={userTimeZone} />
 
                   {item.status === "pending" ? (
                     <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
@@ -1034,7 +1042,7 @@ export default function DashboardClient({
                   </span>
                 </div>
 
-                <MiniPostPreview post={postMap[item.post_id]} />
+                <MiniPostPreview post={postMap[item.post_id]} timeZone={userTimeZone} />
 
               </div>
             ))}
@@ -1090,7 +1098,7 @@ export default function DashboardClient({
                     </span>
                   </div>
 
-                  <MiniPostPreview post={post} />
+                  <MiniPostPreview post={post} timeZone={userTimeZone} />
 
                   <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
                     {canLeaveReview ? (
