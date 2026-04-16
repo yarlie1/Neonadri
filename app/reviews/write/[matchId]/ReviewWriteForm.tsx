@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Clock3, MapPin, Sparkles, Star } from "lucide-react";
+import { formatMeetingTime } from "../../../../lib/meetingTime";
 
 type PostRow = {
   id: number;
@@ -18,15 +19,7 @@ type ReviewWriteFormProps = {
   initialPostInfo: PostRow | null;
   initialRevieweeUserId: string;
   initialRevieweeName: string;
-};
-
-const formatTime = (meetingTime: string | null) => {
-  if (!meetingTime) return "";
-  const date = new Date(meetingTime);
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  })}`;
+  initialUserTimeZone: string;
 };
 
 export default function ReviewWriteForm({
@@ -36,6 +29,7 @@ export default function ReviewWriteForm({
   initialPostInfo,
   initialRevieweeUserId,
   initialRevieweeName,
+  initialUserTimeZone,
 }: ReviewWriteFormProps) {
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
@@ -110,7 +104,12 @@ export default function ReviewWriteForm({
               {initialPostInfo.meeting_time && (
                 <div className="mt-2 flex items-center gap-2 text-sm text-[#766c62]">
                   <Clock3 className="h-4 w-4 text-[#8a7f74]" />
-                  <span>{formatTime(initialPostInfo.meeting_time)}</span>
+                  <span>
+                    {formatMeetingTime(
+                      initialPostInfo.meeting_time,
+                      initialUserTimeZone
+                    ) || ""}
+                  </span>
                 </div>
               )}
             </div>

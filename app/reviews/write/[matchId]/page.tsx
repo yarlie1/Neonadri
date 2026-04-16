@@ -35,7 +35,7 @@ type PageProps = {
 
 export default async function WriteReviewPage({ params }: PageProps) {
   const supabase = await createClient();
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const userTimeZone = normalizeUserTimeZone(
     cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
   );
@@ -50,6 +50,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialPostInfo={null}
         initialRevieweeUserId=""
         initialRevieweeName=""
+        initialUserTimeZone={userTimeZone}
       />
     );
   }
@@ -77,6 +78,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialPostInfo={null}
         initialRevieweeUserId=""
         initialRevieweeName=""
+        initialUserTimeZone={userTimeZone}
       />
     );
   }
@@ -92,6 +94,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialPostInfo={null}
         initialRevieweeUserId=""
         initialRevieweeName=""
+        initialUserTimeZone={userTimeZone}
       />
     );
   }
@@ -122,6 +125,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialPostInfo={postInfo}
         initialRevieweeUserId={revieweeUserId}
         initialRevieweeName={revieweeName}
+        initialUserTimeZone={userTimeZone}
       />
     );
   }
@@ -142,6 +146,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialPostInfo={postInfo}
         initialRevieweeUserId={revieweeUserId}
         initialRevieweeName={revieweeName}
+        initialUserTimeZone={userTimeZone}
       />
     );
   }
@@ -154,6 +159,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
       initialPostInfo={postInfo}
       initialRevieweeUserId={revieweeUserId}
       initialRevieweeName={revieweeName}
+      initialUserTimeZone={userTimeZone}
     />
   );
 }
