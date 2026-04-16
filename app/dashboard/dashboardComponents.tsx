@@ -18,6 +18,7 @@ import {
   Mic,
   Smile,
   Target,
+  Utensils,
   UserRound,
 } from "lucide-react";
 import { formatMeetingTime } from "../../lib/meetingTime";
