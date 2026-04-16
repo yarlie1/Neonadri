@@ -104,9 +104,6 @@ export function formatMeetingCountdown(
 
   if (diffMs < 1000 * 60 * 60 * 24) return "D-0";
 
-  const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
-  if (diffHours < 24) return `H-${diffHours}`;
-
   const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
   return `D-${diffDays}`;
 }
