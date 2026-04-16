@@ -34,13 +34,6 @@ export type AuthorizedMatchChatResult = {
   otherUserId: string;
 };
 
-function buildOpaqueRoomId(matchId: number) {
-  const randomPart = `${Math.random().toString(36).slice(2, 10)}${Date.now()
-    .toString(36)
-    .slice(-6)}`;
-  return `match-chat-${matchId}-${randomPart}`;
-}
-
 export async function getOrCreateAuthorizedMatchChat(
   supabase: SupabaseLikeClient,
   {
@@ -93,65 +86,29 @@ export async function getOrCreateAuthorizedMatchChat(
   const participantRole = userId === hostUserId ? "host" : "guest";
   const otherUserId = participantRole === "host" ? guestUserId : hostUserId;
 
-  const { data: existingChatData, error: existingChatError } = await supabase
-    .from("match_chats")
-    .select(
-      "id, match_id, provider, external_room_id, host_user_id, guest_user_id, created_at, updated_at, last_chat_activity_at, last_seen_by_host_at, last_seen_by_guest_at, closed_at"
-    )
-    .eq("match_id", match.id)
-    .maybeSingle();
+  const rpcClient = supabase as SupabaseLikeClient & {
+    rpc: (fn: string, args: Record<string, unknown>) => Promise<{
+      data: unknown;
+      error: { message?: string } | null;
+    }>;
+  };
 
-  if (existingChatError) {
-    throw new Error("MATCH_CHAT_LOOKUP_FAILED");
-  }
-
-  let chat = existingChatData as MatchChatRow | null;
-
-  if (!chat) {
-    const { data: insertedChatData, error: insertError } = await supabase
-      .from("match_chats")
-      .insert({
-        match_id: match.id,
-        provider: "pubnub",
-        external_room_id: buildOpaqueRoomId(match.id),
-        host_user_id: hostUserId,
-        guest_user_id: guestUserId,
-      })
-      .select(
-        "id, match_id, provider, external_room_id, host_user_id, guest_user_id, created_at, updated_at, last_chat_activity_at, last_seen_by_host_at, last_seen_by_guest_at, closed_at"
-      )
-      .single();
-
-    if (insertError || !insertedChatData) {
-      throw new Error("MATCH_CHAT_CREATE_FAILED");
+  const { data: rpcData, error: rpcError } = await rpcClient.rpc(
+    "get_or_create_match_chat_for_viewer",
+    {
+      p_match_id: match.id,
     }
+  );
 
-    chat = insertedChatData as MatchChatRow;
+  if (rpcError || !rpcData) {
+    throw new Error(rpcError?.message || "MATCH_CHAT_RPC_FAILED");
   }
 
-  const seenColumn =
-    participantRole === "host" ? "last_seen_by_host_at" : "last_seen_by_guest_at";
-  const seenAt = new Date().toISOString();
-
-  const { data: updatedChatData, error: updateError } = await supabase
-    .from("match_chats")
-    .update({
-      [seenColumn]: seenAt,
-      updated_at: seenAt,
-    })
-    .eq("id", chat.id)
-    .select(
-      "id, match_id, provider, external_room_id, host_user_id, guest_user_id, created_at, updated_at, last_chat_activity_at, last_seen_by_host_at, last_seen_by_guest_at, closed_at"
-    )
-    .single();
-
-  if (updateError || !updatedChatData) {
-    throw new Error("MATCH_CHAT_UPDATE_FAILED");
-  }
+  const chat = rpcData as MatchChatRow;
 
   return {
     match,
-    chat: updatedChatData as MatchChatRow,
+    chat,
     participantRole,
     otherUserId,
   };
