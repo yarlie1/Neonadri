@@ -296,28 +296,36 @@ export default function TopNav() {
     setMenuOpen(false);
     setUser(null);
     setPendingCount(0);
+    setHasNewChatActivity(false);
 
     try {
       sessionStorage.clear();
       localStorage.removeItem("tagline_variant");
-      const serverLogoutPromise = fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-        cache: "no-store",
-        keepalive: true,
-      }).catch((error) => {
-        console.error("TopNav server logout error:", error);
-      });
+      const [localLogoutResult, serverLogoutResult] = await Promise.allSettled([
+        supabase.auth.signOut({ scope: "local" }),
+        fetch("/api/auth/logout", {
+          method: "POST",
+          credentials: "include",
+          cache: "no-store",
+        }),
+      ]);
 
-      await supabase.auth.signOut({ scope: "local" }).catch((error) => {
-        console.error("TopNav local logout error:", error);
-      });
+      if (localLogoutResult.status === "rejected") {
+        console.error("TopNav local logout error:", localLogoutResult.reason);
+      }
 
-      void serverLogoutPromise;
+      if (serverLogoutResult.status === "rejected") {
+        console.error("TopNav server logout error:", serverLogoutResult.reason);
+      } else if (!serverLogoutResult.value.ok) {
+        console.error(
+          "TopNav server logout response error:",
+          await serverLogoutResult.value.text()
+        );
+      }
     } catch (error) {
       console.error("TopNav logout error:", error);
     } finally {
-      window.location.replace("/");
+      window.location.assign("/");
     }
   };
 
