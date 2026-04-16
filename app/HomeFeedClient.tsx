@@ -295,7 +295,7 @@ export default function HomeFeedClient({
           />
         )}
 
-        <div ref={filterRef} className="sticky top-[76px] z-20 sm:top-[84px]">
+        <div ref={filterRef} className="sticky top-[68px] z-20 sm:top-[76px]">
           <HomeFilterCard
             isPinned={isFilterPinned}
             isOpen={isOpen}

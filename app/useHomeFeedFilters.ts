@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const HOME_FILTER_STICKY_TOP = 76;
+const HOME_FILTER_STICKY_TOP = 68;
 
 export const PURPOSE_OPTIONS = [
   "All",
