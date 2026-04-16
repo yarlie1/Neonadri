@@ -382,7 +382,6 @@ export default function ChatRoomClient({
                   <span className="font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Live chat
                   </span>
-                  <span>{presenceLabel}</span>
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#5f453b]">
                   <span className="inline-flex items-center gap-2 font-semibold text-[#2b1f1a]">
