@@ -285,13 +285,20 @@ export default function TopNav() {
     try {
       sessionStorage.clear();
       localStorage.removeItem("tagline_variant");
-      await fetch("/api/auth/logout", {
+      const serverLogoutPromise = fetch("/api/auth/logout", {
         method: "POST",
         credentials: "include",
         cache: "no-store",
+        keepalive: true,
+      }).catch((error) => {
+        console.error("TopNav server logout error:", error);
       });
 
-      await supabase.auth.signOut({ scope: "local" });
+      await supabase.auth.signOut({ scope: "local" }).catch((error) => {
+        console.error("TopNav local logout error:", error);
+      });
+
+      void serverLogoutPromise;
     } catch (error) {
       console.error("TopNav logout error:", error);
     } finally {

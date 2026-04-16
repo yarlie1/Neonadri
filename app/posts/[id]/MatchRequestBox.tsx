@@ -58,6 +58,11 @@ export default function MatchRequestBox({
 
       const payload = await response.json().catch(() => null);
 
+      if (response.status === 401) {
+        router.push(`/login?next=${encodeURIComponent(`/posts/${postId}`)}`);
+        return;
+      }
+
       if (!response.ok) {
         setMessage(payload?.error || "Failed to send match request.");
         setMessageType("info");
@@ -91,6 +96,11 @@ export default function MatchRequestBox({
       });
 
       const payload = await response.json().catch(() => null);
+
+      if (response.status === 401) {
+        router.push(`/login?next=${encodeURIComponent(`/posts/${postId}`)}`);
+        return;
+      }
 
       if (!response.ok) {
         setMessage(payload?.error || "Failed to cancel request.");
