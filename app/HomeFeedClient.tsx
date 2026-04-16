@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import {
   formatMeetingTime,
   getMeetingStatus,
@@ -32,6 +32,16 @@ import {
   HomeFilterCard,
   MeetupFeedCard,
 } from "./homeComponents";
+import {
+  AGE_GROUP_OPTIONS,
+  AUDIENCE_OPTIONS,
+  GENDER_OPTIONS,
+  MATCH_STATE_OPTIONS,
+  PURPOSE_OPTIONS,
+  SORT_OPTIONS,
+  type SortValue,
+  useHomeFeedFilters,
+} from "./useHomeFeedFilters";
 
 type PostRow = {
   id: number;
@@ -66,39 +76,6 @@ type MatchSummaryMap = Record<
     totalRequestCount: number;
   }
 >;
-
-const PURPOSE_OPTIONS = [
-  "All",
-  "Coffee Chat",
-  "Meal",
-  "Dessert",
-  "Walk",
-  "Jogging",
-  "Yoga",
-  "Movie",
-  "Karaoke",
-  "Board Games",
-  "Gaming",
-  "Arcade",
-  "Study",
-  "Work Together",
-  "Photo Walk",
-];
-
-const GENDER_OPTIONS = ["All", "Male", "Female", "Other", "Prefer not to say"];
-const AGE_GROUP_OPTIONS = ["All", "20s", "30s", "40s", "50s+"];
-const MATCH_STATE_OPTIONS = ["All", "Open", "Matched"];
-const AUDIENCE_OPTIONS = ["All", "Fits me"] as const;
-
-const SORT_OPTIONS = [
-  { value: "newest", label: "Newest" },
-  { value: "soonest", label: "Soonest" },
-  { value: "benefit_desc", label: "Highest Benefit" },
-  { value: "benefit_asc", label: "Lowest Benefit" },
-  { value: "distance", label: "Nearest" },
-] as const;
-
-type SortValue = (typeof SORT_OPTIONS)[number]["value"];
 
 const SURFACE_CARD_CLASS =
   "rounded-[32px] border border-[#eee2d6] bg-[linear-gradient(180deg,rgba(255,253,250,0.97)_0%,rgba(250,244,237,0.94)_100%)] shadow-[0_24px_70px_rgba(86,63,44,0.12)] backdrop-blur";
@@ -409,67 +386,29 @@ export default function HomeFeedClient({
   const getPostStatus = (meetingTime: string | null) =>
     getMeetingStatus(meetingTime, userTimeZone);
 
-  const [matchState, setMatchState] = useState("All");
-  const [audience, setAudience] = useState<(typeof AUDIENCE_OPTIONS)[number]>("All");
-  const [purpose, setPurpose] = useState("All");
-  const [gender, setGender] = useState("All");
-  const [ageGroup, setAgeGroup] = useState("All");
-  const [sort, setSort] = useState<SortValue>("newest");
-  const [isOpen, setIsOpen] = useState(false);
-  const [isFilterPinned, setIsFilterPinned] = useState(false);
-  const filterRef = useRef<HTMLDivElement | null>(null);
-
-  const [userLocation, setUserLocation] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
-  const [locationStatus, setLocationStatus] = useState<
-    "idle" | "loading" | "granted" | "denied" | "unavailable"
-  >("idle");
-
-  useEffect(() => {
-    if (sort !== "distance") return;
-    if (userLocation || locationStatus === "loading") return;
-    if (!navigator.geolocation) {
-      setLocationStatus("unavailable");
-      return;
-    }
-
-    setLocationStatus("loading");
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setUserLocation({
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        });
-        setLocationStatus("granted");
-      },
-      () => {
-        setLocationStatus("denied");
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000,
-      }
-    );
-  }, [sort, userLocation, locationStatus]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!filterRef.current) return;
-      setIsFilterPinned(filterRef.current.getBoundingClientRect().top <= 64);
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
-    };
-  }, []);
+  const {
+    matchState,
+    setMatchState,
+    audience,
+    setAudience,
+    purpose,
+    setPurpose,
+    gender,
+    setGender,
+    ageGroup,
+    setAgeGroup,
+    sort,
+    setSort,
+    isOpen,
+    setIsOpen,
+    isFilterPinned,
+    filterRef,
+    userLocation,
+    locationStatus,
+    applyAndClose,
+    applyAudience,
+    resetAll,
+  } = useHomeFeedFilters(viewerPreference);
 
   const posts = useMemo(() => {
     let next = initialPosts.filter((post) => {
@@ -570,31 +509,6 @@ export default function HomeFeedClient({
 
   const highlightedPost = posts[0] || null;
 
-  const applyAndClose = (fn: () => void) => {
-    fn();
-    setIsOpen(false);
-  };
-  const applyAudience = (option: (typeof AUDIENCE_OPTIONS)[number]) => {
-    setAudience(option);
-
-    if (option === "All") {
-      setGender("All");
-      setAgeGroup("All");
-      return;
-    }
-
-    setGender(viewerPreference?.gender || "All");
-    setAgeGroup(viewerPreference?.ageGroup || "All");
-  };
-  const resetAll = () => {
-    setMatchState("All");
-    setAudience("All");
-    setPurpose("All");
-    setGender("All");
-    setAgeGroup("All");
-    setSort("newest");
-    setIsOpen(false);
-  };
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#fffefb_0%,#fbf3eb_34%,#f2e5d8_100%)] px-4 py-5 text-[#2f2a26]">
       <div className="mx-auto max-w-2xl space-y-4 pb-24 sm:space-y-5">
