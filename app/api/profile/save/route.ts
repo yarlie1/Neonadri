@@ -94,10 +94,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error) {
+    console.error("Profile save route unexpected error", error);
     return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Server error",
-      },
+      { error: "Server error" },
       { status: 500 }
     );
   }

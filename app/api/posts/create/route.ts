@@ -49,10 +49,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ data }, { status: 200 });
   } catch (e) {
+    console.error("Post create route unexpected error", e);
     return NextResponse.json(
-      {
-        error: e instanceof Error ? e.message : "Server error",
-      },
+      { error: "Server error" },
       { status: 500 }
     );
   }

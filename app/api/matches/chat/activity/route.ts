@@ -38,8 +38,8 @@ export async function GET(request: Request) {
       lastChatActivityAt: matchChat.chat.last_chat_activity_at,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "MATCH_CHAT_ACCESS_FAILED";
-    return NextResponse.json({ error: message }, { status: 403 });
+    console.error("[match-chat-activity:get] access error", error);
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 }
 
@@ -74,8 +74,8 @@ export async function POST(request: Request) {
       userId: user.id,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "MATCH_CHAT_ACCESS_FAILED";
-    return NextResponse.json({ error: message }, { status: 403 });
+    console.error("[match-chat-activity:post] access error", error);
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const now = new Date().toISOString();
