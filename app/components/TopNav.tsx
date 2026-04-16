@@ -14,6 +14,7 @@ import {
   House,
   UserCircle2,
   Plus,
+  MessageCircleMore,
 } from "lucide-react";
 import {
   normalizeUserTimeZone,
@@ -74,6 +75,21 @@ function BrandTagline() {
   );
 }
 
+function NewChatBadge({ visible }: { visible: boolean }) {
+  if (!visible) return null;
+
+  return (
+    <span
+      className="relative inline-flex h-5 w-5 items-center justify-center rounded-full border border-[#ead9cb] bg-[#fff7ef] text-[#9a5d49]"
+      aria-label="New chat activity"
+      title="New chat activity"
+    >
+      <MessageCircleMore className="h-3 w-3" />
+      <span className="absolute -right-0.5 -top-0.5 inline-flex h-2.5 w-2.5 rounded-full bg-[#c96f5d]" />
+    </span>
+  );
+}
+
 function isActivePath(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -85,6 +101,7 @@ export default function TopNav() {
   const [user, setUser] = useState<SimpleUser>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const [hasNewChatActivity, setHasNewChatActivity] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const loggingOutRef = useRef(false);
@@ -105,6 +122,7 @@ export default function TopNav() {
     const resetSignedOutState = () => {
       setUser(null);
       setPendingCount(0);
+      setHasNewChatActivity(false);
       setMenuOpen(false);
       setIsLoggingOut(false);
       loggingOutRef.current = false;
@@ -120,6 +138,37 @@ export default function TopNav() {
       return count || 0;
     };
 
+    const loadHasNewChatActivity = async (userId: string) => {
+      const { data, error } = await supabase
+        .from("match_chats")
+        .select(
+          "host_user_id,guest_user_id,last_chat_activity_at,last_seen_by_host_at,last_seen_by_guest_at"
+        )
+        .or(`host_user_id.eq.${userId},guest_user_id.eq.${userId}`);
+
+      if (error) {
+        console.error("TopNav loadHasNewChatActivity error:", error);
+        return false;
+      }
+
+      return (data || []).some((row) => {
+        if (!row.last_chat_activity_at) return false;
+
+        const lastActivity = new Date(row.last_chat_activity_at).getTime();
+        if (Number.isNaN(lastActivity)) return false;
+
+        const lastSeen =
+          row.host_user_id === userId ? row.last_seen_by_host_at : row.last_seen_by_guest_at;
+
+        if (!lastSeen) return true;
+
+        const lastSeenTime = new Date(lastSeen).getTime();
+        if (Number.isNaN(lastSeenTime)) return true;
+
+        return lastActivity > lastSeenTime;
+      });
+    };
+
     const loadUser = async () => {
       try {
         const {
@@ -132,11 +181,16 @@ export default function TopNav() {
         setUser(nextUser);
 
         if (user) {
-          const count = await loadPendingCount(user.id);
+          const [count, hasNewChat] = await Promise.all([
+            loadPendingCount(user.id),
+            loadHasNewChatActivity(user.id),
+          ]);
           if (!mounted || loggingOutRef.current) return;
           setPendingCount(count);
+          setHasNewChatActivity(hasNewChat);
         } else {
           setPendingCount(0);
+          setHasNewChatActivity(false);
         }
       } catch (error) {
         console.error("TopNav loadUser error:", error);
@@ -144,6 +198,9 @@ export default function TopNav() {
     };
 
     loadUser();
+    const pollId = window.setInterval(() => {
+      void loadUser();
+    }, 30000);
 
     const {
       data: { subscription },
@@ -169,11 +226,16 @@ export default function TopNav() {
         router.refresh();
 
         if (session?.user) {
-          const count = await loadPendingCount(session.user.id);
+          const [count, hasNewChat] = await Promise.all([
+            loadPendingCount(session.user.id),
+            loadHasNewChatActivity(session.user.id),
+          ]);
           if (!mounted || loggingOutRef.current) return;
           setPendingCount(count);
+          setHasNewChatActivity(hasNewChat);
         } else {
           setPendingCount(0);
+          setHasNewChatActivity(false);
         }
       } catch (error) {
         console.error("TopNav auth change error:", error);
@@ -182,9 +244,10 @@ export default function TopNav() {
 
     return () => {
       mounted = false;
+      window.clearInterval(pollId);
       subscription.unsubscribe();
     };
-  }, [router, supabase]);
+  }, [pathname, router, supabase]);
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
@@ -298,6 +361,7 @@ export default function TopNav() {
                 >
                   <LayoutDashboard className="h-4 w-4" />
                   Dashboard
+                  <NewChatBadge visible={hasNewChatActivity} />
                   <PendingBadge count={pendingCount} />
                 </Link>
 
@@ -393,7 +457,10 @@ export default function TopNav() {
                           <LayoutDashboard className="h-4 w-4" />
                           Dashboard
                         </span>
-                        <PendingBadge count={pendingCount} />
+                        <span className="inline-flex items-center gap-2">
+                          <NewChatBadge visible={hasNewChatActivity} />
+                          <PendingBadge count={pendingCount} />
+                        </span>
                       </Link>
 
                       <Link

@@ -144,6 +144,7 @@ export default function ChatRoomClient({
     () => formatPresenceLabel(otherUserLastSeenAt),
     [otherUserLastSeenAt]
   );
+  const isOtherUserActiveNow = presenceLabel === "Active now";
   const canSend = connectionLabel === "Connected" && draft.trim().length > 0 && !sending;
 
   useEffect(() => {
@@ -384,7 +385,15 @@ export default function ChatRoomClient({
                   <span>{presenceLabel}</span>
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#5f453b]">
-                  <span className="font-semibold text-[#2b1f1a]">{otherUserName}</span>
+                  <span className="inline-flex items-center gap-2 font-semibold text-[#2b1f1a]">
+                    <span
+                      className={`inline-flex h-2.5 w-2.5 rounded-full ${
+                        isOtherUserActiveNow ? "bg-[#4e9d62]" : "bg-[#b6aea7]"
+                      }`}
+                      aria-hidden="true"
+                    />
+                    {otherUserName}
+                  </span>
                   <span>{meetingTimeLabel}</span>
                   <span className="truncate">{placeLabel}</span>
                 </div>
