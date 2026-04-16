@@ -33,6 +33,7 @@ import {
   MATCH_STATE_OPTIONS,
   PURPOSE_OPTIONS,
   SORT_OPTIONS,
+  type SortValue,
   useHomeFeedFilters,
 } from "./useHomeFeedFilters";
 
