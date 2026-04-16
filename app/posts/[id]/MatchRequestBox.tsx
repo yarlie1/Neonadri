@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Send, CheckCircle2, AlertCircle, XCircle, Clock3 } from "lucide-react";
-import { createClient } from "../../../lib/supabase/client";
 
 type Props = {
   postId: number;
@@ -22,7 +21,6 @@ export default function MatchRequestBox({
   myRequestId,
   myRequestStatus,
 }: Props) {
-  const supabase = createClient();
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
@@ -47,68 +45,21 @@ export default function MatchRequestBox({
     setMessageType("info");
 
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        setMessage("Please sign in first.");
-        setMessageType("info");
-        return;
-      }
-
-      if (user.id === postOwnerUserId) {
-        setMessage("You cannot request your own meetup.");
-        setMessageType("info");
-        return;
-      }
-
-      const { data: existing, error: existingError } = await supabase
-        .from("match_requests")
-        .select("id, status")
-        .eq("post_id", postId)
-        .eq("requester_user_id", user.id)
-        .eq("post_owner_user_id", postOwnerUserId)
-        .maybeSingle();
-
-      if (existingError) {
-        setMessage(existingError.message);
-        setMessageType("info");
-        return;
-      }
-
-      if (existing) {
-        const status = String(existing.status || "").toLowerCase();
-
-        if (status === "pending") {
-          setMessage("Your request has already been sent.");
-        } else if (status === "accepted") {
-          setMessage("Your request was already accepted.");
-        } else if (status === "rejected") {
-          setMessage("This request was previously declined.");
-        } else {
-          setMessage(`Request already exists: ${existing.status}`);
-        }
-
-        setMessageType("info");
-        return;
-      }
-
-      const { error } = await supabase.from("match_requests").insert({
-        post_id: postId,
-        requester_user_id: user.id,
-        post_owner_user_id: postOwnerUserId,
-        status: "pending",
+      const response = await fetch("/api/match-requests", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          postId,
+          postOwnerUserId,
+        }),
       });
 
-      if (error) {
-        if (error.code === "23505") {
-          setMessage("Your request has already been sent.");
-          setMessageType("info");
-          return;
-        }
+      const payload = await response.json().catch(() => null);
 
-        setMessage(error.message);
+      if (!response.ok) {
+        setMessage(payload?.error || "Failed to send match request.");
         setMessageType("info");
         return;
       }
@@ -129,24 +80,20 @@ export default function MatchRequestBox({
     setMessageType("info");
 
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const response = await fetch("/api/match-requests", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          requestId: myRequestId,
+        }),
+      });
 
-      if (!user) {
-        setMessage("Please sign in first.");
-        return;
-      }
+      const payload = await response.json().catch(() => null);
 
-      const { error } = await supabase
-        .from("match_requests")
-        .delete()
-        .eq("id", myRequestId)
-        .eq("requester_user_id", user.id)
-        .eq("status", "pending");
-
-      if (error) {
-        setMessage(error.message);
+      if (!response.ok) {
+        setMessage(payload?.error || "Failed to cancel request.");
         return;
       }
 
