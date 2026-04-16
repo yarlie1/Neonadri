@@ -102,6 +102,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   let totalRequestCount = 0;
   let ownerRequests: MatchRequestRow[] = [];
   let matchReviews: MatchReviewRow[] = [];
+  let matchedRecord: MatchRow | null = null;
   let matchedPartner:
     | {
         userId: string;
@@ -133,7 +134,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
       supabase
         .from("matches")
-        .select("id, status")
+        .select("id, user_a, user_b, status")
         .eq("post_id", post.id)
         .or(`user_a.eq.${user.id},user_b.eq.${user.id}`)
         .maybeSingle(),
@@ -149,6 +150,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
     if (match?.status) {
       myRequestStatus = "matched";
+      matchedRecord = match;
     }
   }
 
@@ -163,9 +165,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     ownerRequests = (ownerRequestData || []) as MatchRequestRow[];
   }
 
-  let matchedRecord: MatchRow | null = null;
   let hasNewChatMessage = false;
-  if (isPostMatched) {
+  if (isPostMatched && !matchedRecord) {
     const { data: matchRecordData } = await supabase
       .from("matches")
       .select("id, user_a, user_b, status")
