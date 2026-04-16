@@ -7,6 +7,7 @@ import {
   Coins,
   Clock3,
   MapPin,
+  MessageSquareMore,
   UserRound,
   FileText,
   Inbox,
@@ -18,6 +19,7 @@ import {
   Star,
 } from "lucide-react";
 import type { MatchChatMetaRow, MatchRow, MatchRequestRow, PostRow } from "./page";
+import { parseMeetingTime } from "../../lib/meetingTime";
 import {
   CompactActionButton,
   DashboardTabCard,
@@ -158,6 +160,104 @@ function PostsTabPanel({
           No meetups in this filter.
         </div>
       )}
+    </div>
+  );
+}
+
+function formatRecentChatTime(meetingTime: string | null, userTimeZone: string) {
+  const parsed = parseMeetingTime(meetingTime, userTimeZone);
+  if (!parsed) return "Time TBD";
+
+  const dateLabel = parsed.toLocaleDateString(undefined, {
+    timeZone: userTimeZone,
+    month: "short",
+    day: "numeric",
+  });
+
+  const timeLabel = parsed.toLocaleTimeString([], {
+    timeZone: userTimeZone,
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  return `${dateLabel} / ${timeLabel}`;
+}
+
+function RecentChatsPanel({
+  recentChats,
+  userTimeZone,
+}: {
+  recentChats: Array<{
+    matchId: number;
+    otherUserName: string;
+    meetingTime: string | null;
+    placeLabel: string;
+    hasNewMessage: boolean;
+  }>;
+  userTimeZone: string;
+}) {
+  if (recentChats.length === 0) {
+    return (
+      <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-5">
+        <div className="flex items-start gap-3">
+          <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ebded1] bg-[#fbf6f0] text-[#8d6f61]">
+            <MessageSquareMore className="h-4 w-4" />
+          </div>
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
+              Recent chats
+            </div>
+            <div className="mt-2 text-sm leading-6 text-[#6f655c]">
+              When you match with someone, your chat rooms will show up here.
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-5">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
+            Recent chats
+          </div>
+          <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#2f2a26]">
+            Open a chat right away
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 overflow-hidden rounded-[20px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)]">
+        {recentChats.map((chat, index) => (
+          <Link
+            key={chat.matchId}
+            href={`/matches/${chat.matchId}/chat`}
+            className={`flex items-center justify-between gap-3 px-4 py-3 transition hover:bg-white/80 ${
+              index !== recentChats.length - 1 ? "border-b border-[#eee3d8]" : ""
+            }`}
+          >
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="truncate text-sm font-semibold text-[#2f2a26]">
+                  {chat.otherUserName}
+                </span>
+                {chat.hasNewMessage ? (
+                  <span className="shrink-0 rounded-full border border-[#f1d8c8] bg-[#fff2e8] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a2654e]">
+                    New
+                  </span>
+                ) : null}
+              </div>
+              <div className="mt-1 truncate text-xs text-[#7d7268]">
+                {formatRecentChatTime(chat.meetingTime, userTimeZone)} · {chat.placeLabel}
+              </div>
+            </div>
+
+            <div className="shrink-0 text-xs font-medium text-[#7d7268]">Open</div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
@@ -500,6 +600,39 @@ export default function DashboardClient({
     initialUserTimeZone,
   });
 
+  const recentChats = matches
+    .map((item) => {
+      const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
+      const post = postMap[item.post_id];
+      const chatMeta = matchChatMetaMap[item.id];
+      const viewerLastSeen =
+        chatMeta?.host_user_id === userId
+          ? chatMeta.last_seen_by_host_at
+          : chatMeta?.guest_user_id === userId
+          ? chatMeta.last_seen_by_guest_at
+          : null;
+      const hasNewMessage = Boolean(
+        chatMeta?.last_chat_activity_at &&
+          (!viewerLastSeen || chatMeta.last_chat_activity_at > viewerLastSeen)
+      );
+
+      return {
+        matchId: item.id,
+        otherUserName: profileMap[otherUserId] || "Unknown",
+        meetingTime: post?.meeting_time || null,
+        placeLabel: post?.place_name || post?.location || "Selected place",
+        hasNewMessage,
+        sortKey: chatMeta?.last_chat_activity_at || item.created_at,
+      };
+    })
+    .sort((a, b) => {
+      if (a.hasNewMessage !== b.hasNewMessage) {
+        return a.hasNewMessage ? -1 : 1;
+      }
+      return b.sortKey.localeCompare(a.sortKey);
+    })
+    .slice(0, 3);
+
   const stopCardClick = (event: { stopPropagation: () => void }) => {
     event.stopPropagation();
   };
@@ -675,6 +808,8 @@ export default function DashboardClient({
             </div>
           </div>
         )}
+
+        <RecentChatsPanel recentChats={recentChats} userTimeZone={userTimeZone} />
 
         <div className="grid grid-cols-2 gap-4">
           <DashboardTabCard
