@@ -75,6 +75,15 @@ type ChatMessage = {
   createdAt: string;
 };
 
+function formatMessageTime(value: string) {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "";
+  return parsed.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export default function ChatRoomClient({
   matchId,
   otherUserName,
@@ -300,18 +309,16 @@ export default function ChatRoomClient({
               <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
                 PubNub setup
               </div>
-              <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
-                {isProviderConfigured
-                  ? "Chat foundation is ready"
-                  : "Chat foundation is ready. Provider keys come next."}
+                <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
+                  {isProviderConfigured
+                    ? "Chat foundation is ready"
+                    : "Chat foundation is ready. Provider keys come next."}
+                </div>
+                <p className="mt-2 text-sm leading-6 text-[#6a5e54]">
+                  Use this room to confirm timing, arrival, and any last-minute meetup details.
+                </p>
               </div>
-              <p className="mt-2 text-sm leading-6 text-[#6a5e54]">
-                We already created and protected a match-specific room on the Neonadri side.
-                The next step is wiring the PubNub publish/subscribe keys and rendering the
-                actual message stream in this panel.
-              </p>
             </div>
-          </div>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <div className="rounded-[18px] border border-[#ece1d4] bg-[#fbf6f0] px-4 py-3">
@@ -344,7 +351,7 @@ export default function ChatRoomClient({
 
               <div
                 ref={listRef}
-                className="mt-4 h-[360px] overflow-y-auto rounded-[16px] border border-[#ece1d4] bg-white px-3 py-3"
+                className="mt-4 h-[420px] overflow-y-auto rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#fff8f1_100%)] px-3 py-3 sm:h-[460px] sm:px-4"
               >
                 {messages.length > 0 ? (
                   <div className="space-y-3">
@@ -356,14 +363,17 @@ export default function ChatRoomClient({
                           className={`flex ${isMine ? "justify-end" : "justify-start"}`}
                         >
                           <div
-                            className={`max-w-[78%] rounded-[18px] px-4 py-3 text-sm leading-6 shadow-sm ${
+                            className={`max-w-[82%] rounded-[20px] px-4 py-3 text-sm leading-6 shadow-sm ${
                               isMine
                                 ? "bg-[linear-gradient(135deg,#ffdca9_0%,#f7c87d_100%)] text-[#5d3e15]"
                                 : "bg-[#f7efe7] text-[#4f443b]"
                             }`}
                           >
-                            <div className="text-[11px] font-semibold uppercase tracking-[0.1em] opacity-70">
-                              {isMine ? "You" : message.senderName}
+                            <div className="flex items-center justify-between gap-3 text-[11px] font-semibold uppercase tracking-[0.1em] opacity-70">
+                              <span>{isMine ? "You" : message.senderName}</span>
+                              <span className="shrink-0 text-[10px] font-medium normal-case tracking-normal opacity-60">
+                                {formatMessageTime(message.createdAt)}
+                              </span>
                             </div>
                             <div className="mt-1 whitespace-pre-wrap break-words">{message.text}</div>
                           </div>
@@ -372,24 +382,32 @@ export default function ChatRoomClient({
                     })}
                   </div>
                 ) : (
-                  <div className="flex h-full items-center justify-center text-sm text-[#8c7e73]">
-                    No messages yet. Start with a quick check-in.
+                  <div className="flex h-full flex-col items-center justify-center px-6 text-center text-sm text-[#8c7e73]">
+                    <MessageSquareMore className="h-8 w-8 text-[#b19b8d]" />
+                    <div className="mt-3 font-medium text-[#6f6258]">No messages yet</div>
+                    <div className="mt-1 max-w-xs leading-6">
+                      Start with a quick hello, confirm the time, or share an arrival update.
+                    </div>
                   </div>
                 )}
               </div>
 
-              <div className="mt-4 flex gap-2">
+              <div className="mt-4 rounded-[18px] border border-[#ece1d4] bg-white p-2 sm:p-3">
+                <div className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b8f84]">
+                  Send a message
+                </div>
+                <div className="flex gap-2">
                 <textarea
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}
                   placeholder={`Message ${otherUserName}...`}
-                  className="min-h-[104px] flex-1 resize-none rounded-[18px] border border-[#e3d7ca] bg-white px-4 py-3 text-sm text-[#2f2a26] outline-none transition placeholder:text-[#a29185] focus:border-[#cfb8a4]"
+                  className="min-h-[96px] flex-1 resize-none rounded-[16px] border border-[#e3d7ca] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition placeholder:text-[#a29185] focus:border-[#cfb8a4]"
                 />
                 <button
                   type="button"
                   onClick={() => void handleSend()}
                   disabled={sending || !draft.trim()}
-                  className="inline-flex h-[52px] shrink-0 items-center gap-2 self-end rounded-full border border-[#dccfc2] bg-white px-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex h-[48px] shrink-0 items-center gap-2 self-end rounded-full border border-[#dccfc2] bg-[#fff7ef] px-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {sending ? (
                     <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -398,6 +416,7 @@ export default function ChatRoomClient({
                   )}
                   Send
                 </button>
+              </div>
               </div>
 
               {errorMessage && (
