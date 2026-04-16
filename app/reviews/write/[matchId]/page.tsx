@@ -17,6 +17,7 @@ type MatchRow = {
 
 type PostRow = {
   id: number;
+  user_id: string;
   meeting_time: string | null;
   place_name: string | null;
   location: string | null;
@@ -50,6 +51,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialPostInfo={null}
         initialRevieweeUserId=""
         initialRevieweeName=""
+        initialRevieweeIsHost={false}
         initialUserTimeZone={userTimeZone}
       />
     );
@@ -78,6 +80,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialPostInfo={null}
         initialRevieweeUserId=""
         initialRevieweeName=""
+        initialRevieweeIsHost={false}
         initialUserTimeZone={userTimeZone}
       />
     );
@@ -94,6 +97,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialPostInfo={null}
         initialRevieweeUserId=""
         initialRevieweeName=""
+        initialRevieweeIsHost={false}
         initialUserTimeZone={userTimeZone}
       />
     );
@@ -110,11 +114,12 @@ export default async function WriteReviewPage({ params }: PageProps) {
 
   const { data: postData } = await supabase
     .from("posts")
-    .select("id, meeting_time, place_name, location, meeting_purpose")
+    .select("id, user_id, meeting_time, place_name, location, meeting_purpose")
     .eq("id", match.post_id)
     .maybeSingle();
 
   const postInfo = (postData as PostRow | null) || null;
+  const revieweeIsHost = !!postInfo && postInfo.user_id === revieweeUserId;
 
   if (!postInfo || !isMeetingFinished(postInfo.meeting_time, userTimeZone)) {
     return (
@@ -125,6 +130,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialPostInfo={postInfo}
         initialRevieweeUserId={revieweeUserId}
         initialRevieweeName={revieweeName}
+        initialRevieweeIsHost={revieweeIsHost}
         initialUserTimeZone={userTimeZone}
       />
     );
@@ -146,6 +152,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         initialPostInfo={postInfo}
         initialRevieweeUserId={revieweeUserId}
         initialRevieweeName={revieweeName}
+        initialRevieweeIsHost={revieweeIsHost}
         initialUserTimeZone={userTimeZone}
       />
     );
@@ -159,6 +166,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
       initialPostInfo={postInfo}
       initialRevieweeUserId={revieweeUserId}
       initialRevieweeName={revieweeName}
+      initialRevieweeIsHost={revieweeIsHost}
       initialUserTimeZone={userTimeZone}
     />
   );

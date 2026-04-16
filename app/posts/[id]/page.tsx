@@ -76,6 +76,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   let ownerAverageRating = 0;
   let ownerReviewCount = 0;
   let ownerCompletedMeetups = 0;
+  let ownerAttendanceRate: number | null = null;
+  let ownerAttendanceCount = 0;
+  let ownerHostReliabilityRate: number | null = null;
+  let ownerHostReliabilityCount = 0;
   let ownerRecentReviews: ReviewRow[] = [];
   let guestProfileData: ProfileCardData | null = null;
   let matchedGuestUserId: string | null = null;
@@ -93,6 +97,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     ownerAverageRating = ownerData.averageRating;
     ownerReviewCount = ownerData.reviewCount;
     ownerCompletedMeetups = ownerData.completedMeetups;
+    ownerAttendanceRate = ownerData.attendanceRate;
+    ownerAttendanceCount = ownerData.attendanceCount;
+    ownerHostReliabilityRate = ownerData.hostReliabilityRate;
+    ownerHostReliabilityCount = ownerData.hostReliabilityCount;
     ownerRecentReviews = ownerData.recentReviews;
   }
 
@@ -275,6 +283,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     averageRating: ownerAverageRating,
     reviewCount: ownerReviewCount,
     completedMeetups: ownerCompletedMeetups,
+    attendanceRate: ownerAttendanceRate,
+    attendanceCount: ownerAttendanceCount,
+    hostReliabilityRate: ownerHostReliabilityRate,
+    hostReliabilityCount: ownerHostReliabilityCount,
     recentReviews: ownerRecentReviews,
   };
   const ownerRequestItems = ownerRequests.map((request) => {

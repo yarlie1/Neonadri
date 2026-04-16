@@ -16,6 +16,7 @@ type MatchRow = {
 
 type PostRow = {
   meeting_time: string | null;
+  user_id: string;
 };
 
 export async function POST(req: Request) {
@@ -38,9 +39,20 @@ export async function POST(req: Request) {
 
     const matchId = Number(body.match_id);
     const rating = Number(body.rating);
+    const showedUp =
+      typeof body.showed_up === "boolean" ? body.showed_up : null;
+    const hostPaidBenefit =
+      typeof body.host_paid_benefit === "boolean" ? body.host_paid_benefit : null;
 
     if (Number.isNaN(matchId) || Number.isNaN(rating)) {
       return NextResponse.json({ error: "Invalid review payload." }, { status: 400 });
+    }
+
+    if (showedUp === null) {
+      return NextResponse.json(
+        { error: "Please confirm whether they showed up for the meetup." },
+        { status: 400 }
+      );
     }
 
     const { data: matchData, error: matchError } = await supabase
@@ -63,7 +75,7 @@ export async function POST(req: Request) {
 
     const { data: postData, error: postError } = await supabase
       .from("posts")
-      .select("meeting_time")
+      .select("meeting_time, user_id")
       .eq("id", match.post_id)
       .single();
 
@@ -72,6 +84,7 @@ export async function POST(req: Request) {
     }
 
     const post = postData as PostRow;
+    const revieweeIsHost = post.user_id === revieweeUserId;
 
     if (!isMeetingFinished(post.meeting_time, userTimeZone)) {
       return NextResponse.json(
@@ -94,11 +107,21 @@ export async function POST(req: Request) {
       );
     }
 
+    if (revieweeIsHost && hostPaidBenefit === null) {
+      return NextResponse.json(
+        { error: "Please confirm whether the host paid the promised benefit." },
+        { status: 400 }
+      );
+    }
+
     const { error } = await supabase.from("match_reviews").insert({
       match_id: matchId,
       reviewer_user_id: user.id,
       reviewee_user_id: revieweeUserId,
       rating,
+      showed_up: showedUp,
+      host_paid_benefit: revieweeIsHost ? hostPaidBenefit : null,
+      reviewee_is_host: revieweeIsHost,
       review_text:
         typeof body.review_text === "string" && body.review_text.trim()
           ? body.review_text.trim()

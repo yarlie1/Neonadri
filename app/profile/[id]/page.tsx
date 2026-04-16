@@ -17,6 +17,7 @@ import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
 } from "../../../lib/userTimeZone";
+import { computeReviewTrustMetrics, type ReviewTrustRow } from "../../../lib/reviewTrust";
 
 type PageProps = {
   params: {
@@ -44,6 +45,9 @@ type ReviewRow = {
   rating: number;
   review_text: string | null;
   created_at: string;
+  showed_up: boolean | null;
+  host_paid_benefit: boolean | null;
+  reviewee_is_host: boolean | null;
 };
 
 type ProfileStats = {
@@ -115,7 +119,7 @@ export default async function ProfilePage({ params }: PageProps) {
 
   const isMyProfile = user?.id === userId;
 
-  const [profileRes, statsRes, reviewsRes] = await Promise.all([
+  const [profileRes, statsRes, reviewsRes, trustRes] = await Promise.all([
     supabase
       .from("profiles")
       .select(
@@ -143,10 +147,14 @@ export default async function ProfilePage({ params }: PageProps) {
 
     supabase
       .from("match_reviews")
-      .select("id, rating, review_text, created_at")
+      .select("id, rating, review_text, created_at, showed_up, host_paid_benefit, reviewee_is_host")
       .eq("reviewee_user_id", userId)
       .order("created_at", { ascending: false })
       .limit(20),
+    supabase
+      .from("match_reviews")
+      .select("showed_up, host_paid_benefit, reviewee_is_host")
+      .eq("reviewee_user_id", userId),
   ]);
 
   if (profileRes.error) {
@@ -157,6 +165,9 @@ export default async function ProfilePage({ params }: PageProps) {
   const profile = profileRes.data as ProfileRow | null;
   const stats = (statsRes.data || {}) as ProfileStats;
   const reviews = (reviewsRes.data || []) as ReviewRow[];
+  const trustMetrics = computeReviewTrustMetrics(
+    (trustRes.data || []) as ReviewTrustRow[]
+  );
 
   if (!profile) {
     notFound();
@@ -330,6 +341,36 @@ export default async function ProfilePage({ params }: PageProps) {
                   </div>
                   <div className="mt-1 text-sm font-semibold text-[#5f5347]">
                     {completedMeetups} meetups
+                  </div>
+                </div>
+                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-2.5">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                    Attendance
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-[#5f5347]">
+                    {trustMetrics.attendanceRate === null
+                      ? "No data yet"
+                      : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-[#8b7f74]">
+                    {trustMetrics.attendanceCount > 0
+                      ? `Based on ${trustMetrics.attendanceCount} meetup reviews`
+                      : "Not enough meetup reviews yet"}
+                  </div>
+                </div>
+                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-2.5">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                    Host reliability
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-[#5f5347]">
+                    {trustMetrics.hostReliabilityRate === null
+                      ? "No data yet"
+                      : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-[#8b7f74]">
+                    {trustMetrics.hostReliabilityCount > 0
+                      ? `Based on ${trustMetrics.hostReliabilityCount} host payout reviews`
+                      : "No host payout reviews yet"}
                   </div>
                 </div>
               </div>

@@ -19,6 +19,7 @@ type ReviewWriteFormProps = {
   initialPostInfo: PostRow | null;
   initialRevieweeUserId: string;
   initialRevieweeName: string;
+  initialRevieweeIsHost: boolean;
   initialUserTimeZone: string;
 };
 
@@ -29,15 +30,28 @@ export default function ReviewWriteForm({
   initialPostInfo,
   initialRevieweeUserId,
   initialRevieweeName,
+  initialRevieweeIsHost,
   initialUserTimeZone,
 }: ReviewWriteFormProps) {
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
+  const [showedUp, setShowedUp] = useState<boolean | null>(null);
+  const [hostPaidBenefit, setHostPaidBenefit] = useState<boolean | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(initialMessage);
 
   const handleSubmit = async () => {
     if (!initialCanReview) return;
+
+    if (showedUp === null) {
+      setMessage("Please confirm whether they showed up for the meetup.");
+      return;
+    }
+
+    if (initialRevieweeIsHost && hostPaidBenefit === null) {
+      setMessage("Please confirm whether the host paid the promised benefit.");
+      return;
+    }
 
     try {
       setSaving(true);
@@ -52,6 +66,8 @@ export default function ReviewWriteForm({
           match_id: matchId,
           review_text: reviewText,
           rating,
+          showed_up: showedUp,
+          host_paid_benefit: initialRevieweeIsHost ? hostPaidBenefit : null,
           reviewee_user_id: initialRevieweeUserId,
         }),
       });
@@ -147,6 +163,64 @@ export default function ReviewWriteForm({
                   })}
                 </div>
               </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-[#6f655c]">
+                  Did they show up for the meetup?
+                </label>
+                <div className="flex gap-2">
+                  {[
+                    { label: "Yes", value: true },
+                    { label: "No", value: false },
+                  ].map((option) => {
+                    const active = showedUp === option.value;
+                    return (
+                      <button
+                        key={option.label}
+                        type="button"
+                        onClick={() => setShowedUp(option.value)}
+                        className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                          active
+                            ? "border-[#a48f7a] bg-[#a48f7a] text-white"
+                            : "border-[#dccfc2] bg-white text-[#5a5149] hover:bg-[#f4ece4]"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {initialRevieweeIsHost && (
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-[#6f655c]">
+                    Did the host pay the promised benefit?
+                  </label>
+                  <div className="flex gap-2">
+                    {[
+                      { label: "Yes", value: true },
+                      { label: "No", value: false },
+                    ].map((option) => {
+                      const active = hostPaidBenefit === option.value;
+                      return (
+                        <button
+                          key={option.label}
+                          type="button"
+                          onClick={() => setHostPaidBenefit(option.value)}
+                          className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                            active
+                              ? "border-[#a48f7a] bg-[#a48f7a] text-white"
+                              : "border-[#dccfc2] bg-white text-[#5a5149] hover:bg-[#f4ece4]"
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="mb-2 block text-sm font-medium text-[#6f655c]">

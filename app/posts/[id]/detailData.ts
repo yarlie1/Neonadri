@@ -3,6 +3,7 @@ import {
   formatMeetingTime,
   isMeetingFinished,
 } from "../../../lib/meetingTime";
+import { computeReviewTrustMetrics, type ReviewTrustRow } from "../../../lib/reviewTrust";
 import {
   formatDuration,
   getPurposeTheme,
@@ -65,6 +66,10 @@ export type LoadedProfileData = {
   averageRating: number;
   reviewCount: number;
   completedMeetups: number;
+  attendanceRate: number | null;
+  attendanceCount: number;
+  hostReliabilityRate: number | null;
+  hostReliabilityCount: number;
   recentReviews: ReviewRow[];
   profileCardData: ProfileCardData;
 };
@@ -87,7 +92,7 @@ export async function fetchProfileShowcaseData(
   supabase: any,
   userId: string
 ): Promise<LoadedProfileData> {
-  const [profileRes, statsRes, reviewsRes] = await Promise.all([
+  const [profileRes, statsRes, reviewsRes, trustRes] = await Promise.all([
     supabase
       .from("profiles")
       .select(
@@ -104,11 +109,18 @@ export async function fetchProfileShowcaseData(
       .eq("reviewee_user_id", userId)
       .order("created_at", { ascending: false })
       .limit(3),
+    supabase
+      .from("match_reviews")
+      .select("showed_up, host_paid_benefit, reviewee_is_host")
+      .eq("reviewee_user_id", userId),
   ]);
 
   const profile = profileRes.data as ProfileRow | null;
   const stats = statsRes.data as ProfileStats | null;
   const recentReviews = (reviewsRes.data || []) as ReviewRow[];
+  const trustMetrics = computeReviewTrustMetrics(
+    (trustRes.data || []) as ReviewTrustRow[]
+  );
 
   const displayName = profile?.display_name || "Unknown";
   const aboutMe = profile?.about_me || "";
@@ -134,6 +146,10 @@ export async function fetchProfileShowcaseData(
     averageRating,
     reviewCount,
     completedMeetups,
+    attendanceRate: trustMetrics.attendanceRate,
+    attendanceCount: trustMetrics.attendanceCount,
+    hostReliabilityRate: trustMetrics.hostReliabilityRate,
+    hostReliabilityCount: trustMetrics.hostReliabilityCount,
     recentReviews,
     profileCardData: {
       userId,
@@ -148,6 +164,10 @@ export async function fetchProfileShowcaseData(
       averageRating,
       reviewCount,
       completedMeetups,
+      attendanceRate: trustMetrics.attendanceRate,
+      attendanceCount: trustMetrics.attendanceCount,
+      hostReliabilityRate: trustMetrics.hostReliabilityRate,
+      hostReliabilityCount: trustMetrics.hostReliabilityCount,
       recentReviews,
     },
   };

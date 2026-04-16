@@ -57,6 +57,10 @@ export type ProfileCardData = {
   averageRating: number;
   reviewCount: number;
   completedMeetups: number;
+  attendanceRate: number | null;
+  attendanceCount: number;
+  hostReliabilityRate: number | null;
+  hostReliabilityCount: number;
   recentReviews: ReviewRow[];
 };
 
@@ -201,6 +205,26 @@ function StatCard({
       <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
         {value}
       </div>
+    </div>
+  );
+}
+
+function TrustStatCard({
+  label,
+  value,
+  detail,
+}: {
+  label: string;
+  value: string;
+  detail: string;
+}) {
+  return (
+    <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-2.5">
+      <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+        {label}
+      </div>
+      <div className="mt-1 text-sm font-semibold text-[#5f5347]">{value}</div>
+      <div className="mt-0.5 text-[11px] text-[#8b7f74]">{detail}</div>
     </div>
   );
 }
@@ -383,6 +407,35 @@ export function ProfileShowcaseCard({
             <div className="text-xs text-[#8b7f74]">Meetups</div>
             <div className="mt-2 text-xl font-bold text-[#2f2a26]">{data.completedMeetups}</div>
           </div>
+        </div>
+
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <TrustStatCard
+            label="Attendance"
+            value={
+              data.attendanceRate === null
+                ? "No data yet"
+                : `${Math.round(data.attendanceRate * 100)}%`
+            }
+            detail={
+              data.attendanceCount > 0
+                ? `Based on ${data.attendanceCount} meetup reviews`
+                : "Not enough meetup reviews yet"
+            }
+          />
+          <TrustStatCard
+            label="Host reliability"
+            value={
+              data.hostReliabilityRate === null
+                ? "No data yet"
+                : `${Math.round(data.hostReliabilityRate * 100)}%`
+            }
+            detail={
+              data.hostReliabilityCount > 0
+                ? `Based on ${data.hostReliabilityCount} host payout reviews`
+                : "No host payout reviews yet"
+            }
+          />
         </div>
 
         {!compact && (
