@@ -76,6 +76,7 @@ type ChatMessage = {
 };
 
 export default function ChatRoomClient({
+  matchId,
   otherUserName,
   purposeLabel,
   meetingTimeLabel,
@@ -86,6 +87,7 @@ export default function ChatRoomClient({
   currentUserId,
   currentUserName,
 }: {
+  matchId: number;
   otherUserName: string;
   purposeLabel: string;
   meetingTimeLabel: string;
@@ -112,18 +114,24 @@ export default function ChatRoomClient({
   const roomLabel = useMemo(() => roomId, [roomId]);
   const markActivity = async (action: "seen" | "message") => {
     try {
-      await fetch("/api/matches/chat/activity", {
+      const response = await fetch("/api/matches/chat/activity", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          matchId: Number(window.location.pathname.split("/")[2]),
+          matchId,
           action,
         }),
+        keepalive: action === "message",
       });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null);
+        console.error("[match-chat-activity]", action, payload?.error || response.status);
+      }
     } catch {
-      // Best-effort metadata sync only; the chat itself should keep working.
+      console.error("[match-chat-activity]", action, "network-failed");
     }
   };
 

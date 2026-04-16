@@ -104,6 +104,7 @@ export default async function MatchChatPage({ params }: PageProps) {
 
   return (
     <ChatRoomClient
+      matchId={matchId}
       otherUserName={otherUserName}
       purposeLabel={purposeLabel}
       meetingTimeLabel={meetingTimeLabel}
