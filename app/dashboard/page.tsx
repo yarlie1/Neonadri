@@ -36,6 +36,15 @@ export type MatchRow = {
   created_at: string;
 };
 
+export type MatchChatMetaRow = {
+  match_id: number;
+  last_chat_activity_at: string | null;
+  last_seen_by_host_at: string | null;
+  last_seen_by_guest_at: string | null;
+  host_user_id: string;
+  guest_user_id: string;
+};
+
 export type ProfileRow = {
   id: string;
   display_name: string | null;
@@ -111,6 +120,7 @@ export default async function DashboardPage() {
   const requestsSent = (sentRes.data || []) as MatchRequestRow[];
   const matches = (matchesRes.data || []) as MatchRow[];
   const reviews = (reviewsRes.data || []) as MatchReviewRow[];
+  let matchChatMetaMap: Record<number, MatchChatMetaRow> = {};
   let matchSummaryMap: Record<
     number,
     { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
@@ -175,6 +185,19 @@ export default async function DashboardPage() {
 
   const reviewedMatchIds = reviews.map((r) => r.match_id);
 
+  if (matches.length > 0) {
+    const { data: matchChatMetaData } = await supabase
+      .from("match_chats")
+      .select(
+        "match_id, last_chat_activity_at, last_seen_by_host_at, last_seen_by_guest_at, host_user_id, guest_user_id"
+      )
+      .in("match_id", matches.map((match) => match.id));
+
+    ((matchChatMetaData || []) as MatchChatMetaRow[]).forEach((item) => {
+      matchChatMetaMap[item.match_id] = item;
+    });
+  }
+
   return (
     <DashboardClient
       userId={user.id}
@@ -186,6 +209,7 @@ export default async function DashboardPage() {
       postMap={postMap}
       matchSummaryMap={matchSummaryMap}
       reviewedMatchIds={reviewedMatchIds}
+      matchChatMetaMap={matchChatMetaMap}
       initialUserTimeZone={initialUserTimeZone}
     />
   );

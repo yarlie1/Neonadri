@@ -17,7 +17,7 @@ import {
   Plus,
   Star,
 } from "lucide-react";
-import type { MatchRow, MatchRequestRow, PostRow } from "./page";
+import type { MatchChatMetaRow, MatchRow, MatchRequestRow, PostRow } from "./page";
 import {
   CompactActionButton,
   DashboardTabCard,
@@ -325,6 +325,7 @@ function MatchesTabPanel({
   profileMap,
   postMap,
   reviewedMatchIds,
+  matchChatMetaMap,
   userTimeZone,
   getPostStatus,
   openPostDetail,
@@ -335,6 +336,7 @@ function MatchesTabPanel({
   profileMap: Record<string, string>;
   postMap: Record<number, PostRow>;
   reviewedMatchIds: number[];
+  matchChatMetaMap: Record<number, MatchChatMetaRow>;
   userTimeZone: string;
   getPostStatus: (meetingTime: string | null) => "Upcoming" | "Expired";
   openPostDetail: (postId: number) => void;
@@ -348,6 +350,17 @@ function MatchesTabPanel({
         const alreadyReviewed = reviewedMatchIds.includes(item.id);
         const meetupStatus = getPostStatus(post?.meeting_time || null).toLowerCase();
         const canLeaveReview = meetupStatus === "expired" && !alreadyReviewed;
+        const chatMeta = matchChatMetaMap[item.id];
+        const viewerLastSeen =
+          chatMeta?.host_user_id === userId
+            ? chatMeta.last_seen_by_host_at
+            : chatMeta?.guest_user_id === userId
+            ? chatMeta.last_seen_by_guest_at
+            : null;
+        const hasNewMessage = Boolean(
+          chatMeta?.last_chat_activity_at &&
+            (!viewerLastSeen || chatMeta.last_chat_activity_at > viewerLastSeen)
+        );
 
         return (
           <div
@@ -404,6 +417,9 @@ function MatchesTabPanel({
               <CompactActionButton href={`/matches/${item.id}/chat`}>
                 <HeartHandshake className="h-3.5 w-3.5" />
                 Open Chat
+                {hasNewMessage ? (
+                  <span className="inline-flex h-2.5 w-2.5 rounded-full bg-[#b56c57]" />
+                ) : null}
               </CompactActionButton>
             </div>
           </div>
@@ -429,6 +445,7 @@ export default function DashboardClient({
   postMap,
   matchSummaryMap,
   reviewedMatchIds,
+  matchChatMetaMap,
   initialUserTimeZone,
 }: {
   userId: string;
@@ -443,6 +460,7 @@ export default function DashboardClient({
     { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
   >;
   reviewedMatchIds: number[];
+  matchChatMetaMap: Record<number, MatchChatMetaRow>;
   initialUserTimeZone: string;
 }) {
   const supabase = createClient();
@@ -800,6 +818,7 @@ export default function DashboardClient({
             profileMap={profileMap}
             postMap={postMap}
             reviewedMatchIds={reviewedMatchIds}
+            matchChatMetaMap={matchChatMetaMap}
             userTimeZone={userTimeZone}
             getPostStatus={getPostStatus}
             openPostDetail={openPostDetail}

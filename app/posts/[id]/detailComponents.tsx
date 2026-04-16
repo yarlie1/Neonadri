@@ -631,6 +631,7 @@ export function MatchReviewPanel({
   canLeaveReview,
   meetupFinished,
   viewerHasReview,
+  hasNewChatMessage,
   matchReviews,
   getMatchReviewAuthorLabel,
 }: {
@@ -640,6 +641,7 @@ export function MatchReviewPanel({
   canLeaveReview: boolean;
   meetupFinished: boolean;
   viewerHasReview: boolean;
+  hasNewChatMessage: boolean;
   matchReviews: MatchReviewRow[];
   getMatchReviewAuthorLabel: (review: MatchReviewRow) => string;
 }) {
@@ -676,6 +678,11 @@ export function MatchReviewPanel({
         >
           <MessageSquare className="h-4 w-4 text-[#8b7367]" />
           Open Chat
+          {hasNewChatMessage ? (
+            <span className="rounded-full bg-[#f3e1d8] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9a5d49]">
+              New
+            </span>
+          ) : null}
         </Link>
       </div>
 

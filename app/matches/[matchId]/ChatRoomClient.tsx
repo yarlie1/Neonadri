@@ -110,6 +110,22 @@ export default function ChatRoomClient({
   const subscribeKey = process.env.NEXT_PUBLIC_PUBNUB_SUBSCRIBE_KEY;
 
   const roomLabel = useMemo(() => roomId, [roomId]);
+  const markActivity = async (action: "seen" | "message") => {
+    try {
+      await fetch("/api/matches/chat/activity", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          matchId: Number(window.location.pathname.split("/")[2]),
+          action,
+        }),
+      });
+    } catch {
+      // Best-effort metadata sync only; the chat itself should keep working.
+    }
+  };
 
   useEffect(() => {
     if (!sdkReady || !isProviderConfigured || !window.PubNub || !publishKey || !subscribeKey) {
@@ -148,6 +164,10 @@ export default function ChatRoomClient({
           senderName: payload.senderName || "Participant",
           createdAt: payload.createdAt || new Date().toISOString(),
         });
+
+        if ((payload.senderId || "unknown") !== currentUserId) {
+          void markActivity("seen");
+        }
       },
     });
 
@@ -185,6 +205,7 @@ export default function ChatRoomClient({
             .filter(Boolean) || [];
 
         setMessages(historyMessages as ChatMessage[]);
+        void markActivity("seen");
       } catch {
         setErrorMessage("Past messages could not be loaded. New chat still works.");
       }
@@ -224,6 +245,7 @@ export default function ChatRoomClient({
         storeInHistory: true,
       });
       setDraft("");
+      void markActivity("message");
     } catch {
       setErrorMessage("Message could not be sent. Please try again.");
     } finally {

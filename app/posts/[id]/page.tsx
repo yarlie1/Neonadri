@@ -163,6 +163,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }
 
   let matchedRecord: MatchRow | null = null;
+  let hasNewChatMessage = false;
   if (isPostMatched) {
     const { data: matchRecordData } = await supabase
       .from("matches")
@@ -191,6 +192,30 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       .order("created_at", { ascending: false });
 
     matchReviews = (matchReviewData || []) as MatchReviewRow[];
+
+    if (user) {
+      const { data: matchChatData } = await supabase
+        .from("match_chats")
+        .select(
+          "last_chat_activity_at, last_seen_by_host_at, last_seen_by_guest_at, host_user_id, guest_user_id"
+        )
+        .eq("match_id", matchedRecord.id)
+        .maybeSingle();
+
+      if (matchChatData) {
+        const viewerLastSeen =
+          matchChatData.host_user_id === user.id
+            ? matchChatData.last_seen_by_host_at
+            : matchChatData.guest_user_id === user.id
+            ? matchChatData.last_seen_by_guest_at
+            : null;
+
+        hasNewChatMessage = Boolean(
+          matchChatData.last_chat_activity_at &&
+            (!viewerLastSeen || matchChatData.last_chat_activity_at > viewerLastSeen)
+        );
+      }
+    }
   }
 
   if (matchedGuestId) {
@@ -352,6 +377,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               canLeaveReview={canLeaveReview}
               meetupFinished={meetupFinished}
               viewerHasReview={viewerHasReview}
+              hasNewChatMessage={hasNewChatMessage}
               matchReviews={matchReviews}
               getMatchReviewAuthorLabel={getMatchReviewAuthorLabel}
             />
