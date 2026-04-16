@@ -1,14 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
 
 export default function LoginPage() {
   const supabase = createClient();
+  const searchParams = useSearchParams();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+
+  const nextPath = searchParams.get("next");
+  const redirectPath =
+    nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//")
+      ? nextPath
+      : "/";
 
   const handleLogin = async () => {
     setMessage("");
@@ -23,7 +31,7 @@ export default function LoginPage() {
       return;
     }
 
-    window.location.replace("/");
+    window.location.replace(redirectPath);
   };
 
   return (
