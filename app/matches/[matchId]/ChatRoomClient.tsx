@@ -358,32 +358,28 @@ export default function ChatRoomClient({
         strategy="afterInteractive"
         onLoad={() => setSdkReady(true)}
       />
-      <div className="mx-auto max-w-3xl space-y-4">
-        <div className="relative overflow-hidden rounded-[30px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] px-5 py-5 shadow-[0_18px_42px_rgba(92,69,52,0.08)] sm:px-6 sm:py-6">
-          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
-          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
-          <div className="relative">
-            <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">MATCH CHAT</div>
-            <div className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#2b1f1a] sm:text-[36px]">
-              Chat with {otherUserName}
-            </div>
-            <div className="mt-3 flex flex-wrap gap-2 text-sm text-[#5f453b]">
-              <span className="rounded-full border border-[#dfd1c3] bg-white/70 px-3 py-1.5">
-                {purposeLabel}
-              </span>
-              <span className="rounded-full border border-[#dfd1c3] bg-white/70 px-3 py-1.5">
-                {meetingTimeLabel}
-              </span>
-              <span className="rounded-full border border-[#dfd1c3] bg-white/70 px-3 py-1.5">
-                {placeLabel}
-              </span>
-            </div>
-          </div>
-        </div>
-
+      <div className="mx-auto max-w-3xl">
         <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-5">
           {isProviderConfigured ? (
             <div className="rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] p-4">
+              <div className="border-b border-[#eadfd3] pb-4">
+                <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">MATCH CHAT</div>
+                <div className="mt-1 text-lg font-bold tracking-[-0.03em] text-[#2b1f1a]">
+                  {otherUserName}
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2 text-sm text-[#5f453b]">
+                  <span className="rounded-full border border-[#dfd1c3] bg-white/70 px-3 py-1.5">
+                    {purposeLabel}
+                  </span>
+                  <span className="rounded-full border border-[#dfd1c3] bg-white/70 px-3 py-1.5">
+                    {meetingTimeLabel}
+                  </span>
+                  <span className="rounded-full border border-[#dfd1c3] bg-white/70 px-3 py-1.5">
+                    {placeLabel}
+                  </span>
+                </div>
+              </div>
+
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#eadfd3] pb-3">
                 <div>
                   <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
@@ -395,7 +391,6 @@ export default function ChatRoomClient({
                         connectionLabel === "Connected" ? "bg-[#b56c57]" : "bg-[#d8cec3]"
                       }`}
                     />
-                    {connectionLabel}
                   </div>
                 </div>
                 <div className="text-xs font-medium text-[#8c7e73]">{presenceLabel}</div>
@@ -412,8 +407,13 @@ export default function ChatRoomClient({
                       return (
                         <div
                           key={message.id}
-                          className={`flex ${isMine ? "justify-end" : "justify-start"}`}
+                          className={`flex items-end gap-2 ${isMine ? "justify-end" : "justify-start"}`}
                         >
+                          {!isMine ? (
+                            <span className="shrink-0 text-[10px] font-medium text-[#9b8f84]">
+                              {formatMessageTime(message.createdAt)}
+                            </span>
+                          ) : null}
                           <div
                             className={`max-w-[82%] rounded-[20px] px-4 py-3 text-sm leading-6 shadow-sm ${
                               isMine
@@ -421,14 +421,13 @@ export default function ChatRoomClient({
                                 : "bg-[#f7efe7] text-[#4f443b]"
                             }`}
                           >
-                            <div className="flex items-center justify-between gap-3 text-[11px] font-semibold uppercase tracking-[0.1em] opacity-70">
-                              <span>{isMine ? "You" : message.senderName}</span>
-                              <span className="shrink-0 text-[10px] font-medium normal-case tracking-normal opacity-60">
-                                {formatMessageTime(message.createdAt)}
-                              </span>
-                            </div>
-                            <div className="mt-1 whitespace-pre-wrap break-words">{message.text}</div>
+                            <div className="whitespace-pre-wrap break-words">{message.text}</div>
                           </div>
+                          {isMine ? (
+                            <span className="shrink-0 text-[10px] font-medium text-[#9b8f84]">
+                              {formatMessageTime(message.createdAt)}
+                            </span>
+                          ) : null}
                         </div>
                       );
                     })}
@@ -445,22 +444,19 @@ export default function ChatRoomClient({
               </div>
 
               <div className="mt-4 rounded-[18px] border border-[#ece1d4] bg-white p-2 sm:p-3">
-                <div className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b8f84]">
-                  Send a message
-                </div>
                 <div className="flex gap-2">
                   <textarea
                     value={draft}
                     onChange={(event) => setDraft(event.target.value)}
                     onKeyDown={handleDraftKeyDown}
                     placeholder={`Message ${otherUserName}...`}
-                    className="min-h-[96px] flex-1 resize-none rounded-[16px] border border-[#e3d7ca] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition placeholder:text-[#a29185] focus:border-[#cfb8a4]"
+                    className="h-[56px] min-h-[56px] flex-1 resize-none rounded-[16px] border border-[#e3d7ca] bg-[#fffdfa] px-4 py-[17px] text-sm leading-5 text-[#2f2a26] outline-none transition placeholder:text-[#a29185] focus:border-[#cfb8a4]"
                   />
                   <button
                     type="button"
                     onClick={() => void handleSend()}
                     disabled={sending || !draft.trim()}
-                    className="inline-flex h-[48px] shrink-0 items-center gap-2 self-end rounded-full border border-[#dccfc2] bg-[#fff7ef] px-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex h-[56px] shrink-0 items-center gap-2 self-end rounded-[16px] border border-[#dccfc2] bg-[#fff7ef] px-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {sending ? (
                       <LoaderCircle className="h-4 w-4 animate-spin" />
