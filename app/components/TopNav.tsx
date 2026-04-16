@@ -391,8 +391,8 @@ export default function TopNav() {
                 >
                   <LayoutDashboard className="h-4 w-4" />
                   Dashboard
-                  <NewChatBadge visible={hasNewChatActivity} />
                   <PendingBadge count={pendingCount} />
+                  <NewChatBadge visible={hasNewChatActivity} />
                 </Link>
 
                 <Link
@@ -488,8 +488,8 @@ export default function TopNav() {
                           Dashboard
                         </span>
                         <span className="inline-flex items-center gap-2">
-                          <NewChatBadge visible={hasNewChatActivity} />
                           <PendingBadge count={pendingCount} />
+                          <NewChatBadge visible={hasNewChatActivity} />
                         </span>
                       </Link>
 
