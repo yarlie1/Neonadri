@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { LocateFixed } from "lucide-react";
+import { useDistanceUnit } from "../../useDistanceUnit";
 
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number) {
   const toRad = (v: number) => (v * Math.PI) / 180;
@@ -19,8 +20,13 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number) {
   return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-function formatDistanceKm(km: number) {
+function formatDistance(km: number, unit: "mi" | "km") {
   if (!Number.isFinite(km)) return "";
+  if (unit === "mi") {
+    const miles = km * 0.621371;
+    if (miles < 0.2) return `About ${(miles * 5280).toFixed(0)} ft away`;
+    return `About ${miles.toFixed(1)} mi away`;
+  }
   if (km < 1) return `About ${(km * 1000).toFixed(0)} m away`;
   return `About ${km.toFixed(1)} km away`;
 }
@@ -32,6 +38,7 @@ export default function PostDistanceNote({
   latitude: number | null;
   longitude: number | null;
 }) {
+  const { distanceUnit } = useDistanceUnit();
   const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
@@ -62,10 +69,11 @@ export default function PostDistanceNote({
   const distanceText = useMemo(() => {
     if (!userLocation || latitude === null || longitude === null) return "";
 
-    return formatDistanceKm(
-      haversineKm(userLocation.lat, userLocation.lng, latitude, longitude)
+    return formatDistance(
+      haversineKm(userLocation.lat, userLocation.lng, latitude, longitude),
+      distanceUnit
     );
-  }, [latitude, longitude, userLocation]);
+  }, [distanceUnit, latitude, longitude, userLocation]);
 
   if (!distanceText) return null;
 

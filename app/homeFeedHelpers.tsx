@@ -18,6 +18,7 @@ import {
   Utensils,
 } from "lucide-react";
 import type { DistanceValue, SortValue } from "./useHomeFeedFilters";
+import type { DistanceUnit } from "./useDistanceUnit";
 
 export const SURFACE_CARD_CLASS =
   "rounded-[32px] border border-[#eee2d6] bg-[linear-gradient(180deg,rgba(255,253,250,0.97)_0%,rgba(250,244,237,0.94)_100%)] shadow-[0_24px_70px_rgba(86,63,44,0.12)] backdrop-blur";
@@ -204,17 +205,28 @@ export function getSortSummaryLabel(sort: SortValue) {
   }
 }
 
-export function getDistanceSummaryLabel(distance: DistanceValue) {
+export function getDistanceSummaryLabel(
+  distance: DistanceValue,
+  unit: DistanceUnit
+) {
   switch (distance) {
     case "nearby":
       return "Near me";
     case "within_5km":
-      return "Under 5 km";
+      return unit === "mi" ? "Under 3 mi" : "Under 5 km";
     case "within_10km":
-      return "Under 10 km";
+      return unit === "mi" ? "Under 6 mi" : "Under 10 km";
     default:
       return "";
   }
+}
+
+export function getDistanceOptionLabel(
+  distance: DistanceValue,
+  unit: DistanceUnit
+) {
+  if (distance === "all") return "All";
+  return getDistanceSummaryLabel(distance, unit);
 }
 
 export function haversineKm(
@@ -238,8 +250,15 @@ export function haversineKm(
   return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-export function formatDistanceKm(km: number | null) {
+export function formatDistanceKm(km: number | null, unit: DistanceUnit) {
   if (km === null || !Number.isFinite(km)) return "";
+
+  if (unit === "mi") {
+    const miles = km * 0.621371;
+    if (miles < 0.2) return `About ${(miles * 5280).toFixed(0)} ft away`;
+    return `About ${miles.toFixed(1)} mi away`;
+  }
+
   if (km < 1) return `About ${(km * 1000).toFixed(0)} m away`;
   return `About ${km.toFixed(1)} km away`;
 }
@@ -289,6 +308,7 @@ export function FilterSummaryText({
   ageGroup,
   sort,
   distance,
+  distanceUnit,
 }: {
   matchState: string;
   audience: string;
@@ -297,6 +317,7 @@ export function FilterSummaryText({
   ageGroup: string;
   sort: SortValue;
   distance: DistanceValue;
+  distanceUnit: DistanceUnit;
 }) {
   const parts: string[] = [];
 
@@ -310,7 +331,7 @@ export function FilterSummaryText({
     if (label) parts.push(label);
   }
   if (distance !== "all") {
-    const label = getDistanceSummaryLabel(distance);
+    const label = getDistanceSummaryLabel(distance, distanceUnit);
     if (label) parts.push(label);
   }
 

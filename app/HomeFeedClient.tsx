@@ -37,6 +37,7 @@ import {
   type SortValue,
   useHomeFeedFilters,
 } from "./useHomeFeedFilters";
+import { useDistanceUnit } from "./useDistanceUnit";
 
 type PostRow = {
   id: number;
@@ -89,6 +90,7 @@ export default function HomeFeedClient({
 
   const formatTime = (meetingTime: string | null) =>
     formatMeetingTime(meetingTime, userTimeZone) || "";
+  const { distanceUnit, setDistanceUnit } = useDistanceUnit();
 
   const getPostStatus = (meetingTime: string | null) =>
     getMeetingStatus(meetingTime, userTimeZone);
@@ -345,6 +347,7 @@ export default function HomeFeedClient({
                 gender={gender}
                 ageGroup={ageGroup}
                 distance={distance}
+                distanceUnit={distanceUnit}
                 sort={sort}
               />
             }
@@ -354,6 +357,7 @@ export default function HomeFeedClient({
             gender={gender}
             ageGroup={ageGroup}
             distance={distance}
+            distanceUnit={distanceUnit}
             sort={sort}
             matchStateOptions={MATCH_STATE_OPTIONS}
             audienceOptions={AUDIENCE_OPTIONS}
@@ -361,6 +365,7 @@ export default function HomeFeedClient({
             genderOptions={GENDER_OPTIONS}
             ageGroupOptions={AGE_GROUP_OPTIONS}
             distanceOptions={DISTANCE_OPTIONS}
+            distanceUnitOptions={["mi", "km"]}
             sortOptions={SORT_OPTIONS}
             onMatchState={(option) => applyAndClose(() => setMatchState(option))}
             onAudience={(option) => applyAndClose(() => applyAudience(option as (typeof AUDIENCE_OPTIONS)[number]))}
@@ -380,6 +385,7 @@ export default function HomeFeedClient({
             onDistance={(option) =>
               applyAndClose(() => setDistance(option as (typeof DISTANCE_OPTIONS)[number]["value"]))
             }
+            onDistanceUnit={setDistanceUnit}
             onSort={(option) => applyAndClose(() => setSort(option as SortValue))}
             onReset={resetAll}
             locationStatus={locationStatus}
@@ -424,7 +430,8 @@ export default function HomeFeedClient({
                     userLocation.lng,
                     post.latitude,
                     post.longitude
-                  )
+                  ),
+                  distanceUnit
                 )
               : "";
 

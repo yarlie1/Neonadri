@@ -13,6 +13,8 @@ import {
   UserCircle2,
   UserRound,
 } from "lucide-react";
+import { getDistanceOptionLabel } from "./homeFeedHelpers";
+import type { DistanceUnit } from "./useDistanceUnit";
 
 export function FilterPill({
   active,
@@ -49,6 +51,7 @@ type HomeFilterCardProps = {
   gender: string;
   ageGroup: string;
   distance: string;
+  distanceUnit: DistanceUnit;
   sort: string;
   matchStateOptions: string[];
   audienceOptions: readonly string[];
@@ -56,6 +59,7 @@ type HomeFilterCardProps = {
   genderOptions: string[];
   ageGroupOptions: string[];
   distanceOptions: readonly { value: string; label: string }[];
+  distanceUnitOptions: readonly DistanceUnit[];
   sortOptions: readonly { value: string; label: string }[];
   onMatchState: (value: string) => void;
   onAudience: (value: string) => void;
@@ -63,6 +67,7 @@ type HomeFilterCardProps = {
   onGender: (value: string) => void;
   onAgeGroup: (value: string) => void;
   onDistance: (value: string) => void;
+  onDistanceUnit: (value: DistanceUnit) => void;
   onSort: (value: string) => void;
   onReset: () => void;
   locationStatus: "idle" | "loading" | "granted" | "denied" | "unavailable";
@@ -79,6 +84,7 @@ export function HomeFilterCard({
   gender,
   ageGroup,
   distance,
+  distanceUnit,
   sort,
   matchStateOptions,
   audienceOptions,
@@ -86,6 +92,7 @@ export function HomeFilterCard({
   genderOptions,
   ageGroupOptions,
   distanceOptions,
+  distanceUnitOptions,
   sortOptions,
   onMatchState,
   onAudience,
@@ -93,6 +100,7 @@ export function HomeFilterCard({
   onGender,
   onAgeGroup,
   onDistance,
+  onDistanceUnit,
   onSort,
   onReset,
   locationStatus,
@@ -218,8 +226,22 @@ export function HomeFilterCard({
                 <FilterPill
                   key={option.value}
                   active={distance === option.value}
-                  label={option.label}
+                  label={getDistanceOptionLabel(
+                    option.value as "all" | "nearby" | "within_5km" | "within_10km",
+                    distanceUnit
+                  )}
                   onClick={() => onDistance(option.value)}
+                />
+              ))}
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              {distanceUnitOptions.map((option) => (
+                <FilterPill
+                  key={option}
+                  active={distanceUnit === option}
+                  label={option.toUpperCase()}
+                  onClick={() => onDistanceUnit(option)}
                 />
               ))}
             </div>
