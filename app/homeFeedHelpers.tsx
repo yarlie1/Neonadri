@@ -72,10 +72,9 @@ export function getPurposeIcon(purpose: string | null, className?: string) {
 
 export function formatDuration(minutes: number | null) {
   if (!minutes) return "";
-  if (minutes === 60) return "1h";
-  if (minutes === 90) return "1.5h";
-  if (minutes === 120) return "2h";
-  return `${minutes}m`;
+  const hours = minutes / 60;
+  if (Number.isInteger(hours)) return `${hours}h`;
+  return `${hours.toFixed(1).replace(/\.0$/, "")}h`;
 }
 
 export function getPurposeTheme(purpose: string | null) {
