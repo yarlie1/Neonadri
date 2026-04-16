@@ -144,6 +144,13 @@ export default function ChatRoomClient({
     () => formatPresenceLabel(otherUserLastSeenAt),
     [otherUserLastSeenAt]
   );
+  const canSend = connectionLabel === "Connected" && draft.trim().length > 0 && !sending;
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.PubNub) {
+      setSdkReady(true);
+    }
+  }, []);
 
   const markActivity = async (action: "seen" | "message") => {
     try {
@@ -315,7 +322,11 @@ export default function ChatRoomClient({
 
   const handleSend = async () => {
     const text = draft.trim();
-    if (!text || !pubnubRef.current) return;
+    if (!text) return;
+    if (!pubnubRef.current) {
+      setErrorMessage("Chat is still connecting. Please try again in a moment.");
+      return;
+    }
 
     setSending(true);
     setErrorMessage(null);
@@ -355,6 +366,11 @@ export default function ChatRoomClient({
         src="https://cdn.pubnub.com/sdk/javascript/pubnub.10.2.8.js"
         strategy="afterInteractive"
         onLoad={() => setSdkReady(true)}
+        onReady={() => setSdkReady(true)}
+        onError={() => {
+          setConnectionLabel("Unavailable");
+          setErrorMessage("Chat could not connect right now. Please refresh once and try again.");
+        }}
       />
       <div className="mx-auto max-w-3xl">
         <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-5">
@@ -433,7 +449,7 @@ export default function ChatRoomClient({
                   <button
                     type="button"
                     onClick={() => void handleSend()}
-                    disabled={sending || !draft.trim()}
+                    disabled={!canSend}
                     className="inline-flex h-[56px] shrink-0 items-center gap-2 self-end rounded-[16px] border border-[#dccfc2] bg-[#fff7ef] px-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {sending ? (
