@@ -9,12 +9,8 @@ import {
 } from "../lib/meetingTime";
 import {
   Activity,
-  Clock3,
   MapPin,
-  UserRound,
-  UserCircle2,
   Plus,
-  ArrowUpRight,
   Coffee,
   Utensils,
   Cake,
@@ -29,15 +25,13 @@ import {
   Laptop,
   Book,
   Camera,
-  SlidersHorizontal,
-  RotateCcw,
-  ChevronDown,
-  LocateFixed,
-  Coins,
   Sparkles,
-  HeartHandshake,
-  Search,
 } from "lucide-react";
+import {
+  FeaturedMeetupCard,
+  HomeFilterCard,
+  MeetupFeedCard,
+} from "./homeComponents";
 
 type PostRow = {
   id: number;
@@ -355,30 +349,6 @@ function getPurposeLabel(purpose: string | null) {
   }
 }
 
-function FilterPill({
-  active,
-  label,
-  onClick,
-}: {
-  active: boolean;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`inline-flex items-center rounded-full px-3 py-2 text-sm font-medium transition ${
-        active
-          ? "bg-[#a48f7a] text-white"
-          : "bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
-
 function FilterSummaryText({
   matchState,
   audience,
@@ -693,242 +663,64 @@ export default function HomeFeedClient({
         </section>
 
         {highlightedPost && (
-          <section className={`overflow-hidden ${SURFACE_CARD_CLASS}`}>
-            <div className="border-b border-[#efe2d5] px-5 py-[18px]">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-                    <HeartHandshake className="h-3.5 w-3.5" />
-                    Featured vibe
-                  </div>
-                  <div className="mt-1 text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
-                    {highlightedPost.place_name || highlightedPost.location || "Meetup"}
-                  </div>
-                </div>
-
-                <Link
-                  href={`/posts/${highlightedPost.id}`}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#eaded2] bg-[linear-gradient(180deg,#fffdfa_0%,#f6ede4_100%)] text-[#6f5649] shadow-[0_6px_14px_rgba(109,78,57,0.05)] transition hover:bg-[#f7efe7]"
-                  aria-label="Open featured meetup"
-                >
-                  <ArrowUpRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-
-            <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.4fr_1fr] sm:px-5">
-              <div className="rounded-[26px] border border-[#ebe0d4] bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%)] px-4 py-4 text-[#302720] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#eee1d6] bg-[linear-gradient(180deg,#faf5ef_0%,#f1e6db_100%)] px-3 py-1.5 text-xs font-medium text-[#6e5b4e]">
-                  {getPurposeIcon(highlightedPost.meeting_purpose)}
-                  {highlightedPost.meeting_purpose || "Meetup"}
-                </div>
-
-                <div className="mt-4 text-2xl font-black leading-[1.02] tracking-[-0.04em]">
-                  {getPurposeLabel(highlightedPost.meeting_purpose)}
-                </div>
-
-                <div className="mt-2 text-sm leading-6 text-[#6a5d54]">
-                  Low-pressure social energy with a clear plan, time, and place.
-                </div>
-              </div>
-
-              <div className="space-y-2.5 rounded-[24px] border border-[#efe4d9] bg-[linear-gradient(180deg,#fffdfb_0%,#f7efe7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)]">
-                <div className="flex items-center gap-2 text-sm text-[#5a5149]">
-                  <Clock3 className="h-4 w-4 text-[#a27767]" />
-                  <span>{formatTime(highlightedPost.meeting_time) || "Time TBD"}</span>
-                </div>
-
-                <div className="flex min-w-0 items-start gap-2 text-sm text-[#5a5149]">
-                  <MapPin className="mt-0.5 h-4 w-4 text-[#a27767]" />
-                  <span className="block min-w-0 flex-1 break-words line-clamp-2">
-                    {highlightedPost.location || highlightedPost.place_name || "Location TBD"}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 text-sm text-[#5a5149]">
-                  <Search className="h-4 w-4 text-[#a27767]" />
-                  <span>
-                    {highlightedPost.target_gender || "Any"} /{" "}
-                    {highlightedPost.target_age_group || "Any"}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </section>
+          <FeaturedMeetupCard
+            postId={highlightedPost.id}
+            placeLabel={highlightedPost.place_name || highlightedPost.location || "Meetup"}
+            purposeIcon={getPurposeIcon(highlightedPost.meeting_purpose)}
+            purposeLabel={highlightedPost.meeting_purpose || "Meetup"}
+            purposeCopy={getPurposeLabel(highlightedPost.meeting_purpose)}
+            timeLabel={formatTime(highlightedPost.meeting_time) || "Time TBD"}
+            placeText={highlightedPost.location || highlightedPost.place_name || "Location TBD"}
+            targetText={`${highlightedPost.target_gender || "Any"} / ${highlightedPost.target_age_group || "Any"}`}
+          />
         )}
 
-        <div
-          ref={filterRef}
-          className={`sticky top-16 z-20 rounded-[28px] transition ${
-            isFilterPinned
-              ? "border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdf9_0%,#faf1e8_100%)] shadow-[0_18px_40px_rgba(92,69,52,0.12)]"
-              : "border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdf9_0%,#fbf3eb_100%)] shadow-[0_8px_20px_rgba(92,69,52,0.04)]"
-          }`}
-        >
-          <button
-            type="button"
-            onClick={() => setIsOpen((v) => !v)}
-            className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left sm:py-4"
-          >
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 text-sm font-semibold text-[#2f2a26]">
-                <SlidersHorizontal className="h-4 w-4" />
-                Shape your mood
-              </div>
-
-              <div className="mt-2">
-                <FilterSummaryText
-                  matchState={matchState}
-                  audience={audience}
-                  purpose={purpose}
-                  gender={gender}
-                  ageGroup={ageGroup}
-                  sort={sort}
-                />
-              </div>
-            </div>
-
-              <span
-                className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdf9_0%,#f5e8dc_100%)] text-[#6b5f52] shadow-sm transition ${
-                  isOpen ? "rotate-180" : ""
-                }`}
-              >
-              <ChevronDown className="h-4 w-4" />
-            </span>
-          </button>
-
-          {isOpen && (
-            <div className="max-h-[calc(100vh-14rem)] overflow-y-auto border-t border-[#efe6db] px-4 py-4 pb-6 sm:pb-5">
-              <div>
-                <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-                  Status
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {MATCH_STATE_OPTIONS.map((option) => (
-                    <FilterPill
-                      key={option}
-                      active={matchState === option}
-                      label={option}
-                      onClick={() => applyAndClose(() => setMatchState(option))}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-                  Audience
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {AUDIENCE_OPTIONS.map((option) => (
-                    <FilterPill
-                      key={option}
-                      active={audience === option}
-                      label={option}
-                      onClick={() => applyAndClose(() => applyAudience(option))}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-                  Purpose
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {PURPOSE_OPTIONS.map((option) => (
-                    <FilterPill
-                      key={option}
-                      active={purpose === option}
-                      label={option}
-                      onClick={() => applyAndClose(() => setPurpose(option))}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-                  Gender
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {GENDER_OPTIONS.map((option) => (
-                    <FilterPill
-                      key={option}
-                      active={gender === option}
-                      label={option}
-                      onClick={() =>
-                        applyAndClose(() => {
-                          setAudience("All");
-                          setGender(option);
-                        })
-                      }
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-                  Age Group
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {AGE_GROUP_OPTIONS.map((option) => (
-                    <FilterPill
-                      key={option}
-                      active={ageGroup === option}
-                      label={option}
-                      onClick={() =>
-                        applyAndClose(() => {
-                          setAudience("All");
-                          setAgeGroup(option);
-                        })
-                      }
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-                  Sort
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {SORT_OPTIONS.map((option) => (
-                    <FilterPill
-                      key={option.value}
-                      active={sort === option.value}
-                      label={option.label}
-                      onClick={() => applyAndClose(() => setSort(option.value))}
-                    />
-                  ))}
-                </div>
-
-                {sort === "distance" && (
-                  <div className="mt-3 text-xs text-[#8b7f74]">
-                    {locationStatus === "loading" && "Getting your location..."}
-                    {locationStatus === "denied" &&
-                      "Location permission denied. Nearest sort may not be accurate."}
-                    {locationStatus === "unavailable" &&
-                      "Location is unavailable on this device/browser."}
-                    {locationStatus === "granted" &&
-                      "Using your current location."}
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-4">
-                <button
-                  type="button"
-                  onClick={resetAll}
-                  className="inline-flex items-center gap-1 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-                >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  Reset
-                </button>
-              </div>
-            </div>
-          )}
+        <div ref={filterRef}>
+          <HomeFilterCard
+            isPinned={isFilterPinned}
+            isOpen={isOpen}
+            onToggle={() => setIsOpen((v) => !v)}
+            summaryText={
+              <FilterSummaryText
+                matchState={matchState}
+                audience={audience}
+                purpose={purpose}
+                gender={gender}
+                ageGroup={ageGroup}
+                sort={sort}
+              />
+            }
+            matchState={matchState}
+            audience={audience}
+            purpose={purpose}
+            gender={gender}
+            ageGroup={ageGroup}
+            sort={sort}
+            matchStateOptions={MATCH_STATE_OPTIONS}
+            audienceOptions={AUDIENCE_OPTIONS}
+            purposeOptions={PURPOSE_OPTIONS}
+            genderOptions={GENDER_OPTIONS}
+            ageGroupOptions={AGE_GROUP_OPTIONS}
+            sortOptions={SORT_OPTIONS}
+            onMatchState={(option) => applyAndClose(() => setMatchState(option))}
+            onAudience={(option) => applyAndClose(() => applyAudience(option as (typeof AUDIENCE_OPTIONS)[number]))}
+            onPurpose={(option) => applyAndClose(() => setPurpose(option))}
+            onGender={(option) =>
+              applyAndClose(() => {
+                setAudience("All");
+                setGender(option);
+              })
+            }
+            onAgeGroup={(option) =>
+              applyAndClose(() => {
+                setAudience("All");
+                setAgeGroup(option);
+              })
+            }
+            onSort={(option) => applyAndClose(() => setSort(option as SortValue))}
+            onReset={resetAll}
+            locationStatus={locationStatus}
+          />
         </div>
 
         <div className="flex items-center justify-between px-1 pt-1">
@@ -974,118 +766,29 @@ export default function HomeFeedClient({
               : "";
 
           return (
-            <Link
+            <MeetupFeedCard
               key={post.id}
-              href={`/posts/${post.id}`}
-              className={`block overflow-hidden rounded-[32px] border p-[14px] shadow-[0_20px_48px_rgba(92,69,52,0.10)] transition active:scale-[0.995] sm:p-4 ${
-                isExpired
-                  ? "border-[#ddd2c5] bg-[linear-gradient(180deg,#f4efe9_0%,#eee6dd_100%)] opacity-80"
-                  : "border-[#e8ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#fbf3eb_100%)] hover:-translate-y-0.5"
-              }`}
-            >
-              <div className="mb-3 flex items-center justify-between gap-2">
-                <div className="min-w-0 rounded-full border border-[#efe4da] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-medium leading-none tracking-[0.02em] text-[#74675d]">
-                  <div className="truncate">{host.displayName}</div>
-                </div>
-
-                <div
-                  className={`rounded-full px-3 py-[0.3125rem] text-[11px] font-medium leading-none tracking-[0.02em] ${matchBadge.className}`}
-                >
-                  {matchBadge.label}
-                </div>
-              </div>
-
-              <div className="rounded-[26px] border border-[#efe2d5] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e8_100%)] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
-                <div className="flex items-stretch gap-2">
-                  <div
-                    className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[20px] px-4 py-3 ${purposeTheme.bandClass} shadow-[0_10px_20px_rgba(64,45,33,0.06)]`}
-                  >
-                    <div
-                      className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] ${purposeTheme.iconWrapClass}`}
-                    >
-                      {getPurposeIcon(
-                        post.meeting_purpose,
-                        "h-5 w-5 shrink-0"
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="truncate text-[1.18rem] font-black tracking-[-0.03em] text-[#2f261f] sm:text-[1.28rem]">
-                        {post.meeting_purpose || "Social meetup"}
-                      </div>
-                    </div>
-                  </div>
-
-                  {formatDuration(post.duration_minutes) ? (
-                    <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[18px] border border-[#eee4d9] bg-[linear-gradient(180deg,#fffdfb_0%,#f6eee6_100%)] px-1.5 py-2 text-[#5d5147] shadow-[0_4px_10px_rgba(86,65,47,0.04)]">
-                      <Clock3 className="h-4 w-4" />
-                      <span className="mt-1 text-sm font-semibold">
-                        {formatDuration(post.duration_minutes)}
-                      </span>
-                    </div>
-                  ) : null}
-
-                  {amount !== null && (
-                    <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[18px] border border-[#efdcb8] bg-[linear-gradient(180deg,#f9ebcb_0%,#f3dba9_100%)] px-1.5 py-2 text-[#795527] shadow-[0_4px_10px_rgba(160,112,44,0.07)]">
-                      <Coins className="h-4 w-4 shrink-0" />
-                      <span className="mt-1 text-sm font-semibold">
-                        +${amount.toLocaleString()}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-3 grid gap-2.5 text-[#7d7268] sm:grid-cols-2">
-                  {post.meeting_time && (
-                    <div className="flex items-start gap-2 rounded-[18px] border border-[#f1e6dc] bg-[linear-gradient(180deg,#fffdfa_0%,#f7eee6_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)]">
-                      <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                      <div className="min-w-0 leading-[1.2]">
-                        <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">When</div>
-                        <div className="truncate text-[12px] font-medium text-[#554a42]">{formatTime(post.meeting_time)}</div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex min-w-0 items-start gap-2 rounded-[18px] border border-[#f1e6dc] bg-[linear-gradient(180deg,#fffdfa_0%,#f7eee6_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)]">
-                    <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                    <div className="min-w-0 leading-[1.2]">
-                      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Place</div>
-                      <div className="block truncate text-[12px] font-medium text-[#554a42]">{post.place_name || post.location || "No place"}</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2 rounded-[18px] border border-[#f1e6dc] bg-[linear-gradient(180deg,#fffdfa_0%,#f7eee6_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)]">
-                    <UserCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                    <div className="min-w-0 leading-[1.2]">
-                      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Hosted by</div>
-                      <div className="truncate text-[12px] font-medium text-[#554a42]">
-                        {host.displayName}
-                        {(host.gender || host.ageGroup)
-                          ? ` - ${host.gender || "Unknown"}${host.ageGroup ? ` / ${host.ageGroup}` : ""}`
-                          : ""}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2 rounded-[18px] border border-[#f1e6dc] bg-[linear-gradient(180deg,#fffdfa_0%,#f7eee6_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)]">
-                    <UserRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                    <div className="min-w-0 leading-[1.2]">
-                      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Looking for</div>
-                      <div className="truncate text-[12px] font-medium text-[#554a42]">{post.target_gender || "Any"} / {post.target_age_group || "Any"}</div>
-                    </div>
-                  </div>
-
-                  {distanceText && (
-                    <div className="flex items-start gap-2 rounded-[18px] border border-[#f1e6dc] bg-[linear-gradient(180deg,#fffdfa_0%,#f7eee6_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)] sm:col-span-2">
-                      <LocateFixed className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-                      <div className="leading-[1.2]">
-                        <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">Distance</div>
-                        <div className="text-[12px] font-medium text-[#554a42]">{distanceText}</div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Link>
+              postId={post.id}
+              isExpired={isExpired}
+              hostName={host.displayName}
+              hostMeta={
+                host.gender || host.ageGroup
+                  ? `${host.gender || "Unknown"}${host.ageGroup ? ` / ${host.ageGroup}` : ""}`
+                  : ""
+              }
+              matchBadgeLabel={matchBadge.label}
+              matchBadgeClassName={matchBadge.className}
+              purposeBandClass={purposeTheme.bandClass}
+              purposeIconWrapClass={purposeTheme.iconWrapClass}
+              purposeIcon={getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}
+              purposeName={post.meeting_purpose || "Social meetup"}
+              durationLabel={formatDuration(post.duration_minutes)}
+              amountText={amount !== null ? `+${amount.toLocaleString()}` : ""}
+              whenText={post.meeting_time ? formatTime(post.meeting_time) : ""}
+              placeText={post.place_name || post.location || "No place"}
+              lookingForText={`${post.target_gender || "Any"} / ${post.target_age_group || "Any"}`}
+              distanceText={distanceText}
+            />
           );
         })}
 
