@@ -158,6 +158,11 @@ export default function MatchRequestBox({
       <p className="mt-4 text-sm leading-6 text-[#6f655c]">
         {headerDescription}
       </p>
+      {!hasMatchedRequest && !isUnavailableBecauseMatched && !isRejectedRequest && (
+        <p className="mt-1 text-sm leading-6 text-[#6f655c]">
+          Once the meetup is completed, the host will pay you $20 directly.
+        </p>
+      )}
 
       <div className="mt-5 rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-4">
         <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
