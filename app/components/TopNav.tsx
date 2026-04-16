@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
 import {
   Menu,
@@ -105,6 +105,17 @@ export default function TopNav() {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const loggingOutRef = useRef(false);
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const currentPathWithSearch = useMemo(() => {
+    const query = searchParams.toString();
+    return query ? `${pathname}?${query}` : pathname;
+  }, [pathname, searchParams]);
+
+  const loginHref =
+    pathname === "/login"
+      ? "/login"
+      : `/login?next=${encodeURIComponent(currentPathWithSearch)}`;
 
   useEffect(() => {
     const browserTimeZone = normalizeUserTimeZone(
@@ -401,7 +412,7 @@ export default function TopNav() {
               </>
             ) : (
               <>
-                <Link href="/login" className={navBtn(isActivePath(pathname, "/login"))}>
+                <Link href={loginHref} className={navBtn(isActivePath(pathname, "/login"))}>
                   <LogIn className="h-4 w-4" />
                   Log In
                 </Link>
@@ -505,7 +516,7 @@ export default function TopNav() {
                   ) : (
                     <>
                       <Link
-                        href="/login"
+                        href={loginHref}
                         onClick={closeMenu}
                         className={`${mobileItem} ${isActivePath(pathname, "/login") ? "bg-[#f4e6d8] text-[#3f3226]" : ""}`}
                       >
