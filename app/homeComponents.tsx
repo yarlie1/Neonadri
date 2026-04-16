@@ -48,18 +48,21 @@ type HomeFilterCardProps = {
   purpose: string;
   gender: string;
   ageGroup: string;
+  distance: string;
   sort: string;
   matchStateOptions: string[];
   audienceOptions: readonly string[];
   purposeOptions: string[];
   genderOptions: string[];
   ageGroupOptions: string[];
+  distanceOptions: readonly { value: string; label: string }[];
   sortOptions: readonly { value: string; label: string }[];
   onMatchState: (value: string) => void;
   onAudience: (value: string) => void;
   onPurpose: (value: string) => void;
   onGender: (value: string) => void;
   onAgeGroup: (value: string) => void;
+  onDistance: (value: string) => void;
   onSort: (value: string) => void;
   onReset: () => void;
   locationStatus: "idle" | "loading" | "granted" | "denied" | "unavailable";
@@ -75,18 +78,21 @@ export function HomeFilterCard({
   purpose,
   gender,
   ageGroup,
+  distance,
   sort,
   matchStateOptions,
   audienceOptions,
   purposeOptions,
   genderOptions,
   ageGroupOptions,
+  distanceOptions,
   sortOptions,
   onMatchState,
   onAudience,
   onPurpose,
   onGender,
   onAgeGroup,
+  onDistance,
   onSort,
   onReset,
   locationStatus,
@@ -205,6 +211,22 @@ export function HomeFilterCard({
 
           <div className="mt-4">
             <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+              Distance
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {distanceOptions.map((option) => (
+                <FilterPill
+                  key={option.value}
+                  active={distance === option.value}
+                  label={option.label}
+                  onClick={() => onDistance(option.value)}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
               Sort
             </div>
             <div className="flex flex-wrap gap-2">
@@ -218,11 +240,11 @@ export function HomeFilterCard({
               ))}
             </div>
 
-            {sort === "distance" && (
+            {(sort === "distance" || distance !== "all") && (
               <div className="mt-3 text-xs text-[#8b7f74]">
                 {locationStatus === "loading" && "Getting your location..."}
                 {locationStatus === "denied" &&
-                  "Location permission denied. Nearest sort may not be accurate."}
+                  "Location permission denied. Distance filters may not be accurate."}
                 {locationStatus === "unavailable" &&
                   "Location is unavailable on this device/browser."}
                 {locationStatus === "granted" &&

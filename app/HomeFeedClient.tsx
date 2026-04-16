@@ -29,6 +29,7 @@ import {
 import {
   AGE_GROUP_OPTIONS,
   AUDIENCE_OPTIONS,
+  DISTANCE_OPTIONS,
   GENDER_OPTIONS,
   MATCH_STATE_OPTIONS,
   PURPOSE_OPTIONS,
@@ -103,6 +104,8 @@ export default function HomeFeedClient({
     setGender,
     ageGroup,
     setAgeGroup,
+    distance,
+    setDistance,
     sort,
     setSort,
     isOpen,
@@ -127,8 +130,31 @@ export default function HomeFeedClient({
       const genderMatch = gender === "All" || post.target_gender === gender;
       const ageGroupMatch =
         ageGroup === "All" || post.target_age_group === ageGroup;
+      const distanceKm =
+        userLocation &&
+        post.latitude !== null &&
+        post.longitude !== null
+          ? haversineKm(
+              userLocation.lat,
+              userLocation.lng,
+              post.latitude,
+              post.longitude
+            )
+          : null;
+      const distanceMatch =
+        distance === "all" ||
+        distanceKm === null ||
+        (distance === "nearby" && distanceKm <= 3) ||
+        (distance === "within_5km" && distanceKm <= 5) ||
+        (distance === "within_10km" && distanceKm <= 10);
 
-      return matchStateMatch && purposeMatch && genderMatch && ageGroupMatch;
+      return (
+        matchStateMatch &&
+        purposeMatch &&
+        genderMatch &&
+        ageGroupMatch &&
+        distanceMatch
+      );
     });
 
     next = [...next].sort((a, b) => {
@@ -198,7 +224,18 @@ export default function HomeFeedClient({
     });
 
     return next;
-  }, [ageGroup, gender, initialPosts, matchState, matchSummaryMap, purpose, sort, userLocation, userTimeZone]);
+  }, [
+    ageGroup,
+    distance,
+    gender,
+    initialPosts,
+    matchState,
+    matchSummaryMap,
+    purpose,
+    sort,
+    userLocation,
+    userTimeZone,
+  ]);
 
   const upcomingCount = useMemo(
     () =>
@@ -307,6 +344,7 @@ export default function HomeFeedClient({
                 purpose={purpose}
                 gender={gender}
                 ageGroup={ageGroup}
+                distance={distance}
                 sort={sort}
               />
             }
@@ -315,12 +353,14 @@ export default function HomeFeedClient({
             purpose={purpose}
             gender={gender}
             ageGroup={ageGroup}
+            distance={distance}
             sort={sort}
             matchStateOptions={MATCH_STATE_OPTIONS}
             audienceOptions={AUDIENCE_OPTIONS}
             purposeOptions={PURPOSE_OPTIONS}
             genderOptions={GENDER_OPTIONS}
             ageGroupOptions={AGE_GROUP_OPTIONS}
+            distanceOptions={DISTANCE_OPTIONS}
             sortOptions={SORT_OPTIONS}
             onMatchState={(option) => applyAndClose(() => setMatchState(option))}
             onAudience={(option) => applyAndClose(() => applyAudience(option as (typeof AUDIENCE_OPTIONS)[number]))}
@@ -336,6 +376,9 @@ export default function HomeFeedClient({
                 setAudience("All");
                 setAgeGroup(option);
               })
+            }
+            onDistance={(option) =>
+              applyAndClose(() => setDistance(option as (typeof DISTANCE_OPTIONS)[number]["value"]))
             }
             onSort={(option) => applyAndClose(() => setSort(option as SortValue))}
             onReset={resetAll}
@@ -371,7 +414,7 @@ export default function HomeFeedClient({
           const purposeTheme = getPurposeTheme(post.meeting_purpose);
 
           const distanceText =
-            sort === "distance" &&
+            locationStatus === "granted" &&
             userLocation &&
             post.latitude !== null &&
             post.longitude !== null

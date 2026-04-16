@@ -32,6 +32,12 @@ export const GENDER_OPTIONS = [
 export const AGE_GROUP_OPTIONS = ["All", "20s", "30s", "40s", "50s+"];
 export const MATCH_STATE_OPTIONS = ["All", "Open", "Matched"];
 export const AUDIENCE_OPTIONS = ["All", "Fits me"] as const;
+export const DISTANCE_OPTIONS = [
+  { value: "all", label: "All" },
+  { value: "nearby", label: "Nearby" },
+  { value: "within_5km", label: "Within 5 km" },
+  { value: "within_10km", label: "Within 10 km" },
+] as const;
 
 export const SORT_OPTIONS = [
   { value: "newest", label: "Newest" },
@@ -42,6 +48,7 @@ export const SORT_OPTIONS = [
 ] as const;
 
 export type SortValue = (typeof SORT_OPTIONS)[number]["value"];
+export type DistanceValue = (typeof DISTANCE_OPTIONS)[number]["value"];
 
 export function useHomeFeedFilters(viewerPreference: {
   gender: string;
@@ -54,6 +61,7 @@ export function useHomeFeedFilters(viewerPreference: {
   const [purpose, setPurpose] = useState("All");
   const [gender, setGender] = useState("All");
   const [ageGroup, setAgeGroup] = useState("All");
+  const [distance, setDistance] = useState<DistanceValue>("all");
   const [sort, setSort] = useState<SortValue>("newest");
   const [isOpen, setIsOpen] = useState(false);
   const [isFilterPinned, setIsFilterPinned] = useState(false);
@@ -68,7 +76,8 @@ export function useHomeFeedFilters(viewerPreference: {
   >("idle");
 
   useEffect(() => {
-    if (sort !== "distance") return;
+    const needsLocation = sort === "distance" || distance !== "all";
+    if (!needsLocation) return;
     if (userLocation || locationStatus === "loading") return;
     if (!navigator.geolocation) {
       setLocationStatus("unavailable");
@@ -93,7 +102,7 @@ export function useHomeFeedFilters(viewerPreference: {
         maximumAge: 300000,
       }
     );
-  }, [sort, userLocation, locationStatus]);
+  }, [distance, sort, userLocation, locationStatus]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -137,6 +146,7 @@ export function useHomeFeedFilters(viewerPreference: {
     setPurpose("All");
     setGender("All");
     setAgeGroup("All");
+    setDistance("all");
     setSort("newest");
     setIsOpen(false);
   };
@@ -152,6 +162,8 @@ export function useHomeFeedFilters(viewerPreference: {
     setGender,
     ageGroup,
     setAgeGroup,
+    distance,
+    setDistance,
     sort,
     setSort,
     isOpen,

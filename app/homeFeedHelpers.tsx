@@ -17,7 +17,7 @@ import {
   Target,
   Utensils,
 } from "lucide-react";
-import type { SortValue } from "./useHomeFeedFilters";
+import type { DistanceValue, SortValue } from "./useHomeFeedFilters";
 
 export const SURFACE_CARD_CLASS =
   "rounded-[32px] border border-[#eee2d6] bg-[linear-gradient(180deg,rgba(255,253,250,0.97)_0%,rgba(250,244,237,0.94)_100%)] shadow-[0_24px_70px_rgba(86,63,44,0.12)] backdrop-blur";
@@ -204,6 +204,19 @@ export function getSortSummaryLabel(sort: SortValue) {
   }
 }
 
+export function getDistanceSummaryLabel(distance: DistanceValue) {
+  switch (distance) {
+    case "nearby":
+      return "Nearby";
+    case "within_5km":
+      return "Within 5 km";
+    case "within_10km":
+      return "Within 10 km";
+    default:
+      return "";
+  }
+}
+
 export function haversineKm(
   lat1: number,
   lon1: number,
@@ -275,6 +288,7 @@ export function FilterSummaryText({
   gender,
   ageGroup,
   sort,
+  distance,
 }: {
   matchState: string;
   audience: string;
@@ -282,6 +296,7 @@ export function FilterSummaryText({
   gender: string;
   ageGroup: string;
   sort: SortValue;
+  distance: DistanceValue;
 }) {
   const parts: string[] = [];
 
@@ -292,6 +307,10 @@ export function FilterSummaryText({
   if (ageGroup !== "All") parts.push(ageGroup);
   if (sort !== "newest") {
     const label = getSortSummaryLabel(sort);
+    if (label) parts.push(label);
+  }
+  if (distance !== "all") {
+    const label = getDistanceSummaryLabel(distance);
     if (label) parts.push(label);
   }
 
