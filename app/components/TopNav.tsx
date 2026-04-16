@@ -325,7 +325,7 @@ export default function TopNav() {
     } catch (error) {
       console.error("TopNav logout error:", error);
     } finally {
-      window.location.assign("/");
+      window.location.replace(`/?signed_out=${Date.now()}`);
     }
   };
 
