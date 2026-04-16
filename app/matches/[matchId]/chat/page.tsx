@@ -114,7 +114,6 @@ export default async function MatchChatPage({ params }: PageProps) {
       purposeLabel={purposeLabel}
       meetingTimeLabel={meetingTimeLabel}
       placeLabel={placeLabel}
-      provider={matchChat.chat.provider}
       roomId={matchChat.chat.external_room_id}
       isProviderConfigured={isProviderConfigured}
       currentUserId={user.id}

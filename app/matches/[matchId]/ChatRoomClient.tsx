@@ -9,7 +9,6 @@ import {
   MessageSquareMore,
   Send,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 
 declare global {
@@ -110,7 +109,6 @@ export default function ChatRoomClient({
   purposeLabel,
   meetingTimeLabel,
   placeLabel,
-  provider,
   roomId,
   isProviderConfigured,
   currentUserId,
@@ -122,7 +120,6 @@ export default function ChatRoomClient({
   purposeLabel: string;
   meetingTimeLabel: string;
   placeLabel: string;
-  provider: string;
   roomId: string;
   isProviderConfigured: boolean;
   currentUserId: string;
@@ -361,8 +358,8 @@ export default function ChatRoomClient({
         strategy="afterInteractive"
         onLoad={() => setSdkReady(true)}
       />
-      <div className="mx-auto max-w-3xl space-y-5">
-        <div className="relative overflow-hidden rounded-[30px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(92,69,52,0.08)]">
+      <div className="mx-auto max-w-3xl space-y-4">
+        <div className="relative overflow-hidden rounded-[30px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] px-5 py-5 shadow-[0_18px_42px_rgba(92,69,52,0.08)] sm:px-6 sm:py-6">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
           <div className="relative">
@@ -384,43 +381,9 @@ export default function ChatRoomClient({
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-5 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
-          <div className="flex items-start gap-3">
-            <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#ebded1] bg-[#fbf6f0] text-[#8d6f61]">
-              <MessageSquareMore className="h-5 w-5" />
-            </div>
-              <div className="min-w-0">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
-                Chat details
-                </div>
-                <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
-                  {isProviderConfigured
-                    ? "Chat foundation is ready"
-                    : "Chat foundation is ready. Provider keys come next."}
-                </div>
-                <p className="mt-2 text-sm leading-6 text-[#6a5e54]">
-                  Use this room to confirm timing, arrival, and any last-minute meetup details.
-                </p>
-              </div>
-            </div>
-
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-[18px] border border-[#ece1d4] bg-[#fbf6f0] px-4 py-3">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                Provider
-              </div>
-              <div className="mt-2 text-sm font-medium text-[#4f443b]">{provider}</div>
-            </div>
-            <div className="rounded-[18px] border border-[#ece1d4] bg-[#fbf6f0] px-4 py-3">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                Room ID
-              </div>
-              <div className="mt-2 break-all text-sm font-medium text-[#4f443b]">{roomId}</div>
-            </div>
-          </div>
-
+        <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-5">
           {isProviderConfigured ? (
-            <div className="mt-4 rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] p-4">
+            <div className="rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] p-4">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#eadfd3] pb-3">
                 <div>
                   <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
@@ -435,10 +398,7 @@ export default function ChatRoomClient({
                     {connectionLabel}
                   </div>
                 </div>
-                <div className="text-right text-xs text-[#8c7e73]">
-                  <div>{presenceLabel}</div>
-                  <div className="mt-1">Messages are stored by PubNub, not Neonadri.</div>
-                </div>
+                <div className="text-xs font-medium text-[#8c7e73]">{presenceLabel}</div>
               </div>
 
               <div
@@ -489,27 +449,27 @@ export default function ChatRoomClient({
                   Send a message
                 </div>
                 <div className="flex gap-2">
-                <textarea
-                  value={draft}
-                  onChange={(event) => setDraft(event.target.value)}
-                  onKeyDown={handleDraftKeyDown}
-                  placeholder={`Message ${otherUserName}...`}
-                  className="min-h-[96px] flex-1 resize-none rounded-[16px] border border-[#e3d7ca] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition placeholder:text-[#a29185] focus:border-[#cfb8a4]"
-                />
-                <button
-                  type="button"
-                  onClick={() => void handleSend()}
-                  disabled={sending || !draft.trim()}
-                  className="inline-flex h-[48px] shrink-0 items-center gap-2 self-end rounded-full border border-[#dccfc2] bg-[#fff7ef] px-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {sending ? (
-                    <LoaderCircle className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
-                  Send
-                </button>
-              </div>
+                  <textarea
+                    value={draft}
+                    onChange={(event) => setDraft(event.target.value)}
+                    onKeyDown={handleDraftKeyDown}
+                    placeholder={`Message ${otherUserName}...`}
+                    className="min-h-[96px] flex-1 resize-none rounded-[16px] border border-[#e3d7ca] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition placeholder:text-[#a29185] focus:border-[#cfb8a4]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => void handleSend()}
+                    disabled={sending || !draft.trim()}
+                    className="inline-flex h-[48px] shrink-0 items-center gap-2 self-end rounded-full border border-[#dccfc2] bg-[#fff7ef] px-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {sending ? (
+                      <LoaderCircle className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
+                    Send
+                  </button>
+                </div>
                 <div className="mt-2 px-2 text-[11px] text-[#9b8f84]">
                   Press Enter to send. Use Shift+Enter for a new line.
                 </div>
@@ -521,31 +481,24 @@ export default function ChatRoomClient({
                 </div>
               )}
             </div>
-          ) : null}
-
-          <div className="mt-4 rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] px-4 py-4">
-            <div className="flex items-start gap-3">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-              <div className="text-sm leading-6 text-[#5f5347]">
-                This room only opens for matched participants. Neonadri stores the match-to-room
-                link, but not the chat body itself.
+          ) : (
+            <div className="rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] px-4 py-4">
+              <div className="flex items-start gap-3">
+                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+                <div className="text-sm leading-6 text-[#5f5347]">
+                  Chat is ready, but PubNub keys are not configured yet.
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-wrap gap-2">
             <Link
               href="/dashboard?tab=matches"
               className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
             >
               Back to Matches
             </Link>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#e5d7cb] bg-[#fbf6f0] px-4 py-2 text-sm font-medium text-[#7b6f65]">
-              <Sparkles className="h-4 w-4" />
-              {isProviderConfigured
-                ? "PubNub keys detected"
-                : "PubNub keys not configured yet"}
-            </div>
           </div>
         </div>
       </div>
