@@ -631,7 +631,6 @@ export function MatchReviewPanel({
   canLeaveReview,
   meetupFinished,
   viewerHasReview,
-  hasNewChatMessage,
   matchReviews,
   getMatchReviewAuthorLabel,
 }: {
@@ -641,7 +640,6 @@ export function MatchReviewPanel({
   canLeaveReview: boolean;
   meetupFinished: boolean;
   viewerHasReview: boolean;
-  hasNewChatMessage: boolean;
   matchReviews: MatchReviewRow[];
   getMatchReviewAuthorLabel: (review: MatchReviewRow) => string;
 }) {
@@ -669,21 +667,6 @@ export function MatchReviewPanel({
             Leave Review
           </Link>
         )}
-      </div>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Link
-          href={`/matches/${matchedRecordId}/chat`}
-          className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-        >
-          <MessageSquare className="h-4 w-4 text-[#8b7367]" />
-          Open Chat
-          {hasNewChatMessage ? (
-            <span className="rounded-full bg-[#f3e1d8] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9a5d49]">
-              New
-            </span>
-          ) : null}
-        </Link>
       </div>
 
       <div className="mt-4 rounded-[18px] border border-[#ece1d4] bg-[#fbf6f0] px-4 py-3 text-sm leading-6 text-[#6a5e54]">
@@ -723,6 +706,50 @@ export function MatchReviewPanel({
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+export function MatchedChatPanel({
+  isPostMatched,
+  isViewerParticipant,
+  matchedRecordId,
+  hasNewChatMessage,
+}: {
+  isPostMatched: boolean;
+  isViewerParticipant: boolean;
+  matchedRecordId?: number | null;
+  hasNewChatMessage: boolean;
+}) {
+  if (!(isPostMatched && isViewerParticipant && matchedRecordId)) {
+    return null;
+  }
+
+  return (
+    <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-5 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
+            Chat
+          </div>
+          <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
+            Stay in touch before the meetup
+          </div>
+        </div>
+
+        <Link
+          href={`/matches/${matchedRecordId}/chat`}
+          className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+        >
+          <MessageSquare className="h-4 w-4 text-[#8b7367]" />
+          Open Chat
+          {hasNewChatMessage ? (
+            <span className="rounded-full bg-[#f3e1d8] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9a5d49]">
+              New
+            </span>
+          ) : null}
+        </Link>
+      </div>
     </div>
   );
 }

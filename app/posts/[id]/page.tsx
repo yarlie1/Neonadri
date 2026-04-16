@@ -20,6 +20,7 @@ import {
   type MatchSummaryRow,
 } from "./detailData";
 import {
+  MatchedChatPanel,
   MatchReviewPanel,
   MeetupOverviewCard,
   ProfileShowcaseCard,
@@ -370,6 +371,13 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               />
             ) : null}
 
+            <MatchedChatPanel
+              isPostMatched={isPostMatched}
+              isViewerParticipant={isViewerParticipant}
+              matchedRecordId={matchedRecord?.id}
+              hasNewChatMessage={hasNewChatMessage}
+            />
+
             <MatchReviewPanel
               isPostMatched={isPostMatched}
               isViewerParticipant={isViewerParticipant}
@@ -377,7 +385,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               canLeaveReview={canLeaveReview}
               meetupFinished={meetupFinished}
               viewerHasReview={viewerHasReview}
-              hasNewChatMessage={hasNewChatMessage}
               matchReviews={matchReviews}
               getMatchReviewAuthorLabel={getMatchReviewAuthorLabel}
             />

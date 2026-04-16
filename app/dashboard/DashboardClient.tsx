@@ -497,6 +497,14 @@ function MatchesTabPanel({
             <MiniPostPreview post={post} timeZone={userTimeZone} />
 
             <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
+              <CompactActionButton href={`/matches/${item.id}/chat`}>
+                <HeartHandshake className="h-3.5 w-3.5" />
+                Open Chat
+                {hasNewMessage ? (
+                  <span className="inline-flex h-2.5 w-2.5 rounded-full bg-[#b56c57]" />
+                ) : null}
+              </CompactActionButton>
+
               {canLeaveReview ? (
                 <CompactActionButton href={`/reviews/write/${item.id}`}>
                   <Star className="h-3.5 w-3.5" />
@@ -513,14 +521,6 @@ function MatchesTabPanel({
                   Review after meetup
                 </div>
               )}
-
-              <CompactActionButton href={`/matches/${item.id}/chat`}>
-                <HeartHandshake className="h-3.5 w-3.5" />
-                Open Chat
-                {hasNewMessage ? (
-                  <span className="inline-flex h-2.5 w-2.5 rounded-full bg-[#b56c57]" />
-                ) : null}
-              </CompactActionButton>
             </div>
           </div>
         );
