@@ -363,37 +363,23 @@ export default function ChatRoomClient({
           {isProviderConfigured ? (
             <div className="rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] p-4">
               <div className="border-b border-[#eadfd3] pb-4">
-                <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">MATCH CHAT</div>
-                <div className="mt-1 text-lg font-bold tracking-[-0.03em] text-[#2b1f1a]">
-                  {otherUserName}
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2 text-sm text-[#5f453b]">
-                  <span className="rounded-full border border-[#dfd1c3] bg-white/70 px-3 py-1.5">
-                    {purposeLabel}
-                  </span>
-                  <span className="rounded-full border border-[#dfd1c3] bg-white/70 px-3 py-1.5">
-                    {meetingTimeLabel}
-                  </span>
-                  <span className="rounded-full border border-[#dfd1c3] bg-white/70 px-3 py-1.5">
-                    {placeLabel}
-                  </span>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#5f453b]">
+                  <span className="font-semibold text-[#2b1f1a]">{otherUserName}</span>
+                  <span>{meetingTimeLabel}</span>
+                  <span className="truncate">{placeLabel}</span>
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#eadfd3] pb-3">
-                <div>
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                    Live chat
-                  </div>
-                  <div className="mt-1 inline-flex items-center gap-2 text-sm font-medium text-[#4f443b]">
-                    <span
-                      className={`inline-flex h-2.5 w-2.5 rounded-full ${
-                        connectionLabel === "Connected" ? "bg-[#b56c57]" : "bg-[#d8cec3]"
-                      }`}
-                    />
-                  </div>
-                </div>
-                <div className="text-xs font-medium text-[#8c7e73]">{presenceLabel}</div>
+              <div className="flex items-center gap-2 border-b border-[#eadfd3] py-3 text-xs font-medium text-[#8c7e73]">
+                <span className="font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                  Live chat
+                </span>
+                <span
+                  className={`inline-flex h-2.5 w-2.5 rounded-full ${
+                    connectionLabel === "Connected" ? "bg-[#b56c57]" : "bg-[#d8cec3]"
+                  }`}
+                />
+                <span>{presenceLabel}</span>
               </div>
 
               <div
@@ -409,7 +395,7 @@ export default function ChatRoomClient({
                           key={message.id}
                           className={`flex items-end gap-2 ${isMine ? "justify-end" : "justify-start"}`}
                         >
-                          {!isMine ? (
+                          {isMine ? (
                             <span className="shrink-0 text-[10px] font-medium text-[#9b8f84]">
                               {formatMessageTime(message.createdAt)}
                             </span>
@@ -423,7 +409,7 @@ export default function ChatRoomClient({
                           >
                             <div className="whitespace-pre-wrap break-words">{message.text}</div>
                           </div>
-                          {isMine ? (
+                          {!isMine ? (
                             <span className="shrink-0 text-[10px] font-medium text-[#9b8f84]">
                               {formatMessageTime(message.createdAt)}
                             </span>
@@ -466,9 +452,6 @@ export default function ChatRoomClient({
                     Send
                   </button>
                 </div>
-                <div className="mt-2 px-2 text-[11px] text-[#9b8f84]">
-                  Press Enter to send. Use Shift+Enter for a new line.
-                </div>
               </div>
 
               {errorMessage && (
@@ -476,6 +459,10 @@ export default function ChatRoomClient({
                   {errorMessage}
                 </div>
               )}
+
+              <div className="mt-4 text-center text-[11px] font-medium text-[#9b8f84]">
+                Chat Powered by PubNub
+              </div>
             </div>
           ) : (
             <div className="rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] px-4 py-4">
