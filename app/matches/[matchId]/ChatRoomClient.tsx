@@ -350,7 +350,7 @@ export default function ChatRoomClient({
   };
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
+    <main className="bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-4 text-[#2f2a26] sm:px-6 sm:py-6">
       <Script
         src="https://cdn.pubnub.com/sdk/javascript/pubnub.10.2.8.js"
         strategy="afterInteractive"
