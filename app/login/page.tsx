@@ -1,22 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 
 export default function LoginPage() {
   const supabase = createClient();
-  const searchParams = useSearchParams();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [nextPath, setNextPath] = useState<string | null>(null);
 
-  const nextPath = searchParams.get("next");
-  const redirectPath =
-    nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//")
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    setNextPath(params.get("next"));
+  }, []);
+
+  const redirectPath = useMemo(() => {
+    return nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//")
       ? nextPath
       : "/";
+  }, [nextPath]);
 
   const handleLogin = async () => {
     setMessage("");
