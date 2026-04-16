@@ -85,9 +85,28 @@ function formatMessageTime(value: string) {
   });
 }
 
+function formatPresenceLabel(value: string | null) {
+  if (!value) return "Offline";
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "Offline";
+
+  const diffMs = Date.now() - parsed.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+
+  if (diffMs < 1000 * 60 * 2) return "Active now";
+  if (diffMinutes < 60) return `Last seen ${diffMinutes}m ago`;
+
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) return `Last seen ${diffHours}h ago`;
+
+  return `Last seen ${parsed.toLocaleDateString()}`;
+}
+
 export default function ChatRoomClient({
   matchId,
   otherUserName,
+  initialOtherUserLastSeenAt,
   purposeLabel,
   meetingTimeLabel,
   placeLabel,
@@ -99,6 +118,7 @@ export default function ChatRoomClient({
 }: {
   matchId: number;
   otherUserName: string;
+  initialOtherUserLastSeenAt: string | null;
   purposeLabel: string;
   meetingTimeLabel: string;
   placeLabel: string;
@@ -114,6 +134,9 @@ export default function ChatRoomClient({
   const [sending, setSending] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [connectionLabel, setConnectionLabel] = useState("Connecting...");
+  const [otherUserLastSeenAt, setOtherUserLastSeenAt] = useState<string | null>(
+    initialOtherUserLastSeenAt
+  );
   const pubnubRef = useRef<InstanceType<NonNullable<typeof window.PubNub>> | null>(null);
   const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -122,6 +145,11 @@ export default function ChatRoomClient({
   const subscribeKey = process.env.NEXT_PUBLIC_PUBNUB_SUBSCRIBE_KEY;
 
   const roomLabel = useMemo(() => roomId, [roomId]);
+  const presenceLabel = useMemo(
+    () => formatPresenceLabel(otherUserLastSeenAt),
+    [otherUserLastSeenAt]
+  );
+
   const markActivity = async (action: "seen" | "message") => {
     try {
       const response = await fetch("/api/matches/chat/activity", {
@@ -144,6 +172,10 @@ export default function ChatRoomClient({
       console.error("[match-chat-activity]", action, "network-failed");
     }
   };
+
+  useEffect(() => {
+    setOtherUserLastSeenAt(initialOtherUserLastSeenAt);
+  }, [initialOtherUserLastSeenAt]);
 
   useEffect(() => {
     if (!sdkReady || !isProviderConfigured || !window.PubNub || !publishKey || !subscribeKey) {
@@ -243,6 +275,48 @@ export default function ChatRoomClient({
     if (!listRef.current) return;
     listRef.current.scrollTop = listRef.current.scrollHeight;
   }, [messages]);
+
+  useEffect(() => {
+    if (!isProviderConfigured) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const syncPresence = async () => {
+      try {
+        const response = await fetch(`/api/matches/chat/activity?matchId=${matchId}`, {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as {
+          otherUserLastSeenAt?: string | null;
+        };
+
+        if (!cancelled) {
+          setOtherUserLastSeenAt(payload.otherUserLastSeenAt || null);
+        }
+      } catch {
+        // Best-effort presence sync only.
+      }
+    };
+
+    void syncPresence();
+    const seenInterval = window.setInterval(() => {
+      void markActivity("seen");
+      void syncPresence();
+    }, 30000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(seenInterval);
+    };
+  }, [isProviderConfigured, matchId]);
 
   const handleSend = async () => {
     const text = draft.trim();
@@ -361,7 +435,10 @@ export default function ChatRoomClient({
                     {connectionLabel}
                   </div>
                 </div>
-                <div className="text-xs text-[#8c7e73]">Messages are stored by PubNub, not Neonadri.</div>
+                <div className="text-right text-xs text-[#8c7e73]">
+                  <div>{presenceLabel}</div>
+                  <div className="mt-1">Messages are stored by PubNub, not Neonadri.</div>
+                </div>
               </div>
 
               <div

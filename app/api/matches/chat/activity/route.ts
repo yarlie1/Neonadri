@@ -4,6 +4,45 @@ import { getOrCreateAuthorizedMatchChat } from "../../../../../lib/chat/matchCha
 
 type ActivityAction = "seen" | "message";
 
+export async function GET(request: Request) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const matchId = Number(searchParams.get("matchId"));
+
+  if (!Number.isFinite(matchId)) {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
+
+  try {
+    const matchChat = await getOrCreateAuthorizedMatchChat(supabase, {
+      matchId,
+      userId: user.id,
+    });
+
+    const otherUserLastSeenAt =
+      matchChat.participantRole === "host"
+        ? matchChat.chat.last_seen_by_guest_at
+        : matchChat.chat.last_seen_by_host_at;
+
+    return NextResponse.json({
+      ok: true,
+      otherUserLastSeenAt,
+      lastChatActivityAt: matchChat.chat.last_chat_activity_at,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "MATCH_CHAT_ACCESS_FAILED";
+    return NextResponse.json({ error: message }, { status: 403 });
+  }
+}
+
 export async function POST(request: Request) {
   const supabase = await createClient();
   const {

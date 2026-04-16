@@ -106,6 +106,11 @@ export default async function MatchChatPage({ params }: PageProps) {
     <ChatRoomClient
       matchId={matchId}
       otherUserName={otherUserName}
+      initialOtherUserLastSeenAt={
+        matchChat.participantRole === "host"
+          ? matchChat.chat.last_seen_by_guest_at
+          : matchChat.chat.last_seen_by_host_at
+      }
       purposeLabel={purposeLabel}
       meetingTimeLabel={meetingTimeLabel}
       placeLabel={placeLabel}
