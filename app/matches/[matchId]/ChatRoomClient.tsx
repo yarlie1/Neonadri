@@ -478,7 +478,7 @@ export default function ChatRoomClient({
               )}
 
               <div className="mt-4 text-center text-[11px] font-medium text-[#9b8f84]">
-                Chat Powered by PubNub
+                Live Chat Powered by PubNub
               </div>
             </>
           ) : (
