@@ -93,8 +93,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error) {
+    console.error("Match request route unexpected error", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Server error" },
+      { error: "Server error" },
       { status: 500 }
     );
   }
@@ -142,8 +143,9 @@ export async function DELETE(req: Request) {
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error) {
+    console.error("Match request delete route unexpected error", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Server error" },
+      { error: "Server error" },
       { status: 500 }
     );
   }
