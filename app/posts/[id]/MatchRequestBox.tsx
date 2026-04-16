@@ -9,6 +9,7 @@ type Props = {
   postOwnerUserId: string;
   requestCount: number;
   isPostMatched: boolean;
+  isViewerParticipant: boolean;
   myRequestId: number | null;
   myRequestStatus: string;
 };
@@ -18,6 +19,7 @@ export default function MatchRequestBox({
   postOwnerUserId,
   requestCount,
   isPostMatched,
+  isViewerParticipant,
   myRequestId,
   myRequestStatus,
 }: Props) {
@@ -30,13 +32,23 @@ export default function MatchRequestBox({
 
   const normalizedStatus = String(myRequestStatus || "").toLowerCase();
   const hasPendingRequest = normalizedStatus === "pending" && !!myRequestId;
-  const hasMatchedRequest =
-    isPostMatched || normalizedStatus === "matched" || normalizedStatus === "accepted";
+  const hasMatchedRequest = isViewerParticipant;
+  const isUnavailableBecauseMatched = isPostMatched && !isViewerParticipant;
   const isRejectedRequest = normalizedStatus === "rejected";
-  const headerEyebrow = hasMatchedRequest ? "Matched meetup" : "Join this meetup";
-  const headerTitle = hasMatchedRequest ? "You're matched" : "Request Match";
+  const headerEyebrow = hasMatchedRequest
+    ? "Matched meetup"
+    : isUnavailableBecauseMatched
+    ? "Meetup closed"
+    : "Join this meetup";
+  const headerTitle = hasMatchedRequest
+    ? "You're matched"
+    : isUnavailableBecauseMatched
+    ? "Already matched"
+    : "Request Match";
   const headerDescription = hasMatchedRequest
     ? "Your request was accepted and this meetup is now confirmed."
+    : isUnavailableBecauseMatched
+    ? "This meetup has already been matched with another guest, so new requests are closed."
     : "Send your request to the host and wait for approval.";
 
   const handleRequestMatch = async () => {
@@ -154,6 +166,8 @@ export default function MatchRequestBox({
         <div className="mt-2 text-sm leading-6 text-[#6b5f52]">
           {hasMatchedRequest
             ? "This meetup is confirmed. You can review the details above and connect with the host here."
+            : isUnavailableBecauseMatched
+            ? "This meetup is no longer accepting requests because the host already matched with another guest."
             : hasPendingRequest
             ? "Your request is with the host now. You can leave it pending or cancel it here."
             : isRejectedRequest
@@ -167,6 +181,11 @@ export default function MatchRequestBox({
           <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-4 py-2.5 text-sm font-medium text-[#5f5347]">
             <CheckCircle2 className="h-4 w-4" />
             Match completed
+          </div>
+        ) : isUnavailableBecauseMatched ? (
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2.5 text-sm font-medium text-[#6b5f52]">
+            <AlertCircle className="h-4 w-4" />
+            Already matched with someone else
           </div>
         ) : hasPendingRequest ? (
           <>

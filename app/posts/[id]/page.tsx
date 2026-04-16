@@ -367,6 +367,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 postOwnerUserId={post.user_id}
                 requestCount={totalRequestCount}
                 isPostMatched={isPostMatched}
+                isViewerParticipant={isViewerParticipant}
                 myRequestId={myRequestId}
                 myRequestStatus={myRequestStatus}
               />
