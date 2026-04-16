@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Map,
@@ -10,6 +10,7 @@ import {
   Coins,
   CheckCircle,
 } from "lucide-react";
+import { useEditMeetupDraft } from "./useEditMeetupDraft";
 import {
   combineDateAndTime,
   formatDateTimeLocalValue,
@@ -96,6 +97,106 @@ export default function EditMeetupForm({
   const fieldClass =
     "w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 pl-16 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12";
 
+  const applyDraft = useCallback(
+    (draft: {
+      meetingPurpose?: string;
+      meetingTime?: string;
+      meetingDate?: string;
+      meetingTimeSlot?: string;
+      durationMinutes?: string;
+      location?: string;
+      placeName?: string;
+      confirmedAddress?: string;
+      targetGender?: string;
+      targetAgeGroup?: string;
+      benefitAmount?: string;
+      latitude?: number | null;
+      longitude?: number | null;
+      locationConfirmed?: boolean;
+    }) => {
+      setMeetingPurpose(draft.meetingPurpose || "");
+      setMeetingTime(draft.meetingTime || "");
+      setMeetingDate(draft.meetingDate || "");
+      setMeetingTimeSlot(draft.meetingTimeSlot || "");
+      setDurationMinutes(draft.durationMinutes || "");
+      setLocation(draft.location || "");
+      setPlaceName(draft.placeName || "");
+      setConfirmedAddress(draft.confirmedAddress || "");
+      setTargetGender(draft.targetGender || "");
+      setTargetAgeGroup(draft.targetAgeGroup || "");
+      setBenefitAmount(draft.benefitAmount || "");
+      setLatitude(typeof draft.latitude === "number" ? draft.latitude : null);
+      setLongitude(typeof draft.longitude === "number" ? draft.longitude : null);
+      setLocationConfirmed(Boolean(draft.locationConfirmed));
+    },
+    []
+  );
+
+  const applyMapSelection = useCallback(
+    ({
+      placeName: nextPlaceName,
+      address,
+      latitude: nextLat,
+      longitude: nextLng,
+    }: {
+      placeName: string;
+      address: string;
+      latitude: number;
+      longitude: number;
+    }) => {
+      setPlaceName(nextPlaceName);
+      setLocation(nextPlaceName);
+      setConfirmedAddress(address);
+      setLatitude(nextLat);
+      setLongitude(nextLng);
+      setLocationConfirmed(true);
+      setMessage("");
+    },
+    []
+  );
+
+  const draftState = useMemo(
+    () => ({
+      meetingPurpose,
+      meetingTime,
+      meetingDate,
+      meetingTimeSlot,
+      durationMinutes,
+      location,
+      placeName,
+      confirmedAddress,
+      targetGender,
+      targetAgeGroup,
+      benefitAmount,
+      latitude,
+      longitude,
+      locationConfirmed,
+    }),
+    [
+      benefitAmount,
+      confirmedAddress,
+      durationMinutes,
+      latitude,
+      location,
+      locationConfirmed,
+      longitude,
+      meetingDate,
+      meetingPurpose,
+      meetingTime,
+      meetingTimeSlot,
+      placeName,
+      targetAgeGroup,
+      targetGender,
+    ]
+  );
+
+  const { markReturnFromMap, clearDraft } = useEditMeetupDraft({
+    postId,
+    draft: draftState,
+    applyDraft,
+    applyMapSelection,
+  });
+
   useEffect(() => {
     if (!meetingTime) return;
     setMeetingDate(getDatePart(meetingTime));
@@ -137,37 +238,6 @@ export default function EditMeetupForm({
     }
   }, []);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const query = new URLSearchParams(window.location.search);
-    const qName = query.get("name");
-    const qLocation = query.get("location");
-    const qLat = query.get("lat");
-    const qLng = query.get("lng");
-
-    if (qLocation && qLat && qLng) {
-      setPlaceName(qName || qLocation);
-      setLocation(qName || qLocation);
-      setConfirmedAddress(qLocation);
-      setLatitude(Number(qLat));
-      setLongitude(Number(qLng));
-      setLocationConfirmed(true);
-      setMessage("");
-
-      query.delete("name");
-      query.delete("location");
-      query.delete("lat");
-      query.delete("lng");
-      const nextQuery = query.toString();
-      window.history.replaceState(
-        {},
-        "",
-        nextQuery ? `/write/${postId}?${nextQuery}` : `/write/${postId}`
-      );
-    }
-  }, [postId]);
-
   const purposeHelpText = useMemo(() => {
     if (!meetingPurpose) {
       return "Choose the kind of meetup you want, and a short description will appear here.";
@@ -187,6 +257,7 @@ export default function EditMeetupForm({
   };
 
   const handleOpenMapPicker = () => {
+    markReturnFromMap();
     router.push(`/write/location?returnTo=/write/${postId}`);
   };
 
@@ -259,6 +330,7 @@ export default function EditMeetupForm({
         return;
       }
 
+      clearDraft();
       window.location.replace(`/posts/${postId}`);
     } catch (error) {
       setMessage(
