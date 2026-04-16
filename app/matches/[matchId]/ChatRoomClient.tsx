@@ -365,14 +365,7 @@ export default function ChatRoomClient({
                   <span className="font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Live chat
                   </span>
-                  <div className="flex items-center justify-end gap-2">
-                    <span
-                      className={`inline-flex h-2.5 w-2.5 rounded-full ${
-                        connectionLabel === "Connected" ? "bg-[#3aa76d]" : "bg-[#d8cec3]"
-                      }`}
-                    />
-                    <span>{presenceLabel}</span>
-                  </div>
+                  <span>{presenceLabel}</span>
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#5f453b]">
                   <span className="font-semibold text-[#2b1f1a]">{otherUserName}</span>
