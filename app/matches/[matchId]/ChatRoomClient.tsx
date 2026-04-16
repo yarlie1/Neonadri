@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Script from "next/script";
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { KeyboardEvent } from "react";
 import {
   LoaderCircle,
   MessageSquareMore,
@@ -270,6 +271,15 @@ export default function ChatRoomClient({
     }
   };
 
+  const handleDraftKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key !== "Enter" || event.shiftKey) {
+      return;
+    }
+
+    event.preventDefault();
+    void handleSend();
+  };
+
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
       <Script
@@ -305,10 +315,10 @@ export default function ChatRoomClient({
             <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#ebded1] bg-[#fbf6f0] text-[#8d6f61]">
               <MessageSquareMore className="h-5 w-5" />
             </div>
-            <div className="min-w-0">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
-                PubNub setup
-              </div>
+              <div className="min-w-0">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
+                Chat details
+                </div>
                 <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
                   {isProviderConfigured
                     ? "Chat foundation is ready"
@@ -342,7 +352,12 @@ export default function ChatRoomClient({
                   <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Live chat
                   </div>
-                  <div className="mt-1 text-sm font-medium text-[#4f443b]">
+                  <div className="mt-1 inline-flex items-center gap-2 text-sm font-medium text-[#4f443b]">
+                    <span
+                      className={`inline-flex h-2.5 w-2.5 rounded-full ${
+                        connectionLabel === "Connected" ? "bg-[#b56c57]" : "bg-[#d8cec3]"
+                      }`}
+                    />
                     {connectionLabel}
                   </div>
                 </div>
@@ -400,6 +415,7 @@ export default function ChatRoomClient({
                 <textarea
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}
+                  onKeyDown={handleDraftKeyDown}
                   placeholder={`Message ${otherUserName}...`}
                   className="min-h-[96px] flex-1 resize-none rounded-[16px] border border-[#e3d7ca] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition placeholder:text-[#a29185] focus:border-[#cfb8a4]"
                 />
@@ -417,6 +433,9 @@ export default function ChatRoomClient({
                   Send
                 </button>
               </div>
+                <div className="mt-2 px-2 text-[11px] text-[#9b8f84]">
+                  Press Enter to send. Use Shift+Enter for a new line.
+                </div>
               </div>
 
               {errorMessage && (
