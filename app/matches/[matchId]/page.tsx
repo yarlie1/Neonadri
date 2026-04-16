@@ -72,6 +72,7 @@ export default async function MatchChatPage({ params }: PageProps) {
   const placeLabel = postData?.place_name || postData?.location || "Selected place";
   const otherUserName = otherProfileData?.display_name || "Participant";
   const currentUserName = currentProfileData?.display_name || "You";
+  // Public PubNub keys are injected at build time through Vercel env vars.
   const isProviderConfigured = Boolean(
     process.env.NEXT_PUBLIC_PUBNUB_PUBLISH_KEY &&
       process.env.NEXT_PUBLIC_PUBNUB_SUBSCRIBE_KEY
