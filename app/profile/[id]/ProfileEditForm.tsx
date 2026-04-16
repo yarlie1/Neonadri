@@ -15,7 +15,6 @@ type ProfileRow = {
   about_me: string | null;
   gender: string | null;
   age_group: string | null;
-  preferred_area: string | null;
   languages: string[] | null;
   meeting_style: string | null;
   interests: string[] | null;
@@ -101,9 +100,6 @@ export default function ProfileEditForm({
   const [aboutMe, setAboutMe] = useState(profile.about_me || "");
   const [gender, setGender] = useState(profile.gender || "");
   const [ageGroup, setAgeGroup] = useState(profile.age_group || "");
-  const [preferredArea, setPreferredArea] = useState(
-    profile.preferred_area || ""
-  );
   const [languages, setLanguages] = useState<string[]>(profile.languages || []);
   const [meetingStyle, setMeetingStyle] = useState(profile.meeting_style || "");
   const [interests, setInterests] = useState<string[]>(profile.interests || []);
@@ -153,7 +149,6 @@ export default function ProfileEditForm({
         about_me: aboutMe.trim() || null,
         gender: gender || null,
         age_group: ageGroup || null,
-        preferred_area: preferredArea.trim() || null,
         languages: languages.length > 0 ? languages : null,
         meeting_style: meetingStyle || null,
         interests: interests.length > 0 ? interests : null,

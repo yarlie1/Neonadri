@@ -17,7 +17,6 @@ type ProfileRow = {
   about_me: string | null;
   gender: string | null;
   age_group: string | null;
-  preferred_area: string | null;
   languages: string[] | null;
   meeting_style: string | null;
   interests: string[] | null;
@@ -51,7 +50,6 @@ export default async function EditProfilePage({ params }: PageProps) {
         about_me,
         gender,
         age_group,
-        preferred_area,
         languages,
         meeting_style,
         interests,
