@@ -44,7 +44,7 @@ export default function ReviewWriteForm({
     if (!initialCanReview) return;
 
     if (showedUp === null) {
-      setMessage("Please confirm whether they showed up for the meetup.");
+      setMessage("Please confirm whether your match showed up for the meetup.");
       return;
     }
 
@@ -166,7 +166,7 @@ export default function ReviewWriteForm({
 
               <div>
                 <label className="mb-2 block text-sm font-medium text-[#6f655c]">
-                  Did they show up for the meetup?
+                  Did your match show up for the meetup?
                 </label>
                 <div className="flex gap-2">
                   {[
