@@ -10,6 +10,7 @@ import {
 import MatchRequestBox from "./MatchRequestBox";
 import OwnerMatchPanel from "./OwnerMatchPanel";
 import DeletePostButton from "./DeletePostButton";
+import PostDistanceNote from "./PostDistanceNote";
 import {
   buildDetailViewModel,
   fetchProfileShowcaseData,
@@ -327,6 +328,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           ownerName={ownerName}
           meetupTimeLabel={meetupTimeLabel}
           mapUrl={mapUrl}
+          distanceNote={
+            <PostDistanceNote
+              latitude={post.latitude}
+              longitude={post.longitude}
+            />
+          }
         />
 
         <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">

@@ -34,9 +34,9 @@ export const MATCH_STATE_OPTIONS = ["All", "Open", "Matched"];
 export const AUDIENCE_OPTIONS = ["All", "Fits me"] as const;
 export const DISTANCE_OPTIONS = [
   { value: "all", label: "All" },
-  { value: "nearby", label: "Nearby" },
-  { value: "within_5km", label: "Within 5 km" },
-  { value: "within_10km", label: "Within 10 km" },
+  { value: "nearby", label: "Near me" },
+  { value: "within_5km", label: "Under 5 km" },
+  { value: "within_10km", label: "Under 10 km" },
 ] as const;
 
 export const SORT_OPTIONS = [
@@ -44,7 +44,7 @@ export const SORT_OPTIONS = [
   { value: "soonest", label: "Soonest" },
   { value: "benefit_desc", label: "Highest Benefit" },
   { value: "benefit_asc", label: "Lowest Benefit" },
-  { value: "distance", label: "Nearest" },
+  { value: "distance", label: "Closest" },
 ] as const;
 
 export type SortValue = (typeof SORT_OPTIONS)[number]["value"];

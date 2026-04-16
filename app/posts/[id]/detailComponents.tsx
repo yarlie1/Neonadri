@@ -511,6 +511,7 @@ export function MeetupOverviewCard({
   ownerName,
   meetupTimeLabel,
   mapUrl,
+  distanceNote,
 }: {
   isPostMatched: boolean;
   purposeTheme: { bandClass: string };
@@ -522,6 +523,7 @@ export function MeetupOverviewCard({
   ownerName: string;
   meetupTimeLabel: string;
   mapUrl: string;
+  distanceNote?: ReactNode;
 }) {
   return (
     <div className="relative overflow-hidden rounded-[32px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(92,69,52,0.08)]">
@@ -616,6 +618,7 @@ export function MeetupOverviewCard({
                   <div className="mt-1 pl-6 line-clamp-3">{post.location}</div>
                 </div>
               )}
+              {distanceNote}
             </div>
           </div>
         </div>

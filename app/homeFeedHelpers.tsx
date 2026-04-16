@@ -198,7 +198,7 @@ export function getSortSummaryLabel(sort: SortValue) {
     case "benefit_asc":
       return "Low $";
     case "distance":
-      return "Nearest";
+      return "Closest";
     default:
       return "";
   }
@@ -207,11 +207,11 @@ export function getSortSummaryLabel(sort: SortValue) {
 export function getDistanceSummaryLabel(distance: DistanceValue) {
   switch (distance) {
     case "nearby":
-      return "Nearby";
+      return "Near me";
     case "within_5km":
-      return "Within 5 km";
+      return "Under 5 km";
     case "within_10km":
-      return "Within 10 km";
+      return "Under 10 km";
     default:
       return "";
   }
@@ -240,8 +240,8 @@ export function haversineKm(
 
 export function formatDistanceKm(km: number | null) {
   if (km === null || !Number.isFinite(km)) return "";
-  if (km < 1) return `${(km * 1000).toFixed(0)} m away`;
-  return `${km.toFixed(1)} km away`;
+  if (km < 1) return `About ${(km * 1000).toFixed(0)} m away`;
+  return `About ${km.toFixed(1)} km away`;
 }
 
 export function getPurposeLabel(purpose: string | null) {

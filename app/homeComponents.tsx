@@ -211,7 +211,7 @@ export function HomeFilterCard({
 
           <div className="mt-4">
             <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
-              Distance
+              Near you
             </div>
             <div className="flex flex-wrap gap-2">
               {distanceOptions.map((option) => (
@@ -242,13 +242,13 @@ export function HomeFilterCard({
 
             {(sort === "distance" || distance !== "all") && (
               <div className="mt-3 text-xs text-[#8b7f74]">
-                {locationStatus === "loading" && "Getting your location..."}
+                {locationStatus === "loading" && "Finding nearby meetups..."}
                 {locationStatus === "denied" &&
-                  "Location permission denied. Distance filters may not be accurate."}
+                  "Location permission is off, so nearby filters may be less precise."}
                 {locationStatus === "unavailable" &&
-                  "Location is unavailable on this device/browser."}
+                  "Distance is unavailable on this device or browser."}
                 {locationStatus === "granted" &&
-                  "Using your current location."}
+                  "Showing meetups from your current location."}
               </div>
             )}
           </div>
@@ -496,7 +496,7 @@ export function MeetupFeedCard({
               <LocateFixed className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
               <div className="leading-[1.2]">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
-                  Distance
+                  Near you
                 </div>
                 <div className="text-[12px] font-medium text-[#554a42]">
                   {distanceText}
