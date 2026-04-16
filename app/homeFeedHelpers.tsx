@@ -212,10 +212,12 @@ export function getDistanceSummaryLabel(
   switch (distance) {
     case "nearby":
       return "Near me";
-    case "within_5km":
-      return unit === "mi" ? "Under 3 mi" : "Under 5 km";
-    case "within_10km":
-      return unit === "mi" ? "Under 6 mi" : "Under 10 km";
+    case "within_5mi":
+      return unit === "mi" ? "Under 5 mi" : "Under 8 km";
+    case "within_10mi":
+      return unit === "mi" ? "Under 10 mi" : "Under 16 km";
+    case "within_20mi":
+      return unit === "mi" ? "Under 20 mi" : "Under 32 km";
     default:
       return "";
   }

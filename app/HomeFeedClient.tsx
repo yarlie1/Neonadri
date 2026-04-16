@@ -147,8 +147,9 @@ export default function HomeFeedClient({
         distance === "all" ||
         distanceKm === null ||
         (distance === "nearby" && distanceKm <= 3) ||
-        (distance === "within_5km" && distanceKm <= 5) ||
-        (distance === "within_10km" && distanceKm <= 10);
+        (distance === "within_5mi" && distanceKm <= 8.04672) ||
+        (distance === "within_10mi" && distanceKm <= 16.09344) ||
+        (distance === "within_20mi" && distanceKm <= 32.18688);
 
       return (
         matchStateMatch &&

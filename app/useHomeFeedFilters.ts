@@ -35,8 +35,9 @@ export const AUDIENCE_OPTIONS = ["All", "Fits me"] as const;
 export const DISTANCE_OPTIONS = [
   { value: "all", label: "All" },
   { value: "nearby", label: "Near me" },
-  { value: "within_5km", label: "Under 5 km" },
-  { value: "within_10km", label: "Under 10 km" },
+  { value: "within_5mi", label: "Under 5 mi" },
+  { value: "within_10mi", label: "Under 10 mi" },
+  { value: "within_20mi", label: "Under 20 mi" },
 ] as const;
 
 export const SORT_OPTIONS = [

@@ -227,7 +227,12 @@ export function HomeFilterCard({
                   key={option.value}
                   active={distance === option.value}
                   label={getDistanceOptionLabel(
-                    option.value as "all" | "nearby" | "within_5km" | "within_10km",
+                    option.value as
+                      | "all"
+                      | "nearby"
+                      | "within_5mi"
+                      | "within_10mi"
+                      | "within_20mi",
                     distanceUnit
                   )}
                   onClick={() => onDistance(option.value)}
