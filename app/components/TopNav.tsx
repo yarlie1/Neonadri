@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
 import {
   Menu,
@@ -97,7 +97,6 @@ function isActivePath(pathname: string, href: string) {
 
 export default function TopNav() {
   const supabase = useMemo(() => createClient(), []);
-  const router = useRouter();
   const [user, setUser] = useState<SimpleUser>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
@@ -210,8 +209,6 @@ export default function TopNav() {
 
         if (_event === "SIGNED_OUT") {
           resetSignedOutState();
-          router.replace("/");
-          router.refresh();
           return;
         }
 
@@ -228,7 +225,6 @@ export default function TopNav() {
 
         setUser(nextUser);
         setMenuOpen(false);
-        router.refresh();
 
         if (session?.user) {
           const [count, hasNewChat] = await Promise.all([
@@ -252,7 +248,7 @@ export default function TopNav() {
       window.clearInterval(pollId);
       subscription.unsubscribe();
     };
-  }, [pathname, router, supabase]);
+  }, [pathname, supabase]);
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
@@ -299,8 +295,7 @@ export default function TopNav() {
     } catch (error) {
       console.error("TopNav logout error:", error);
     } finally {
-      router.replace("/");
-      router.refresh();
+      window.location.replace("/");
     }
   };
 
