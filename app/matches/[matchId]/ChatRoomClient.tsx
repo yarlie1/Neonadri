@@ -483,14 +483,15 @@ export default function ChatRoomClient({
             </div>
           )}
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Link
-              href="/dashboard?tab=matches"
-              className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
-            >
-              Back to Matches
-            </Link>
-          </div>
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link
+            href="/dashboard?tab=matches"
+            className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+          >
+            Back to Matches
+          </Link>
         </div>
       </div>
     </main>
