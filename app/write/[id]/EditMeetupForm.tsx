@@ -584,9 +584,9 @@ export default function EditMeetupForm({
                 type="checkbox"
                 checked={benefitConfirmed}
                 onChange={(e) => setBenefitConfirmed(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border-[#ccb9a7] text-[#a48f7a] focus:ring-[#a48f7a]/30"
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#ccb9a7] text-[#a48f7a] focus:ring-[#a48f7a]/30"
               />
-              <span>
+              <span className="min-w-0 flex-1 leading-6">
                 I understand that I will pay{" "}
                 <span className="font-semibold text-[#2f2a26]">{benefitAmount}</span>{" "}
                 directly to my guest after the meetup.
