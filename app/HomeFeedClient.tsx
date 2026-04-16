@@ -76,16 +76,15 @@ export default function HomeFeedClient({
   hostProfileMap,
   matchSummaryMap,
   viewerPreference,
+  initialUserTimeZone,
 }: {
   initialPosts: PostRow[];
   hostProfileMap: HostProfileMap;
   matchSummaryMap: MatchSummaryMap;
   viewerPreference: { gender: string; ageGroup: string } | null;
+  initialUserTimeZone: string;
 }) {
-  const userTimeZone = useMemo(
-    () => Intl.DateTimeFormat().resolvedOptions().timeZone,
-    []
-  );
+  const userTimeZone = useMemo(() => initialUserTimeZone, [initialUserTimeZone]);
 
   const formatTime = (meetingTime: string | null) =>
     formatMeetingTime(meetingTime, userTimeZone) || "";

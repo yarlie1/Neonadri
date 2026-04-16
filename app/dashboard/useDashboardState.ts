@@ -22,6 +22,7 @@ export function useDashboardState({
   profileMap,
   matchSummaryMap,
   userId,
+  initialUserTimeZone,
 }: {
   initialPosts: PostRow[];
   requestsReceived: MatchRequestRow[];
@@ -33,10 +34,11 @@ export function useDashboardState({
     { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
   >;
   userId: string;
+  initialUserTimeZone: string;
 }) {
   const userTimeZone = useMemo(
-    () => Intl.DateTimeFormat().resolvedOptions().timeZone,
-    []
+    () => initialUserTimeZone,
+    [initialUserTimeZone]
   );
 
   const formatTime = (meetingTime: string | null) =>

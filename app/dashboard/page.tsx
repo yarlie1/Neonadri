@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { createClient } from "../../lib/supabase/server";
+import { normalizeUserTimeZone, USER_TIME_ZONE_COOKIE } from "../../lib/userTimeZone";
 import DashboardClient from "./DashboardClient";
 
 export type PostRow = {
@@ -58,6 +60,10 @@ export type MatchSummaryRow = {
 
 export default async function DashboardPage() {
   const supabase = await createClient();
+  const cookieStore = await cookies();
+  const initialUserTimeZone = normalizeUserTimeZone(
+    cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
+  );
 
   const {
     data: { user },
@@ -180,6 +186,7 @@ export default async function DashboardPage() {
       postMap={postMap}
       matchSummaryMap={matchSummaryMap}
       reviewedMatchIds={reviewedMatchIds}
+      initialUserTimeZone={initialUserTimeZone}
     />
   );
 }

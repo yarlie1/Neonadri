@@ -424,6 +424,7 @@ export default function DashboardClient({
   postMap,
   matchSummaryMap,
   reviewedMatchIds,
+  initialUserTimeZone,
 }: {
   userId: string;
   posts: PostRow[];
@@ -437,6 +438,7 @@ export default function DashboardClient({
     { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
   >;
   reviewedMatchIds: number[];
+  initialUserTimeZone: string;
 }) {
   const supabase = createClient();
   const router = useRouter();
@@ -472,6 +474,7 @@ export default function DashboardClient({
     profileMap,
     matchSummaryMap,
     userId,
+    initialUserTimeZone,
   });
 
   const stopCardClick = (event: { stopPropagation: () => void }) => {

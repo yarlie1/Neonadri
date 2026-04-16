@@ -1,4 +1,6 @@
 import { createClient } from "../lib/supabase/server";
+import { cookies } from "next/headers";
+import { normalizeUserTimeZone, USER_TIME_ZONE_COOKIE } from "../lib/userTimeZone";
 import HomeFeedClient from "./HomeFeedClient";
 
 type PostRow = {
@@ -51,6 +53,10 @@ type MatchSummaryMap = Record<
 
 export default async function HomePage() {
   const supabase = await createClient();
+  const cookieStore = await cookies();
+  const initialUserTimeZone = normalizeUserTimeZone(
+    cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
+  );
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -137,6 +143,7 @@ export default async function HomePage() {
       hostProfileMap={hostProfileMap}
       matchSummaryMap={matchSummaryMap}
       viewerPreference={viewerPreference}
+      initialUserTimeZone={initialUserTimeZone}
     />
   );
 }
