@@ -7,6 +7,7 @@ import { Send, CheckCircle2, AlertCircle, XCircle, Clock3 } from "lucide-react";
 type Props = {
   postId: number;
   postOwnerUserId: string;
+  benefitAmount: string | null;
   requestCount: number;
   isPostMatched: boolean;
   isViewerParticipant: boolean;
@@ -17,6 +18,7 @@ type Props = {
 export default function MatchRequestBox({
   postId,
   postOwnerUserId,
+  benefitAmount,
   requestCount,
   isPostMatched,
   isViewerParticipant,
@@ -160,7 +162,8 @@ export default function MatchRequestBox({
       </p>
       {!hasMatchedRequest && !isUnavailableBecauseMatched && !isRejectedRequest && (
         <p className="mt-1 text-sm leading-6 text-[#6f655c]">
-          Once the meetup is completed, the host will pay you $20 directly.
+          Once the meetup is completed, the host will pay you{" "}
+          {benefitAmount || "the listed amount"} directly.
         </p>
       )}
 
