@@ -577,13 +577,13 @@ export default function WriteForm({ userId }: { userId: string }) {
 
           {benefitAmount && (
             <label
-              className={`${SOFT_CARD_CLASS} flex items-start gap-3 px-4 py-3 text-sm text-[#5f5347]`}
+              className={`${SOFT_CARD_CLASS} grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 px-4 py-3 text-sm text-[#5f5347]`}
             >
               <input
                 type="checkbox"
                 checked={benefitConfirmed}
                 onChange={(e) => setBenefitConfirmed(e.target.checked)}
-                className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#ccb9a7] text-[#a48f7a] focus:ring-[#a48f7a]/30"
+                className="!mt-0.5 !h-4 !w-4 !appearance-auto !rounded !border-[#ccb9a7] !p-0 !shadow-none !outline-none !ring-0 accent-[#a48f7a]"
               />
               <span className="min-w-0 flex-1 leading-6">
                 I understand that I will pay{" "}
