@@ -61,10 +61,17 @@ export default async function MatchChatPage({ params }: PageProps) {
     .eq("id", matchChat.otherUserId)
     .maybeSingle();
 
+  const { data: currentProfileData } = await supabase
+    .from("profiles")
+    .select("display_name")
+    .eq("id", user.id)
+    .maybeSingle();
+
   const purposeLabel = postData?.meeting_purpose || "Meetup";
   const meetingTimeLabel = formatMeetingTime(postData?.meeting_time || null, userTimeZone);
   const placeLabel = postData?.place_name || postData?.location || "Selected place";
   const otherUserName = otherProfileData?.display_name || "Participant";
+  const currentUserName = currentProfileData?.display_name || "You";
   const isProviderConfigured = Boolean(
     process.env.NEXT_PUBLIC_PUBNUB_PUBLISH_KEY &&
       process.env.NEXT_PUBLIC_PUBNUB_SUBSCRIBE_KEY
@@ -79,6 +86,8 @@ export default async function MatchChatPage({ params }: PageProps) {
       provider={matchChat.chat.provider}
       roomId={matchChat.chat.external_room_id}
       isProviderConfigured={isProviderConfigured}
+      currentUserId={user.id}
+      currentUserName={currentUserName}
     />
   );
 }

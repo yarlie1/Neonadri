@@ -1,7 +1,79 @@
 "use client";
 
 import Link from "next/link";
-import { MessageSquareMore, ShieldCheck, Sparkles } from "lucide-react";
+import Script from "next/script";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  LoaderCircle,
+  MessageSquareMore,
+  Send,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
+
+declare global {
+  interface Window {
+    PubNub?: new (config: {
+      publishKey: string;
+      subscribeKey: string;
+      userId: string;
+    }) => {
+      addListener: (listener: {
+        message?: (event: {
+          message: {
+            text?: string;
+            senderId?: string;
+            senderName?: string;
+            createdAt?: string;
+          };
+          timetoken: string;
+        }) => void;
+      }) => void;
+      channel: (name: string) => {
+        subscription: () => {
+          subscribe: () => void;
+          unsubscribe: () => void;
+        };
+      };
+      publish: (payload: {
+        channel: string;
+        message: {
+          text: string;
+          senderId: string;
+          senderName: string;
+          createdAt: string;
+        };
+        storeInHistory?: boolean;
+      }) => Promise<unknown>;
+      fetchMessages?: (payload: {
+        channels: string[];
+        count?: number;
+        includeUUID?: boolean;
+      }) => Promise<{
+        channels?: Record<
+          string,
+          Array<{
+            message?: {
+              text?: string;
+              senderId?: string;
+              senderName?: string;
+              createdAt?: string;
+            };
+            timetoken?: string;
+          }>
+        >;
+      }>;
+    };
+  }
+}
+
+type ChatMessage = {
+  id: string;
+  text: string;
+  senderId: string;
+  senderName: string;
+  createdAt: string;
+};
 
 export default function ChatRoomClient({
   otherUserName,
@@ -11,6 +83,8 @@ export default function ChatRoomClient({
   provider,
   roomId,
   isProviderConfigured,
+  currentUserId,
+  currentUserName,
 }: {
   otherUserName: string;
   purposeLabel: string;
@@ -19,9 +93,151 @@ export default function ChatRoomClient({
   provider: string;
   roomId: string;
   isProviderConfigured: boolean;
+  currentUserId: string;
+  currentUserName: string;
 }) {
+  const [sdkReady, setSdkReady] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [draft, setDraft] = useState("");
+  const [sending, setSending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [connectionLabel, setConnectionLabel] = useState("Connecting...");
+  const pubnubRef = useRef<InstanceType<NonNullable<typeof window.PubNub>> | null>(null);
+  const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
+
+  const publishKey = process.env.NEXT_PUBLIC_PUBNUB_PUBLISH_KEY;
+  const subscribeKey = process.env.NEXT_PUBLIC_PUBNUB_SUBSCRIBE_KEY;
+
+  const roomLabel = useMemo(() => roomId, [roomId]);
+
+  useEffect(() => {
+    if (!sdkReady || !isProviderConfigured || !window.PubNub || !publishKey || !subscribeKey) {
+      return;
+    }
+
+    const pubnub = new window.PubNub({
+      publishKey,
+      subscribeKey,
+      userId: currentUserId,
+    });
+
+    pubnubRef.current = pubnub;
+    setConnectionLabel("Connected");
+
+    const pushMessage = (incoming: ChatMessage) => {
+      setMessages((current) => {
+        if (current.some((message) => message.id === incoming.id)) {
+          return current;
+        }
+
+        return [...current, incoming].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+      });
+    };
+
+    pubnub.addListener({
+      message: (event) => {
+        const payload = event.message || {};
+        const text = (payload.text || "").trim();
+        if (!text) return;
+
+        pushMessage({
+          id: event.timetoken,
+          text,
+          senderId: payload.senderId || "unknown",
+          senderName: payload.senderName || "Participant",
+          createdAt: payload.createdAt || new Date().toISOString(),
+        });
+      },
+    });
+
+    const subscription = pubnub.channel(roomLabel).subscription();
+    subscription.subscribe();
+    subscriptionRef.current = subscription;
+
+    const loadHistory = async () => {
+      if (!pubnub.fetchMessages) {
+        return;
+      }
+
+      try {
+        const history = await pubnub.fetchMessages({
+          channels: [roomLabel],
+          count: 25,
+          includeUUID: true,
+        });
+
+        const historyMessages =
+          history.channels?.[roomLabel]
+            ?.map((entry) => {
+              const payload = entry.message || {};
+              const text = (payload.text || "").trim();
+              if (!text) return null;
+
+              return {
+                id: entry.timetoken || `${payload.senderId}-${payload.createdAt}`,
+                text,
+                senderId: payload.senderId || "unknown",
+                senderName: payload.senderName || "Participant",
+                createdAt: payload.createdAt || new Date().toISOString(),
+              } satisfies ChatMessage;
+            })
+            .filter(Boolean) || [];
+
+        setMessages(historyMessages as ChatMessage[]);
+      } catch {
+        setErrorMessage("Past messages could not be loaded. New chat still works.");
+      }
+    };
+
+    void loadHistory();
+
+    return () => {
+      subscriptionRef.current?.unsubscribe();
+      subscriptionRef.current = null;
+      pubnubRef.current = null;
+      setConnectionLabel("Disconnected");
+    };
+  }, [currentUserId, isProviderConfigured, publishKey, roomLabel, sdkReady, subscribeKey]);
+
+  useEffect(() => {
+    if (!listRef.current) return;
+    listRef.current.scrollTop = listRef.current.scrollHeight;
+  }, [messages]);
+
+  const handleSend = async () => {
+    const text = draft.trim();
+    if (!text || !pubnubRef.current) return;
+
+    setSending(true);
+    setErrorMessage(null);
+
+    try {
+      await pubnubRef.current.publish({
+        channel: roomLabel,
+        message: {
+          text,
+          senderId: currentUserId,
+          senderName: currentUserName,
+          createdAt: new Date().toISOString(),
+        },
+        storeInHistory: true,
+      });
+      setDraft("");
+    } catch {
+      setErrorMessage("Message could not be sent. Please try again.");
+    } finally {
+      setSending(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
+      <Script
+        src="https://cdn.pubnub.com/sdk/javascript/pubnub.10.2.8.js"
+        strategy="afterInteractive"
+        onLoad={() => setSdkReady(true)}
+      />
       <div className="mx-auto max-w-3xl space-y-5">
         <div className="relative overflow-hidden rounded-[30px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(92,69,52,0.08)]">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
@@ -81,6 +297,86 @@ export default function ChatRoomClient({
               <div className="mt-2 break-all text-sm font-medium text-[#4f443b]">{roomId}</div>
             </div>
           </div>
+
+          {isProviderConfigured ? (
+            <div className="mt-4 rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#eadfd3] pb-3">
+                <div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                    Live chat
+                  </div>
+                  <div className="mt-1 text-sm font-medium text-[#4f443b]">
+                    {connectionLabel}
+                  </div>
+                </div>
+                <div className="text-xs text-[#8c7e73]">Messages are stored by PubNub, not Neonadri.</div>
+              </div>
+
+              <div
+                ref={listRef}
+                className="mt-4 h-[360px] overflow-y-auto rounded-[16px] border border-[#ece1d4] bg-white px-3 py-3"
+              >
+                {messages.length > 0 ? (
+                  <div className="space-y-3">
+                    {messages.map((message) => {
+                      const isMine = message.senderId === currentUserId;
+                      return (
+                        <div
+                          key={message.id}
+                          className={`flex ${isMine ? "justify-end" : "justify-start"}`}
+                        >
+                          <div
+                            className={`max-w-[78%] rounded-[18px] px-4 py-3 text-sm leading-6 shadow-sm ${
+                              isMine
+                                ? "bg-[linear-gradient(135deg,#ffdca9_0%,#f7c87d_100%)] text-[#5d3e15]"
+                                : "bg-[#f7efe7] text-[#4f443b]"
+                            }`}
+                          >
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.1em] opacity-70">
+                              {isMine ? "You" : message.senderName}
+                            </div>
+                            <div className="mt-1 whitespace-pre-wrap break-words">{message.text}</div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="flex h-full items-center justify-center text-sm text-[#8c7e73]">
+                    No messages yet. Start with a quick check-in.
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-4 flex gap-2">
+                <textarea
+                  value={draft}
+                  onChange={(event) => setDraft(event.target.value)}
+                  placeholder={`Message ${otherUserName}...`}
+                  className="min-h-[104px] flex-1 resize-none rounded-[18px] border border-[#e3d7ca] bg-white px-4 py-3 text-sm text-[#2f2a26] outline-none transition placeholder:text-[#a29185] focus:border-[#cfb8a4]"
+                />
+                <button
+                  type="button"
+                  onClick={() => void handleSend()}
+                  disabled={sending || !draft.trim()}
+                  className="inline-flex h-[52px] shrink-0 items-center gap-2 self-end rounded-full border border-[#dccfc2] bg-white px-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {sending ? (
+                    <LoaderCircle className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                  Send
+                </button>
+              </div>
+
+              {errorMessage && (
+                <div className="mt-3 rounded-[14px] border border-[#eadfd3] bg-[#fbf6f0] px-4 py-3 text-sm text-[#7b6256]">
+                  {errorMessage}
+                </div>
+              )}
+            </div>
+          ) : null}
 
           <div className="mt-4 rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] px-4 py-4">
             <div className="flex items-start gap-3">
