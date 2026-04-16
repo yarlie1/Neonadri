@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createClient } from "../../../lib/supabase/client";
 import { useRouter } from "next/navigation";
 import {
   Map,
@@ -49,7 +48,6 @@ export default function EditMeetupForm({
   userId,
   initialPost,
 }: EditMeetupFormProps) {
-  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
 
   const searchInputRef = useRef<HTMLInputElement | null>(null);
@@ -231,32 +229,43 @@ export default function EditMeetupForm({
     }
 
     setSaving(true);
+    try {
+      const response = await fetch("/api/posts/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          post_id: postId,
+          user_id: userId,
+          meeting_purpose: meetingPurpose,
+          meeting_time: meetingTime,
+          duration_minutes: Number(durationMinutes),
+          location: confirmedAddress || location,
+          place_name: placeName || location,
+          latitude,
+          longitude,
+          target_gender: targetGender,
+          target_age_group: targetAgeGroup,
+          benefit_amount: benefitAmount,
+        }),
+      });
 
-    const { error } = await supabase
-      .from("posts")
-      .update({
-        meeting_purpose: meetingPurpose,
-        meeting_time: meetingTime,
-        duration_minutes: Number(durationMinutes),
-        location: confirmedAddress || location,
-        place_name: placeName || location,
-        latitude,
-        longitude,
-        target_gender: targetGender,
-        target_age_group: targetAgeGroup,
-        benefit_amount: benefitAmount,
-      })
-      .eq("id", postId)
-      .eq("user_id", userId);
+      const result = await response.json().catch(() => null);
 
-    setSaving(false);
+      if (!response.ok) {
+        setMessage(result?.error || "Failed to save meetup.");
+        setSaving(false);
+        return;
+      }
 
-    if (error) {
-      setMessage(error.message);
-      return;
+      window.location.replace(`/posts/${postId}`);
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "Failed to save meetup."
+      );
+      setSaving(false);
     }
-
-    router.push(`/posts/${postId}`);
   };
 
   return (
