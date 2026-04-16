@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
 import {
   Menu,
@@ -102,15 +102,14 @@ export default function TopNav() {
   const [pendingCount, setPendingCount] = useState(0);
   const [hasNewChatActivity, setHasNewChatActivity] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [currentSearch, setCurrentSearch] = useState("");
   const menuRef = useRef<HTMLDivElement | null>(null);
   const loggingOutRef = useRef(false);
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-
+  
   const currentPathWithSearch = useMemo(() => {
-    const query = searchParams.toString();
-    return query ? `${pathname}?${query}` : pathname;
-  }, [pathname, searchParams]);
+    return currentSearch ? `${pathname}${currentSearch}` : pathname;
+  }, [pathname, currentSearch]);
 
   const loginHref =
     pathname === "/login"
@@ -125,6 +124,11 @@ export default function TopNav() {
       browserTimeZone
     )}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setCurrentSearch(window.location.search || "");
+  }, [pathname]);
 
   useEffect(() => {
     let mounted = true;
