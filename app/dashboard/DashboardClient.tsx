@@ -400,6 +400,11 @@ function MatchesTabPanel({
                   Review after meetup
                 </div>
               )}
+
+              <CompactActionButton href={`/matches/${item.id}/chat`}>
+                <HeartHandshake className="h-3.5 w-3.5" />
+                Open Chat
+              </CompactActionButton>
             </div>
           </div>
         );

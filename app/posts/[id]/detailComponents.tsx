@@ -17,6 +17,7 @@ import {
   Laptop,
   Languages,
   MapPin,
+  MessageSquare,
   MessageSquareText,
   Mic,
   Smile,
@@ -666,6 +667,16 @@ export function MatchReviewPanel({
             Leave Review
           </Link>
         )}
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <Link
+          href={`/matches/${matchedRecordId}/chat`}
+          className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+        >
+          <MessageSquare className="h-4 w-4 text-[#8b7367]" />
+          Open Chat
+        </Link>
       </div>
 
       <div className="mt-4 rounded-[18px] border border-[#ece1d4] bg-[#fbf6f0] px-4 py-3 text-sm leading-6 text-[#6a5e54]">
