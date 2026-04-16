@@ -83,6 +83,9 @@ export default function EditMeetupForm({
   const [benefitAmount, setBenefitAmount] = useState(
     initialPost.benefit_amount || ""
   );
+  const [benefitConfirmed, setBenefitConfirmed] = useState(
+    !!initialPost.benefit_amount
+  );
   const [latitude, setLatitude] = useState(initialPost.latitude ?? null);
   const [longitude, setLongitude] = useState(initialPost.longitude ?? null);
   const [locationConfirmed, setLocationConfirmed] = useState(
@@ -204,6 +207,10 @@ export default function EditMeetupForm({
   }, [meetingTime]);
 
   useEffect(() => {
+    setBenefitConfirmed(!!benefitAmount && benefitAmount === (initialPost.benefit_amount || ""));
+  }, [benefitAmount, initialPost.benefit_amount]);
+
+  useEffect(() => {
     if (!window.google || !searchInputRef.current) return;
 
     if (!autocompleteRef.current) {
@@ -296,6 +303,11 @@ export default function EditMeetupForm({
       setMessage(
         "Please choose one exact location from the dropdown or map picker."
       );
+      return;
+    }
+
+    if (benefitAmount && !benefitConfirmed) {
+      setMessage("Please confirm the host payment note before saving the meetup.");
       return;
     }
 
@@ -566,21 +578,27 @@ export default function EditMeetupForm({
             </select>
           </div>
 
-          <p className="px-1 text-xs leading-5 text-[#8b7f74]">
-            If this meetup is matched and completed, you pay this amount to the guest.
-          </p>
-
           {benefitAmount && (
-            <div className="rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#5f5347]">
-              You pay <span className="font-semibold text-[#2f2a26]">{benefitAmount}</span> to the guest after the meetup is completed.
-            </div>
+            <label className="flex items-start gap-3 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#5f5347]">
+              <input
+                type="checkbox"
+                checked={benefitConfirmed}
+                onChange={(e) => setBenefitConfirmed(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-[#ccb9a7] text-[#a48f7a] focus:ring-[#a48f7a]/30"
+              />
+              <span>
+                I understand that I will pay{" "}
+                <span className="font-semibold text-[#2f2a26]">{benefitAmount}</span>{" "}
+                directly to my guest after the meetup.
+              </span>
+            </label>
           )}
         </div>
 
         <div className="mt-6 flex gap-2">
           <button
             onClick={handleSave}
-            disabled={saving}
+            disabled={saving || (!!benefitAmount && !benefitConfirmed)}
             className="flex-1 rounded-full bg-[#a48f7a] py-4 text-base font-semibold text-white transition hover:bg-[#927d69] disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save Meetup"}

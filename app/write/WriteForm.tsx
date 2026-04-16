@@ -52,6 +52,7 @@ export default function WriteForm({ userId }: { userId: string }) {
   const [targetGender, setTargetGender] = useState("");
   const [targetAgeGroup, setTargetAgeGroup] = useState("");
   const [benefitAmount, setBenefitAmount] = useState("");
+  const [benefitConfirmed, setBenefitConfirmed] = useState(false);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [locationConfirmed, setLocationConfirmed] = useState(false);
@@ -166,6 +167,10 @@ export default function WriteForm({ userId }: { userId: string }) {
       setMeetingTime(getDefaultMeetingTime());
     }
   }, [meetingTime]);
+
+  useEffect(() => {
+    setBenefitConfirmed(false);
+  }, [benefitAmount]);
 
   useEffect(() => {
     if (!meetingTime) return;
@@ -289,6 +294,11 @@ export default function WriteForm({ userId }: { userId: string }) {
       setMessage(
         "Please choose one exact location from the dropdown or map picker."
       );
+      return;
+    }
+
+    if (benefitAmount && !benefitConfirmed) {
+      setMessage("Please confirm the host payment note before creating the meetup.");
       return;
     }
 
@@ -565,21 +575,29 @@ export default function WriteForm({ userId }: { userId: string }) {
             </select>
           </div>
 
-          <p className="px-1 text-xs leading-5 text-[#8b7f74]">
-            If this meetup is matched and completed, you pay this amount to the guest.
-          </p>
-
           {benefitAmount && (
-            <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm text-[#5f5347]`}>
-              You pay <span className="font-semibold text-[#2f2a26]">{benefitAmount}</span> to the guest after the meetup is completed.
-            </div>
+            <label
+              className={`${SOFT_CARD_CLASS} flex items-start gap-3 px-4 py-3 text-sm text-[#5f5347]`}
+            >
+              <input
+                type="checkbox"
+                checked={benefitConfirmed}
+                onChange={(e) => setBenefitConfirmed(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-[#ccb9a7] text-[#a48f7a] focus:ring-[#a48f7a]/30"
+              />
+              <span>
+                I understand that I will pay{" "}
+                <span className="font-semibold text-[#2f2a26]">{benefitAmount}</span>{" "}
+                directly to my guest after the meetup.
+              </span>
+            </label>
           )}
         </div>
 
         <button
           type="button"
           onClick={handleCreate}
-          disabled={saving}
+          disabled={saving || (!!benefitAmount && !benefitConfirmed)}
           className={`mt-6 w-full ${PRIMARY_BUTTON_CLASS} py-4 text-base font-semibold`}
         >
           {saving ? "Creating..." : "Create Meetup"}
