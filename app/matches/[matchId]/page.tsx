@@ -1,5 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import { cookies } from "next/headers";
+import Link from "next/link";
 import { createClient } from "../../../lib/supabase/server";
 import { getOrCreateAuthorizedMatchChat } from "../../../lib/chat/matchChats";
 import {
@@ -14,6 +15,32 @@ type PageProps = {
     matchId: string;
   };
 };
+
+function MatchChatErrorState({ code }: { code: string }) {
+  return (
+    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
+      <div className="mx-auto max-w-2xl rounded-[24px] border border-[#eadfd3] bg-white/92 p-5 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
+          Chat unavailable
+        </div>
+        <div className="mt-2 text-xl font-bold tracking-[-0.03em] text-[#2f2a26]">
+          We could not open this match chat yet.
+        </div>
+        <p className="mt-3 text-sm leading-6 text-[#6a5e54]">
+          Debug code: <span className="font-semibold text-[#4f443b]">{code}</span>
+        </p>
+        <div className="mt-5">
+          <Link
+            href="/dashboard?tab=matches"
+            className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+          >
+            Back to Matches
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
+}
 
 export default async function MatchChatPage({ params }: PageProps) {
   const matchId = Number(params.matchId);
@@ -43,10 +70,8 @@ export default async function MatchChatPage({ params }: PageProps) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "MATCH_CHAT_FAILED";
-    if (message === "MATCH_FORBIDDEN" || message === "MATCH_NOT_READY") {
-      redirect("/dashboard?tab=matches");
-    }
-    notFound();
+    console.error("[match-chat]", { matchId, userId: user.id, message });
+    return <MatchChatErrorState code={message} />;
   }
 
   const { data: postData } = await supabase
