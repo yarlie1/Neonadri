@@ -72,13 +72,14 @@ export async function POST(req: Request) {
       .eq("user_id", user.id);
 
     if (error) {
+      console.error("Post update failed", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
       return NextResponse.json(
-        {
-          error: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code,
-        },
+        { error: "Failed to update meetup." },
         { status: 500 }
       );
     }

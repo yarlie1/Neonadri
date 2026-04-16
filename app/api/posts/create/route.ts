@@ -35,13 +35,14 @@ export async function POST(req: Request) {
       .select();
 
     if (error) {
+      console.error("Post create failed", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
       return NextResponse.json(
-        {
-          error: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code,
-        },
+        { error: "Failed to create meetup." },
         { status: 500 }
       );
     }

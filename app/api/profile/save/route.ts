@@ -80,13 +80,14 @@ export async function POST(req: Request) {
     const { error } = await supabase.from("profiles").upsert(payload);
 
     if (error) {
+      console.error("Profile save failed", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
       return NextResponse.json(
-        {
-          error: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code,
-        },
+        { error: "Failed to save profile." },
         { status: 500 }
       );
     }
