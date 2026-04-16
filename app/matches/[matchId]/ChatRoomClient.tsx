@@ -106,7 +106,6 @@ export default function ChatRoomClient({
   matchId,
   otherUserName,
   initialOtherUserLastSeenAt,
-  purposeLabel,
   meetingTimeLabel,
   placeLabel,
   roomId,
@@ -117,7 +116,6 @@ export default function ChatRoomClient({
   matchId: number;
   otherUserName: string;
   initialOtherUserLastSeenAt: string | null;
-  purposeLabel: string;
   meetingTimeLabel: string;
   placeLabel: string;
   roomId: string;
@@ -361,30 +359,31 @@ export default function ChatRoomClient({
       <div className="mx-auto max-w-3xl">
         <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-5">
           {isProviderConfigured ? (
-            <div className="rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] p-4">
-              <div className="border-b border-[#eadfd3] pb-4">
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#5f453b]">
+            <>
+              <div className="border-b border-[#eadfd3] pb-3">
+                <div className="flex items-center justify-between gap-3 text-xs font-medium text-[#8c7e73]">
+                  <span className="font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                    Live chat
+                  </span>
+                  <div className="flex items-center justify-end gap-2">
+                    <span
+                      className={`inline-flex h-2.5 w-2.5 rounded-full ${
+                        connectionLabel === "Connected" ? "bg-[#3aa76d]" : "bg-[#d8cec3]"
+                      }`}
+                    />
+                    <span>{presenceLabel}</span>
+                  </div>
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#5f453b]">
                   <span className="font-semibold text-[#2b1f1a]">{otherUserName}</span>
                   <span>{meetingTimeLabel}</span>
                   <span className="truncate">{placeLabel}</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 border-b border-[#eadfd3] py-3 text-xs font-medium text-[#8c7e73]">
-                <span className="font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                  Live chat
-                </span>
-                <span
-                  className={`inline-flex h-2.5 w-2.5 rounded-full ${
-                    connectionLabel === "Connected" ? "bg-[#b56c57]" : "bg-[#d8cec3]"
-                  }`}
-                />
-                <span>{presenceLabel}</span>
-              </div>
-
               <div
                 ref={listRef}
-                className="mt-4 h-[420px] overflow-y-auto rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#fff8f1_100%)] px-3 py-3 sm:h-[460px] sm:px-4"
+                className="mt-4 h-[315px] overflow-y-auto rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#fff8f1_100%)] px-3 py-3 sm:h-[345px] sm:px-4"
               >
                 {messages.length > 0 ? (
                   <div className="space-y-3">
@@ -463,7 +462,7 @@ export default function ChatRoomClient({
               <div className="mt-4 text-center text-[11px] font-medium text-[#9b8f84]">
                 Chat Powered by PubNub
               </div>
-            </div>
+            </>
           ) : (
             <div className="rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] px-4 py-4">
               <div className="flex items-start gap-3">

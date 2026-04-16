@@ -7,7 +7,7 @@ import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
 } from "../../../../lib/userTimeZone";
-import { formatMeetingTime } from "../../../../lib/meetingTime";
+import { formatMeetingTime, parseMeetingTime } from "../../../../lib/meetingTime";
 import ChatRoomClient from "../ChatRoomClient";
 
 type PageProps = {
@@ -15,6 +15,28 @@ type PageProps = {
     matchId: string;
   };
 };
+
+function formatShortMeetingTime(
+  meetingTime: string | null,
+  timeZone: string
+) {
+  const parsed = parseMeetingTime(meetingTime, timeZone);
+  if (!parsed) return formatMeetingTime(meetingTime, timeZone);
+
+  const dateLabel = parsed.toLocaleDateString(undefined, {
+    timeZone,
+    month: "short",
+    day: "numeric",
+  });
+
+  const timeLabel = parsed.toLocaleTimeString([], {
+    timeZone,
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  return `${dateLabel} / ${timeLabel}`;
+}
 
 function MatchChatErrorState({ code }: { code: string }) {
   return (
@@ -92,8 +114,10 @@ export default async function MatchChatPage({ params }: PageProps) {
     .eq("id", user.id)
     .maybeSingle();
 
-  const purposeLabel = postData?.meeting_purpose || "Meetup";
-  const meetingTimeLabel = formatMeetingTime(postData?.meeting_time || null, userTimeZone);
+  const meetingTimeLabel = formatShortMeetingTime(
+    postData?.meeting_time || null,
+    userTimeZone
+  );
   const placeLabel = postData?.place_name || postData?.location || "Selected place";
   const otherUserName = otherProfileData?.display_name || "Participant";
   const currentUserName = currentProfileData?.display_name || "You";
@@ -111,7 +135,6 @@ export default async function MatchChatPage({ params }: PageProps) {
           ? matchChat.chat.last_seen_by_guest_at
           : matchChat.chat.last_seen_by_host_at
       }
-      purposeLabel={purposeLabel}
       meetingTimeLabel={meetingTimeLabel}
       placeLabel={placeLabel}
       roomId={matchChat.chat.external_room_id}
@@ -121,3 +144,4 @@ export default async function MatchChatPage({ params }: PageProps) {
     />
   );
 }
+
