@@ -208,10 +208,15 @@ export default function TopNav() {
       try {
         if (!mounted) return;
 
-        if (_event === "SIGNED_OUT" || !session?.user) {
+        if (_event === "SIGNED_OUT") {
           resetSignedOutState();
           router.replace("/");
           router.refresh();
+          return;
+        }
+
+        if (!session?.user) {
+          resetSignedOutState();
           return;
         }
 
