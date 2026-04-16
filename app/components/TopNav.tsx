@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
 import {
   Menu,
@@ -81,6 +81,7 @@ function isActivePath(pathname: string, href: string) {
 
 export default function TopNav() {
   const supabase = useMemo(() => createClient(), []);
+  const router = useRouter();
   const [user, setUser] = useState<SimpleUser>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
@@ -152,6 +153,8 @@ export default function TopNav() {
 
         if (_event === "SIGNED_OUT" || !session?.user) {
           resetSignedOutState();
+          router.replace("/");
+          router.refresh();
           return;
         }
 
@@ -163,6 +166,7 @@ export default function TopNav() {
 
         setUser(nextUser);
         setMenuOpen(false);
+        router.refresh();
 
         if (session?.user) {
           const count = await loadPendingCount(session.user.id);
@@ -180,7 +184,7 @@ export default function TopNav() {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, [router, supabase]);
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
@@ -227,7 +231,8 @@ export default function TopNav() {
     } catch (error) {
       console.error("TopNav logout error:", error);
     } finally {
-      window.location.replace("/");
+      router.replace("/");
+      router.refresh();
     }
   };
 
