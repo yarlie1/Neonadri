@@ -93,7 +93,7 @@ export function HomeFilterCard({
 }: HomeFilterCardProps) {
   return (
     <div
-      className={`sticky top-16 z-20 rounded-[28px] transition ${
+      className={`rounded-[28px] transition ${
         isPinned
           ? "border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdf9_0%,#faf1e8_100%)] shadow-[0_18px_40px_rgba(92,69,52,0.12)]"
           : "border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdf9_0%,#fbf3eb_100%)] shadow-[0_8px_20px_rgba(92,69,52,0.04)]"

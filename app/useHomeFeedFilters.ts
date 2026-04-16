@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const HOME_FILTER_STICKY_TOP = 76;
+
 export const PURPOSE_OPTIONS = [
   "All",
   "Coffee Chat",
@@ -96,7 +98,9 @@ export function useHomeFeedFilters(viewerPreference: {
   useEffect(() => {
     const handleScroll = () => {
       if (!filterRef.current) return;
-      setIsFilterPinned(filterRef.current.getBoundingClientRect().top <= 64);
+      setIsFilterPinned(
+        filterRef.current.getBoundingClientRect().top <= HOME_FILTER_STICKY_TOP
+      );
     };
 
     handleScroll();
