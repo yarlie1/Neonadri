@@ -911,7 +911,14 @@ export default function DashboardClient({
                   active={receivedFilter === "pending"}
                   onClick={() => setReceivedFilter("pending")}
                 >
-                  Pending
+                  <span className="inline-flex items-center gap-2">
+                    Pending
+                    {pendingReceived > 0 ? (
+                      <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#c96f5d] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
+                        {pendingReceived > 99 ? "99+" : pendingReceived}
+                      </span>
+                    ) : null}
+                  </span>
                 </FilterPill>
               </div>
             </div>
