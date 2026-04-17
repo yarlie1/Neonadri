@@ -67,6 +67,7 @@ export default function TopNav() {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const loggingOutRef = useRef(false);
   const pathname = usePathname();
+  const isHomeTest = pathname.startsWith("/home-test");
   
   const currentPathWithSearch = useMemo(() => {
     return currentSearch ? `${pathname}${currentSearch}` : pathname;
@@ -293,25 +294,47 @@ export default function TopNav() {
 
   const navBtn = (active: boolean) =>
     `inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition ${
-      active
+      isHomeTest
+        ? active
+          ? "border-[#86e6ff5c] bg-[linear-gradient(180deg,rgba(16,42,68,0.96)_0%,rgba(10,24,40,0.96)_100%)] text-[#e7fbff] shadow-[0_0_24px_rgba(67,189,235,0.18)]"
+          : "border-[#74d4ff30] bg-[linear-gradient(180deg,rgba(11,28,46,0.94)_0%,rgba(8,20,33,0.94)_100%)] text-[#9cd4e6] shadow-[0_10px_24px_rgba(8,56,94,0.18)] hover:bg-[linear-gradient(180deg,rgba(13,34,55,0.96)_0%,rgba(9,22,37,0.96)_100%)]"
+        : active
         ? "border-[#dfcaba] bg-[linear-gradient(180deg,#fffdf9_0%,#f3e7db_100%)] text-[#3f3226] shadow-[0_12px_28px_rgba(120,86,52,0.10)]"
         : "border-[#e5d8cb] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e7_100%)] text-[#5a5149] shadow-[0_8px_18px_rgba(93,68,48,0.04)] hover:bg-[#f6eee6]"
     }`;
 
-  const primary =
-    "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
+  const primary = isHomeTest
+    ? "inline-flex items-center gap-2 rounded-full border border-[#86e6ff5c] bg-[linear-gradient(135deg,#173b5f_0%,#0d2138_100%)] px-4 py-2.5 text-sm font-medium text-[#dffbff] shadow-[0_16px_34px_rgba(22,103,167,0.28)] transition hover:brightness-[1.06]"
+    : "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
 
-  const mobileItem =
-    "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
+  const mobileItem = isHomeTest
+    ? "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#9cd4e6] transition hover:bg-[#102840]"
+    : "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#ebdfd4] bg-[rgba(255,250,245,0.84)] backdrop-blur-xl">
-      <div className="border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(255,252,248,0.95),rgba(249,240,232,0.88))]">
+    <header
+      className={`sticky top-0 z-50 backdrop-blur-xl ${
+        isHomeTest
+          ? "border-b border-[#74d4ff24] bg-[rgba(6,14,24,0.84)]"
+          : "border-b border-[#ebdfd4] bg-[rgba(255,250,245,0.84)]"
+      }`}
+    >
+      <div
+        className={
+          isHomeTest
+            ? "border-b border-[#74d4ff18] bg-[linear-gradient(180deg,rgba(11,24,40,0.96),rgba(8,18,31,0.88))]"
+            : "border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(255,252,248,0.95),rgba(249,240,232,0.88))]"
+        }
+      >
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#e6cdbb] bg-[radial-gradient(circle_at_top,_#f6e5d6,_#c99679_80%)] text-base font-bold tracking-[-0.05em] text-white shadow-[0_14px_30px_rgba(160,111,82,0.18)]"
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base font-bold tracking-[-0.05em] text-white ${
+                isHomeTest
+                  ? "border-[#7adfff55] bg-[radial-gradient(circle_at_top,_#60dcff,_#14365a_76%)] shadow-[0_0_26px_rgba(58,186,242,0.28)]"
+                  : "border-[#e6cdbb] bg-[radial-gradient(circle_at_top,_#f6e5d6,_#c99679_80%)] shadow-[0_14px_30px_rgba(160,111,82,0.18)]"
+              }`}
               onClick={closeMenu}
               aria-label="Neonadri home"
             >
@@ -322,12 +345,18 @@ export default function TopNav() {
               <div className="flex flex-col items-start justify-center gap-[2px] sm:h-10 sm:justify-between sm:gap-0">
                 <Link
                   href="/"
-                  className="block w-full truncate text-[20px] font-extrabold leading-none tracking-[-0.05em] text-[#1f1b18] sm:text-[25px]"
+                  className={`block w-full truncate text-[20px] font-extrabold leading-none tracking-[-0.05em] sm:text-[25px] ${
+                    isHomeTest ? "text-[#f2fdff]" : "text-[#1f1b18]"
+                  }`}
                   onClick={closeMenu}
                 >
                   Neonadri
                 </Link>
-                <div className="block w-full truncate text-[9px] font-medium uppercase leading-none tracking-[0.16em] text-[#8d7d71] sm:text-[10px] sm:tracking-[0.18em]">
+                <div
+                  className={`block w-full truncate text-[9px] font-medium uppercase leading-none tracking-[0.16em] sm:text-[10px] sm:tracking-[0.18em] ${
+                    isHomeTest ? "text-[#84dff2]" : "text-[#8d7d71]"
+                  }`}
+                >
                   AI-generated social space
                 </div>
               </div>
@@ -400,22 +429,42 @@ export default function TopNav() {
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#e3d5c8] bg-[linear-gradient(180deg,#fffdfb_0%,#f6ede5_100%)] text-[#5a5149] shadow-[0_10px_24px_rgba(90,70,48,0.10)] transition hover:bg-[#f4ece4]"
+              className={`inline-flex h-11 w-11 items-center justify-center rounded-full border transition ${
+                isHomeTest
+                  ? "border-[#74d4ff33] bg-[linear-gradient(180deg,#10253c_0%,#0b1828_100%)] text-[#9cefff] shadow-[0_10px_24px_rgba(14,87,140,0.22)] hover:bg-[#102840]"
+                  : "border-[#e3d5c8] bg-[linear-gradient(180deg,#fffdfb_0%,#f6ede5_100%)] text-[#5a5149] shadow-[0_10px_24px_rgba(90,70,48,0.10)] hover:bg-[#f4ece4]"
+              }`}
             >
               {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 top-14 z-50 w-72 overflow-hidden rounded-[30px] border border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#f7efe7_100%)] shadow-[0_24px_50px_rgba(80,60,40,0.16)]">
-                <div className="border-b border-[#efe3d8] bg-[linear-gradient(180deg,#fff8f0,#fffdf8)] px-5 py-4">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#b27f61]">
+              <div
+                className={`absolute right-0 top-14 z-50 w-72 overflow-hidden rounded-[30px] border ${
+                  isHomeTest
+                    ? "border-[#74d4ff33] bg-[linear-gradient(180deg,#10253c_0%,#081321_100%)] shadow-[0_24px_50px_rgba(8,69,113,0.28)]"
+                    : "border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#f7efe7_100%)] shadow-[0_24px_50px_rgba(80,60,40,0.16)]"
+                }`}
+              >
+                <div
+                  className={`border-b px-5 py-4 ${
+                    isHomeTest
+                      ? "border-[#74d4ff1f] bg-[linear-gradient(180deg,#132c47,#0a1624)]"
+                      : "border-[#efe3d8] bg-[linear-gradient(180deg,#fff8f0,#fffdf8)]"
+                  }`}
+                >
+                  <div className={`text-[11px] font-semibold uppercase tracking-[0.28em] ${isHomeTest ? "text-[#7edcff]" : "text-[#b27f61]"}`}>
                     Neonadri
                   </div>
-                  <div className="mt-1 text-base font-semibold text-[#2d231d]">
-                    Meet someone new without the awkward start.
+                  <div className={`mt-1 text-base font-semibold ${isHomeTest ? "text-[#edfaff]" : "text-[#2d231d]"}`}>
+                    {isHomeTest
+                      ? "AI-softened social discovery."
+                      : "Meet someone new without the awkward start."}
                   </div>
-                  <div className="mt-1 text-sm text-[#786b61]">
-                    Warm meetups, clear plans, and a softer way to begin.
+                  <div className={`mt-1 text-sm ${isHomeTest ? "text-[#93b9cb]" : "text-[#786b61]"}`}>
+                    {isHomeTest
+                      ? "Cyber-chill surfaces, same routes, same structure."
+                      : "Warm meetups, clear plans, and a softer way to begin."}
                   </div>
                 </div>
 
@@ -423,7 +472,13 @@ export default function TopNav() {
                   <Link
                     href="/"
                     onClick={closeMenu}
-                    className={`${mobileItem} ${isActivePath(pathname, "/") ? "bg-[#f4e6d8] text-[#3f3226]" : ""}`}
+                    className={`${mobileItem} ${
+                      isActivePath(pathname, "/")
+                        ? isHomeTest
+                          ? "bg-[#14304d] text-[#effdff]"
+                          : "bg-[#f4e6d8] text-[#3f3226]"
+                        : ""
+                    }`}
                   >
                     <House className="h-4 w-4" />
                     Home
@@ -438,6 +493,12 @@ export default function TopNav() {
                           isActivePath(pathname, "/dashboard")
                             ? "bg-[#f4e6d8] text-[#3f3226]"
                             : "text-[#5a5149] hover:bg-[#f4ece4]"
+                        } ${
+                          isHomeTest && isActivePath(pathname, "/dashboard")
+                            ? "!bg-[#14304d] !text-[#effdff]"
+                            : isHomeTest
+                            ? "!text-[#9cd4e6] hover:!bg-[#102840]"
+                            : ""
                         }`}
                       >
                         <span className="inline-flex items-center gap-2">
@@ -453,7 +514,13 @@ export default function TopNav() {
                       <Link
                         href="/profile"
                         onClick={closeMenu}
-                        className={`${mobileItem} ${pathname === "/profile" || pathname.startsWith("/profile/") ? "bg-[#f4e6d8] text-[#3f3226]" : ""}`}
+                        className={`${mobileItem} ${
+                          pathname === "/profile" || pathname.startsWith("/profile/")
+                            ? isHomeTest
+                              ? "bg-[#14304d] text-[#effdff]"
+                              : "bg-[#f4e6d8] text-[#3f3226]"
+                            : ""
+                        }`}
                       >
                         <UserCircle2 className="h-4 w-4" />
                         Profile
@@ -462,19 +529,31 @@ export default function TopNav() {
                       <Link
                         href="/write"
                         onClick={closeMenu}
-                        className="mt-1 inline-flex items-center gap-2 rounded-[18px] bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                        className={`mt-1 inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium transition ${
+                          isHomeTest
+                            ? "bg-[linear-gradient(135deg,#173b5f_0%,#0d2138_100%)] text-[#dffbff] hover:brightness-[1.06]"
+                            : "bg-[#a48f7a] text-white hover:bg-[#927d69]"
+                        }`}
                       >
                         <Plus className="h-4 w-4" />
                         Create Meetup
                       </Link>
 
-                      <div className="my-3 border-t border-[#f0e8de]" />
+                      <div
+                        className={`my-3 border-t ${
+                          isHomeTest ? "border-[#74d4ff1f]" : "border-[#f0e8de]"
+                        }`}
+                      />
 
                       <button
                         type="button"
                         onClick={handleLogout}
                         disabled={isLoggingOut}
-                        className={`inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-left text-sm font-medium text-[#8b5e3c] transition hover:bg-[#f8efe7] ${
+                        className={`inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-left text-sm font-medium transition ${
+                          isHomeTest
+                            ? "text-[#90d8eb] hover:bg-[#102840]"
+                            : "text-[#8b5e3c] hover:bg-[#f8efe7]"
+                        } ${
                           isLoggingOut ? "cursor-not-allowed opacity-60" : ""
                         }`}
                       >
@@ -487,7 +566,13 @@ export default function TopNav() {
                       <Link
                         href={loginHref}
                         onClick={closeMenu}
-                        className={`${mobileItem} ${isActivePath(pathname, "/login") ? "bg-[#f4e6d8] text-[#3f3226]" : ""}`}
+                        className={`${mobileItem} ${
+                          isActivePath(pathname, "/login")
+                            ? isHomeTest
+                              ? "bg-[#14304d] text-[#effdff]"
+                              : "bg-[#f4e6d8] text-[#3f3226]"
+                            : ""
+                        }`}
                       >
                         <LogIn className="h-4 w-4" />
                         Log In
@@ -496,7 +581,11 @@ export default function TopNav() {
                       <Link
                         href="/signup"
                         onClick={closeMenu}
-                        className="mt-1 inline-flex items-center gap-2 rounded-[18px] bg-[#a48f7a] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#927d69]"
+                        className={`mt-1 inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium transition ${
+                          isHomeTest
+                            ? "bg-[linear-gradient(135deg,#173b5f_0%,#0d2138_100%)] text-[#dffbff] hover:brightness-[1.06]"
+                            : "bg-[#a48f7a] text-white hover:bg-[#927d69]"
+                        }`}
                       >
                         <UserPlus className="h-4 w-4" />
                         Sign Up
