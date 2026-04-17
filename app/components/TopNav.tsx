@@ -293,7 +293,7 @@ export default function TopNav() {
   const closeMenu = () => setMenuOpen(false);
 
   const navBtn = (active: boolean) =>
-    `inline-flex items-center gap-2 rounded-[18px] border px-4 py-2 text-sm font-medium transition ${
+    `inline-flex items-center gap-2 rounded-[18px] border px-3.5 py-2.5 text-sm font-medium transition ${
       isHomeTest
         ? active
           ? "border-[#e8edf1] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(240,244,246,0.99)_100%)] text-[#2c3941] shadow-[0_12px_24px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,0.99)]"
@@ -304,7 +304,7 @@ export default function TopNav() {
     }`;
 
   const primary = isHomeTest
-    ? "inline-flex items-center gap-2 rounded-[18px] border border-[#e8edf1] bg-[linear-gradient(135deg,#ffffff_0%,#eff3f5_100%)] px-4 py-2 text-sm font-medium text-[#34424b] shadow-[0_14px_28px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#dde4e8] hover:text-[#2a3740]"
+    ? "inline-flex items-center gap-2 rounded-[18px] border border-[#e8edf1] bg-[linear-gradient(135deg,#ffffff_0%,#eff3f5_100%)] px-3.5 py-2.5 text-sm font-medium text-[#34424b] shadow-[0_14px_28px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#dde4e8] hover:text-[#2a3740]"
     : "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
 
   const mobileItem = isHomeTest
@@ -326,7 +326,7 @@ export default function TopNav() {
             : "border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(255,252,248,0.95),rgba(249,240,232,0.88))]"
         }
       >
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2 sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"

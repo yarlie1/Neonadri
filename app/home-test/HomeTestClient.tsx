@@ -82,8 +82,8 @@ export default function HomeTestClient({
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#eceff1] px-4 py-5 text-[#2f3a42]">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#fbfcfd_24%,#eef2f4_60%,#e3e8ec_100%)]" />
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.7),transparent_24%),radial-gradient(circle_at_84%_16%,rgba(247,249,250,0.34),transparent_22%),radial-gradient(circle_at_60%_100%,rgba(225,230,234,0.22),transparent_34%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#fcfdfe_24%,#eef2f4_58%,#e2e7eb_100%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.76),transparent_24%),radial-gradient(circle_at_84%_16%,rgba(251,252,253,0.42),transparent_22%),radial-gradient(circle_at_60%_100%,rgba(228,233,237,0.24),transparent_34%)]" />
       <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.18)_1px,transparent_1px)] bg-[size:22px_22px] opacity-36" />
       <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(120deg,transparent_0%,transparent_44%,rgba(255,255,255,0.28)_49%,transparent_54%,transparent_100%)] opacity-85" />
 
@@ -282,18 +282,18 @@ export default function HomeTestClient({
                   : "border-[#e4ebef] bg-[linear-gradient(180deg,rgba(248,250,252,0.985)_0%,rgba(228,235,240,0.95)_100%)]"
               }`}
             >
-              <div className="rounded-[18px] border border-[#e7edf1] bg-[linear-gradient(180deg,rgba(252,254,255,0.995)_0%,rgba(236,241,245,0.97)_100%)] px-4 py-3.5 shadow-[0_14px_24px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.98)]">
+              <div className="rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(180deg,rgba(253,254,255,0.998)_0%,rgba(238,243,246,0.975)_100%)] px-4 py-3.5 shadow-[0_16px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)]">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2.5">
                       <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] border border-[#d7dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f7_100%)] text-[#6f808a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]">
                         {getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}
                       </div>
-                      <div className="min-w-0 self-center">
+                      <div className="min-w-0">
                         <div className="truncate text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
                           {post.meeting_purpose || "Social meetup"}
                         </div>
-                        <div className="mt-1.5 text-xs text-[#6b767e]">
+                        <div className="mt-2 text-[12px] leading-none text-[#75818a]">
                           Hosted by {host.displayName}
                           {host.gender || host.ageGroup
                             ? ` | ${host.gender || "Unknown"}${
@@ -306,7 +306,13 @@ export default function HomeTestClient({
                   </div>
 
                   <span
-                    className={`shrink-0 rounded-[14px] border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] ${matchBadge.className} ${
+                    className={`shrink-0 rounded-[14px] border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_6px_14px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.78)] ${
+                      matchBadge.label.startsWith("Open")
+                        ? "border-[#d9e0e5] bg-[linear-gradient(180deg,#ffffff_0%,#edf2f5_100%)] text-[#4d646c]"
+                        : matchBadge.label === "Matched"
+                        ? "border-[#d8e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#edf2f5_100%)] text-[#54656d]"
+                        : "border-[#d9e0e4] bg-[linear-gradient(180deg,#ffffff_0%,#eef2f4_100%)] text-[#7b858c]"
+                    } ${
                       isExpired ? "opacity-70" : ""
                     }`}
                   >
@@ -332,7 +338,7 @@ export default function HomeTestClient({
                     </span>
                   </div>
 
-                  <div className="flex min-h-[36px] flex-wrap items-center justify-between gap-x-3 gap-y-1 px-1 pt-0.5 text-sm text-[#55646e]">
+                  <div className="flex min-h-[34px] flex-wrap items-center justify-between gap-x-3 gap-y-1 px-1 pt-0 text-sm text-[#55646e]">
                     <span className="inline-flex items-center gap-2">
                       <UserRound className="h-4 w-4 text-[#788b95]" />
                       {post.target_gender || "Any"} / {post.target_age_group || "Any"}
@@ -346,9 +352,9 @@ export default function HomeTestClient({
 
                 <div className="mt-3 flex items-center justify-between gap-3 rounded-[14px] border border-[#dde4e9] bg-[linear-gradient(90deg,rgba(252,253,254,0.96)_0%,rgba(237,241,244,0.88)_100%)] px-3 py-1.5">
                   <div className="text-xs uppercase tracking-[0.16em] text-[#7a8b95]">
-                    Refined silver mode
+                    Refined mode
                   </div>
-                  <div className="text-sm font-semibold text-[#314454]">
+                  <div className="text-right text-sm font-semibold text-[#314454]">
                     {getPurposeLabel(post.meeting_purpose)}
                   </div>
                 </div>
