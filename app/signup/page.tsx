@@ -54,6 +54,8 @@ const STEPS = [
 
 const DEFAULT_ABOUT_ME =
   "I enjoy meeting new people over coffee, walks, or low-pressure plans. I usually appreciate clear communication, relaxed energy, and a meetup that feels easy to settle into.";
+const DISPLAY_NAME_MAX_LENGTH = 24;
+const DISPLAY_NAME_LENGTH_MESSAGE = `Display name must be ${DISPLAY_NAME_MAX_LENGTH} characters or fewer.`;
 
 function ToggleChip({
   label,
@@ -164,6 +166,12 @@ export default function SignupPage() {
     try {
       setSubmitting(true);
       setMessage("");
+
+      if (displayName.trim().length > DISPLAY_NAME_MAX_LENGTH) {
+        setMessage(DISPLAY_NAME_LENGTH_MESSAGE);
+        setSubmitting(false);
+        return;
+      }
 
       const aboutMeValidation = validateAboutMeContent(aboutMe);
 
@@ -395,10 +403,16 @@ export default function SignupPage() {
                     </label>
                     <input
                       value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
+                      onChange={(e) =>
+                        setDisplayName(e.target.value.slice(0, DISPLAY_NAME_MAX_LENGTH))
+                      }
+                      maxLength={DISPLAY_NAME_MAX_LENGTH}
                       className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                       placeholder="How people will see you"
                     />
+                    <p className="mt-2 text-xs text-[#8c7668]">
+                      Up to {DISPLAY_NAME_MAX_LENGTH} characters.
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">

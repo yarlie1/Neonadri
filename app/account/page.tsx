@@ -50,6 +50,8 @@ const RESPONSE_NOTE_OPTIONS = [
   "Replies may be slow on weekdays",
   "Usually replies in the evening",
 ];
+const DISPLAY_NAME_MAX_LENGTH = 24;
+const DISPLAY_NAME_LENGTH_MESSAGE = `Display name must be ${DISPLAY_NAME_MAX_LENGTH} characters or fewer.`;
 
 type Profile = {
   id: string;
@@ -229,6 +231,12 @@ export default function AccountPage() {
     setMessage("");
     setSaving(true);
 
+    if (displayName.trim().length > DISPLAY_NAME_MAX_LENGTH) {
+      setMessage(DISPLAY_NAME_LENGTH_MESSAGE);
+      setSaving(false);
+      return;
+    }
+
     const aboutMeValidation = validateAboutMeContent(aboutMe);
 
     if (!aboutMeValidation.ok) {
@@ -368,10 +376,16 @@ export default function AccountPage() {
             </label>
             <input
               value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
+              onChange={(e) =>
+                setDisplayName(e.target.value.slice(0, DISPLAY_NAME_MAX_LENGTH))
+              }
+              maxLength={DISPLAY_NAME_MAX_LENGTH}
               className={INPUT_CLASS}
               placeholder="Your name"
             />
+            <p className="mt-2 text-xs text-[#8c7668]">
+              Up to {DISPLAY_NAME_MAX_LENGTH} characters.
+            </p>
           </div>
 
           <div className="mt-5 grid gap-5 sm:grid-cols-2">

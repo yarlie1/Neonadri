@@ -5,6 +5,8 @@ import {
   validateAboutMeContent,
 } from "../../../../lib/profileContent";
 
+const DISPLAY_NAME_MAX_LENGTH = 24;
+
 export async function POST(req: Request) {
   try {
     const supabase = await createClient();
@@ -28,6 +30,8 @@ export async function POST(req: Request) {
         ? body.about_me.trim()
         : "";
     const aboutMeValidation = validateAboutMeContent(aboutMeValue);
+    const displayNameValue =
+      typeof body.display_name === "string" ? body.display_name.trim() : "";
 
     if (!aboutMeValidation.ok) {
       return NextResponse.json(
@@ -36,12 +40,18 @@ export async function POST(req: Request) {
       );
     }
 
+    if (displayNameValue.length > DISPLAY_NAME_MAX_LENGTH) {
+      return NextResponse.json(
+        {
+          error: `Display name must be ${DISPLAY_NAME_MAX_LENGTH} characters or fewer.`,
+        },
+        { status: 400 }
+      );
+    }
+
     const payload = {
       id: user.id,
-      display_name:
-        typeof body.display_name === "string" && body.display_name.trim()
-          ? body.display_name.trim()
-          : null,
+      display_name: displayNameValue || null,
       bio:
         typeof body.bio === "string" && body.bio.trim() ? body.bio.trim() : null,
       about_me: aboutMeValue || null,
