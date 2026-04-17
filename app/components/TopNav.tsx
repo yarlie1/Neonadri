@@ -296,33 +296,33 @@ export default function TopNav() {
     `inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition ${
       isHomeTest
         ? active
-          ? "border-[#f4f7f9] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(241,245,247,0.99)_100%)] text-[#2d3a43] shadow-[0_14px_28px_rgba(146,154,162,0.14),inset_0_1px_0_rgba(255,255,255,0.99)]"
-          : "border-[#edf1f4] bg-[linear-gradient(180deg,rgba(253,253,253,0.96)_0%,rgba(243,246,248,0.96)_100%)] text-[#7a8389] shadow-[0_10px_24px_rgba(146,154,162,0.08)] hover:border-[#e3e8eb] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(246,249,251,0.99)_100%)] hover:text-[#606d75]"
+          ? "border-[#f1f5f8] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(241,245,247,0.99)_100%)] text-[#2d3a43] shadow-[0_14px_28px_rgba(146,154,162,0.14),inset_0_1px_0_rgba(255,255,255,0.99)]"
+          : "border-[#edf2f5] bg-[linear-gradient(180deg,rgba(253,253,253,0.96)_0%,rgba(243,246,248,0.96)_100%)] text-[#7a8389] shadow-[0_10px_24px_rgba(146,154,162,0.08)] hover:border-[#e4eaed] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(246,249,251,0.99)_100%)] hover:text-[#606d75]"
         : active
         ? "border-[#dfcaba] bg-[linear-gradient(180deg,#fffdf9_0%,#f3e7db_100%)] text-[#3f3226] shadow-[0_12px_28px_rgba(120,86,52,0.10)]"
         : "border-[#e5d8cb] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e7_100%)] text-[#5a5149] shadow-[0_8px_18px_rgba(93,68,48,0.04)] hover:bg-[#f6eee6]"
     }`;
 
   const primary = isHomeTest
-    ? "inline-flex items-center gap-2 rounded-[18px] border border-[#eef2f5] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-2.5 text-sm font-medium text-[#34424b] shadow-[0_16px_34px_rgba(146,154,162,0.13),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#e4e9ec] hover:text-[#2a3740]"
+    ? "inline-flex items-center gap-2 rounded-[18px] border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-2.5 text-sm font-medium text-[#34424b] shadow-[0_16px_34px_rgba(146,154,162,0.13),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#e5ebee] hover:text-[#2a3740]"
     : "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
 
   const mobileItem = isHomeTest
-    ? "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#707b82] transition hover:bg-[#f1f3f4] hover:text-[#4f5b64]"
+    ? "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#707b82] transition hover:bg-[#f3f6f8] hover:text-[#4f5b64]"
     : "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
 
   return (
     <header
       className={`sticky top-0 z-50 backdrop-blur-xl ${
         isHomeTest
-          ? "border-b border-[#eef2f5] bg-[rgba(248,250,251,0.84)]"
+          ? "border-b border-[#eef3f6] bg-[rgba(248,250,251,0.84)]"
           : "border-b border-[#ebdfd4] bg-[rgba(255,250,245,0.84)]"
       }`}
     >
       <div
         className={
           isHomeTest
-            ? "border-b border-[#eef2f5] bg-[linear-gradient(180deg,rgba(253,253,253,0.97),rgba(244,247,249,0.92))]"
+            ? "border-b border-[#eef3f6] bg-[linear-gradient(180deg,rgba(253,253,253,0.97),rgba(244,247,249,0.92))]"
             : "border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(255,252,248,0.95),rgba(249,240,232,0.88))]"
         }
       >
@@ -367,7 +367,7 @@ export default function TopNav() {
                 </Link>
                 <div
                   className={`block ${isHomeTest ? "" : "w-full truncate"} text-[9px] font-medium uppercase leading-none tracking-[0.16em] sm:text-[10px] sm:tracking-[0.18em] ${
-                    isHomeTest ? "text-[#7f878d]" : "text-[#8d7d71]"
+                    isHomeTest ? "text-[#80898f]" : "text-[#8d7d71]"
                   }`}
                 >
                   AI-generated social space
