@@ -579,6 +579,8 @@ export default function DashboardClient({
     setPostFilter,
     receivedFilter,
     setReceivedFilter,
+    sentFilter,
+    setSentFilter,
     matchFilter,
     setMatchFilter,
     processingRequestId,
@@ -589,12 +591,15 @@ export default function DashboardClient({
     showReviewSuccess,
     filteredPosts,
     filteredReceived,
+    filteredSent,
     filteredMatches,
     pendingReceived,
+    pendingSent,
     upcomingMatchedMeetups,
   } = useDashboardState({
     initialPosts,
     requestsReceived,
+    requestsSent,
     matches,
     postMap,
     profileMap,
@@ -839,6 +844,7 @@ export default function DashboardClient({
             active={activeTab === "sent"}
             label="Requests Sent"
             value={requestsSent.length}
+            subtext={pendingSent > 0 ? `${pendingSent} pending` : "No pending"}
             icon={<Send className="h-4 w-4" />}
             onClick={() => setActiveTab("sent")}
           />
@@ -871,12 +877,6 @@ export default function DashboardClient({
                     onClick={() => setPostFilter("open")}
                   >
                     Open
-                  </FilterPill>
-                  <FilterPill
-                    active={postFilter === "matched"}
-                    onClick={() => setPostFilter("matched")}
-                  >
-                    Matched
                   </FilterPill>
                   <FilterPill
                     active={postFilter === "expired"}
@@ -912,6 +912,42 @@ export default function DashboardClient({
                   onClick={() => setReceivedFilter("pending")}
                 >
                   Pending
+                </FilterPill>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "sent" && (
+          <div className={`${SURFACE_CARD_CLASS} p-4`}>
+            <div className="space-y-4">
+              <SectionIntro
+                eyebrow="Outgoing"
+                title="Requests you have sent"
+                body="See which requests are still waiting, which got accepted, and which ones have already closed."
+              />
+
+              <div className="flex flex-wrap gap-2">
+                <FilterPill active={sentFilter === "all"} onClick={() => setSentFilter("all")}>
+                  All
+                </FilterPill>
+                <FilterPill
+                  active={sentFilter === "pending"}
+                  onClick={() => setSentFilter("pending")}
+                >
+                  Pending
+                </FilterPill>
+                <FilterPill
+                  active={sentFilter === "accepted"}
+                  onClick={() => setSentFilter("accepted")}
+                >
+                  Accepted
+                </FilterPill>
+                <FilterPill
+                  active={sentFilter === "rejected"}
+                  onClick={() => setSentFilter("rejected")}
+                >
+                  Rejected
                 </FilterPill>
               </div>
             </div>
@@ -980,7 +1016,7 @@ export default function DashboardClient({
 
         {activeTab === "sent" && (
           <SentTabPanel
-            requestsSent={requestsSent}
+            requestsSent={filteredSent}
             profileMap={profileMap}
             postMap={postMap}
             userTimeZone={userTimeZone}

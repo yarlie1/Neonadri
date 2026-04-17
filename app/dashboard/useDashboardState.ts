@@ -11,13 +11,15 @@ import type { MatchRow, MatchRequestRow, PostRow } from "./page";
 import { getPostMatchState } from "./dashboardComponents";
 
 export type DashboardTab = "posts" | "received" | "sent" | "matches";
-export type PostFilter = "all" | "open" | "matched" | "expired";
+export type PostFilter = "all" | "open" | "expired";
 export type ReceivedFilter = "all" | "pending";
 export type MatchFilter = "all" | "upcoming" | "expired" | "review_due";
+export type SentFilter = "all" | "pending" | "accepted" | "rejected";
 
 export function useDashboardState({
   initialPosts,
   requestsReceived,
+  requestsSent,
   matches,
   postMap,
   profileMap,
@@ -28,6 +30,7 @@ export function useDashboardState({
 }: {
   initialPosts: PostRow[];
   requestsReceived: MatchRequestRow[];
+  requestsSent: MatchRequestRow[];
   matches: MatchRow[];
   postMap: Record<number, PostRow>;
   profileMap: Record<string, string>;
@@ -58,6 +61,7 @@ export function useDashboardState({
   const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
   const [receivedFilter, setReceivedFilter] = useState<ReceivedFilter>("all");
+  const [sentFilter, setSentFilter] = useState<SentFilter>("all");
   const [matchFilter, setMatchFilter] = useState<MatchFilter>("all");
   const [processingRequestId, setProcessingRequestId] = useState<number | null>(
     null
@@ -106,6 +110,16 @@ export function useDashboardState({
     if (receivedFilter === "all") return receivedItems;
     return receivedItems.filter((item) => item.status === "pending");
   }, [receivedItems, receivedFilter]);
+
+  const filteredSent = useMemo(() => {
+    if (sentFilter === "all") return requestsSent;
+    return requestsSent.filter((item) => item.status === sentFilter);
+  }, [requestsSent, sentFilter]);
+
+  const pendingSent = useMemo(
+    () => requestsSent.filter((item) => item.status === "pending").length,
+    [requestsSent]
+  );
 
   const filteredMatches = useMemo(() => {
     if (matchFilter === "all") return matches;
@@ -162,6 +176,8 @@ export function useDashboardState({
     setPostFilter,
     receivedFilter,
     setReceivedFilter,
+    sentFilter,
+    setSentFilter,
     matchFilter,
     setMatchFilter,
     processingRequestId,
@@ -172,8 +188,10 @@ export function useDashboardState({
     showReviewSuccess,
     filteredPosts,
     filteredReceived,
+    filteredSent,
     filteredMatches,
     pendingReceived,
+    pendingSent,
     upcomingMatchedMeetups,
   };
 }
