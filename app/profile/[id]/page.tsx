@@ -230,28 +230,24 @@ export default async function ProfilePage({ params }: PageProps) {
               </div>
 
               <div className="mt-3 space-y-1.5 text-sm text-[#5f5347]">
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                      Attendance
-                    </span>
-                    <span className="font-semibold text-[#2f2a26]">
-                      {trustMetrics.attendanceRate === null
-                        ? "No data yet"
-                        : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
-                    </span>
-                  </div>
-
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                      Host reliability
-                    </span>
-                    <span className="font-semibold text-[#2f2a26]">
-                      {trustMetrics.hostReliabilityRate === null
-                        ? "No data yet"
-                        : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
-                    </span>
-                  </div>
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                    Attendance
+                  </span>
+                  <span className="font-semibold text-[#2f2a26]">
+                    {trustMetrics.attendanceRate === null
+                      ? "No data yet"
+                      : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
+                  </span>
+                  <span className="text-[#b0a397]">·</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                    Host reliability
+                  </span>
+                  <span className="font-semibold text-[#2f2a26]">
+                    {trustMetrics.hostReliabilityRate === null
+                      ? "No data yet"
+                      : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
+                  </span>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[#6a5e53]">
