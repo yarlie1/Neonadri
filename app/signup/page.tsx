@@ -391,6 +391,9 @@ export default function SignupPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
+                    <p className="mt-2 text-xs text-[#8c7668]">
+                      Password must be at least 6 characters.
+                    </p>
                   </div>
                 </>
               )}
