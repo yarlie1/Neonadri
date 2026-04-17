@@ -93,22 +93,22 @@ export default function HomeTestClient({
           <div className="relative">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#d8e5ed] bg-[#f9fcfecc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#5f95a2] shadow-[0_10px_22px_rgba(151,176,191,0.12)]">
               <Sparkles className="h-3.5 w-3.5" />
-              AI social layer
+              Soft social layer
             </div>
 
             <h1 className="mt-4 max-w-md text-[35px] font-black leading-[0.94] tracking-[-0.06em] text-[#24323f] sm:text-[42px]">
-              Meet someone new in a softer future.
+              Find someone new, without the noise.
             </h1>
 
             <p className="mt-4 max-w-lg text-[14px] leading-6 text-[#667a89] sm:text-[15px]">
-              Same structure, different mood. Quiet silver surfaces, ambient lab
-              glow, and a calmer way to browse local social energy.
+              A quieter way to discover nearby meetups. Soft silver surfaces,
+              calm pacing, and just enough AI presence to make browsing feel easy.
             </p>
 
             <div className="mt-6 grid grid-cols-3 gap-3">
               <div className="rounded-[24px] border border-[#eaf1f5] bg-[linear-gradient(180deg,rgba(252,254,255,0.96)_0%,rgba(229,236,242,0.96)_100%)] px-3 py-3.5 shadow-[0_14px_28px_rgba(162,179,192,0.1),inset_0_1px_0_rgba(255,255,255,0.9)]">
                 <div className="text-[11px] uppercase tracking-[0.12em] text-[#7f9daa]">
-                  Live now
+                  Happening now
                 </div>
                 <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#24323f]">
                   {upcomingCount}
@@ -117,7 +117,7 @@ export default function HomeTestClient({
 
               <div className="rounded-[24px] border border-[#eaf1f5] bg-[linear-gradient(180deg,rgba(252,254,255,0.96)_0%,rgba(229,236,242,0.96)_100%)] px-3 py-3.5 shadow-[0_14px_28px_rgba(162,179,192,0.1),inset_0_1px_0_rgba(255,255,255,0.9)]">
                 <div className="text-[11px] uppercase tracking-[0.12em] text-[#7f9daa]">
-                  Hosts
+                  Hosts nearby
                 </div>
                 <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#24323f]">
                   {hostCount}
@@ -126,7 +126,7 @@ export default function HomeTestClient({
 
               <div className="rounded-[24px] border border-[#eaf1f5] bg-[linear-gradient(180deg,rgba(252,254,255,0.96)_0%,rgba(229,236,242,0.96)_100%)] px-3 py-3.5 shadow-[0_14px_28px_rgba(162,179,192,0.1),inset_0_1px_0_rgba(255,255,255,0.9)]">
                 <div className="text-[11px] uppercase tracking-[0.16em] text-[#6f96a1]">
-                  Signal
+                  Mood
                 </div>
                 <div className="mt-1 text-sm font-bold leading-5 text-[#24323f]">
                   Chill
@@ -137,7 +137,7 @@ export default function HomeTestClient({
             </div>
 
             <div className="mt-6 flex flex-wrap gap-2">
-              {["Signal drift", "Afterglow walks", "Quiet co-work"].map((label) => (
+              {["Slow coffee", "Afterglow walks", "Quiet co-work"].map((label) => (
                 <span
                   key={label}
                   className="rounded-full border border-[#d9e6ee] bg-[#f9fcfecc] px-3 py-2 text-xs font-medium text-[#567382] shadow-[0_8px_18px_rgba(151,178,194,0.1)]"
@@ -156,7 +156,7 @@ export default function HomeTestClient({
                 <div>
                   <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#6d94a0]">
                     <Search className="h-3.5 w-3.5" />
-                    Featured signal
+                    Featured moment
                   </div>
                   <div className="mt-1 text-lg font-bold tracking-[-0.03em] text-[#24323f]">
                     {highlightedPost.place_name || highlightedPost.location || "Meetup"}
@@ -181,8 +181,7 @@ export default function HomeTestClient({
                 </div>
 
                 <div className="mt-2 text-sm leading-6 text-[#667a89]">
-                  Same featured module, re-skinned for a soft metallic AI-lab
-                  mood.
+                  A quieter featured moment with a little more room to breathe.
                 </div>
               </div>
 
@@ -217,11 +216,11 @@ export default function HomeTestClient({
               <div className="min-w-0">
                 <div className="flex items-center gap-2 text-sm font-semibold text-[#273744]">
                   <SlidersHorizontal className="h-4 w-4 text-[#6d97a5]" />
-                  Shape your signal
+                  Refine your view
                 </div>
                 <div className="mt-2 text-sm text-[#6d818f]">
-                  Static test shell for silver surfaces, lab-light accents, and
-                  calmer chrome.
+                  A design sandbox for softer hierarchy, lighter surfaces, and a
+                  calmer way to scan the page.
                 </div>
               </div>
 
@@ -238,7 +237,7 @@ export default function HomeTestClient({
               Discover
             </div>
             <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#24323f]">
-              Nearby social moments
+              Nearby moments
             </div>
           </div>
 
@@ -302,7 +301,7 @@ export default function HomeTestClient({
                   </span>
                 </div>
 
-                <div className="mt-4 grid gap-2.5">
+                <div className="mt-4 grid gap-2">
                   <div className="flex items-center gap-2 rounded-[18px] border border-[#e7eef3] bg-[#f8fbfd] px-3 py-2.5 text-sm text-[#314454]">
                     <Clock3 className="h-4 w-4 text-[#6d97a5]" />
                     <span className="truncate">{formatTime(post.meeting_time)}</span>
@@ -320,26 +319,21 @@ export default function HomeTestClient({
                     </span>
                   </div>
 
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    <div className="flex items-center gap-2 rounded-[18px] border border-[#e7eef3] bg-[#f8fbfd] px-3 py-2.5 text-sm text-[#314454]">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-1 text-sm text-[#5f7482]">
+                    <span className="inline-flex items-center gap-2">
                       <UserRound className="h-4 w-4 text-[#6d97a5]" />
-                      <span>
-                        {post.target_gender || "Any"} / {post.target_age_group || "Any"}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2 rounded-[18px] border border-[#e7eef3] bg-[#f8fbfd] px-3 py-2.5 text-sm text-[#314454]">
+                      {post.target_gender || "Any"} / {post.target_age_group || "Any"}
+                    </span>
+                    <span className="inline-flex items-center gap-2">
                       <Coins className="h-4 w-4 text-[#7fb39f]" />
-                      <span>
-                        {amount !== null ? `+$${amount.toLocaleString()}` : "No benefit"}
-                      </span>
-                    </div>
+                      {amount !== null ? `+$${amount.toLocaleString()}` : "No benefit"}
+                    </span>
                   </div>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between gap-3 rounded-[20px] border border-[#e3edf3] bg-[linear-gradient(90deg,rgba(250,252,254,0.88)_0%,rgba(234,241,245,0.72)_100%)] px-3 py-3">
+                <div className="mt-4 flex items-center justify-between gap-3 rounded-[20px] border border-[#e3edf3] bg-[linear-gradient(90deg,rgba(250,252,254,0.88)_0%,rgba(234,241,245,0.72)_100%)] px-3 py-2.5">
                   <div className="text-xs uppercase tracking-[0.16em] text-[#7a9da9]">
-                    Silver lab mode
+                    Soft lounge mode
                   </div>
                   <div className="text-sm font-semibold text-[#314454]">
                     {getPurposeLabel(post.meeting_purpose)}
