@@ -453,14 +453,14 @@ export default function TopNav() {
 
             {menuOpen && (
               <div
-                className={`absolute right-0 top-12 z-50 w-72 overflow-hidden rounded-[24px] border ${
+                className={`absolute right-0 top-12 z-50 w-[16.5rem] overflow-hidden rounded-[22px] border ${
                   isHomeTest
                     ? "border-[#eef3f6] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] shadow-[0_24px_50px_rgba(146,154,162,0.18)]"
                     : "border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#f7efe7_100%)] shadow-[0_24px_50px_rgba(80,60,40,0.16)]"
                 }`}
               >
                 <div
-                  className={`border-b px-5 py-4 ${
+                  className={`border-b px-4 py-3 ${
                     isHomeTest
                       ? "border-[#eef3f6] bg-[linear-gradient(180deg,#ffffff,#f4f7f9)]"
                       : "border-[#efe3d8] bg-[linear-gradient(180deg,#fff8f0,#fffdf8)]"
@@ -469,19 +469,19 @@ export default function TopNav() {
                   <div className={`text-[11px] font-semibold uppercase tracking-[0.28em] ${isHomeTest ? "text-[#7b868e]" : "text-[#b27f61]"}`}>
                     Neonadri
                   </div>
-                  <div className={`mt-1 text-base font-semibold ${isHomeTest ? "text-[#2f3b44]" : "text-[#2d231d]"}`}>
+                  <div className={`mt-1 text-[15px] font-semibold ${isHomeTest ? "text-[#2f3b44]" : "text-[#2d231d]"}`}>
                     {isHomeTest
                       ? "AI-softened social discovery."
                       : "Meet someone new without the awkward start."}
                   </div>
-                  <div className={`mt-1 text-sm ${isHomeTest ? "text-[#758189]" : "text-[#786b61]"}`}>
+                  <div className={`mt-1 text-[13px] leading-5 ${isHomeTest ? "text-[#758189]" : "text-[#786b61]"}`}>
                     {isHomeTest
                       ? "Cyber-chill surfaces, same routes, same structure."
                       : "Warm meetups, clear plans, and a softer way to begin."}
                   </div>
                 </div>
 
-                <div className="flex flex-col p-3">
+                <div className="flex flex-col p-2.5">
                   <Link
                     href="/"
                     onClick={closeMenu}
@@ -502,7 +502,7 @@ export default function TopNav() {
                       <Link
                         href="/dashboard"
                         onClick={closeMenu}
-                        className={`inline-flex items-center justify-between gap-2 rounded-[18px] px-4 py-3 text-sm font-medium transition ${
+                        className={`inline-flex items-center justify-between gap-2 rounded-[16px] px-3.5 py-2.5 text-sm font-medium transition ${
                           isActivePath(pathname, "/dashboard")
                             ? "bg-[#f4e6d8] text-[#3f3226]"
                             : "text-[#5a5149] hover:bg-[#f4ece4]"
@@ -542,7 +542,7 @@ export default function TopNav() {
                       <Link
                         href="/write"
                         onClick={closeMenu}
-                        className={`mt-1 inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium transition ${
+                        className={`mt-1 inline-flex items-center gap-2 rounded-[16px] px-3.5 py-2.5 text-sm font-medium transition ${
                           isHomeTest
                             ? "border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] hover:bg-[#f7fafb]"
                             : "bg-[#a48f7a] text-white hover:bg-[#927d69]"
@@ -553,7 +553,7 @@ export default function TopNav() {
                       </Link>
 
                       <div
-                        className={`my-3 border-t ${
+                        className={`my-1.5 border-t ${
                           isHomeTest ? "border-[#eef3f6]" : "border-[#f0e8de]"
                         }`}
                       />
@@ -562,7 +562,7 @@ export default function TopNav() {
                         type="button"
                         onClick={handleLogout}
                         disabled={isLoggingOut}
-                        className={`inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-left text-sm font-medium transition ${
+                        className={`inline-flex items-center gap-2 rounded-[16px] px-3.5 py-2.5 text-left text-sm font-medium transition ${
                           isHomeTest
                             ? "text-[#707b82] hover:bg-[#f3f6f8]"
                             : "text-[#8b5e3c] hover:bg-[#f8efe7]"
@@ -594,7 +594,7 @@ export default function TopNav() {
                       <Link
                         href="/signup"
                         onClick={closeMenu}
-                        className={`mt-1 inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium transition ${
+                        className={`mt-1 inline-flex items-center gap-2 rounded-[16px] px-3.5 py-2.5 text-sm font-medium transition ${
                           isHomeTest
                             ? "border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] hover:bg-[#f7fafb]"
                             : "bg-[#a48f7a] text-white hover:bg-[#927d69]"
