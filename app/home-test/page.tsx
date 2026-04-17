@@ -1,8 +1,7 @@
 import { cookies } from "next/headers";
 import { createClient } from "../../lib/supabase/server";
 import { normalizeUserTimeZone, USER_TIME_ZONE_COOKIE } from "../../lib/userTimeZone";
-import HomeFeedClient from "../HomeFeedClient";
-import HomeDesignSandbox from "./HomeDesignSandbox";
+import HomeTestClient from "./HomeTestClient";
 
 type PostRow = {
   id: number;
@@ -58,9 +57,6 @@ export default async function HomeTestPage() {
   const initialUserTimeZone = normalizeUserTimeZone(
     cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
   );
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
   const { data: postsData, error: postsError } = await supabase
     .from("posts")
@@ -86,7 +82,6 @@ export default async function HomeTestPage() {
 
   const hostProfileMap: HostProfileMap = {};
   const matchSummaryMap: MatchSummaryMap = {};
-  let viewerPreference: { gender: string; ageGroup: string } | null = null;
 
   if (ownerIds.length > 0) {
     const { data: profilesData } = await supabase
@@ -101,21 +96,6 @@ export default async function HomeTestPage() {
         ageGroup: profile.age_group || "",
       };
     });
-  }
-
-  if (user?.id) {
-    const { data: viewerProfile } = await supabase
-      .from("profiles")
-      .select("gender, age_group")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    if (viewerProfile) {
-      viewerPreference = {
-        gender: viewerProfile.gender || "",
-        ageGroup: viewerProfile.age_group || "",
-      };
-    }
   }
 
   if (postIds.length > 0) {
@@ -133,14 +113,11 @@ export default async function HomeTestPage() {
   }
 
   return (
-    <HomeDesignSandbox>
-      <HomeFeedClient
-        initialPosts={posts}
-        hostProfileMap={hostProfileMap}
-        matchSummaryMap={matchSummaryMap}
-        viewerPreference={viewerPreference}
-        initialUserTimeZone={initialUserTimeZone}
-      />
-    </HomeDesignSandbox>
+    <HomeTestClient
+      posts={posts}
+      hostProfileMap={hostProfileMap}
+      matchSummaryMap={matchSummaryMap}
+      initialUserTimeZone={initialUserTimeZone}
+    />
   );
 }
