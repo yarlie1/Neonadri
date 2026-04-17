@@ -296,15 +296,15 @@ export default function TopNav() {
     `inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition ${
       isHomeTest
         ? active
-          ? "border-[#f4f5f6] bg-[linear-gradient(180deg,rgba(253,253,253,0.98)_0%,rgba(233,236,239,0.98)_100%)] text-[#2d3a43] shadow-[0_14px_28px_rgba(135,144,152,0.16)]"
-          : "border-[#e2e6e8] bg-[linear-gradient(180deg,rgba(249,250,250,0.94)_0%,rgba(236,239,241,0.95)_100%)] text-[#758188] shadow-[0_10px_24px_rgba(137,146,154,0.1)] hover:border-[#d9dde0] hover:bg-[linear-gradient(180deg,rgba(253,253,253,0.98)_0%,rgba(239,241,243,0.98)_100%)] hover:text-[#59666f]"
+          ? "border-[#fafbfc] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(238,242,245,0.99)_100%)] text-[#2d3a43] shadow-[0_14px_28px_rgba(145,154,162,0.15),inset_0_1px_0_rgba(255,255,255,0.98)]"
+          : "border-[#eaedef] bg-[linear-gradient(180deg,rgba(252,252,252,0.95)_0%,rgba(241,244,246,0.96)_100%)] text-[#768086] shadow-[0_10px_24px_rgba(150,159,167,0.09)] hover:border-[#e0e5e8] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(244,247,249,0.99)_100%)] hover:text-[#5c6870]"
         : active
         ? "border-[#dfcaba] bg-[linear-gradient(180deg,#fffdf9_0%,#f3e7db_100%)] text-[#3f3226] shadow-[0_12px_28px_rgba(120,86,52,0.10)]"
         : "border-[#e5d8cb] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e7_100%)] text-[#5a5149] shadow-[0_8px_18px_rgba(93,68,48,0.04)] hover:bg-[#f6eee6]"
     }`;
 
   const primary = isHomeTest
-    ? "inline-flex items-center gap-2 rounded-full border border-[#eceff1] bg-[linear-gradient(135deg,#ffffff_0%,#e6eaed_100%)] px-4 py-2.5 text-sm font-medium text-[#34424b] shadow-[0_16px_34px_rgba(137,146,154,0.16)] transition hover:border-[#dde1e4] hover:text-[#2a3740]"
+    ? "inline-flex items-center gap-2 rounded-full border border-[#f2f4f6] bg-[linear-gradient(135deg,#ffffff_0%,#eef2f5_100%)] px-4 py-2.5 text-sm font-medium text-[#34424b] shadow-[0_16px_34px_rgba(150,159,167,0.14),inset_0_1px_0_rgba(255,255,255,0.98)] transition hover:border-[#e5e9ec] hover:text-[#2a3740]"
     : "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
 
   const mobileItem = isHomeTest
@@ -315,14 +315,14 @@ export default function TopNav() {
     <header
       className={`sticky top-0 z-50 backdrop-blur-xl ${
         isHomeTest
-          ? "border-b border-[#eceff1] bg-[rgba(243,245,246,0.84)]"
+          ? "border-b border-[#eff2f4] bg-[rgba(246,248,249,0.84)]"
           : "border-b border-[#ebdfd4] bg-[rgba(255,250,245,0.84)]"
       }`}
     >
       <div
         className={
           isHomeTest
-            ? "border-b border-[#eceff1] bg-[linear-gradient(180deg,rgba(250,251,251,0.96),rgba(236,239,241,0.9))]"
+            ? "border-b border-[#eff2f4] bg-[linear-gradient(180deg,rgba(252,253,253,0.97),rgba(240,244,246,0.92))]"
             : "border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(255,252,248,0.95),rgba(249,240,232,0.88))]"
         }
       >
@@ -332,7 +332,7 @@ export default function TopNav() {
               href="/"
               className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base font-bold tracking-[-0.05em] text-white ${
                 isHomeTest
-                  ? "border-[#f5f6f7] bg-[radial-gradient(circle_at_top,_#ffffff,_#d6dade_40%,_#7e8b95_82%)] shadow-[0_18px_32px_rgba(134,143,151,0.22)]"
+                  ? "border-[#fafbfc] bg-[radial-gradient(circle_at_top,_#ffffff,_#edf2f5_36%,_#98a5af_82%)] shadow-[0_18px_32px_rgba(145,154,162,0.18)]"
                   : "border-[#e6cdbb] bg-[radial-gradient(circle_at_top,_#f6e5d6,_#c99679_80%)] shadow-[0_14px_30px_rgba(160,111,82,0.18)]"
               }`}
               onClick={closeMenu}
@@ -357,7 +357,7 @@ export default function TopNav() {
                       ? {
                           color: "#303b44",
                           textShadow:
-                            "0 1px 0 rgba(255,255,255,0.82), 0 0 18px rgba(255,255,255,0.22)",
+                            "0 1px 0 rgba(255,255,255,0.88), 0 0 18px rgba(255,255,255,0.28)",
                         }
                       : undefined
                   }
