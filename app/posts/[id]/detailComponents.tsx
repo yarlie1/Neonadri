@@ -257,6 +257,7 @@ export function ProfileShowcaseCard({
       : `${data.aboutMe.replace(/\s+/g, " ").trim().slice(0, 137).trimEnd()}...`
     : "No introduction yet.";
   const roundedAverage = Math.round(data.averageRating);
+  const hasRating = data.reviewCount > 0;
   const identityLine = `${data.gender || "Unknown"}${
     data.gender && data.ageGroup ? " / " : ""
   }${data.ageGroup || ""}`;
@@ -272,10 +273,16 @@ export function ProfileShowcaseCard({
             <div className="truncate text-[1.15rem] font-black tracking-[-0.03em] text-[#2b1f1a]">
               {data.displayName}
             </div>
-            <span className="inline-flex items-center gap-1 rounded-full border border-[#e9ddd0] bg-[#fbf6f0] px-2.5 py-1 text-[11px] font-medium text-[#6c5f54]">
-              <Star className="h-3.5 w-3.5 fill-current text-[#b08b5d]" />
-              {data.averageRating.toFixed(1)}
-            </span>
+            {hasRating ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-[#e9ddd0] bg-[#fbf6f0] px-2.5 py-1 text-[11px] font-medium text-[#6c5f54]">
+                <Star className="h-3.5 w-3.5 fill-current text-[#b08b5d]" />
+                {data.averageRating.toFixed(1)}
+              </span>
+            ) : (
+              <span className="inline-flex items-center rounded-full border border-[#e9ddd0] bg-[#fbf6f0] px-2.5 py-1 text-[11px] font-medium text-[#6c5f54]">
+                No reviews yet
+              </span>
+            )}
             {isCurrentUser && (
               <span className="rounded-full border border-[#ece1d4] bg-[#faf5ef] px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-[#7d6458]">
                 You
@@ -325,7 +332,9 @@ export function ProfileShowcaseCard({
             </div>
           </div>
           <div className="rounded-full border border-white/60 bg-white/60 px-4 py-2 text-sm font-medium text-[#6b5f52] backdrop-blur">
-            {data.averageRating.toFixed(1)} rating / {data.reviewCount} reviews
+            {hasRating
+              ? `${data.averageRating.toFixed(1)} rating / ${data.reviewCount} reviews`
+              : "No reviews yet"}
           </div>
         </div>
 
@@ -394,10 +403,16 @@ export function ProfileShowcaseCard({
         <div className="mt-4 grid grid-cols-3 gap-3">
           <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
             <div className="text-xs text-[#8b7f74]">Rating</div>
-            <div className="mt-1 text-xl font-bold text-[#2f2a26]">{data.averageRating.toFixed(1)}</div>
-            <div className="mt-1 flex justify-center">
-              <StarRating value={roundedAverage} size="sm" />
-            </div>
+            {hasRating ? (
+              <>
+                <div className="mt-1 text-xl font-bold text-[#2f2a26]">{data.averageRating.toFixed(1)}</div>
+                <div className="mt-1 flex justify-center">
+                  <StarRating value={roundedAverage} size="sm" />
+                </div>
+              </>
+            ) : (
+              <div className="mt-2 text-sm font-semibold text-[#5f5347]">No reviews yet</div>
+            )}
           </div>
           <div className="rounded-[1.25rem] border border-[#e7ddd2] bg-[#fcfaf7] p-3 text-center">
             <div className="text-xs text-[#8b7f74]">Reviews</div>

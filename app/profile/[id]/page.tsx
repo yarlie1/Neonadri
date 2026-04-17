@@ -192,6 +192,7 @@ export default async function ProfilePage({ params }: PageProps) {
   const reviewCount = Number(stats.review_count ?? 0);
   const completedMeetups = Number(stats.completed_meetups ?? 0);
   const roundedAverage = Math.round(averageRating);
+  const hasRating = reviewCount > 0;
   const hasAboutMe = !!profile.about_me?.trim();
   const hasLanguages = !!profile.languages && profile.languages.length > 0;
   const hasMeetingStyle = !!profile.meeting_style?.trim();
@@ -224,12 +225,18 @@ export default async function ProfilePage({ params }: PageProps) {
                   <h1 className="min-w-0 truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
                     {profile.display_name || "Unknown"}
                   </h1>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
-                    <StarRating value={roundedAverage} size="sm" />
-                    <span className="font-semibold text-[#4f4339]">
-                      {averageRating.toFixed(1)}
-                    </span>
-                  </div>
+                  {hasRating ? (
+                    <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                      <StarRating value={roundedAverage} size="sm" />
+                      <span className="font-semibold text-[#4f4339]">
+                        {averageRating.toFixed(1)}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="inline-flex items-center rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#6b5f52] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                      No reviews yet
+                    </div>
+                  )}
                 </div>
 
                 <div className="border-t border-[#eadfd3]/70" />
@@ -339,12 +346,18 @@ export default async function ProfilePage({ params }: PageProps) {
 
             <div className="mt-4 rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <StarRating value={roundedAverage} size="md" />
-                  <div className="text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
-                    {averageRating.toFixed(1)}
+                {hasRating ? (
+                  <div className="flex items-center gap-3">
+                    <StarRating value={roundedAverage} size="md" />
+                    <div className="text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
+                      {averageRating.toFixed(1)}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="text-lg font-semibold text-[#5f5347]">
+                    No reviews yet
+                  </div>
+                )}
                 <div className="rounded-full border border-[#ece0d4] bg-[#fbf5ee] px-3 py-1 text-xs font-medium text-[#6b5f52]">
                   {reviewCount > 0 ? "Reviewed by meetup partners" : "No written reviews yet"}
                 </div>
