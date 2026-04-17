@@ -229,57 +229,37 @@ export default async function ProfilePage({ params }: PageProps) {
                 </div>
               </div>
 
-              <div className="mt-3 grid gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.2fr)]">
-                <div className="rounded-[20px] border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2.5">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                    Attendance
-                  </div>
-                  <div className="mt-1 text-lg font-black tracking-[-0.03em] text-[#2f2a26]">
+              <div className="mt-3 flex flex-wrap gap-2">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3 py-2 text-xs text-[#5f5347]">
+                  <span className="font-semibold text-[#8b7f74]">Attendance</span>
+                  <span className="font-bold text-[#2f2a26]">
                     {trustMetrics.attendanceRate === null
                       ? "No data yet"
                       : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
-                  </div>
-                  <div className="mt-0.5 text-[11px] text-[#8b7f74]">
-                    {trustMetrics.attendanceCount > 0
-                      ? `${trustMetrics.attendanceCount} meetup reviews`
-                      : "Not enough meetup reviews yet"}
-                  </div>
+                  </span>
                 </div>
 
-                <div className="rounded-[20px] border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2.5">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                    Host reliability
-                  </div>
-                  <div className="mt-1 text-lg font-black tracking-[-0.03em] text-[#2f2a26]">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3 py-2 text-xs text-[#5f5347]">
+                  <span className="font-semibold text-[#8b7f74]">Host reliability</span>
+                  <span className="font-bold text-[#2f2a26]">
                     {trustMetrics.hostReliabilityRate === null
                       ? "No data yet"
                       : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
-                  </div>
-                  <div className="mt-0.5 text-[11px] text-[#8b7f74]">
-                    {trustMetrics.hostReliabilityCount > 0
-                      ? `${trustMetrics.hostReliabilityCount} payout reviews`
-                      : "No host payout reviews yet"}
-                  </div>
+                  </span>
                 </div>
 
-                <div className="rounded-[20px] border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f6ede4_100%)] px-4 py-2.5">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9b8f84]">
-                    At a glance
-                  </div>
-                  <div className="mt-2 space-y-1.5 text-sm text-[#5f5347]">
-                    <div className="flex items-center gap-2">
-                      <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
-                      <span className="truncate">
-                        {hasMeetingStyle ? profile.meeting_style : "No meetup style added yet"}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
-                      <span className="truncate">
-                        {hasResponseNote ? profile.response_time_note : "No response note added yet"}
-                      </span>
-                    </div>
-                  </div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f6ede4_100%)] px-3 py-2 text-xs text-[#5f5347]">
+                  <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
+                  <span className="truncate">
+                    {hasMeetingStyle ? profile.meeting_style : "No meetup style yet"}
+                  </span>
+                </div>
+
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f6ede4_100%)] px-3 py-2 text-xs text-[#5f5347]">
+                  <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
+                  <span className="truncate">
+                    {hasResponseNote ? profile.response_time_note : "No response note yet"}
+                  </span>
                 </div>
               </div>
             </div>
