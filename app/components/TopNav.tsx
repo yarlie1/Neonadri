@@ -36,45 +36,6 @@ function PendingBadge({ count }: { count: number }) {
   );
 }
 
-function BrandTagline() {
-  const [variant, setVariant] = useState<"A" | "B" | "C">("A");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("tagline_variant") as
-      | "A"
-      | "B"
-      | "C"
-      | null;
-
-    if (saved) {
-      setVariant(saved);
-      return;
-    }
-
-    const options: ("A" | "B" | "C")[] = ["A", "B", "C"];
-    const random = options[Math.floor(Math.random() * options.length)];
-    localStorage.setItem("tagline_variant", random);
-    setVariant(random);
-  }, []);
-
-  const content = {
-    A: ["Want to meet someone?", "Start with Neonadri"],
-    B: ["Meet someone new", "today"],
-    C: ["Find your next meetup", "on Neonadri"],
-  }[variant];
-
-  return (
-    <div className="text-left leading-[1.1]">
-      <div className="text-[10px] font-normal text-[#746a61] sm:text-[11px]">
-        {content[0]}
-      </div>
-      <div className="text-[10px] font-normal text-[#746a61] sm:text-[11px]">
-        {content[1]}
-      </div>
-    </div>
-  );
-}
-
 function NewChatBadge({ visible }: { visible: boolean }) {
   if (!visible) return null;
 
@@ -300,7 +261,6 @@ export default function TopNav() {
 
     try {
       sessionStorage.clear();
-      localStorage.removeItem("tagline_variant");
       const [localLogoutResult, serverLogoutResult] = await Promise.allSettled([
         supabase.auth.signOut({ scope: "local" }),
         fetch("/api/auth/logout", {
@@ -358,21 +318,18 @@ export default function TopNav() {
               N
             </Link>
 
-            <div className="flex min-w-0 items-center gap-3">
-              <div className="flex min-w-0 items-center gap-2">
+            <div className="hidden min-w-0 sm:flex">
+              <div className="flex h-10 flex-col justify-between">
                 <Link
                   href="/"
-                  className="truncate text-[22px] font-extrabold tracking-[-0.05em] text-[#1f1b18] sm:text-[25px]"
+                  className="truncate text-[22px] font-extrabold leading-none tracking-[-0.05em] text-[#1f1b18] sm:text-[25px]"
                   onClick={closeMenu}
                 >
                   Neonadri
                 </Link>
-                <span className="hidden rounded-full border border-[#eadccd] bg-[linear-gradient(180deg,#fffdfa_0%,#f7ede4_100%)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a6e55] shadow-sm sm:inline-flex">
-                  Social meetup
-                </span>
-              </div>
-              <div className="hidden border-l border-[#eadccd] pl-3 sm:block">
-                <BrandTagline />
+                <div className="text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-[#8d7d71]">
+                  AI-generated social space
+                </div>
               </div>
             </div>
           </div>
