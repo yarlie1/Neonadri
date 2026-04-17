@@ -239,9 +239,11 @@ export default async function ProfilePage({ params }: PageProps) {
                       ? "No data yet"
                       : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
                   </span>
-                  <span className="text-[#b0a397]">·</span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                    Host reliability
+                    Payout reliability
                   </span>
                   <span className="font-semibold text-[#2f2a26]">
                     {trustMetrics.hostReliabilityRate === null
@@ -376,7 +378,7 @@ export default async function ProfilePage({ params }: PageProps) {
                 </div>
                 <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-2.5">
                   <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                    Host reliability
+                    Payout reliability
                   </div>
                   <div className="mt-1 text-sm font-semibold text-[#5f5347]">
                     {trustMetrics.hostReliabilityRate === null
@@ -430,6 +432,7 @@ export default async function ProfilePage({ params }: PageProps) {
     </main>
   );
 }
+
 
 
 

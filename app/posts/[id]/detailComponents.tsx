@@ -424,7 +424,7 @@ export function ProfileShowcaseCard({
             }
           />
           <TrustStatCard
-            label="Host reliability"
+            label="Payout reliability"
             value={
               data.hostReliabilityRate === null
                 ? "No data yet"
