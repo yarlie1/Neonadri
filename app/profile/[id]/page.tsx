@@ -229,37 +229,41 @@ export default async function ProfilePage({ params }: PageProps) {
                 </div>
               </div>
 
-              <div className="mt-3 flex flex-wrap gap-2">
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3 py-2 text-xs text-[#5f5347]">
-                  <span className="font-semibold text-[#8b7f74]">Attendance</span>
-                  <span className="font-bold text-[#2f2a26]">
-                    {trustMetrics.attendanceRate === null
-                      ? "No data yet"
-                      : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
-                  </span>
+              <div className="mt-3 space-y-1.5 text-sm text-[#5f5347]">
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                      Attendance
+                    </span>
+                    <span className="font-semibold text-[#2f2a26]">
+                      {trustMetrics.attendanceRate === null
+                        ? "No data yet"
+                        : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
+                    </span>
+                  </div>
+
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                      Host reliability
+                    </span>
+                    <span className="font-semibold text-[#2f2a26]">
+                      {trustMetrics.hostReliabilityRate === null
+                        ? "No data yet"
+                        : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3 py-2 text-xs text-[#5f5347]">
-                  <span className="font-semibold text-[#8b7f74]">Host reliability</span>
-                  <span className="font-bold text-[#2f2a26]">
-                    {trustMetrics.hostReliabilityRate === null
-                      ? "No data yet"
-                      : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
-                  </span>
-                </div>
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[#6a5e53]">
+                  <div className="flex items-center gap-2">
+                    <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
+                    <span>{hasMeetingStyle ? profile.meeting_style : "No meetup style yet"}</span>
+                  </div>
 
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f6ede4_100%)] px-3 py-2 text-xs text-[#5f5347]">
-                  <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
-                  <span className="truncate">
-                    {hasMeetingStyle ? profile.meeting_style : "No meetup style yet"}
-                  </span>
-                </div>
-
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f6ede4_100%)] px-3 py-2 text-xs text-[#5f5347]">
-                  <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
-                  <span className="truncate">
-                    {hasResponseNote ? profile.response_time_note : "No response note yet"}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
+                    <span>{hasResponseNote ? profile.response_time_note : "No response note yet"}</span>
+                  </div>
                 </div>
               </div>
             </div>
