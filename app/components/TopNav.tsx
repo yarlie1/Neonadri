@@ -444,7 +444,7 @@ export default function TopNav() {
               onClick={() => setMenuOpen((prev) => !prev)}
               className={`inline-flex h-11 w-11 items-center justify-center rounded-full border transition ${
                 isHomeTest
-                  ? "border-[#74d4ff33] bg-[linear-gradient(180deg,#10253c_0%,#0b1828_100%)] text-[#9cefff] shadow-[0_10px_24px_rgba(14,87,140,0.22)] hover:bg-[#102840]"
+                  ? "border-[#eef3f6] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] text-[#728088] shadow-[0_10px_24px_rgba(146,154,162,0.12)] hover:bg-[#f5f8fa]"
                   : "border-[#e3d5c8] bg-[linear-gradient(180deg,#fffdfb_0%,#f6ede5_100%)] text-[#5a5149] shadow-[0_10px_24px_rgba(90,70,48,0.10)] hover:bg-[#f4ece4]"
               }`}
             >
@@ -455,26 +455,26 @@ export default function TopNav() {
               <div
                 className={`absolute right-0 top-14 z-50 w-72 overflow-hidden rounded-[30px] border ${
                   isHomeTest
-                    ? "border-[#74d4ff33] bg-[linear-gradient(180deg,#10253c_0%,#081321_100%)] shadow-[0_24px_50px_rgba(8,69,113,0.28)]"
+                    ? "border-[#eef3f6] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] shadow-[0_24px_50px_rgba(146,154,162,0.18)]"
                     : "border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#f7efe7_100%)] shadow-[0_24px_50px_rgba(80,60,40,0.16)]"
                 }`}
               >
                 <div
                   className={`border-b px-5 py-4 ${
                     isHomeTest
-                      ? "border-[#74d4ff1f] bg-[linear-gradient(180deg,#132c47,#0a1624)]"
+                      ? "border-[#eef3f6] bg-[linear-gradient(180deg,#ffffff,#f4f7f9)]"
                       : "border-[#efe3d8] bg-[linear-gradient(180deg,#fff8f0,#fffdf8)]"
                   }`}
                 >
-                  <div className={`text-[11px] font-semibold uppercase tracking-[0.28em] ${isHomeTest ? "text-[#7edcff]" : "text-[#b27f61]"}`}>
+                  <div className={`text-[11px] font-semibold uppercase tracking-[0.28em] ${isHomeTest ? "text-[#7b868e]" : "text-[#b27f61]"}`}>
                     Neonadri
                   </div>
-                  <div className={`mt-1 text-base font-semibold ${isHomeTest ? "text-[#edfaff]" : "text-[#2d231d]"}`}>
+                  <div className={`mt-1 text-base font-semibold ${isHomeTest ? "text-[#2f3b44]" : "text-[#2d231d]"}`}>
                     {isHomeTest
                       ? "AI-softened social discovery."
                       : "Meet someone new without the awkward start."}
                   </div>
-                  <div className={`mt-1 text-sm ${isHomeTest ? "text-[#93b9cb]" : "text-[#786b61]"}`}>
+                  <div className={`mt-1 text-sm ${isHomeTest ? "text-[#758189]" : "text-[#786b61]"}`}>
                     {isHomeTest
                       ? "Cyber-chill surfaces, same routes, same structure."
                       : "Warm meetups, clear plans, and a softer way to begin."}
@@ -488,7 +488,7 @@ export default function TopNav() {
                     className={`${mobileItem} ${
                       isActivePath(pathname, "/")
                         ? isHomeTest
-                          ? "bg-[#14304d] text-[#effdff]"
+                          ? "bg-[#eef4f7] text-[#33434c]"
                           : "bg-[#f4e6d8] text-[#3f3226]"
                         : ""
                     }`}
@@ -508,9 +508,9 @@ export default function TopNav() {
                             : "text-[#5a5149] hover:bg-[#f4ece4]"
                         } ${
                           isHomeTest && isActivePath(pathname, "/dashboard")
-                            ? "!bg-[#14304d] !text-[#effdff]"
+                            ? "!bg-[#eef4f7] !text-[#33434c]"
                             : isHomeTest
-                            ? "!text-[#9cd4e6] hover:!bg-[#102840]"
+                            ? "!text-[#707b82] hover:!bg-[#f3f6f8]"
                             : ""
                         }`}
                       >
@@ -530,7 +530,7 @@ export default function TopNav() {
                         className={`${mobileItem} ${
                           pathname === "/profile" || pathname.startsWith("/profile/")
                             ? isHomeTest
-                              ? "bg-[#14304d] text-[#effdff]"
+                              ? "bg-[#eef4f7] text-[#33434c]"
                               : "bg-[#f4e6d8] text-[#3f3226]"
                             : ""
                         }`}
@@ -544,7 +544,7 @@ export default function TopNav() {
                         onClick={closeMenu}
                         className={`mt-1 inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium transition ${
                           isHomeTest
-                            ? "bg-[linear-gradient(135deg,#173b5f_0%,#0d2138_100%)] text-[#dffbff] hover:brightness-[1.06]"
+                            ? "border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] hover:bg-[#f7fafb]"
                             : "bg-[#a48f7a] text-white hover:bg-[#927d69]"
                         }`}
                       >
@@ -554,7 +554,7 @@ export default function TopNav() {
 
                       <div
                         className={`my-3 border-t ${
-                          isHomeTest ? "border-[#74d4ff1f]" : "border-[#f0e8de]"
+                          isHomeTest ? "border-[#eef3f6]" : "border-[#f0e8de]"
                         }`}
                       />
 
@@ -564,7 +564,7 @@ export default function TopNav() {
                         disabled={isLoggingOut}
                         className={`inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-left text-sm font-medium transition ${
                           isHomeTest
-                            ? "text-[#90d8eb] hover:bg-[#102840]"
+                            ? "text-[#707b82] hover:bg-[#f3f6f8]"
                             : "text-[#8b5e3c] hover:bg-[#f8efe7]"
                         } ${
                           isLoggingOut ? "cursor-not-allowed opacity-60" : ""
@@ -582,7 +582,7 @@ export default function TopNav() {
                         className={`${mobileItem} ${
                           isActivePath(pathname, "/login")
                             ? isHomeTest
-                              ? "bg-[#14304d] text-[#effdff]"
+                              ? "bg-[#eef4f7] text-[#33434c]"
                               : "bg-[#f4e6d8] text-[#3f3226]"
                             : ""
                         }`}
@@ -596,7 +596,7 @@ export default function TopNav() {
                         onClick={closeMenu}
                         className={`mt-1 inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium transition ${
                           isHomeTest
-                            ? "bg-[linear-gradient(135deg,#173b5f_0%,#0d2138_100%)] text-[#dffbff] hover:brightness-[1.06]"
+                            ? "border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] hover:bg-[#f7fafb]"
                             : "bg-[#a48f7a] text-white hover:bg-[#927d69]"
                         }`}
                       >
