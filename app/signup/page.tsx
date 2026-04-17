@@ -46,10 +46,9 @@ const INTEREST_OPTIONS = [
 ];
 
 const STEPS = [
-  { number: 1, label: "Account" },
-  { number: 2, label: "Basics" },
-  { number: 3, label: "Vibe" },
-  { number: 4, label: "Finish" },
+  { number: 1, label: "Basics" },
+  { number: 2, label: "Vibe" },
+  { number: 3, label: "Account" },
 ];
 
 const DEFAULT_ABOUT_ME =
@@ -103,10 +102,6 @@ export default function SignupPage() {
 
   const canMoveNext = useMemo(() => {
     if (step === 1) {
-      return email.trim().length > 0 && password.trim().length >= 6;
-    }
-
-    if (step === 2) {
       return (
         displayName.trim().length > 0 &&
         gender.trim().length > 0 &&
@@ -114,7 +109,7 @@ export default function SignupPage() {
       );
     }
 
-    if (step === 3) {
+    if (step === 2) {
       return (
         aboutMe.trim().length > 0 &&
         meetingStyle.trim().length > 0 &&
@@ -122,7 +117,11 @@ export default function SignupPage() {
       );
     }
 
-    return true;
+    if (step === 3) {
+      return email.trim().length > 0 && password.trim().length >= 6;
+    }
+
+    return false;
   }, [aboutMe, ageGroup, displayName, email, gender, interests.length, meetingStyle, password, step]);
 
   const profileSummary = useMemo(() => {
@@ -154,7 +153,7 @@ export default function SignupPage() {
     if (!canMoveNext || step >= STEPS.length) return;
     setMessage("");
 
-    if (step === 2) {
+    if (step === 1) {
       const normalizedDisplayName = displayName.trim();
 
       if (normalizedDisplayName.length > DISPLAY_NAME_MAX_LENGTH) {
@@ -347,10 +346,9 @@ export default function SignupPage() {
                           {item.label}
                         </div>
                         <div className="text-xs text-[#6f5448]">
-                          {item.number === 1 && "Email and password"}
-                          {item.number === 2 && "Name, gender, and age group"}
-                          {item.number === 3 && "About you, style, and interests"}
-                          {item.number === 4 && "Final review before entering"}
+                          {item.number === 1 && "Name, gender, and age group"}
+                          {item.number === 2 && "About you, style, and interests"}
+                          {item.number === 3 && "Email and password"}
                         </div>
                       </div>
                     </div>
@@ -389,13 +387,11 @@ export default function SignupPage() {
 
             <p className="mt-2 text-sm leading-6 text-[#7a6b61]">
               {step === 1 &&
-                "Start with the account details you will use to sign in."}
-              {step === 2 &&
                 "Add the basics people usually want to know first."}
-              {step === 3 &&
+              {step === 2 &&
                 "Show your personality so meetup requests feel more natural."}
-              {step === 4 &&
-                "Review the profile that will be created before you enter Neonadri."}
+              {step === 3 &&
+                "Finish with the email and password you will use to sign in."}
             </p>
 
             <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#f2e7dc]">
@@ -407,41 +403,6 @@ export default function SignupPage() {
 
             <div className="mt-6 space-y-4">
               {step === 1 && (
-                <>
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      placeholder="you@example.com"
-                      className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      placeholder="At least 6 characters"
-                      className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    {password.trim().length > 0 && password.trim().length < 6 ? (
-                      <p className="mt-2 text-xs text-[#8c7668]">
-                        Password must be at least 6 characters.
-                      </p>
-                    ) : null}
-                  </div>
-                </>
-              )}
-
-              {step === 2 && (
                 <>
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#5a5149]">
@@ -496,7 +457,7 @@ export default function SignupPage() {
                 </>
               )}
 
-              {step === 3 && (
+              {step === 2 && (
                 <>
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#5a5149]">
@@ -569,63 +530,44 @@ export default function SignupPage() {
                 </>
               )}
 
-              {step === 4 && (
-                <div className="space-y-4">
-                  <div className="rounded-[24px] border border-[#eadfd3] bg-[#fffaf6] p-5">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-                      Profile preview
-                    </div>
-                    <h3 className="mt-2 text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
-                      {displayName || "Your display name"}
-                    </h3>
-                    <p className="mt-2 text-sm leading-6 text-[#6f6258]">
-                      {profileSummary || "A quick introduction will show up here."}
-                    </p>
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {gender && (
-                        <span className="rounded-full bg-[#f4ece4] px-3 py-2 text-xs font-medium text-[#5f4e45]">
-                          {gender}
-                        </span>
-                      )}
-                      {ageGroup && (
-                        <span className="rounded-full bg-[#f4ece4] px-3 py-2 text-xs font-medium text-[#5f4e45]">
-                          {ageGroup}
-                        </span>
-                      )}
-                      {meetingStyle && (
-                        <span className="rounded-full bg-[#f4ece4] px-3 py-2 text-xs font-medium text-[#5f4e45]">
-                          {meetingStyle}
-                        </span>
-                      )}
-                    </div>
-
-                    {aboutMe.trim() && (
-                      <p className="mt-4 text-sm leading-6 text-[#6f6258]">
-                        {aboutMe}
-                      </p>
-                    )}
-
-                    {interests.length > 0 && (
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {interests.map((item) => (
-                          <span
-                            key={item}
-                            className="rounded-full border border-[#e7ddd2] bg-white px-3 py-2 text-xs font-medium text-[#5f4e45]"
-                          >
-                            {item}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+              {step === 3 && (
+                <>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="you@example.com"
+                      className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
                   </div>
 
-                </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      placeholder="At least 6 characters"
+                      className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                    {password.trim().length > 0 && password.trim().length < 6 ? (
+                      <p className="mt-2 text-xs text-[#8c7668]">
+                        Password must be at least 6 characters.
+                      </p>
+                    ) : null}
+                  </div>
+                </>
               )}
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              {step === 3 && !canMoveNext && (
+              {step === 2 && !canMoveNext && (
                 <p className="w-full text-xs text-[#8c7668]">
                   Select a meeting style and at least one interest to continue.
                 </p>
@@ -666,7 +608,7 @@ export default function SignupPage() {
                   disabled={submitting}
                   className="rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:cursor-not-allowed disabled:bg-[#c8b8aa]"
                 >
-                  {submitting ? "Creating account..." : "Complete sign up"}
+                  {submitting ? "Creating account..." : "Create account"}
                 </button>
               )}
             </div>
