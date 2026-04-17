@@ -350,8 +350,16 @@ export default function TopNav() {
                 <Link
                   href="/"
                   className={`block ${isHomeTest ? "" : "w-full"} text-[20px] font-extrabold leading-none tracking-[-0.05em] sm:text-[25px] ${
-                    isHomeTest ? "text-[#f8feff] [text-shadow:0_0_18px_rgba(103,223,255,0.18)]" : "text-[#1f1b18]"
+                    isHomeTest ? "" : "text-[#1f1b18]"
                   }`}
+                  style={
+                    isHomeTest
+                      ? {
+                          color: "#f8feff",
+                          textShadow: "0 0 18px rgba(103,223,255,0.18)",
+                        }
+                      : undefined
+                  }
                   onClick={closeMenu}
                 >
                   Neonadri
