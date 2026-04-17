@@ -503,18 +503,16 @@ export default function TopNav() {
                         href="/dashboard"
                         onClick={closeMenu}
                         className={`inline-flex items-center justify-between gap-2 rounded-[16px] px-3.5 py-2.5 text-sm font-medium transition ${
-                          isActivePath(pathname, "/dashboard")
-                            ? "bg-[#f4e6d8] text-[#3f3226]"
-                            : "text-[#5a5149] hover:bg-[#f4ece4]"
-                        } ${
                           isHomeTest && isActivePath(pathname, "/dashboard")
                             ? "!bg-[#eef4f7] !text-[#33434c]"
                             : isHomeTest
                             ? "!text-[#707b82] hover:!bg-[#f3f6f8]"
-                            : ""
+                            : isActivePath(pathname, "/dashboard")
+                            ? "bg-[#f4e6d8] text-[#3f3226]"
+                            : "text-[#5a5149] hover:bg-[#f4ece4]"
                         }`}
                       >
-                        <span className="inline-flex items-center gap-2">
+                        <span className="inline-flex items-center gap-2 text-current">
                           <LayoutDashboard className="h-4 w-4" />
                           Dashboard
                         </span>
