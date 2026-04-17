@@ -30,7 +30,7 @@ function PendingBadge({ count }: { count: number }) {
   if (count <= 0) return null;
 
   return (
-    <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#c96f5d] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
+    <span className="inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#d7dde1] bg-[linear-gradient(180deg,#ffffff_0%,#e8edf0_100%)] px-1.5 py-0.5 text-[10px] font-bold leading-none text-[#5c6971] shadow-[0_6px_12px_rgba(136,142,148,0.12)]">
       {count > 99 ? "99+" : count}
     </span>
   );
@@ -41,12 +41,12 @@ function NewChatBadge({ visible }: { visible: boolean }) {
 
   return (
     <span
-      className="relative inline-flex h-5 w-5 items-center justify-center rounded-full border border-[#ead9cb] bg-[#fff7ef] text-[#9a5d49]"
+      className="relative inline-flex h-5 w-5 items-center justify-center rounded-full border border-[#dde3e7] bg-[linear-gradient(180deg,#ffffff_0%,#eef2f5_100%)] text-[#6d7a83]"
       aria-label="New chat activity"
       title="New chat activity"
     >
       <MessageCircleMore className="h-3 w-3" />
-      <span className="absolute -right-0.5 -top-0.5 inline-flex h-2.5 w-2.5 rounded-full bg-[#c96f5d]" />
+      <span className="absolute -right-0.5 -top-0.5 inline-flex h-2.5 w-2.5 rounded-full border border-white bg-[#88939a]" />
     </span>
   );
 }
