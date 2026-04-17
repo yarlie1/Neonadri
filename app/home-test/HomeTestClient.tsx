@@ -76,19 +76,19 @@ export default function HomeTestClient({
   ).length;
   const hostCount = Object.keys(hostProfileMap).length;
   const surfaceClass =
-    "border border-[#f1f5f8] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(244,248,250,0.97)_34%,rgba(233,238,242,0.99)_100%)] shadow-[0_14px_30px_rgba(146,154,162,0.1),inset_0_1px_0_rgba(255,255,255,0.99)]";
+    "border border-[#f1f4f6] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(245,247,248,0.97)_34%,rgba(235,238,240,0.99)_100%)] shadow-[0_14px_30px_rgba(136,142,148,0.1),inset_0_1px_0_rgba(255,255,255,0.99)]";
   const metaRowClass =
-    "rounded-[18px] border border-[#e7eaec] bg-[#fcfcfc] px-3 py-2.5 text-sm text-[#3a464f]";
+    "rounded-[18px] border border-[#e6eaec] bg-[#fcfcfc] px-3 py-2.5 text-sm text-[#3b454b]";
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#ebeff2] px-4 py-5 text-[#2f3a42]">
+    <main className="min-h-screen overflow-hidden bg-[#eceff1] px-4 py-5 text-[#2f3a42]">
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#fafcfd_26%,#edf1f4_64%,#e1e6eb_100%)]" />
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.74),transparent_24%),radial-gradient(circle_at_84%_16%,rgba(244,248,251,0.44),transparent_22%),radial-gradient(circle_at_60%_100%,rgba(228,233,238,0.28),transparent_34%)]" />
       <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.18)_1px,transparent_1px)] bg-[size:22px_22px] opacity-36" />
       <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(120deg,transparent_0%,transparent_44%,rgba(255,255,255,0.28)_49%,transparent_54%,transparent_100%)] opacity-85" />
 
       <div className="relative mx-auto max-w-2xl space-y-4 pb-24 sm:space-y-5">
-        <section className="relative overflow-hidden rounded-[36px] border border-[#f8fbfd] bg-[linear-gradient(145deg,rgba(255,255,255,0.99)_0%,rgba(247,250,252,0.98)_34%,rgba(233,238,242,0.99)_100%)] px-5 py-6 shadow-[0_28px_80px_rgba(146,154,162,0.14),inset_0_1px_0_rgba(255,255,255,0.99)] sm:px-7 sm:py-8">
+        <section className="relative overflow-hidden rounded-[36px] border border-[#f8fbfc] bg-[linear-gradient(145deg,rgba(255,255,255,0.99)_0%,rgba(248,250,251,0.98)_34%,rgba(235,239,242,0.99)_100%)] px-5 py-6 shadow-[0_28px_80px_rgba(136,142,148,0.13),inset_0_1px_0_rgba(255,255,255,0.99)] sm:px-7 sm:py-8">
           <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
           <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#f5f9fcc7] blur-3xl" />
           <div className="absolute inset-y-0 right-0 w-1/3 bg-[linear-gradient(180deg,rgba(255,255,255,0.0)_0%,rgba(255,255,255,0.34)_45%,rgba(255,255,255,0.0)_100%)]" />
@@ -96,7 +96,7 @@ export default function HomeTestClient({
           <div className="absolute inset-x-0 top-[28%] h-[1px] bg-[linear-gradient(90deg,transparent,rgba(244,248,251,0.55),transparent)]" />
 
           <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#eef3f6] bg-[#ffffffd9] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#80888f] shadow-[0_10px_22px_rgba(146,154,162,0.1)]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#eef2f4] bg-[#ffffffd9] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7e858b] shadow-[0_10px_22px_rgba(136,142,148,0.08)]">
               <Sparkles className="h-3.5 w-3.5" />
               Soft social layer
             </div>
@@ -111,31 +111,31 @@ export default function HomeTestClient({
             </p>
 
             <div className="mt-7 grid grid-cols-3 gap-3">
-              <div className="relative overflow-hidden rounded-[26px] border border-[#f0f4f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(246,249,251,0.98)_38%,rgba(234,238,241,0.99)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(146,154,162,0.1),inset_0_1px_0_rgba(255,255,255,0.99)]">
+              <div className="relative overflow-hidden rounded-[26px] border border-[#f0f3f5] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(247,249,250,0.98)_38%,rgba(235,238,240,0.99)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(136,142,148,0.1),inset_0_1px_0_rgba(255,255,255,0.99)]">
                 <div className="absolute inset-x-0 top-0 h-[1px] bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.92),transparent)]" />
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#8a9399]">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-[#888f94]">
                   Happening now
                 </div>
                 <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
                   {upcomingCount}
                 </div>
-                <div className="mt-1 text-[11px] text-[#8a9297]">Open right now</div>
+                <div className="mt-1 text-[11px] text-[#868d92]">Open right now</div>
               </div>
 
-              <div className="relative overflow-hidden rounded-[26px] border border-[#f0f4f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(246,249,251,0.98)_38%,rgba(234,238,241,0.99)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(146,154,162,0.1),inset_0_1px_0_rgba(255,255,255,0.99)]">
+              <div className="relative overflow-hidden rounded-[26px] border border-[#f0f3f5] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(247,249,250,0.98)_38%,rgba(235,238,240,0.99)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(136,142,148,0.1),inset_0_1px_0_rgba(255,255,255,0.99)]">
                 <div className="absolute inset-x-0 top-0 h-[1px] bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.92),transparent)]" />
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#8a9399]">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-[#888f94]">
                   Hosts nearby
                 </div>
                 <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
                   {hostCount}
                 </div>
-                <div className="mt-1 text-[11px] text-[#8a9297]">Across the city</div>
+                <div className="mt-1 text-[11px] text-[#868d92]">Across the city</div>
               </div>
 
-              <div className="relative overflow-hidden rounded-[26px] border border-[#f0f4f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(246,249,251,0.98)_38%,rgba(234,238,241,0.99)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(146,154,162,0.1),inset_0_1px_0_rgba(255,255,255,0.99)]">
+              <div className="relative overflow-hidden rounded-[26px] border border-[#f0f3f5] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(247,249,250,0.98)_38%,rgba(235,238,240,0.99)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(136,142,148,0.1),inset_0_1px_0_rgba(255,255,255,0.99)]">
                 <div className="absolute inset-x-0 top-0 h-[1px] bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.92),transparent)]" />
-                <div className="text-[11px] uppercase tracking-[0.16em] text-[#818c93]">
+                <div className="text-[11px] uppercase tracking-[0.16em] text-[#81878d]">
                   Mood
                 </div>
                 <div className="mt-1.5 text-sm font-bold leading-5 text-[#24323f]">
@@ -143,7 +143,7 @@ export default function HomeTestClient({
                   <br />
                   Lab
                 </div>
-                <div className="mt-1 text-[11px] text-[#8a9297]">Softly guided</div>
+                <div className="mt-1 text-[11px] text-[#868d92]">Softly guided</div>
               </div>
             </div>
 
@@ -151,7 +151,7 @@ export default function HomeTestClient({
               {["Slow coffee", "Afterglow walks", "Quiet co-work"].map((label) => (
                 <span
                   key={label}
-                  className="rounded-full border border-[#eef3f6] bg-[#ffffffd9] px-3 py-1.5 text-[11px] font-medium text-[#707b83] shadow-[0_8px_18px_rgba(146,154,162,0.08)]"
+                  className="rounded-full border border-[#eef2f4] bg-[#ffffffd9] px-3 py-1.5 text-[11px] font-medium text-[#707980] shadow-[0_8px_18px_rgba(136,142,148,0.07)]"
                 >
                   {label}
                 </span>
@@ -161,7 +161,7 @@ export default function HomeTestClient({
         </section>
 
         {highlightedPost && (
-          <section className="overflow-hidden rounded-[34px] border border-[#f7fbfd] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(247,250,252,0.99)_36%,rgba(239,243,246,0.99)_100%)] shadow-[0_30px_88px_rgba(146,154,162,0.14),inset_0_1px_0_rgba(255,255,255,1)]">
+          <section className="overflow-hidden rounded-[34px] border border-[#f7fafc] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(248,250,251,0.99)_36%,rgba(240,243,245,0.99)_100%)] shadow-[0_30px_88px_rgba(136,142,148,0.13),inset_0_1px_0_rgba(255,255,255,1)]">
             <div className="border-b border-[#e3e6e8] px-5 py-5">
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -174,16 +174,16 @@ export default function HomeTestClient({
                   </div>
                 </div>
 
-                <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#edf2f5] bg-[#ffffff] text-[#7f888f] shadow-[0_12px_24px_rgba(146,154,162,0.1)]">
+                <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#edf1f4] bg-[#ffffff] text-[#7e868d] shadow-[0_12px_24px_rgba(136,142,148,0.09)]">
                   <Plus className="h-4 w-4 rotate-45" />
                 </div>
               </div>
             </div>
 
             <div className="grid gap-3 px-4 py-5 sm:grid-cols-[1.45fr_0.95fr] sm:px-5">
-              <div className="relative overflow-hidden rounded-[28px] border border-[#f0f4f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(247,250,252,0.98)_48%,rgba(238,243,246,0.99)_100%)] px-4 py-4 text-[#24323f] shadow-[0_20px_38px_rgba(146,154,162,0.1),inset_0_1px_0_rgba(255,255,255,0.99)]">
+              <div className="relative overflow-hidden rounded-[28px] border border-[#f0f3f5] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(248,250,251,0.98)_48%,rgba(239,243,245,0.99)_100%)] px-4 py-4 text-[#24323f] shadow-[0_20px_38px_rgba(136,142,148,0.1),inset_0_1px_0_rgba(255,255,255,0.99)]">
                 <div className="absolute inset-x-0 top-0 h-[1px] bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.94),transparent)]" />
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#eef3f6] bg-[#ffffffd8] px-3 py-1.5 text-xs font-medium text-[#788189]">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#eef2f4] bg-[#ffffffd8] px-3 py-1.5 text-xs font-medium text-[#788087]">
                   {getPurposeIcon(highlightedPost.meeting_purpose)}
                   {highlightedPost.meeting_purpose || "Meetup"}
                 </div>
@@ -192,19 +192,19 @@ export default function HomeTestClient({
                   {getPurposeLabel(highlightedPost.meeting_purpose)}
                 </div>
 
-                <div className="mt-3 max-w-md text-sm leading-6 text-[#6f7b84]">
+                <div className="mt-3 max-w-md text-sm leading-6 text-[#707980]">
                   A quieter featured moment with a little more room to breathe.
                 </div>
               </div>
 
-              <div className="relative overflow-hidden space-y-2.5 rounded-[24px] border border-[#eef3f6] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(246,248,249,0.98)_100%)] px-4 py-4 text-[#3b4952] shadow-[0_16px_30px_rgba(146,154,162,0.08)]">
+              <div className="relative overflow-hidden space-y-2.5 rounded-[24px] border border-[#edf1f4] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(247,248,249,0.98)_100%)] px-4 py-4 text-[#3b4952] shadow-[0_16px_30px_rgba(136,142,148,0.08)]">
                 <div className="absolute inset-x-0 top-0 h-[1px] bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.92),transparent)]" />
                 <div className="flex items-center gap-2 text-sm">
-                  <Clock3 className="h-4 w-4 text-[#7a848a]" />
+                  <Clock3 className="h-4 w-4 text-[#7c8489]" />
                   <span>{formatTime(highlightedPost.meeting_time)}</span>
                 </div>
                 <div className="flex min-w-0 items-start gap-2 text-sm">
-                  <MapPin className="mt-0.5 h-4 w-4 text-[#7a848a]" />
+                  <MapPin className="mt-0.5 h-4 w-4 text-[#7c8489]" />
                   <span className="block min-w-0 flex-1 break-words line-clamp-2">
                     {highlightedPost.location ||
                       highlightedPost.place_name ||
@@ -212,7 +212,7 @@ export default function HomeTestClient({
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <Search className="h-4 w-4 text-[#7a848a]" />
+                  <Search className="h-4 w-4 text-[#7c8489]" />
                   <span>
                     {highlightedPost.target_gender || "Any"} /{" "}
                     {highlightedPost.target_age_group || "Any"}
