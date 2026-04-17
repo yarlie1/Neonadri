@@ -201,24 +201,24 @@ export default async function ProfilePage({ params }: PageProps) {
   return (
       <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-4xl space-y-5">
-        <section className="rounded-[34px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] p-5 shadow-[0_18px_42px_rgba(92,69,52,0.08)] sm:p-6">
-          <div className="flex flex-col gap-4">
+        <section className="rounded-[34px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] p-5 shadow-[0_16px_36px_rgba(92,69,52,0.07)] sm:p-5">
+          <div className="flex flex-col gap-3.5">
             <div className="flex items-center justify-between gap-3">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] text-[#74675d]">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.28rem] text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-[#74675d]">
                 <UserCircle2 className="h-3.5 w-3.5" />
                 <span>{isMyProfile ? "My profile" : "Guest profile"}</span>
               </div>
               {isMyProfile && (
                 <Link
                   href={`/profile/${profile.id}/edit`}
-                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-4 py-[0.45rem] text-xs font-medium leading-none text-[#5f5347] transition hover:bg-[#f7eee6]"
+                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3.5 py-[0.42rem] text-[11px] font-medium leading-none text-[#5f5347] transition hover:bg-[#f7eee6]"
                 >
                   Edit Profile
                 </Link>
               )}
             </div>
 
-            <div className="min-w-0 pl-1">
+            <div className="min-w-0">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h1 className="min-w-0 truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
                   {profile.display_name || "Unknown"}
@@ -231,37 +231,37 @@ export default async function ProfilePage({ params }: PageProps) {
                 </div>
               </div>
 
-              <div className="mt-3 space-y-2 text-sm text-[#5f5347]">
-                <div className="grid grid-cols-[18px_auto_minmax(0,1fr)] items-center gap-x-2 text-[#6a5e53]">
+              <div className="mt-3 rounded-[20px] border border-[#eadfd3] bg-[linear-gradient(180deg,rgba(255,253,250,0.75)_0%,rgba(247,239,231,0.7)_100%)] px-3.5 py-1 text-sm text-[#5f5347]">
+                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 py-2 text-[#6a5e53]">
                   <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
-                  <span className="sr-only">Meeting style</span>
                   <span>{hasMeetingStyle ? profile.meeting_style : "No meetup style yet"}</span>
+                  <span />
                 </div>
 
-                <div className="grid grid-cols-[18px_auto_minmax(0,1fr)] items-center gap-x-2 text-[#6a5e53]">
+                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#eadfd3]/70 py-2 text-[#6a5e53]">
                   <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
-                  <span className="sr-only">Response note</span>
                   <span>{hasResponseNote ? profile.response_time_note : "No response note yet"}</span>
+                  <span />
                 </div>
 
-                <div className="grid grid-cols-[18px_auto_minmax(0,1fr)] items-center gap-x-2">
+                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#eadfd3]/70 py-2">
                   <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Attendance
                   </span>
-                  <span className="font-semibold text-[#2f2a26]">
+                  <span className="justify-self-end font-semibold text-[#2f2a26]">
                     {trustMetrics.attendanceRate === null
                       ? "No data yet"
                       : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-[18px_auto_minmax(0,1fr)] items-center gap-x-2">
+                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#eadfd3]/70 py-2">
                   <DollarSign className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Payout reliability
                   </span>
-                  <span className="font-semibold text-[#2f2a26]">
+                  <span className="justify-self-end font-semibold text-[#2f2a26]">
                     {trustMetrics.hostReliabilityRate === null
                       ? "No data yet"
                       : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
