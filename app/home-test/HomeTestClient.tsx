@@ -13,7 +13,6 @@ import {
   getMatchBadge,
   getPurposeIcon,
   getPurposeLabel,
-  getPurposeTheme,
   parseBenefitAmount,
   formatDuration,
 } from "../homeFeedHelpers";
@@ -78,66 +77,67 @@ export default function HomeTestClient({
   const hostCount = Object.keys(hostProfileMap).length;
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#07111f] px-4 py-5 text-[#e7f2ff]">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#1d3d6c33_0%,transparent_34%),linear-gradient(180deg,#08111e_0%,#0a1322_52%,#07111f_100%)]" />
-      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(95,196,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(95,196,255,0.05)_1px,transparent_1px)] bg-[size:22px_22px] opacity-40" />
+    <main className="min-h-screen overflow-hidden bg-[#e5ecf1] px-4 py-5 text-[#273643]">
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#eef4f7_28%,#dce4ea_68%,#d2dbe3_100%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(187,225,232,0.42),transparent_24%),radial-gradient(circle_at_84%_16%,rgba(199,211,231,0.34),transparent_21%),radial-gradient(circle_at_60%_100%,rgba(181,219,223,0.22),transparent_30%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.16)_1px,transparent_1px)] bg-[size:22px_22px] opacity-40" />
 
       <div className="relative mx-auto max-w-2xl space-y-4 pb-24 sm:space-y-5">
-        <section className="relative overflow-hidden rounded-[36px] border border-[#74d4ff40] bg-[linear-gradient(145deg,rgba(12,27,46,0.96)_0%,rgba(15,37,61,0.92)_54%,rgba(11,20,34,0.98)_100%)] px-5 py-6 shadow-[0_24px_72px_rgba(23,117,204,0.22),inset_0_1px_0_rgba(255,255,255,0.07)] sm:px-7 sm:py-8">
-          <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#74d4ff1f] blur-3xl" />
-          <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#62f2c81a] blur-3xl" />
+        <section className="relative overflow-hidden rounded-[36px] border border-[#f7fbff] bg-[linear-gradient(145deg,rgba(249,252,254,0.98)_0%,rgba(230,237,243,0.96)_52%,rgba(213,222,229,0.98)_100%)] px-5 py-6 shadow-[0_28px_80px_rgba(128,147,162,0.18),inset_0_1px_0_rgba(255,255,255,0.92)] sm:px-7 sm:py-8">
+          <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffd9] blur-3xl" />
+          <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#d9f0ee99] blur-3xl" />
 
           <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#8be9ff55] bg-[#0d2037cc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8be9ff] shadow-[0_0_20px_rgba(90,214,255,0.12)]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#d8e5ed] bg-[#f9fcfecc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#6a909c] shadow-[0_10px_22px_rgba(151,176,191,0.12)]">
               <Sparkles className="h-3.5 w-3.5" />
               AI social layer
             </div>
 
-            <h1 className="mt-4 max-w-md text-[35px] font-black leading-[0.94] tracking-[-0.06em] text-white sm:text-[42px]">
+            <h1 className="mt-4 max-w-md text-[35px] font-black leading-[0.94] tracking-[-0.06em] text-[#24323f] sm:text-[42px]">
               Meet someone new in a softer future.
             </h1>
 
-            <p className="mt-4 max-w-lg text-[14px] leading-6 text-[#a6bed6] sm:text-[15px]">
-              Same structure, different mood. Calm cyber surfaces, AI-native
-              glow, and a quieter way to browse local social energy.
+            <p className="mt-4 max-w-lg text-[14px] leading-6 text-[#667a89] sm:text-[15px]">
+              Same structure, different mood. Quiet silver surfaces, soft AI glow,
+              and a calmer way to browse local social energy.
             </p>
 
             <div className="mt-6 grid grid-cols-3 gap-3">
-              <div className="rounded-[24px] border border-[#87dfff3a] bg-[linear-gradient(180deg,rgba(14,34,56,0.92)_0%,rgba(10,23,38,0.92)_100%)] px-3 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#82cfe8]">
+              <div className="rounded-[24px] border border-[#eaf1f5] bg-[linear-gradient(180deg,rgba(252,254,255,0.96)_0%,rgba(229,236,242,0.96)_100%)] px-3 py-3.5 shadow-[0_14px_28px_rgba(162,179,192,0.1),inset_0_1px_0_rgba(255,255,255,0.9)]">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-[#7f9daa]">
                   Live now
                 </div>
-                <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-white">
+                <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#24323f]">
                   {upcomingCount}
                 </div>
               </div>
 
-              <div className="rounded-[24px] border border-[#87dfff3a] bg-[linear-gradient(180deg,rgba(14,34,56,0.92)_0%,rgba(10,23,38,0.92)_100%)] px-3 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#82cfe8]">
+              <div className="rounded-[24px] border border-[#eaf1f5] bg-[linear-gradient(180deg,rgba(252,254,255,0.96)_0%,rgba(229,236,242,0.96)_100%)] px-3 py-3.5 shadow-[0_14px_28px_rgba(162,179,192,0.1),inset_0_1px_0_rgba(255,255,255,0.9)]">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-[#7f9daa]">
                   Hosts
                 </div>
-                <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-white">
+                <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#24323f]">
                   {hostCount}
                 </div>
               </div>
 
-              <div className="rounded-[24px] border border-[#87dfff3a] bg-[linear-gradient(180deg,rgba(14,34,56,0.92)_0%,rgba(10,23,38,0.92)_100%)] px-3 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#82cfe8]">
+              <div className="rounded-[24px] border border-[#eaf1f5] bg-[linear-gradient(180deg,rgba(252,254,255,0.96)_0%,rgba(229,236,242,0.96)_100%)] px-3 py-3.5 shadow-[0_14px_28px_rgba(162,179,192,0.1),inset_0_1px_0_rgba(255,255,255,0.9)]">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-[#7f9daa]">
                   Signal
                 </div>
-                <div className="mt-1 text-sm font-bold leading-5 text-white">
+                <div className="mt-1 text-sm font-bold leading-5 text-[#24323f]">
                   Chill
                   <br />
-                  Cyber
+                  Silver
                 </div>
               </div>
             </div>
 
             <div className="mt-6 flex flex-wrap gap-2">
-              {["Neon coffee", "Afterglow walks", "Quiet co-work"].map((label) => (
+              {["Slow coffee", "Afterglow walks", "Quiet co-work"].map((label) => (
                 <span
                   key={label}
-                  className="rounded-full border border-[#8be9ff40] bg-[#0d2037b8] px-3 py-2 text-xs font-medium text-[#d5f4ff] shadow-[0_0_16px_rgba(65,177,230,0.08)]"
+                  className="rounded-full border border-[#d9e6ee] bg-[#f9fcfecc] px-3 py-2 text-xs font-medium text-[#567382] shadow-[0_8px_18px_rgba(151,178,194,0.1)]"
                 >
                   {label}
                 </span>
@@ -147,28 +147,28 @@ export default function HomeTestClient({
         </section>
 
         {highlightedPost && (
-          <section className="overflow-hidden rounded-[32px] border border-[#6ed2ff38] bg-[linear-gradient(180deg,rgba(10,24,40,0.98)_0%,rgba(8,18,32,0.95)_100%)] shadow-[0_24px_70px_rgba(10,91,153,0.18)]">
-            <div className="border-b border-[#7bd7ff1c] px-5 py-[18px]">
+          <section className="overflow-hidden rounded-[32px] border border-[#edf3f7] bg-[linear-gradient(180deg,rgba(247,250,252,0.98)_0%,rgba(224,233,239,0.96)_100%)] shadow-[0_24px_70px_rgba(142,159,173,0.16)]">
+            <div className="border-b border-[#dbe5ec] px-5 py-[18px]">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#7edcff]">
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#6d94a0]">
                     <Search className="h-3.5 w-3.5" />
                     Featured signal
                   </div>
-                  <div className="mt-1 text-lg font-bold tracking-[-0.03em] text-white">
+                  <div className="mt-1 text-lg font-bold tracking-[-0.03em] text-[#24323f]">
                     {highlightedPost.place_name || highlightedPost.location || "Meetup"}
                   </div>
                 </div>
 
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#88e7ff44] bg-[#0d2037cc] text-[#9cefff]">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#d7e5ed] bg-[#f8fbfd] text-[#7096a3] shadow-[0_10px_20px_rgba(150,170,186,0.12)]">
                   <Plus className="h-4 w-4 rotate-45" />
                 </div>
               </div>
             </div>
 
             <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.4fr_1fr] sm:px-5">
-              <div className="rounded-[26px] border border-[#7adfff26] bg-[linear-gradient(180deg,rgba(16,37,62,0.86)_0%,rgba(8,21,37,0.88)_100%)] px-4 py-4 text-white">
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#8ce6ff40] bg-[#0d2037cc] px-3 py-1.5 text-xs font-medium text-[#baf6ff]">
+              <div className="rounded-[26px] border border-[#e7eef3] bg-[linear-gradient(180deg,rgba(252,254,255,0.96)_0%,rgba(230,237,242,0.94)_100%)] px-4 py-4 text-[#24323f] shadow-[0_14px_30px_rgba(151,171,186,0.1)]">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#d9e6ee] bg-[#f8fbfdcc] px-3 py-1.5 text-xs font-medium text-[#648794]">
                   {getPurposeIcon(highlightedPost.meeting_purpose)}
                   {highlightedPost.meeting_purpose || "Meetup"}
                 </div>
@@ -177,18 +177,19 @@ export default function HomeTestClient({
                   {getPurposeLabel(highlightedPost.meeting_purpose)}
                 </div>
 
-                <div className="mt-2 text-sm leading-6 text-[#9eb9d0]">
-                  Same featured module, re-skinned for a calm machine-era mood.
+                <div className="mt-2 text-sm leading-6 text-[#667a89]">
+                  Same featured module, re-skinned for a soft metallic, low-noise
+                  mood.
                 </div>
               </div>
 
-              <div className="space-y-2.5 rounded-[24px] border border-[#7adfff26] bg-[linear-gradient(180deg,rgba(12,28,46,0.92)_0%,rgba(7,18,31,0.94)_100%)] px-4 py-4 text-[#dff6ff]">
+              <div className="space-y-2.5 rounded-[24px] border border-[#e7eef3] bg-[linear-gradient(180deg,rgba(252,254,255,0.96)_0%,rgba(230,237,242,0.94)_100%)] px-4 py-4 text-[#334856] shadow-[0_14px_30px_rgba(151,171,186,0.1)]">
                 <div className="flex items-center gap-2 text-sm">
-                  <Clock3 className="h-4 w-4 text-[#7edcff]" />
+                  <Clock3 className="h-4 w-4 text-[#6f98a5]" />
                   <span>{formatTime(highlightedPost.meeting_time)}</span>
                 </div>
                 <div className="flex min-w-0 items-start gap-2 text-sm">
-                  <MapPin className="mt-0.5 h-4 w-4 text-[#7edcff]" />
+                  <MapPin className="mt-0.5 h-4 w-4 text-[#6f98a5]" />
                   <span className="block min-w-0 flex-1 break-words line-clamp-2">
                     {highlightedPost.location ||
                       highlightedPost.place_name ||
@@ -196,7 +197,7 @@ export default function HomeTestClient({
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <Search className="h-4 w-4 text-[#7edcff]" />
+                  <Search className="h-4 w-4 text-[#6f98a5]" />
                   <span>
                     {highlightedPost.target_gender || "Any"} /{" "}
                     {highlightedPost.target_age_group || "Any"}
@@ -208,19 +209,20 @@ export default function HomeTestClient({
         )}
 
         <div className="sticky top-[68px] z-20 sm:top-[76px]">
-          <div className="rounded-[28px] border border-[#7adfff2f] bg-[linear-gradient(180deg,rgba(8,21,36,0.96)_0%,rgba(10,25,42,0.94)_100%)] shadow-[0_18px_40px_rgba(12,76,124,0.18)]">
+          <div className="rounded-[28px] border border-[#edf3f7] bg-[linear-gradient(180deg,rgba(248,251,253,0.96)_0%,rgba(227,235,241,0.94)_100%)] shadow-[0_18px_40px_rgba(149,167,182,0.14)]">
             <div className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left sm:py-4">
               <div className="min-w-0">
-                <div className="flex items-center gap-2 text-sm font-semibold text-[#e8fbff]">
-                  <SlidersHorizontal className="h-4 w-4 text-[#7edcff]" />
+                <div className="flex items-center gap-2 text-sm font-semibold text-[#273744]">
+                  <SlidersHorizontal className="h-4 w-4 text-[#6d97a5]" />
                   Shape your signal
                 </div>
-                <div className="mt-2 text-sm text-[#96b5cb]">
-                  Static test shell for color, texture, type, and chrome.
+                <div className="mt-2 text-sm text-[#6d818f]">
+                  Static test shell for silver surfaces, soft chill textures, and
+                  calmer chrome.
                 </div>
               </div>
 
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#7adfff38] bg-[#0d2037cc] text-[#7edcff] shadow-[0_0_16px_rgba(65,177,230,0.10)]">
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#d7e4ec] bg-[#f8fbfd] text-[#6d97a5] shadow-[0_10px_18px_rgba(153,172,186,0.12)]">
                 <SlidersHorizontal className="h-4 w-4" />
               </span>
             </div>
@@ -229,15 +231,15 @@ export default function HomeTestClient({
 
         <div className="flex items-center justify-between px-1 pt-1">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#79dfff]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6f96a1]">
               Discover
             </div>
-            <div className="mt-1 text-xl font-black tracking-[-0.04em] text-white">
+            <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#24323f]">
               Nearby social moments
             </div>
           </div>
 
-          <div className="rounded-[24px] border border-[#7adfff36] bg-[#0d2037cc] px-3 py-1.5 text-xs font-medium text-[#b6e7f7]">
+          <div className="rounded-[24px] border border-[#dbe7ee] bg-[#f8fbfdcc] px-3 py-1.5 text-xs font-medium text-[#6c8c99] shadow-[0_8px_18px_rgba(154,174,189,0.1)]">
             {sortedPosts.length} results
           </div>
         </div>
@@ -255,32 +257,31 @@ export default function HomeTestClient({
             status as "Upcoming" | "Expired",
             matchSummaryMap[post.id]
           );
-          const purposeTheme = getPurposeTheme(post.meeting_purpose);
 
           return (
             <section
               key={post.id}
-              className={`overflow-hidden rounded-[32px] border p-[14px] shadow-[0_20px_48px_rgba(12,83,140,0.18)] sm:p-4 ${
+              className={`overflow-hidden rounded-[32px] border p-[14px] shadow-[0_20px_48px_rgba(145,164,179,0.14)] sm:p-4 ${
                 isExpired
-                  ? "border-[#4f64774d] bg-[linear-gradient(180deg,rgba(10,20,31,0.96)_0%,rgba(7,16,26,0.94)_100%)]"
-                  : "border-[#74d4ff33] bg-[linear-gradient(180deg,rgba(10,25,42,0.98)_0%,rgba(8,18,31,0.94)_100%)]"
+                  ? "border-[#d8e1e7] bg-[linear-gradient(180deg,rgba(235,240,244,0.96)_0%,rgba(217,225,232,0.94)_100%)]"
+                  : "border-[#edf3f7] bg-[linear-gradient(180deg,rgba(248,251,253,0.98)_0%,rgba(226,234,240,0.94)_100%)]"
               }`}
             >
-              <div className="rounded-[24px] border border-[#7bd7ff1f] bg-[linear-gradient(180deg,rgba(13,30,49,0.94)_0%,rgba(8,19,33,0.94)_100%)] p-4">
+              <div className="rounded-[24px] border border-[#edf3f7] bg-[linear-gradient(180deg,rgba(252,254,255,0.94)_0%,rgba(231,237,242,0.94)_100%)] p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#7adfff36] bg-[#0f2843] text-[#aef2ff]">
+                      <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#dbe7ee] bg-[#f8fbfd] text-[#6d97a5] shadow-[0_8px_18px_rgba(153,172,186,0.1)]">
                         {getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}
                       </div>
                       <div className="min-w-0">
-                        <div className="truncate text-lg font-black tracking-[-0.04em] text-white">
+                        <div className="truncate text-lg font-black tracking-[-0.04em] text-[#24323f]">
                           {post.meeting_purpose || "Social meetup"}
                         </div>
-                        <div className="mt-0.5 text-xs text-[#88a7bc]">
+                        <div className="mt-0.5 text-xs text-[#6c808e]">
                           Hosted by {host.displayName}
                           {host.gender || host.ageGroup
-                            ? ` · ${host.gender || "Unknown"}${
+                            ? ` | ${host.gender || "Unknown"}${
                                 host.ageGroup ? ` / ${host.ageGroup}` : ""
                               }`
                             : ""}
@@ -298,35 +299,34 @@ export default function HomeTestClient({
                   </span>
                 </div>
 
-                <div className="mt-4 grid gap-2.5 text-sm text-[#dff6ff]">
-                  <div className="flex items-center gap-2 rounded-[18px] border border-[#7bd7ff1f] bg-[#0c2036] px-3 py-2.5">
-                    <Clock3 className="h-4 w-4 text-[#7edcff]" />
+                <div className="mt-4 grid gap-2.5">
+                  <div className="flex items-center gap-2 rounded-[18px] border border-[#e7eef3] bg-[#f8fbfd] px-3 py-2.5 text-sm text-[#314454]">
+                    <Clock3 className="h-4 w-4 text-[#6d97a5]" />
                     <span className="truncate">{formatTime(post.meeting_time)}</span>
                     {formatDuration(post.duration_minutes) ? (
-                      <span className="ml-auto rounded-full border border-[#7adfff2a] bg-[#112944] px-2 py-0.5 text-[11px] font-medium text-[#9eeeff]">
+                      <span className="ml-auto rounded-full border border-[#d8e6ee] bg-[#eef5f8] px-2 py-0.5 text-[11px] font-medium text-[#6b8b98]">
                         {formatDuration(post.duration_minutes)}
                       </span>
                     ) : null}
                   </div>
 
-                  <div className="flex items-start gap-2 rounded-[18px] border border-[#7bd7ff1f] bg-[#0c2036] px-3 py-2.5">
-                    <MapPin className="mt-0.5 h-4 w-4 text-[#7edcff]" />
+                  <div className="flex items-start gap-2 rounded-[18px] border border-[#e7eef3] bg-[#f8fbfd] px-3 py-2.5 text-sm text-[#314454]">
+                    <MapPin className="mt-0.5 h-4 w-4 text-[#6d97a5]" />
                     <span className="min-w-0 flex-1 break-words">
                       {post.place_name || post.location || "No place"}
                     </span>
                   </div>
 
                   <div className="grid gap-2 sm:grid-cols-2">
-                    <div className="flex items-center gap-2 rounded-[18px] border border-[#7bd7ff1f] bg-[#0c2036] px-3 py-2.5">
-                      <UserRound className="h-4 w-4 text-[#7edcff]" />
+                    <div className="flex items-center gap-2 rounded-[18px] border border-[#e7eef3] bg-[#f8fbfd] px-3 py-2.5 text-sm text-[#314454]">
+                      <UserRound className="h-4 w-4 text-[#6d97a5]" />
                       <span>
-                        {post.target_gender || "Any"} /{" "}
-                        {post.target_age_group || "Any"}
+                        {post.target_gender || "Any"} / {post.target_age_group || "Any"}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2 rounded-[18px] border border-[#7bd7ff1f] bg-[#0c2036] px-3 py-2.5">
-                      <Coins className="h-4 w-4 text-[#62f2c8]" />
+                    <div className="flex items-center gap-2 rounded-[18px] border border-[#e7eef3] bg-[#f8fbfd] px-3 py-2.5 text-sm text-[#314454]">
+                      <Coins className="h-4 w-4 text-[#7fb39f]" />
                       <span>
                         {amount !== null ? `+$${amount.toLocaleString()}` : "No benefit"}
                       </span>
@@ -334,11 +334,11 @@ export default function HomeTestClient({
                   </div>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between gap-3 rounded-[20px] border border-[#7adfff20] bg-[linear-gradient(90deg,rgba(14,34,56,0.88)_0%,rgba(12,48,63,0.56)_100%)] px-3 py-3">
-                  <div className="text-xs uppercase tracking-[0.16em] text-[#84dff2]">
-                    {purposeTheme.pillClass.includes("text-[#") ? "AI-chill mode" : "Signal"}
+                <div className="mt-4 flex items-center justify-between gap-3 rounded-[20px] border border-[#e3edf3] bg-[linear-gradient(90deg,rgba(250,252,254,0.88)_0%,rgba(234,241,245,0.72)_100%)] px-3 py-3">
+                  <div className="text-xs uppercase tracking-[0.16em] text-[#7a9da9]">
+                    Silver calm mode
                   </div>
-                  <div className="text-sm font-semibold text-[#dff6ff]">
+                  <div className="text-sm font-semibold text-[#314454]">
                     {getPurposeLabel(post.meeting_purpose)}
                   </div>
                 </div>
@@ -348,13 +348,13 @@ export default function HomeTestClient({
         })}
 
         {sortedPosts.length === 0 && (
-          <div className="rounded-[32px] border border-[#74d4ff28] bg-[linear-gradient(180deg,rgba(10,25,42,0.98)_0%,rgba(8,18,31,0.94)_100%)] px-5 py-10 text-center text-[#9bb7cb] sm:px-6 sm:py-12">
+          <div className="rounded-[32px] border border-[#e6eff4] bg-[linear-gradient(180deg,rgba(248,251,253,0.98)_0%,rgba(226,234,240,0.94)_100%)] px-5 py-10 text-center text-[#69808f] sm:px-6 sm:py-12">
             No meetups found.
           </div>
         )}
       </div>
 
-      <div className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-full border border-[#88e7ff44] bg-[linear-gradient(135deg,#16385c_0%,#0f2037_100%)] text-[#b8f7ff] shadow-[0_22px_46px_rgba(24,100,170,0.30)]">
+      <div className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-full border border-[#d8e6ee] bg-[linear-gradient(135deg,#fdfefe_0%,#dfe8ee_100%)] text-[#648996] shadow-[0_24px_48px_rgba(148,168,183,0.22)]">
         <Plus className="h-6 w-6" />
       </div>
     </main>
