@@ -376,40 +376,48 @@ function SentTabPanel({
 }) {
   return (
     <div className="space-y-4">
-      {requestsSent.map((item) => (
-        <div
-          key={item.id}
-          onClick={() => openPostDetail(item.post_id)}
-          className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
-        >
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
-                Outgoing request
+      {requestsSent.map((item) => {
+        const hostName = profileMap[item.post_owner_user_id] || "Unknown";
+        const statusMessage =
+          item.status === "accepted"
+            ? `${hostName} accepted your request.`
+            : item.status === "rejected"
+            ? `${hostName} closed this request.`
+            : `Sent to ${hostName}`;
+
+        return (
+          <div
+            key={item.id}
+            onClick={() => openPostDetail(item.post_id)}
+            className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                  Outgoing request
+                </div>
+                <div className="mt-2 text-lg font-semibold text-[#2f2a26]">
+                  You asked to join this meetup.
+                </div>
+                <div className="mt-1 text-sm text-[#6f655c]">{statusMessage}</div>
+                <div className="mt-1 text-sm text-[#8b7f74]">
+                  {new Date(item.created_at).toLocaleString()}
+                </div>
               </div>
-              <div className="mt-2 text-lg font-semibold text-[#2f2a26]">
-                You asked to join this meetup.
-              </div>
-              <div className="mt-1 text-sm text-[#6f655c]">
-                Sent to {profileMap[item.post_owner_user_id] || "Unknown"}
-              </div>
-              <div className="mt-1 text-sm text-[#8b7f74]">
-                {new Date(item.created_at).toLocaleString()}
-              </div>
+
+              <span
+                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
+                  item.status
+                )}`}
+              >
+                {item.status}
+              </span>
             </div>
 
-            <span
-              className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
-                item.status
-              )}`}
-            >
-              {item.status}
-            </span>
+            <MiniPostPreview post={postMap[item.post_id]} timeZone={userTimeZone} />
           </div>
-
-          <MiniPostPreview post={postMap[item.post_id]} timeZone={userTimeZone} />
-        </div>
-      ))}
+        );
+      })}
 
       {requestsSent.length === 0 && (
         <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
