@@ -207,7 +207,7 @@ export default async function ProfilePage({ params }: PageProps) {
             <div className="flex items-center justify-between gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.28rem] text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-[#74675d]">
                 <UserCircle2 className="h-3.5 w-3.5" />
-                <span>{isMyProfile ? "My profile" : "Guest profile"}</span>
+                <span>Profile</span>
               </div>
               {isMyProfile && (
                 <Link
