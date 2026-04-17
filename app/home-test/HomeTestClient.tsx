@@ -276,13 +276,13 @@ export default function HomeTestClient({
           return (
             <section
               key={post.id}
-              className={`overflow-hidden rounded-[24px] border p-3 shadow-[0_18px_36px_rgba(118,126,133,0.12)] sm:p-3.5 ${
+              className={`overflow-hidden rounded-[24px] border p-2.5 shadow-[0_18px_36px_rgba(118,126,133,0.12)] sm:p-3 ${
                 isExpired
                   ? "border-[#d6dde2] bg-[linear-gradient(180deg,rgba(236,240,243,0.97)_0%,rgba(221,227,232,0.95)_100%)]"
                   : "border-[#e4ebef] bg-[linear-gradient(180deg,rgba(248,250,252,0.985)_0%,rgba(228,235,240,0.95)_100%)]"
               }`}
             >
-              <div className="rounded-[18px] border border-[#e7edf1] bg-[linear-gradient(180deg,rgba(252,254,255,0.995)_0%,rgba(236,241,245,0.97)_100%)] p-4 shadow-[0_14px_24px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.98)]">
+              <div className="rounded-[18px] border border-[#e7edf1] bg-[linear-gradient(180deg,rgba(252,254,255,0.995)_0%,rgba(236,241,245,0.97)_100%)] px-4 py-3.5 shadow-[0_14px_24px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.98)]">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2.5">
@@ -314,7 +314,7 @@ export default function HomeTestClient({
                   </span>
                 </div>
 
-                <div className="mt-4 grid gap-2">
+                <div className="mt-3.5 grid gap-1.5">
                   <div className={metaRowClass}>
                     <Clock3 className="h-4 w-4 text-[#788b95]" />
                     <span className="truncate">{formatTime(post.meeting_time)}</span>
@@ -332,7 +332,7 @@ export default function HomeTestClient({
                     </span>
                   </div>
 
-                  <div className="flex min-h-[44px] flex-wrap items-center justify-between gap-x-3 gap-y-2 px-1 pt-1 text-sm text-[#55646e]">
+                  <div className="flex min-h-[36px] flex-wrap items-center justify-between gap-x-3 gap-y-1 px-1 pt-0.5 text-sm text-[#55646e]">
                     <span className="inline-flex items-center gap-2">
                       <UserRound className="h-4 w-4 text-[#788b95]" />
                       {post.target_gender || "Any"} / {post.target_age_group || "Any"}
@@ -344,7 +344,7 @@ export default function HomeTestClient({
                   </div>
                 </div>
 
-                <div className="mt-3.5 flex items-center justify-between gap-3 rounded-[14px] border border-[#dde4e9] bg-[linear-gradient(90deg,rgba(252,253,254,0.96)_0%,rgba(237,241,244,0.88)_100%)] px-3 py-2">
+                <div className="mt-3 flex items-center justify-between gap-3 rounded-[14px] border border-[#dde4e9] bg-[linear-gradient(90deg,rgba(252,253,254,0.96)_0%,rgba(237,241,244,0.88)_100%)] px-3 py-1.5">
                   <div className="text-xs uppercase tracking-[0.16em] text-[#7a8b95]">
                     Refined silver mode
                   </div>
