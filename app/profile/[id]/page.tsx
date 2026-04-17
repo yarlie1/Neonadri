@@ -353,22 +353,6 @@ export default async function ProfilePage({ params }: PageProps) {
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
                 <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-3.5 py-2.5">
                   <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                    Reviews received
-                  </div>
-                  <div className="mt-1 text-sm font-semibold text-[#5f5347]">
-                    {reviewCount} total
-                  </div>
-                </div>
-                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-3.5 py-2.5">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                    Completed meetups
-                  </div>
-                  <div className="mt-1 text-sm font-semibold text-[#5f5347]">
-                    {completedMeetups} meetups
-                  </div>
-                </div>
-                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-3.5 py-2.5">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Attendance
                   </div>
                   <div className="mt-1 text-sm font-semibold text-[#5f5347]">
