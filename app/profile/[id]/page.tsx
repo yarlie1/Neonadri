@@ -286,7 +286,7 @@ export default async function ProfilePage({ params }: PageProps) {
               )}
 
               {hasInterests && (
-                <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4">
+                <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-4">
                   <div className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
                     <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
                     Interests
@@ -304,7 +304,7 @@ export default async function ProfilePage({ params }: PageProps) {
                 </div>
               )}
 
-              <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4">
+              <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-4">
                 <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
                   <MessageSquareText className="h-4 w-4 shrink-0 text-[#8a7f74]" />
                   <span>About me</span>
@@ -337,7 +337,7 @@ export default async function ProfilePage({ params }: PageProps) {
               </div>
             </div>
 
-            <div className="mt-4 rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4">
+            <div className="mt-4 rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <StarRating value={roundedAverage} size="md" />
@@ -351,7 +351,7 @@ export default async function ProfilePage({ params }: PageProps) {
               </div>
 
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-2.5">
+                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-3.5 py-2.5">
                   <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Reviews received
                   </div>
@@ -359,7 +359,7 @@ export default async function ProfilePage({ params }: PageProps) {
                     {reviewCount} total
                   </div>
                 </div>
-                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-2.5">
+                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-3.5 py-2.5">
                   <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Completed meetups
                   </div>
@@ -367,7 +367,7 @@ export default async function ProfilePage({ params }: PageProps) {
                     {completedMeetups} meetups
                   </div>
                 </div>
-                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-2.5">
+                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-3.5 py-2.5">
                   <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Attendance
                   </div>
@@ -382,7 +382,7 @@ export default async function ProfilePage({ params }: PageProps) {
                       : "Not enough meetup reviews yet"}
                   </div>
                 </div>
-                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-4 py-2.5">
+                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-3.5 py-2.5">
                   <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Payout reliability
                   </div>
@@ -402,14 +402,14 @@ export default async function ProfilePage({ params }: PageProps) {
 
             <div className="mt-3 space-y-3">
               {reviews.length === 0 ? (
-                <div className="rounded-[20px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-3 text-sm text-[#8b7f74]">
+                <div className="rounded-[20px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-3 text-sm text-[#8b7f74]">
                   No reviews yet.
                 </div>
               ) : (
                 reviews.map((review) => (
                   <div
                     key={review.id}
-                    className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4"
+                    className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-4"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
