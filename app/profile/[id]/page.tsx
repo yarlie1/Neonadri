@@ -219,19 +219,21 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
 
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h1 className="min-w-0 truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
-                  {profile.display_name || "Unknown"}
-                </h1>
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
-                  <StarRating value={roundedAverage} size="sm" />
-                  <span className="font-semibold text-[#4f4339]">
-                    {averageRating.toFixed(1)}
-                  </span>
+              <div className="rounded-[20px] border border-[#eadfd3] bg-[linear-gradient(180deg,rgba(255,253,250,0.78)_0%,rgba(247,239,231,0.72)_100%)] px-3.5 py-1 text-sm text-[#5f5347]">
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 py-2">
+                  <h1 className="min-w-0 truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
+                    {profile.display_name || "Unknown"}
+                  </h1>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                    <StarRating value={roundedAverage} size="sm" />
+                    <span className="font-semibold text-[#4f4339]">
+                      {averageRating.toFixed(1)}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="mt-3 rounded-[20px] border border-[#eadfd3] bg-[linear-gradient(180deg,rgba(255,253,250,0.75)_0%,rgba(247,239,231,0.7)_100%)] px-3.5 py-1 text-sm text-[#5f5347]">
+                <div className="border-t border-[#eadfd3]/70" />
+
                 <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 py-2 text-[#6a5e53]">
                   <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
                   <span>{hasMeetingStyle ? profile.meeting_style : "No meetup style yet"}</span>
