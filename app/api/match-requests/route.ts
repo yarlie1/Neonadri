@@ -5,6 +5,8 @@ export async function POST(req: Request) {
   try {
     const supabase = await createClient();
     const body = await req.json();
+    const targetMismatchMessage =
+      "You can’t send a request because this meetup is set for a different gender or age group.";
 
     const {
       data: { user },
@@ -25,6 +27,74 @@ export async function POST(req: Request) {
     if (user.id === postOwnerUserId) {
       return NextResponse.json(
         { error: "You cannot request your own meetup." },
+        { status: 400 }
+      );
+    }
+
+    const [{ data: postData, error: postError }, { data: profileData, error: profileError }] =
+      await Promise.all([
+        supabase
+          .from("posts")
+          .select("user_id, target_gender, target_age_group")
+          .eq("id", postId)
+          .maybeSingle(),
+        supabase
+          .from("profiles")
+          .select("gender, age_group")
+          .eq("id", user.id)
+          .maybeSingle(),
+      ]);
+
+    if (postError || !postData) {
+      console.error("Match request post lookup failed", {
+        message: postError?.message,
+        details: postError?.details,
+        hint: postError?.hint,
+        code: postError?.code,
+        postId,
+      });
+      return NextResponse.json(
+        { error: "Failed to check meetup details." },
+        { status: 500 }
+      );
+    }
+
+    if (String(postData.user_id || "") !== postOwnerUserId) {
+      return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+    }
+
+    if (profileError) {
+      console.error("Match request profile lookup failed", {
+        message: profileError.message,
+        details: profileError.details,
+        hint: profileError.hint,
+        code: profileError.code,
+        userId: user.id,
+      });
+      return NextResponse.json(
+        { error: "Failed to check your profile." },
+        { status: 500 }
+      );
+    }
+
+    const targetGender = String(postData.target_gender || "").trim();
+    const targetAgeGroup = String(postData.target_age_group || "").trim();
+    const requesterGender = String(profileData?.gender || "").trim();
+    const requesterAgeGroup = String(profileData?.age_group || "").trim();
+
+    const genderMismatch =
+      targetGender &&
+      targetGender !== "Any" &&
+      requesterGender !== targetGender;
+
+    const ageGroupMismatch =
+      targetAgeGroup &&
+      targetAgeGroup !== "Any" &&
+      requesterAgeGroup !== targetAgeGroup;
+
+    if (genderMismatch || ageGroupMismatch) {
+      return NextResponse.json(
+        { error: targetMismatchMessage },
         { status: 400 }
       );
     }
