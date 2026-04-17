@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { createClient } from "../../lib/supabase/client";
 import {
   Coins,
@@ -565,6 +566,7 @@ export default function DashboardClient({
 }) {
   const supabase = createClient();
   const router = useRouter();
+  const previousActiveTabRef = useRef<string | null>(null);
   const {
     userTimeZone,
     formatTime,
@@ -594,7 +596,7 @@ export default function DashboardClient({
     filteredSent,
     filteredMatches,
     pendingReceived,
-    pendingSent,
+    acceptedSent,
     upcomingMatchedMeetups,
   } = useDashboardState({
     initialPosts,
@@ -608,6 +610,33 @@ export default function DashboardClient({
     userId,
     initialUserTimeZone,
   });
+
+  useEffect(() => {
+    if (previousActiveTabRef.current === activeTab) return;
+    previousActiveTabRef.current = activeTab;
+
+    if (activeTab === "received") {
+      setReceivedFilter(pendingReceived > 0 ? "pending" : "all");
+      return;
+    }
+
+    if (activeTab === "sent") {
+      setSentFilter(acceptedSent > 0 ? "accepted" : "all");
+      return;
+    }
+
+    if (activeTab === "matches") {
+      setMatchFilter(upcomingMatchedMeetups.length > 0 ? "upcoming" : "all");
+    }
+  }, [
+    acceptedSent,
+    activeTab,
+    pendingReceived,
+    setMatchFilter,
+    setReceivedFilter,
+    setSentFilter,
+    upcomingMatchedMeetups.length,
+  ]);
 
   const recentChats = matches
     .map((item) => {
@@ -844,7 +873,7 @@ export default function DashboardClient({
             active={activeTab === "sent"}
             label="Requests Sent"
             value={requestsSent.length}
-            subtext={pendingSent > 0 ? `${pendingSent} pending` : "No pending"}
+            subtext={acceptedSent > 0 ? `${acceptedSent} accepted` : null}
             icon={<Send className="h-4 w-4" />}
             onClick={() => setActiveTab("sent")}
           />

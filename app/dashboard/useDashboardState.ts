@@ -121,6 +121,11 @@ export function useDashboardState({
     [requestsSent]
   );
 
+  const acceptedSent = useMemo(
+    () => requestsSent.filter((item) => item.status === "accepted").length,
+    [requestsSent]
+  );
+
   const filteredMatches = useMemo(() => {
     if (matchFilter === "all") return matches;
     return matches.filter((match) => {
@@ -192,6 +197,7 @@ export function useDashboardState({
     filteredMatches,
     pendingReceived,
     pendingSent,
+    acceptedSent,
     upcomingMatchedMeetups,
   };
 }
