@@ -109,34 +109,37 @@ export default function HomeTestClient({
               calm pacing, and just enough AI presence to make browsing feel easy.
             </p>
 
-            <div className="mt-6 grid grid-cols-3 gap-3">
-              <div className={`rounded-[24px] px-3 py-3.5 ${surfaceClass}`}>
+            <div className="mt-7 grid grid-cols-3 gap-3">
+              <div className="rounded-[26px] border border-[#edf3f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(237,243,247,0.96)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(154,171,185,0.12),inset_0_1px_0_rgba(255,255,255,0.96)]">
                 <div className="text-[11px] uppercase tracking-[0.12em] text-[#7f9daa]">
                   Happening now
                 </div>
-                <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#24323f]">
+                <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
                   {upcomingCount}
                 </div>
+                <div className="mt-1 text-[11px] text-[#80919a]">Open right now</div>
               </div>
 
-              <div className={`rounded-[24px] px-3 py-3.5 ${surfaceClass}`}>
+              <div className="rounded-[26px] border border-[#edf3f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(237,243,247,0.96)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(154,171,185,0.12),inset_0_1px_0_rgba(255,255,255,0.96)]">
                 <div className="text-[11px] uppercase tracking-[0.12em] text-[#7f9daa]">
                   Hosts nearby
                 </div>
-                <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#24323f]">
+                <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
                   {hostCount}
                 </div>
+                <div className="mt-1 text-[11px] text-[#80919a]">Across the city</div>
               </div>
 
-              <div className={`rounded-[24px] px-3 py-3.5 ${surfaceClass}`}>
+              <div className="rounded-[26px] border border-[#edf3f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(237,243,247,0.96)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(154,171,185,0.12),inset_0_1px_0_rgba(255,255,255,0.96)]">
                 <div className="text-[11px] uppercase tracking-[0.16em] text-[#6f96a1]">
                   Mood
                 </div>
-                <div className="mt-1 text-sm font-bold leading-5 text-[#24323f]">
+                <div className="mt-1.5 text-sm font-bold leading-5 text-[#24323f]">
                   Chill
                   <br />
                   Lab
                 </div>
+                <div className="mt-1 text-[11px] text-[#80919a]">Softly guided</div>
               </div>
             </div>
 
@@ -154,42 +157,42 @@ export default function HomeTestClient({
         </section>
 
         {highlightedPost && (
-          <section className="overflow-hidden rounded-[32px] border border-[#edf3f7] bg-[linear-gradient(180deg,rgba(247,250,252,0.98)_0%,rgba(224,233,239,0.96)_100%)] shadow-[0_24px_70px_rgba(142,159,173,0.16)]">
-            <div className="border-b border-[#dbe5ec] px-5 py-[18px]">
+          <section className="overflow-hidden rounded-[34px] border border-[#f3f7fa] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(236,243,247,0.98)_100%)] shadow-[0_30px_88px_rgba(139,157,172,0.18),inset_0_1px_0_rgba(255,255,255,0.96)]">
+            <div className="border-b border-[#dde7ed] px-5 py-5">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#778892]">
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#778892]">
                     <Search className="h-3.5 w-3.5" />
                     Featured moment
                   </div>
-                  <div className="mt-1 text-lg font-bold tracking-[-0.03em] text-[#24323f]">
+                  <div className="mt-2 text-[28px] font-black tracking-[-0.05em] text-[#24323f]">
                     {highlightedPost.place_name || highlightedPost.location || "Meetup"}
                   </div>
                 </div>
 
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#dde6eb] bg-[#fbfdfe] text-[#7a9099] shadow-[0_10px_20px_rgba(150,170,186,0.12)]">
+                <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#e1e9ee] bg-[#fcfeff] text-[#7a9099] shadow-[0_12px_24px_rgba(150,170,186,0.12)]">
                   <Plus className="h-4 w-4 rotate-45" />
                 </div>
               </div>
             </div>
 
-            <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.4fr_1fr] sm:px-5">
-              <div className={`rounded-[26px] px-4 py-4 text-[#24323f] ${surfaceClass}`}>
+            <div className="grid gap-3 px-4 py-5 sm:grid-cols-[1.45fr_0.95fr] sm:px-5">
+              <div className="rounded-[28px] border border-[#eef4f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(239,245,248,0.96)_100%)] px-4 py-4 text-[#24323f] shadow-[0_20px_38px_rgba(152,171,186,0.12)]">
                 <div className="inline-flex items-center gap-2 rounded-full border border-[#dde5eb] bg-[#fbfdfecc] px-3 py-1.5 text-xs font-medium text-[#71838d]">
                   {getPurposeIcon(highlightedPost.meeting_purpose)}
                   {highlightedPost.meeting_purpose || "Meetup"}
                 </div>
 
-                <div className="mt-4 text-2xl font-black leading-[1.02] tracking-[-0.04em]">
+                <div className="mt-4 text-[30px] font-black leading-[0.98] tracking-[-0.05em]">
                   {getPurposeLabel(highlightedPost.meeting_purpose)}
                 </div>
 
-                <div className="mt-2 text-sm leading-6 text-[#667a89]">
+                <div className="mt-3 max-w-md text-sm leading-6 text-[#667a89]">
                   A quieter featured moment with a little more room to breathe.
                 </div>
               </div>
 
-              <div className={`space-y-2.5 rounded-[24px] px-4 py-4 text-[#334856] ${surfaceClass}`}>
+              <div className="space-y-2.5 rounded-[24px] border border-[#e9f0f4] bg-[linear-gradient(180deg,rgba(252,254,255,0.98)_0%,rgba(235,241,245,0.96)_100%)] px-4 py-4 text-[#334856] shadow-[0_16px_30px_rgba(151,171,186,0.1)]">
                 <div className="flex items-center gap-2 text-sm">
                   <Clock3 className="h-4 w-4 text-[#6f98a5]" />
                   <span>{formatTime(highlightedPost.meeting_time)}</span>
@@ -273,7 +276,7 @@ export default function HomeTestClient({
                   : "border-[#edf3f7] bg-[linear-gradient(180deg,rgba(248,251,253,0.98)_0%,rgba(226,234,240,0.94)_100%)]"
               }`}
             >
-              <div className={`rounded-[24px] p-4 ${surfaceClass}`}>
+              <div className="rounded-[24px] border border-[#eef3f6] bg-[linear-gradient(180deg,rgba(252,254,255,0.98)_0%,rgba(236,242,246,0.96)_100%)] p-4 shadow-[0_16px_30px_rgba(151,171,186,0.08)]">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
@@ -281,7 +284,7 @@ export default function HomeTestClient({
                         {getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}
                       </div>
                       <div className="min-w-0">
-                        <div className="truncate text-lg font-black tracking-[-0.04em] text-[#24323f]">
+                        <div className="truncate text-[24px] font-black tracking-[-0.05em] text-[#24323f]">
                           {post.meeting_purpose || "Social meetup"}
                         </div>
                         <div className="mt-1 text-xs text-[#6c808e]">
@@ -305,7 +308,7 @@ export default function HomeTestClient({
                   </span>
                 </div>
 
-                <div className="mt-4 grid gap-2">
+                <div className="mt-4 grid gap-2.5">
                   <div className={metaRowClass}>
                     <Clock3 className="h-4 w-4 text-[#788b95]" />
                     <span className="truncate">{formatTime(post.meeting_time)}</span>
@@ -335,7 +338,7 @@ export default function HomeTestClient({
                   </div>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between gap-3 rounded-[20px] border border-[#e3ebf0] bg-[linear-gradient(90deg,rgba(252,253,254,0.92)_0%,rgba(237,242,245,0.78)_100%)] px-3 py-2">
+                <div className="mt-4 flex items-center justify-between gap-3 rounded-[20px] border border-[#e4ebf0] bg-[linear-gradient(90deg,rgba(252,253,254,0.94)_0%,rgba(239,243,246,0.82)_100%)] px-3 py-2">
                   <div className="text-xs uppercase tracking-[0.16em] text-[#7a8b95]">
                     Soft lounge mode
                   </div>
