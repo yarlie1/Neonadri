@@ -95,7 +95,7 @@ function InfoItem({
   value: string;
 }) {
   return (
-    <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4">
+    <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-4">
       <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
         {icon}
         <span>{label}</span>
@@ -275,7 +275,7 @@ export default async function ProfilePage({ params }: PageProps) {
         </section>
 
         <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-          <section className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-6 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
+          <section className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-5 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
             <div className="grid gap-3">
               {(profile.gender || profile.age_group) && (
                 <InfoItem
@@ -325,7 +325,7 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
           </section>
 
-          <section className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-6 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
+          <section className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-5 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
