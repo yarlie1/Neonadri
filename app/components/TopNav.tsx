@@ -296,15 +296,15 @@ export default function TopNav() {
     `inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition ${
       isHomeTest
         ? active
-          ? "border-[#fafbfc] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(238,242,245,0.99)_100%)] text-[#2d3a43] shadow-[0_14px_28px_rgba(145,154,162,0.15),inset_0_1px_0_rgba(255,255,255,0.98)]"
-          : "border-[#eaedef] bg-[linear-gradient(180deg,rgba(252,252,252,0.95)_0%,rgba(241,244,246,0.96)_100%)] text-[#768086] shadow-[0_10px_24px_rgba(150,159,167,0.09)] hover:border-[#e0e5e8] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(244,247,249,0.99)_100%)] hover:text-[#5c6870]"
+          ? "border-[#fbf7f1] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(243,239,234,0.99)_34%,rgba(239,243,246,0.99)_100%)] text-[#2d3a43] shadow-[0_14px_28px_rgba(154,149,144,0.14),inset_0_1px_0_rgba(255,255,255,0.99)]"
+          : "border-[#f0ece6] bg-[linear-gradient(180deg,rgba(253,252,251,0.96)_0%,rgba(244,246,247,0.96)_100%)] text-[#7a817f] shadow-[0_10px_24px_rgba(156,152,148,0.08)] hover:border-[#e7e2db] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(247,244,240,0.99)_100%)] hover:text-[#615f5b]"
         : active
         ? "border-[#dfcaba] bg-[linear-gradient(180deg,#fffdf9_0%,#f3e7db_100%)] text-[#3f3226] shadow-[0_12px_28px_rgba(120,86,52,0.10)]"
         : "border-[#e5d8cb] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e7_100%)] text-[#5a5149] shadow-[0_8px_18px_rgba(93,68,48,0.04)] hover:bg-[#f6eee6]"
     }`;
 
   const primary = isHomeTest
-    ? "inline-flex items-center gap-2 rounded-full border border-[#f2f4f6] bg-[linear-gradient(135deg,#ffffff_0%,#eef2f5_100%)] px-4 py-2.5 text-sm font-medium text-[#34424b] shadow-[0_16px_34px_rgba(150,159,167,0.14),inset_0_1px_0_rgba(255,255,255,0.98)] transition hover:border-[#e5e9ec] hover:text-[#2a3740]"
+    ? "inline-flex items-center gap-2 rounded-full border border-[#f5f0ea] bg-[linear-gradient(135deg,#ffffff_0%,#f4efe8_42%,#edf2f5_100%)] px-4 py-2.5 text-sm font-medium text-[#34424b] shadow-[0_16px_34px_rgba(156,152,148,0.13),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#ebe4dc] hover:text-[#2a3740]"
     : "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
 
   const mobileItem = isHomeTest
@@ -315,14 +315,14 @@ export default function TopNav() {
     <header
       className={`sticky top-0 z-50 backdrop-blur-xl ${
         isHomeTest
-          ? "border-b border-[#eff2f4] bg-[rgba(246,248,249,0.84)]"
+          ? "border-b border-[#f2eee8] bg-[rgba(248,248,247,0.84)]"
           : "border-b border-[#ebdfd4] bg-[rgba(255,250,245,0.84)]"
       }`}
     >
       <div
         className={
           isHomeTest
-            ? "border-b border-[#eff2f4] bg-[linear-gradient(180deg,rgba(252,253,253,0.97),rgba(240,244,246,0.92))]"
+            ? "border-b border-[#f2eee8] bg-[linear-gradient(180deg,rgba(253,253,252,0.97),rgba(244,246,247,0.92))]"
             : "border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(255,252,248,0.95),rgba(249,240,232,0.88))]"
         }
       >
@@ -332,7 +332,7 @@ export default function TopNav() {
               href="/"
               className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base font-bold tracking-[-0.05em] text-white ${
                 isHomeTest
-                  ? "border-[#fafbfc] bg-[radial-gradient(circle_at_top,_#ffffff,_#edf2f5_36%,_#98a5af_82%)] shadow-[0_18px_32px_rgba(145,154,162,0.18)]"
+                  ? "border-[#fcf8f2] bg-[radial-gradient(circle_at_top,_#ffffff,_#f4eee7_34%,_#a1a7ae_82%)] shadow-[0_18px_32px_rgba(156,152,148,0.16)]"
                   : "border-[#e6cdbb] bg-[radial-gradient(circle_at_top,_#f6e5d6,_#c99679_80%)] shadow-[0_14px_30px_rgba(160,111,82,0.18)]"
               }`}
               onClick={closeMenu}
@@ -357,7 +357,7 @@ export default function TopNav() {
                       ? {
                           color: "#303b44",
                           textShadow:
-                            "0 1px 0 rgba(255,255,255,0.88), 0 0 18px rgba(255,255,255,0.28)",
+                            "0 1px 0 rgba(255,255,255,0.9), 0 0 16px rgba(255,248,238,0.28)",
                         }
                       : undefined
                   }
@@ -367,7 +367,7 @@ export default function TopNav() {
                 </Link>
                 <div
                   className={`block ${isHomeTest ? "" : "w-full truncate"} text-[9px] font-medium uppercase leading-none tracking-[0.16em] sm:text-[10px] sm:tracking-[0.18em] ${
-                    isHomeTest ? "text-[#7b858c]" : "text-[#8d7d71]"
+                    isHomeTest ? "text-[#867f78]" : "text-[#8d7d71]"
                   }`}
                 >
                   AI-generated social space
