@@ -378,12 +378,10 @@ function SentTabPanel({
     <div className="space-y-4">
       {requestsSent.map((item) => {
         const hostName = profileMap[item.post_owner_user_id] || "Unknown";
+        const acceptedMessage =
+          item.status === "accepted" ? `${hostName} accepted your request.` : null;
         const statusMessage =
-          item.status === "accepted"
-            ? `${hostName} accepted your request.`
-            : item.status === "rejected"
-            ? `${hostName} closed this request.`
-            : `Sent to ${hostName}`;
+          item.status === "rejected" ? `${hostName} closed this request.` : `Sent to ${hostName}`;
 
         return (
           <div
@@ -399,7 +397,13 @@ function SentTabPanel({
                 <div className="mt-2 text-lg font-semibold text-[#2f2a26]">
                   You asked to join this meetup.
                 </div>
-                <div className="mt-1 text-sm text-[#6f655c]">{statusMessage}</div>
+                {acceptedMessage ? (
+                  <div className="mt-1 text-lg font-semibold text-[#2f2a26]">
+                    {acceptedMessage}
+                  </div>
+                ) : (
+                  <div className="mt-1 text-sm text-[#6f655c]">{statusMessage}</div>
+                )}
                 <div className="mt-1 text-sm text-[#8b7f74]">
                   {new Date(item.created_at).toLocaleString()}
                 </div>
