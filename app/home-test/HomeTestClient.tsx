@@ -91,7 +91,7 @@ export default function HomeTestClient({
           <div className="absolute inset-x-8 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(141,214,225,0.78),transparent)]" />
 
           <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#d8e5ed] bg-[#f9fcfecc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#5f95a2] shadow-[0_10px_22px_rgba(151,176,191,0.12)]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#d7e0e7] bg-[#fbfdfecc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#768792] shadow-[0_10px_22px_rgba(151,176,191,0.12)]">
               <Sparkles className="h-3.5 w-3.5" />
               Soft social layer
             </div>
@@ -154,7 +154,7 @@ export default function HomeTestClient({
             <div className="border-b border-[#dbe5ec] px-5 py-[18px]">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#6d94a0]">
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#778892]">
                     <Search className="h-3.5 w-3.5" />
                     Featured moment
                   </div>
@@ -171,7 +171,7 @@ export default function HomeTestClient({
 
             <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.4fr_1fr] sm:px-5">
               <div className="rounded-[26px] border border-[#e7eef3] bg-[linear-gradient(180deg,rgba(252,254,255,0.96)_0%,rgba(230,237,242,0.94)_100%)] px-4 py-4 text-[#24323f] shadow-[0_14px_30px_rgba(151,171,186,0.1)]">
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#d9e6ee] bg-[#f8fbfdcc] px-3 py-1.5 text-xs font-medium text-[#648794]">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#dde5eb] bg-[#fbfdfecc] px-3 py-1.5 text-xs font-medium text-[#71838d]">
                   {getPurposeIcon(highlightedPost.meeting_purpose)}
                   {highlightedPost.meeting_purpose || "Meetup"}
                 </div>
@@ -215,7 +215,7 @@ export default function HomeTestClient({
             <div className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left sm:py-4">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 text-sm font-semibold text-[#273744]">
-                  <SlidersHorizontal className="h-4 w-4 text-[#6d97a5]" />
+                  <SlidersHorizontal className="h-4 w-4 text-[#788a94]" />
                   Refine your view
                 </div>
                 <div className="mt-2 text-sm text-[#6d818f]">
@@ -233,7 +233,7 @@ export default function HomeTestClient({
 
         <div className="flex items-center justify-between px-1 pt-1">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6f96a1]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#768892]">
               Discover
             </div>
             <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#24323f]">
@@ -273,7 +273,7 @@ export default function HomeTestClient({
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#dbe7ee] bg-[#f8fbfd] text-[#6d97a5] shadow-[0_8px_18px_rgba(153,172,186,0.1)]">
+                      <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#dde5eb] bg-[#fbfdfe] text-[#7a8b95] shadow-[0_8px_18px_rgba(153,172,186,0.1)]">
                         {getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}
                       </div>
                       <div className="min-w-0">
@@ -302,18 +302,18 @@ export default function HomeTestClient({
                 </div>
 
                 <div className="mt-4 grid gap-2">
-                  <div className="flex items-center gap-2 rounded-[18px] border border-[#e7eef3] bg-[#f8fbfd] px-3 py-2.5 text-sm text-[#314454]">
-                    <Clock3 className="h-4 w-4 text-[#6d97a5]" />
+                  <div className="flex items-center gap-2 rounded-[18px] border border-[#e3ebf0] bg-[#fbfdfe] px-3 py-2.5 text-sm text-[#314454]">
+                    <Clock3 className="h-4 w-4 text-[#788b95]" />
                     <span className="truncate">{formatTime(post.meeting_time)}</span>
                     {formatDuration(post.duration_minutes) ? (
-                      <span className="ml-auto rounded-full border border-[#d8e6ee] bg-[#eef5f8] px-2 py-0.5 text-[11px] font-medium text-[#6b8b98]">
+                      <span className="ml-auto rounded-full border border-[#d1dce3] bg-[linear-gradient(180deg,#ffffff_0%,#edf2f5_100%)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#5f6f78] shadow-[0_8px_18px_rgba(160,176,188,0.16)]">
                         {formatDuration(post.duration_minutes)}
                       </span>
                     ) : null}
                   </div>
 
-                  <div className="flex items-start gap-2 rounded-[18px] border border-[#e7eef3] bg-[#f8fbfd] px-3 py-2.5 text-sm text-[#314454]">
-                    <MapPin className="mt-0.5 h-4 w-4 text-[#6d97a5]" />
+                  <div className="flex items-start gap-2 rounded-[18px] border border-[#e3ebf0] bg-[#fbfdfe] px-3 py-2.5 text-sm text-[#314454]">
+                    <MapPin className="mt-0.5 h-4 w-4 text-[#788b95]" />
                     <span className="min-w-0 flex-1 break-words">
                       {post.place_name || post.location || "No place"}
                     </span>
@@ -321,18 +321,18 @@ export default function HomeTestClient({
 
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-1 text-sm text-[#5f7482]">
                     <span className="inline-flex items-center gap-2">
-                      <UserRound className="h-4 w-4 text-[#6d97a5]" />
+                      <UserRound className="h-4 w-4 text-[#788b95]" />
                       {post.target_gender || "Any"} / {post.target_age_group || "Any"}
                     </span>
-                    <span className="inline-flex items-center gap-2">
-                      <Coins className="h-4 w-4 text-[#7fb39f]" />
+                    <span className="inline-flex items-center gap-2 rounded-full border border-[#d6dee5] bg-[linear-gradient(180deg,#ffffff_0%,#edf2f5_100%)] px-3 py-1.5 font-semibold text-[#4d626d] shadow-[0_8px_18px_rgba(160,176,188,0.14)]">
+                      <Coins className="h-4 w-4 text-[#7b8d97]" />
                       {amount !== null ? `+$${amount.toLocaleString()}` : "No benefit"}
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between gap-3 rounded-[20px] border border-[#e3edf3] bg-[linear-gradient(90deg,rgba(250,252,254,0.88)_0%,rgba(234,241,245,0.72)_100%)] px-3 py-2.5">
-                  <div className="text-xs uppercase tracking-[0.16em] text-[#7a9da9]">
+                <div className="mt-4 flex items-center justify-between gap-3 rounded-[20px] border border-[#e3ebf0] bg-[linear-gradient(90deg,rgba(252,253,254,0.92)_0%,rgba(237,242,245,0.78)_100%)] px-3 py-2.5">
+                  <div className="text-xs uppercase tracking-[0.16em] text-[#7a8b95]">
                     Soft lounge mode
                   </div>
                   <div className="text-sm font-semibold text-[#314454]">
