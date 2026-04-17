@@ -341,11 +341,15 @@ export default function TopNav() {
               N
             </Link>
 
-            <div className="flex min-w-0 flex-1 items-center">
-              <div className="flex min-w-0 flex-col items-start justify-center gap-[2px] sm:h-10 sm:justify-between sm:gap-0">
+            <div className={`flex items-center ${isHomeTest ? "shrink-0" : "min-w-0 flex-1"}`}>
+              <div
+                className={`flex flex-col items-start justify-center gap-[2px] sm:h-10 sm:justify-between sm:gap-0 ${
+                  isHomeTest ? "shrink-0" : "min-w-0"
+                }`}
+              >
                 <Link
                   href="/"
-                  className={`block w-full text-[20px] font-extrabold leading-none tracking-[-0.05em] sm:text-[25px] ${
+                  className={`block ${isHomeTest ? "" : "w-full"} text-[20px] font-extrabold leading-none tracking-[-0.05em] sm:text-[25px] ${
                     isHomeTest ? "text-[#f8feff] [text-shadow:0_0_18px_rgba(103,223,255,0.18)]" : "text-[#1f1b18]"
                   }`}
                   onClick={closeMenu}
@@ -353,7 +357,7 @@ export default function TopNav() {
                   Neonadri
                 </Link>
                 <div
-                  className={`block w-full truncate text-[9px] font-medium uppercase leading-none tracking-[0.16em] sm:text-[10px] sm:tracking-[0.18em] ${
+                  className={`block ${isHomeTest ? "" : "w-full truncate"} text-[9px] font-medium uppercase leading-none tracking-[0.16em] sm:text-[10px] sm:tracking-[0.18em] ${
                     isHomeTest ? "text-[#84dff2]" : "text-[#8d7d71]"
                   }`}
                 >
