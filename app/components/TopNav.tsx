@@ -341,12 +341,12 @@ export default function TopNav() {
               N
             </Link>
 
-            <div className="flex min-w-0 items-center">
-              <div className="flex flex-col items-start justify-center gap-[2px] sm:h-10 sm:justify-between sm:gap-0">
+            <div className="flex min-w-0 flex-1 items-center">
+              <div className="flex min-w-0 flex-col items-start justify-center gap-[2px] sm:h-10 sm:justify-between sm:gap-0">
                 <Link
                   href="/"
-                  className={`block w-full truncate text-[20px] font-extrabold leading-none tracking-[-0.05em] sm:text-[25px] ${
-                    isHomeTest ? "text-[#f2fdff]" : "text-[#1f1b18]"
+                  className={`block w-full text-[20px] font-extrabold leading-none tracking-[-0.05em] sm:text-[25px] ${
+                    isHomeTest ? "text-[#f8feff] [text-shadow:0_0_18px_rgba(103,223,255,0.18)]" : "text-[#1f1b18]"
                   }`}
                   onClick={closeMenu}
                 >
