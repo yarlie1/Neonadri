@@ -293,7 +293,7 @@ export default function HomeTestClient({
                         {post.meeting_purpose || "Social meetup"}
                       </div>
                     </div>
-                    <div className="mt-2 pl-[50px] text-[12px] leading-none text-[#75818a]">
+                    <div className="mt-1 pl-[50px] text-[12px] leading-none text-[#75818a]">
                       Hosted by {host.displayName}
                       {host.gender || host.ageGroup
                         ? ` | ${host.gender || "Unknown"}${
