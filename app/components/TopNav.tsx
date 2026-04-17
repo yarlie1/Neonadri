@@ -293,18 +293,18 @@ export default function TopNav() {
   const closeMenu = () => setMenuOpen(false);
 
   const navBtn = (active: boolean) =>
-    `inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition ${
+    `inline-flex items-center gap-2 rounded-[18px] border px-4 py-2 text-sm font-medium transition ${
       isHomeTest
         ? active
-          ? "border-[#f1f5f8] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(241,245,247,0.99)_100%)] text-[#2d3a43] shadow-[0_14px_28px_rgba(146,154,162,0.14),inset_0_1px_0_rgba(255,255,255,0.99)]"
-          : "border-[#edf2f5] bg-[linear-gradient(180deg,rgba(253,253,253,0.96)_0%,rgba(243,246,248,0.96)_100%)] text-[#7a8389] shadow-[0_10px_24px_rgba(146,154,162,0.08)] hover:border-[#e4eaed] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(246,249,251,0.99)_100%)] hover:text-[#606d75]"
+          ? "border-[#e8edf1] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(240,244,246,0.99)_100%)] text-[#2c3941] shadow-[0_12px_24px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,0.99)]"
+          : "border-[#e7edf1] bg-[linear-gradient(180deg,rgba(252,252,252,0.97)_0%,rgba(242,245,247,0.97)_100%)] text-[#707b82] shadow-[0_8px_18px_rgba(118,126,133,0.07)] hover:border-[#dde4e8] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(244,247,249,0.99)_100%)] hover:text-[#55626a]"
         : active
         ? "border-[#dfcaba] bg-[linear-gradient(180deg,#fffdf9_0%,#f3e7db_100%)] text-[#3f3226] shadow-[0_12px_28px_rgba(120,86,52,0.10)]"
         : "border-[#e5d8cb] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e7_100%)] text-[#5a5149] shadow-[0_8px_18px_rgba(93,68,48,0.04)] hover:bg-[#f6eee6]"
     }`;
 
   const primary = isHomeTest
-    ? "inline-flex items-center gap-2 rounded-[18px] border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-2.5 text-sm font-medium text-[#34424b] shadow-[0_16px_34px_rgba(146,154,162,0.13),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#e5ebee] hover:text-[#2a3740]"
+    ? "inline-flex items-center gap-2 rounded-[18px] border border-[#e8edf1] bg-[linear-gradient(135deg,#ffffff_0%,#eff3f5_100%)] px-4 py-2 text-sm font-medium text-[#34424b] shadow-[0_14px_28px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#dde4e8] hover:text-[#2a3740]"
     : "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
 
   const mobileItem = isHomeTest
@@ -326,7 +326,7 @@ export default function TopNav() {
             : "border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(255,252,248,0.95),rgba(249,240,232,0.88))]"
         }
       >
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"
@@ -343,13 +343,13 @@ export default function TopNav() {
 
             <div className={`flex items-center ${isHomeTest ? "shrink-0" : "min-w-0 flex-1"}`}>
               <div
-                className={`flex flex-col items-start justify-center gap-[2px] sm:h-10 sm:justify-between sm:gap-0 ${
+                className={`flex flex-col items-start justify-center gap-[1px] sm:h-10 sm:justify-center sm:gap-[1px] ${
                   isHomeTest ? "shrink-0" : "min-w-0"
                 }`}
               >
                 <Link
                   href="/"
-                  className={`block ${isHomeTest ? "" : "w-full"} text-[20px] font-extrabold leading-none tracking-[-0.05em] sm:text-[25px] ${
+                  className={`block ${isHomeTest ? "" : "w-full"} text-[20px] font-extrabold leading-none tracking-[-0.05em] sm:text-[24px] ${
                     isHomeTest ? "" : "text-[#1f1b18]"
                   }`}
                   style={
@@ -366,7 +366,7 @@ export default function TopNav() {
                   Neonadri
                 </Link>
                 <div
-                  className={`block ${isHomeTest ? "" : "w-full truncate"} text-[9px] font-medium uppercase leading-none tracking-[0.16em] sm:text-[10px] sm:tracking-[0.18em] ${
+                  className={`block ${isHomeTest ? "" : "w-full truncate"} text-[9px] font-medium uppercase leading-none tracking-[0.16em] sm:text-[10px] sm:tracking-[0.16em] ${
                     isHomeTest ? "text-[#80898f]" : "text-[#8d7d71]"
                   }`}
                 >
@@ -442,7 +442,7 @@ export default function TopNav() {
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((prev) => !prev)}
-              className={`inline-flex h-11 w-11 items-center justify-center rounded-full border transition ${
+              className={`inline-flex h-10 w-10 items-center justify-center rounded-[18px] border transition ${
                 isHomeTest
                   ? "border-[#eef3f6] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] text-[#728088] shadow-[0_10px_24px_rgba(146,154,162,0.12)] hover:bg-[#f5f8fa]"
                   : "border-[#e3d5c8] bg-[linear-gradient(180deg,#fffdfb_0%,#f6ede5_100%)] text-[#5a5149] shadow-[0_10px_24px_rgba(90,70,48,0.10)] hover:bg-[#f4ece4]"
@@ -453,7 +453,7 @@ export default function TopNav() {
 
             {menuOpen && (
               <div
-                className={`absolute right-0 top-14 z-50 w-72 overflow-hidden rounded-[30px] border ${
+                className={`absolute right-0 top-12 z-50 w-72 overflow-hidden rounded-[24px] border ${
                   isHomeTest
                     ? "border-[#eef3f6] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] shadow-[0_24px_50px_rgba(146,154,162,0.18)]"
                     : "border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#f7efe7_100%)] shadow-[0_24px_50px_rgba(80,60,40,0.16)]"
