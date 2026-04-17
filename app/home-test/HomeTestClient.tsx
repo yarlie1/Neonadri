@@ -284,24 +284,22 @@ export default function HomeTestClient({
             >
               <div className="rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(180deg,rgba(253,254,255,0.998)_0%,rgba(238,243,246,0.975)_100%)] px-4 py-3.5 shadow-[0_16px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)]">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2.5">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex min-w-0 items-center gap-2.5">
                       <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] border border-[#d7dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f7_100%)] text-[#6f808a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]">
                         {getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}
                       </div>
-                      <div className="min-w-0">
-                        <div className="truncate text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
-                          {post.meeting_purpose || "Social meetup"}
-                        </div>
-                        <div className="mt-2 text-[12px] leading-none text-[#75818a]">
-                          Hosted by {host.displayName}
-                          {host.gender || host.ageGroup
-                            ? ` | ${host.gender || "Unknown"}${
-                                host.ageGroup ? ` / ${host.ageGroup}` : ""
-                              }`
-                            : ""}
-                        </div>
+                      <div className="min-w-0 truncate text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
+                        {post.meeting_purpose || "Social meetup"}
                       </div>
+                    </div>
+                    <div className="mt-2 pl-[50px] text-[12px] leading-none text-[#75818a]">
+                      Hosted by {host.displayName}
+                      {host.gender || host.ageGroup
+                        ? ` | ${host.gender || "Unknown"}${
+                            host.ageGroup ? ` / ${host.ageGroup}` : ""
+                          }`
+                        : ""}
                     </div>
                   </div>
 
