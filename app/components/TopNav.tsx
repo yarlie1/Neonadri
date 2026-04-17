@@ -64,11 +64,11 @@ function BrandTagline() {
   }[variant];
 
   return (
-    <div className="text-left leading-[1.05]">
-      <div className="text-[11px] font-medium text-[#6f655c] sm:text-[12px]">
+    <div className="text-left leading-[1.1]">
+      <div className="text-[10px] font-normal text-[#746a61] sm:text-[11px]">
         {content[0]}
       </div>
-      <div className="text-[11px] font-medium text-[#6f655c] sm:text-[12px]">
+      <div className="text-[10px] font-normal text-[#746a61] sm:text-[11px]">
         {content[1]}
       </div>
     </div>
