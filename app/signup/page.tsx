@@ -56,6 +56,8 @@ const DEFAULT_ABOUT_ME =
   "I enjoy meeting new people over coffee, walks, or low-pressure plans. I usually appreciate clear communication, relaxed energy, and a meetup that feels easy to settle into.";
 const DISPLAY_NAME_MAX_LENGTH = 24;
 const DISPLAY_NAME_LENGTH_MESSAGE = `Display name must be ${DISPLAY_NAME_MAX_LENGTH} characters or fewer.`;
+const DISPLAY_NAME_IN_USE_MESSAGE = "This display name is already in use.";
+const EMAIL_IN_USE_MESSAGE = "This email is already in use.";
 
 function ToggleChip({
   label,
@@ -148,9 +150,42 @@ export default function SignupPage() {
     setter([...current, value]);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!canMoveNext || step >= STEPS.length) return;
     setMessage("");
+
+    if (step === 2) {
+      const normalizedDisplayName = displayName.trim();
+
+      if (normalizedDisplayName.length > DISPLAY_NAME_MAX_LENGTH) {
+        setMessage(DISPLAY_NAME_LENGTH_MESSAGE);
+        return;
+      }
+
+      const { data: existingProfile, error: existingProfileError } = await supabase
+        .from("profiles")
+        .select("id")
+        .ilike("display_name", normalizedDisplayName)
+        .limit(1)
+        .maybeSingle();
+
+      if (existingProfileError) {
+        console.error("Display name availability check failed", {
+          message: existingProfileError.message,
+          details: existingProfileError.details,
+          hint: existingProfileError.hint,
+          code: existingProfileError.code,
+        });
+        setMessage("We couldn't check that display name right now.");
+        return;
+      }
+
+      if (existingProfile) {
+        setMessage(DISPLAY_NAME_IN_USE_MESSAGE);
+        return;
+      }
+    }
+
     setStep((current) => current + 1);
   };
 
@@ -193,7 +228,13 @@ export default function SignupPage() {
       });
 
       if (error) {
-        setMessage(error.message);
+        const normalizedAuthMessage = String(error.message || "").toLowerCase();
+        const duplicateEmail =
+          normalizedAuthMessage.includes("already registered") ||
+          normalizedAuthMessage.includes("already been registered") ||
+          normalizedAuthMessage.includes("user already registered");
+
+        setMessage(duplicateEmail ? EMAIL_IN_USE_MESSAGE : error.message);
         setSubmitting(false);
         return;
       }
