@@ -577,6 +577,8 @@ export default function DashboardClient({
     setActiveTab,
     postFilter,
     setPostFilter,
+    receivedFilter,
+    setReceivedFilter,
     matchFilter,
     setMatchFilter,
     processingRequestId,
@@ -586,6 +588,7 @@ export default function DashboardClient({
     showMatchSuccess,
     showReviewSuccess,
     filteredPosts,
+    filteredReceived,
     filteredMatches,
     pendingReceived,
     upcomingMatchedMeetups,
@@ -596,6 +599,7 @@ export default function DashboardClient({
     postMap,
     profileMap,
     matchSummaryMap,
+    reviewedMatchIds,
     userId,
     initialUserTimeZone,
   });
@@ -820,12 +824,16 @@ export default function DashboardClient({
             onClick={() => setActiveTab("posts")}
           />
           <DashboardTabCard
-            active={activeTab === "received"}
-            label="Requests Received"
-            value={receivedItems.length}
-            subtext={pendingReceived > 0 ? `${pendingReceived} pending` : "No pending"}
-            icon={<Inbox className="h-4 w-4" />}
-            onClick={() => setActiveTab("received")}
+            active={activeTab === "matches"}
+            label="Matches"
+            value={matches.length}
+            subtext={
+              upcomingMatchedMeetups.length > 0
+                ? `${upcomingMatchedMeetups.length} upcoming`
+                : "No upcoming"
+            }
+            icon={<HeartHandshake className="h-4 w-4" />}
+            onClick={() => setActiveTab("matches")}
           />
           <DashboardTabCard
             active={activeTab === "sent"}
@@ -835,11 +843,12 @@ export default function DashboardClient({
             onClick={() => setActiveTab("sent")}
           />
           <DashboardTabCard
-            active={activeTab === "matches"}
-            label="Matches"
-            value={matches.length}
-            icon={<HeartHandshake className="h-4 w-4" />}
-            onClick={() => setActiveTab("matches")}
+            active={activeTab === "received"}
+            label="Requests Received"
+            value={receivedItems.length}
+            subtext={pendingReceived > 0 ? `${pendingReceived} pending` : "No pending"}
+            icon={<Inbox className="h-4 w-4" />}
+            onClick={() => setActiveTab("received")}
           />
         </div>
 
@@ -882,6 +891,33 @@ export default function DashboardClient({
           </div>
         )}
 
+        {activeTab === "received" && (
+          <div className={`${SURFACE_CARD_CLASS} p-4`}>
+            <div className="space-y-4">
+              <SectionIntro
+                eyebrow="Incoming"
+                title="People who want to join"
+                body="Review every request at once, or focus on the pending ones that still need your decision."
+              />
+
+              <div className="flex flex-wrap gap-2">
+                <FilterPill
+                  active={receivedFilter === "all"}
+                  onClick={() => setReceivedFilter("all")}
+                >
+                  All
+                </FilterPill>
+                <FilterPill
+                  active={receivedFilter === "pending"}
+                  onClick={() => setReceivedFilter("pending")}
+                >
+                  Pending
+                </FilterPill>
+              </div>
+            </div>
+          </div>
+        )}
+
         {activeTab === "matches" && (
           <div className={`${SURFACE_CARD_CLASS} p-4`}>
             <div className="space-y-4">
@@ -907,6 +943,12 @@ export default function DashboardClient({
                 >
                   Expired
                 </FilterPill>
+                <FilterPill
+                  active={matchFilter === "review_due"}
+                  onClick={() => setMatchFilter("review_due")}
+                >
+                  Review Due
+                </FilterPill>
               </div>
             </div>
           </div>
@@ -924,7 +966,7 @@ export default function DashboardClient({
 
         {activeTab === "received" && (
           <ReceivedTabPanel
-            receivedItems={receivedItems}
+            receivedItems={filteredReceived}
             profileMap={profileMap}
             postMap={postMap}
             userTimeZone={userTimeZone}

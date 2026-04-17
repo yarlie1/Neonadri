@@ -12,7 +12,8 @@ import { getPostMatchState } from "./dashboardComponents";
 
 export type DashboardTab = "posts" | "received" | "sent" | "matches";
 export type PostFilter = "all" | "open" | "matched" | "expired";
-export type MatchFilter = "all" | "upcoming" | "expired";
+export type ReceivedFilter = "all" | "pending";
+export type MatchFilter = "all" | "upcoming" | "expired" | "review_due";
 
 export function useDashboardState({
   initialPosts,
@@ -21,6 +22,7 @@ export function useDashboardState({
   postMap,
   profileMap,
   matchSummaryMap,
+  reviewedMatchIds,
   userId,
   initialUserTimeZone,
 }: {
@@ -33,6 +35,7 @@ export function useDashboardState({
     number,
     { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
   >;
+  reviewedMatchIds: number[];
   userId: string;
   initialUserTimeZone: string;
 }) {
@@ -54,6 +57,7 @@ export function useDashboardState({
   const [receivedItems, setReceivedItems] = useState(requestsReceived);
   const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
+  const [receivedFilter, setReceivedFilter] = useState<ReceivedFilter>("all");
   const [matchFilter, setMatchFilter] = useState<MatchFilter>("all");
   const [processingRequestId, setProcessingRequestId] = useState<number | null>(
     null
@@ -98,14 +102,22 @@ export function useDashboardState({
     );
   }, [posts, postFilter, matchSummaryMap]);
 
+  const filteredReceived = useMemo(() => {
+    if (receivedFilter === "all") return receivedItems;
+    return receivedItems.filter((item) => item.status === "pending");
+  }, [receivedItems, receivedFilter]);
+
   const filteredMatches = useMemo(() => {
     if (matchFilter === "all") return matches;
     return matches.filter((match) => {
       const post = postMap[match.post_id];
       const status = getPostStatus(post?.meeting_time || null).toLowerCase();
+      if (matchFilter === "review_due") {
+        return status === "expired" && !reviewedMatchIds.includes(match.id);
+      }
       return status === matchFilter;
     });
-  }, [matches, matchFilter, postMap]);
+  }, [matches, matchFilter, postMap, reviewedMatchIds]);
 
   const pendingReceived = useMemo(
     () => receivedItems.filter((item) => item.status === "pending").length,
@@ -148,6 +160,8 @@ export function useDashboardState({
     setActiveTab,
     postFilter,
     setPostFilter,
+    receivedFilter,
+    setReceivedFilter,
     matchFilter,
     setMatchFilter,
     processingRequestId,
@@ -157,6 +171,7 @@ export function useDashboardState({
     showMatchSuccess,
     showReviewSuccess,
     filteredPosts,
+    filteredReceived,
     filteredMatches,
     pendingReceived,
     upcomingMatchedMeetups,
