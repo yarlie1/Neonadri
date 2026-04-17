@@ -10,6 +10,8 @@ import {
   HeartHandshake,
   Clock3,
   Sparkles,
+  CheckCircle2,
+  DollarSign,
 } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import {
@@ -232,22 +234,18 @@ export default async function ProfilePage({ params }: PageProps) {
               <div className="mt-3 space-y-2 text-sm text-[#5f5347]">
                 <div className="grid grid-cols-[18px_auto_minmax(0,1fr)] items-center gap-x-2 text-[#6a5e53]">
                   <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                    Meeting style
-                  </span>
+                  <span className="sr-only">Meeting style</span>
                   <span>{hasMeetingStyle ? profile.meeting_style : "No meetup style yet"}</span>
                 </div>
 
                 <div className="grid grid-cols-[18px_auto_minmax(0,1fr)] items-center gap-x-2 text-[#6a5e53]">
                   <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                    Response note
-                  </span>
+                  <span className="sr-only">Response note</span>
                   <span>{hasResponseNote ? profile.response_time_note : "No response note yet"}</span>
                 </div>
 
                 <div className="grid grid-cols-[18px_auto_minmax(0,1fr)] items-center gap-x-2">
-                  <span className="block h-3.5 w-3.5" />
+                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Attendance
                   </span>
@@ -259,7 +257,7 @@ export default async function ProfilePage({ params }: PageProps) {
                 </div>
 
                 <div className="grid grid-cols-[18px_auto_minmax(0,1fr)] items-center gap-x-2">
-                  <span className="block h-3.5 w-3.5" />
+                  <DollarSign className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Payout reliability
                   </span>
