@@ -230,6 +230,18 @@ export default async function ProfilePage({ params }: PageProps) {
               </div>
 
               <div className="mt-3 space-y-1.5 text-sm text-[#5f5347]">
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[#6a5e53]">
+                  <div className="flex items-center gap-2">
+                    <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
+                    <span>{hasMeetingStyle ? profile.meeting_style : "No meetup style yet"}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
+                    <span>{hasResponseNote ? profile.response_time_note : "No response note yet"}</span>
+                  </div>
+                </div>
+
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
                     Attendance
@@ -250,18 +262,6 @@ export default async function ProfilePage({ params }: PageProps) {
                       ? "No data yet"
                       : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
                   </span>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[#6a5e53]">
-                  <div className="flex items-center gap-2">
-                    <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
-                    <span>{hasMeetingStyle ? profile.meeting_style : "No meetup style yet"}</span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
-                    <span>{hasResponseNote ? profile.response_time_note : "No response note yet"}</span>
-                  </div>
                 </div>
               </div>
             </div>
