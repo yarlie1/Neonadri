@@ -413,9 +413,6 @@ export default function SignupPage() {
                       className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
                       placeholder="How people will see you"
                     />
-                    <p className="mt-2 text-xs text-[#8c7668]">
-                      Up to {DISPLAY_NAME_MAX_LENGTH} characters.
-                    </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">

@@ -383,9 +383,6 @@ export default function AccountPage() {
               className={INPUT_CLASS}
               placeholder="Your name"
             />
-            <p className="mt-2 text-xs text-[#8c7668]">
-              Up to {DISPLAY_NAME_MAX_LENGTH} characters.
-            </p>
           </div>
 
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
