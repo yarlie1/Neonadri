@@ -322,12 +322,12 @@ export default function TopNav() {
               <div className="flex flex-col items-start justify-center gap-[2px] sm:h-10 sm:justify-between sm:gap-0">
                 <Link
                   href="/"
-                  className="truncate text-[20px] font-extrabold leading-none tracking-[-0.05em] text-[#1f1b18] sm:text-[25px]"
+                  className="block w-full truncate text-[20px] font-extrabold leading-none tracking-[-0.05em] text-[#1f1b18] sm:text-[25px]"
                   onClick={closeMenu}
                 >
                   Neonadri
                 </Link>
-                <div className="truncate text-[9px] font-medium uppercase leading-none tracking-[0.16em] text-[#8d7d71] sm:text-[10px] sm:tracking-[0.18em]">
+                <div className="block w-full truncate text-[9px] font-medium uppercase leading-none tracking-[0.16em] text-[#8d7d71] sm:text-[10px] sm:tracking-[0.18em]">
                   AI-generated social space
                 </div>
               </div>
