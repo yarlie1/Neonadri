@@ -318,8 +318,8 @@ export default function TopNav() {
               N
             </Link>
 
-            <div className="flex min-w-0">
-              <div className="flex h-10 flex-col justify-between">
+            <div className="flex min-w-0 items-center">
+              <div className="flex flex-col items-start justify-center gap-[2px] sm:h-10 sm:justify-between sm:gap-0">
                 <Link
                   href="/"
                   className="truncate text-[20px] font-extrabold leading-none tracking-[-0.05em] text-[#1f1b18] sm:text-[25px]"
