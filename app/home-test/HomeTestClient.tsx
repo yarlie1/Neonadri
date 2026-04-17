@@ -76,26 +76,26 @@ export default function HomeTestClient({
   ).length;
   const hostCount = Object.keys(hostProfileMap).length;
   const surfaceClass =
-    "border border-[#e6edf2] bg-[linear-gradient(180deg,rgba(251,253,254,0.96)_0%,rgba(232,239,244,0.94)_100%)] shadow-[0_14px_30px_rgba(151,171,186,0.1)]";
+    "border border-[#e8eaec] bg-[linear-gradient(180deg,rgba(252,252,252,0.96)_0%,rgba(237,239,241,0.95)_100%)] shadow-[0_14px_30px_rgba(128,138,146,0.1)]";
   const metaRowClass =
-    "rounded-[18px] border border-[#e5edf2] bg-[#fbfdfe] px-3 py-2.5 text-sm text-[#314454]";
+    "rounded-[18px] border border-[#e7eaec] bg-[#fcfcfc] px-3 py-2.5 text-sm text-[#3a464f]";
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#e5ecf1] px-4 py-5 text-[#273643]">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#eef4f7_28%,#dce4ea_68%,#d2dbe3_100%)]" />
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(187,225,232,0.42),transparent_24%),radial-gradient(circle_at_84%_16%,rgba(199,211,231,0.34),transparent_21%),radial-gradient(circle_at_60%_100%,rgba(181,219,223,0.22),transparent_30%)]" />
-      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.16)_1px,transparent_1px)] bg-[size:22px_22px] opacity-40" />
-      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(120deg,transparent_0%,transparent_46%,rgba(143,224,235,0.12)_49%,transparent_52%,transparent_100%)] opacity-60" />
+    <main className="min-h-screen overflow-hidden bg-[#e8eaeb] px-4 py-5 text-[#2f3a42]">
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#f3f4f5_28%,#e0e3e6_68%,#d5d9dd_100%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.5),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(222,226,230,0.42),transparent_22%),radial-gradient(circle_at_60%_100%,rgba(205,210,214,0.26),transparent_32%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.14)_1px,transparent_1px)] bg-[size:22px_22px] opacity-35" />
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(120deg,transparent_0%,transparent_46%,rgba(255,255,255,0.16)_49%,transparent_52%,transparent_100%)] opacity-70" />
 
       <div className="relative mx-auto max-w-2xl space-y-4 pb-24 sm:space-y-5">
-        <section className="relative overflow-hidden rounded-[36px] border border-[#f7fbff] bg-[linear-gradient(145deg,rgba(249,252,254,0.98)_0%,rgba(230,237,243,0.96)_52%,rgba(213,222,229,0.98)_100%)] px-5 py-6 shadow-[0_28px_80px_rgba(128,147,162,0.18),inset_0_1px_0_rgba(255,255,255,0.92)] sm:px-7 sm:py-8">
+        <section className="relative overflow-hidden rounded-[36px] border border-[#f5f6f7] bg-[linear-gradient(145deg,rgba(251,251,251,0.98)_0%,rgba(238,240,242,0.97)_52%,rgba(221,224,227,0.99)_100%)] px-5 py-6 shadow-[0_28px_80px_rgba(121,130,138,0.16),inset_0_1px_0_rgba(255,255,255,0.94)] sm:px-7 sm:py-8">
           <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffd9] blur-3xl" />
-          <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#d9f0ee99] blur-3xl" />
-          <div className="absolute inset-y-0 right-0 w-1/3 bg-[linear-gradient(180deg,rgba(255,255,255,0.0)_0%,rgba(169,226,233,0.12)_45%,rgba(255,255,255,0.0)_100%)]" />
-          <div className="absolute inset-x-8 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(141,214,225,0.78),transparent)]" />
+          <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#f1f3f4b8] blur-3xl" />
+          <div className="absolute inset-y-0 right-0 w-1/3 bg-[linear-gradient(180deg,rgba(255,255,255,0.0)_0%,rgba(255,255,255,0.18)_45%,rgba(255,255,255,0.0)_100%)]" />
+          <div className="absolute inset-x-8 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(235,237,239,0.92),transparent)]" />
 
           <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#dde6eb] bg-[#fbfdfecc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#768792] shadow-[0_10px_22px_rgba(151,176,191,0.12)]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#e5e8ea] bg-[#fcfcfccc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7d868d] shadow-[0_10px_22px_rgba(136,145,153,0.12)]">
               <Sparkles className="h-3.5 w-3.5" />
               Soft social layer
             </div>
@@ -104,34 +104,34 @@ export default function HomeTestClient({
               Find someone new, without the noise.
             </h1>
 
-            <p className="mt-4 max-w-xl text-[14px] leading-6 text-[#667a89] sm:text-[15px]">
+            <p className="mt-4 max-w-xl text-[14px] leading-6 text-[#6e7982] sm:text-[15px]">
               A quieter way to discover nearby meetups. Soft silver surfaces,
               calm pacing, and just enough AI presence to make browsing feel easy.
             </p>
 
             <div className="mt-7 grid grid-cols-3 gap-3">
-              <div className="rounded-[26px] border border-[#edf3f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(237,243,247,0.96)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(154,171,185,0.12),inset_0_1px_0_rgba(255,255,255,0.96)]">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#7f9daa]">
+              <div className="rounded-[26px] border border-[#eceeef] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(240,242,243,0.97)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(140,149,157,0.11),inset_0_1px_0_rgba(255,255,255,0.96)]">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-[#8a9399]">
                   Happening now
                 </div>
                 <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
                   {upcomingCount}
                 </div>
-                <div className="mt-1 text-[11px] text-[#80919a]">Open right now</div>
+                <div className="mt-1 text-[11px] text-[#8a9297]">Open right now</div>
               </div>
 
-              <div className="rounded-[26px] border border-[#edf3f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(237,243,247,0.96)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(154,171,185,0.12),inset_0_1px_0_rgba(255,255,255,0.96)]">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#7f9daa]">
+              <div className="rounded-[26px] border border-[#eceeef] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(240,242,243,0.97)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(140,149,157,0.11),inset_0_1px_0_rgba(255,255,255,0.96)]">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-[#8a9399]">
                   Hosts nearby
                 </div>
                 <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
                   {hostCount}
                 </div>
-                <div className="mt-1 text-[11px] text-[#80919a]">Across the city</div>
+                <div className="mt-1 text-[11px] text-[#8a9297]">Across the city</div>
               </div>
 
-              <div className="rounded-[26px] border border-[#edf3f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(237,243,247,0.96)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(154,171,185,0.12),inset_0_1px_0_rgba(255,255,255,0.96)]">
-                <div className="text-[11px] uppercase tracking-[0.16em] text-[#6f96a1]">
+              <div className="rounded-[26px] border border-[#eceeef] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(240,242,243,0.97)_100%)] px-3.5 py-4 shadow-[0_18px_34px_rgba(140,149,157,0.11),inset_0_1px_0_rgba(255,255,255,0.96)]">
+                <div className="text-[11px] uppercase tracking-[0.16em] text-[#818c93]">
                   Mood
                 </div>
                 <div className="mt-1.5 text-sm font-bold leading-5 text-[#24323f]">
@@ -139,7 +139,7 @@ export default function HomeTestClient({
                   <br />
                   Lab
                 </div>
-                <div className="mt-1 text-[11px] text-[#80919a]">Softly guided</div>
+                <div className="mt-1 text-[11px] text-[#8a9297]">Softly guided</div>
               </div>
             </div>
 
@@ -147,7 +147,7 @@ export default function HomeTestClient({
               {["Slow coffee", "Afterglow walks", "Quiet co-work"].map((label) => (
                 <span
                   key={label}
-                  className="rounded-full border border-[#e1e8ed] bg-[#fbfdfecc] px-3 py-1.5 text-[11px] font-medium text-[#617985] shadow-[0_8px_18px_rgba(151,178,194,0.08)]"
+                  className="rounded-full border border-[#e5e8ea] bg-[#fcfcfccc] px-3 py-1.5 text-[11px] font-medium text-[#6d7a83] shadow-[0_8px_18px_rgba(137,146,154,0.08)]"
                 >
                   {label}
                 </span>
@@ -157,11 +157,11 @@ export default function HomeTestClient({
         </section>
 
         {highlightedPost && (
-          <section className="overflow-hidden rounded-[34px] border border-[#f3f7fa] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(236,243,247,0.98)_100%)] shadow-[0_30px_88px_rgba(139,157,172,0.18),inset_0_1px_0_rgba(255,255,255,0.96)]">
-            <div className="border-b border-[#dde7ed] px-5 py-5">
+          <section className="overflow-hidden rounded-[34px] border border-[#f2f4f5] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(239,241,242,0.98)_100%)] shadow-[0_30px_88px_rgba(129,139,147,0.16),inset_0_1px_0_rgba(255,255,255,0.97)]">
+            <div className="border-b border-[#e3e6e8] px-5 py-5">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#778892]">
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#838b91]">
                     <Search className="h-3.5 w-3.5" />
                     Featured moment
                   </div>
@@ -170,15 +170,15 @@ export default function HomeTestClient({
                   </div>
                 </div>
 
-                <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#e1e9ee] bg-[#fcfeff] text-[#7a9099] shadow-[0_12px_24px_rgba(150,170,186,0.12)]">
+                <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#e6e9eb] bg-[#fdfdfd] text-[#7e8a92] shadow-[0_12px_24px_rgba(137,146,154,0.12)]">
                   <Plus className="h-4 w-4 rotate-45" />
                 </div>
               </div>
             </div>
 
             <div className="grid gap-3 px-4 py-5 sm:grid-cols-[1.45fr_0.95fr] sm:px-5">
-              <div className="rounded-[28px] border border-[#eef4f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(239,245,248,0.96)_100%)] px-4 py-4 text-[#24323f] shadow-[0_20px_38px_rgba(152,171,186,0.12)]">
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#dde5eb] bg-[#fbfdfecc] px-3 py-1.5 text-xs font-medium text-[#71838d]">
+              <div className="rounded-[28px] border border-[#edf0f2] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(242,244,245,0.97)_100%)] px-4 py-4 text-[#24323f] shadow-[0_20px_38px_rgba(137,146,154,0.11)]">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#e3e6e8] bg-[#fcfcfccc] px-3 py-1.5 text-xs font-medium text-[#78838a]">
                   {getPurposeIcon(highlightedPost.meeting_purpose)}
                   {highlightedPost.meeting_purpose || "Meetup"}
                 </div>
@@ -187,18 +187,18 @@ export default function HomeTestClient({
                   {getPurposeLabel(highlightedPost.meeting_purpose)}
                 </div>
 
-                <div className="mt-3 max-w-md text-sm leading-6 text-[#667a89]">
+                <div className="mt-3 max-w-md text-sm leading-6 text-[#6f7b84]">
                   A quieter featured moment with a little more room to breathe.
                 </div>
               </div>
 
-              <div className="space-y-2.5 rounded-[24px] border border-[#e9f0f4] bg-[linear-gradient(180deg,rgba(252,254,255,0.98)_0%,rgba(235,241,245,0.96)_100%)] px-4 py-4 text-[#334856] shadow-[0_16px_30px_rgba(151,171,186,0.1)]">
+              <div className="space-y-2.5 rounded-[24px] border border-[#eaedef] bg-[linear-gradient(180deg,rgba(253,253,253,0.98)_0%,rgba(238,241,243,0.97)_100%)] px-4 py-4 text-[#3b4952] shadow-[0_16px_30px_rgba(137,146,154,0.09)]">
                 <div className="flex items-center gap-2 text-sm">
-                  <Clock3 className="h-4 w-4 text-[#6f98a5]" />
+                  <Clock3 className="h-4 w-4 text-[#7a848a]" />
                   <span>{formatTime(highlightedPost.meeting_time)}</span>
                 </div>
                 <div className="flex min-w-0 items-start gap-2 text-sm">
-                  <MapPin className="mt-0.5 h-4 w-4 text-[#6f98a5]" />
+                  <MapPin className="mt-0.5 h-4 w-4 text-[#7a848a]" />
                   <span className="block min-w-0 flex-1 break-words line-clamp-2">
                     {highlightedPost.location ||
                       highlightedPost.place_name ||
@@ -206,7 +206,7 @@ export default function HomeTestClient({
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <Search className="h-4 w-4 text-[#6f98a5]" />
+                  <Search className="h-4 w-4 text-[#7a848a]" />
                   <span>
                     {highlightedPost.target_gender || "Any"} /{" "}
                     {highlightedPost.target_age_group || "Any"}
@@ -218,20 +218,20 @@ export default function HomeTestClient({
         )}
 
         <div className="sticky top-[68px] z-20 sm:top-[76px]">
-          <div className="rounded-[28px] border border-[#edf3f7] bg-[linear-gradient(180deg,rgba(248,251,253,0.96)_0%,rgba(227,235,241,0.94)_100%)] shadow-[0_18px_40px_rgba(149,167,182,0.14)]">
+          <div className="rounded-[28px] border border-[#eceff1] bg-[linear-gradient(180deg,rgba(250,251,251,0.97)_0%,rgba(236,239,241,0.95)_100%)] shadow-[0_18px_40px_rgba(137,146,154,0.12)]">
             <div className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left sm:py-4">
               <div className="min-w-0">
-                <div className="flex items-center gap-2 text-sm font-semibold text-[#273744]">
-                  <SlidersHorizontal className="h-4 w-4 text-[#788a94]" />
+                <div className="flex items-center gap-2 text-sm font-semibold text-[#2f3b44]">
+                  <SlidersHorizontal className="h-4 w-4 text-[#7f888e]" />
                   Refine your view
                 </div>
-                <div className="mt-2 text-sm text-[#6d818f]">
+                <div className="mt-2 text-sm text-[#707b83]">
                   A design sandbox for softer hierarchy, lighter surfaces, and a
                   calmer way to scan the page.
                 </div>
               </div>
 
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#d7e4ec] bg-[#f8fbfd] text-[#6d97a5] shadow-[0_10px_18px_rgba(153,172,186,0.12)]">
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e2e6e8] bg-[#fcfcfc] text-[#7b858b] shadow-[0_10px_18px_rgba(137,146,154,0.1)]">
                 <SlidersHorizontal className="h-4 w-4" />
               </span>
             </div>
@@ -240,7 +240,7 @@ export default function HomeTestClient({
 
         <div className="flex items-center justify-between px-1 pt-1">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#768892]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#848d93]">
               Discover
             </div>
             <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#24323f]">
@@ -248,7 +248,7 @@ export default function HomeTestClient({
             </div>
           </div>
 
-          <div className="rounded-[24px] border border-[#e0e8ed] bg-[#fbfdfecc] px-3 py-1.5 text-xs font-medium text-[#6c8c99] shadow-[0_8px_18px_rgba(154,174,189,0.08)]">
+          <div className="rounded-[24px] border border-[#e5e8ea] bg-[#fcfcfccc] px-3 py-1.5 text-xs font-medium text-[#737f87] shadow-[0_8px_18px_rgba(137,146,154,0.08)]">
             {sortedPosts.length} results
           </div>
         </div>

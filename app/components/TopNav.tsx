@@ -296,33 +296,33 @@ export default function TopNav() {
     `inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition ${
       isHomeTest
         ? active
-          ? "border-[#f8fcff] bg-[linear-gradient(180deg,rgba(252,254,255,0.98)_0%,rgba(228,236,242,0.98)_100%)] text-[#223240] shadow-[0_14px_28px_rgba(156,176,191,0.18)]"
-          : "border-[#dbe7ee] bg-[linear-gradient(180deg,rgba(247,250,252,0.94)_0%,rgba(230,237,243,0.94)_100%)] text-[#698794] shadow-[0_10px_24px_rgba(154,171,185,0.12)] hover:border-[#d1eaf0] hover:bg-[linear-gradient(180deg,rgba(252,254,255,0.98)_0%,rgba(232,239,244,0.98)_100%)] hover:text-[#4d7582]"
+          ? "border-[#f4f5f6] bg-[linear-gradient(180deg,rgba(253,253,253,0.98)_0%,rgba(233,236,239,0.98)_100%)] text-[#2d3a43] shadow-[0_14px_28px_rgba(135,144,152,0.16)]"
+          : "border-[#e2e6e8] bg-[linear-gradient(180deg,rgba(249,250,250,0.94)_0%,rgba(236,239,241,0.95)_100%)] text-[#758188] shadow-[0_10px_24px_rgba(137,146,154,0.1)] hover:border-[#d9dde0] hover:bg-[linear-gradient(180deg,rgba(253,253,253,0.98)_0%,rgba(239,241,243,0.98)_100%)] hover:text-[#59666f]"
         : active
         ? "border-[#dfcaba] bg-[linear-gradient(180deg,#fffdf9_0%,#f3e7db_100%)] text-[#3f3226] shadow-[0_12px_28px_rgba(120,86,52,0.10)]"
         : "border-[#e5d8cb] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e7_100%)] text-[#5a5149] shadow-[0_8px_18px_rgba(93,68,48,0.04)] hover:bg-[#f6eee6]"
     }`;
 
   const primary = isHomeTest
-    ? "inline-flex items-center gap-2 rounded-full border border-[#e8f1f6] bg-[linear-gradient(135deg,#fdfefe_0%,#dfe8ee_100%)] px-4 py-2.5 text-sm font-medium text-[#29404d] shadow-[0_16px_34px_rgba(154,171,185,0.18)] transition hover:border-[#d1eaf0] hover:text-[#1f5c69]"
+    ? "inline-flex items-center gap-2 rounded-full border border-[#eceff1] bg-[linear-gradient(135deg,#ffffff_0%,#e6eaed_100%)] px-4 py-2.5 text-sm font-medium text-[#34424b] shadow-[0_16px_34px_rgba(137,146,154,0.16)] transition hover:border-[#dde1e4] hover:text-[#2a3740]"
     : "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
 
   const mobileItem = isHomeTest
-    ? "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#647f8d] transition hover:bg-[#eef4f8] hover:text-[#426877]"
+    ? "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#707b82] transition hover:bg-[#f1f3f4] hover:text-[#4f5b64]"
     : "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
 
   return (
     <header
       className={`sticky top-0 z-50 backdrop-blur-xl ${
         isHomeTest
-          ? "border-b border-[#edf4f8] bg-[rgba(240,246,250,0.84)]"
+          ? "border-b border-[#eceff1] bg-[rgba(243,245,246,0.84)]"
           : "border-b border-[#ebdfd4] bg-[rgba(255,250,245,0.84)]"
       }`}
     >
       <div
         className={
           isHomeTest
-            ? "border-b border-[#edf4f8] bg-[linear-gradient(180deg,rgba(248,251,253,0.96),rgba(227,236,242,0.9))]"
+            ? "border-b border-[#eceff1] bg-[linear-gradient(180deg,rgba(250,251,251,0.96),rgba(236,239,241,0.9))]"
             : "border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(255,252,248,0.95),rgba(249,240,232,0.88))]"
         }
       >
@@ -332,7 +332,7 @@ export default function TopNav() {
               href="/"
               className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base font-bold tracking-[-0.05em] text-white ${
                 isHomeTest
-                  ? "border-[#f7fbff] bg-[radial-gradient(circle_at_top,_#ffffff,_#b5d7e5_38%,_#6a8ca0_82%)] shadow-[0_18px_32px_rgba(156,176,191,0.26)]"
+                  ? "border-[#f5f6f7] bg-[radial-gradient(circle_at_top,_#ffffff,_#d6dade_40%,_#7e8b95_82%)] shadow-[0_18px_32px_rgba(134,143,151,0.22)]"
                   : "border-[#e6cdbb] bg-[radial-gradient(circle_at_top,_#f6e5d6,_#c99679_80%)] shadow-[0_14px_30px_rgba(160,111,82,0.18)]"
               }`}
               onClick={closeMenu}
@@ -355,9 +355,9 @@ export default function TopNav() {
                   style={
                     isHomeTest
                       ? {
-                          color: "#223240",
+                          color: "#303b44",
                           textShadow:
-                            "0 1px 0 rgba(255,255,255,0.78), 0 0 20px rgba(146,221,232,0.18)",
+                            "0 1px 0 rgba(255,255,255,0.82), 0 0 18px rgba(255,255,255,0.22)",
                         }
                       : undefined
                   }
@@ -367,7 +367,7 @@ export default function TopNav() {
                 </Link>
                 <div
                   className={`block ${isHomeTest ? "" : "w-full truncate"} text-[9px] font-medium uppercase leading-none tracking-[0.16em] sm:text-[10px] sm:tracking-[0.18em] ${
-                    isHomeTest ? "text-[#698c98]" : "text-[#8d7d71]"
+                    isHomeTest ? "text-[#7b858c]" : "text-[#8d7d71]"
                   }`}
                 >
                   AI-generated social space
