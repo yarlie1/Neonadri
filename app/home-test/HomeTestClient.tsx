@@ -289,7 +289,7 @@ export default function HomeTestClient({
                       <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] border border-[#d7dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f7_100%)] text-[#6f808a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]">
                         {getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}
                       </div>
-                      <div className="min-w-0">
+                      <div className="min-w-0 self-center">
                         <div className="truncate text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
                           {post.meeting_purpose || "Social meetup"}
                         </div>
@@ -306,7 +306,7 @@ export default function HomeTestClient({
                   </div>
 
                   <span
-                    className={`shrink-0 rounded-[14px] border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${matchBadge.className} ${
+                    className={`shrink-0 rounded-[14px] border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] ${matchBadge.className} ${
                       isExpired ? "opacity-70" : ""
                     }`}
                   >
@@ -315,8 +315,8 @@ export default function HomeTestClient({
                 </div>
 
                 <div className="mt-3.5 grid gap-1.5">
-                  <div className={metaRowClass}>
-                    <Clock3 className="h-4 w-4 text-[#788b95]" />
+                  <div className={`${metaRowClass} min-h-[56px] py-2`}>
+                    <Clock3 className="h-4 w-4 shrink-0 text-[#788b95]" />
                     <span className="truncate">{formatTime(post.meeting_time)}</span>
                     {formatDuration(post.duration_minutes) ? (
                     <span className="ml-auto rounded-[14px] border border-[#cbd4db] bg-[linear-gradient(180deg,#ffffff_0%,#eceff2_100%)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#52616a] shadow-[0_8px_14px_rgba(118,126,133,0.12)]">
@@ -325,8 +325,8 @@ export default function HomeTestClient({
                     ) : null}
                   </div>
 
-                  <div className={metaRowClass}>
-                    <MapPin className="mt-0.5 h-4 w-4 text-[#788b95]" />
+                  <div className={`${metaRowClass} min-h-[56px] py-2`}>
+                    <MapPin className="h-4 w-4 shrink-0 text-[#788b95]" />
                     <span className="min-w-0 flex-1 break-words">
                       {post.place_name || post.location || "No place"}
                     </span>
