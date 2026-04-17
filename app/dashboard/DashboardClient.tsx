@@ -791,7 +791,7 @@ export default function DashboardClient({
                           <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
                           <span className="truncate">{formatTime(item.post.meeting_time)}</span>
                         </div>
-                        <div className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8f6e5f]">
+                        <div className="shrink-0 text-sm font-semibold text-[#2f2a26]">
                           {countdown || "Soon"}
                         </div>
                       </div>
