@@ -81,14 +81,17 @@ export default function HomeTestClient({
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#eef4f7_28%,#dce4ea_68%,#d2dbe3_100%)]" />
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(187,225,232,0.42),transparent_24%),radial-gradient(circle_at_84%_16%,rgba(199,211,231,0.34),transparent_21%),radial-gradient(circle_at_60%_100%,rgba(181,219,223,0.22),transparent_30%)]" />
       <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.16)_1px,transparent_1px)] bg-[size:22px_22px] opacity-40" />
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(120deg,transparent_0%,transparent_46%,rgba(143,224,235,0.12)_49%,transparent_52%,transparent_100%)] opacity-60" />
 
       <div className="relative mx-auto max-w-2xl space-y-4 pb-24 sm:space-y-5">
         <section className="relative overflow-hidden rounded-[36px] border border-[#f7fbff] bg-[linear-gradient(145deg,rgba(249,252,254,0.98)_0%,rgba(230,237,243,0.96)_52%,rgba(213,222,229,0.98)_100%)] px-5 py-6 shadow-[0_28px_80px_rgba(128,147,162,0.18),inset_0_1px_0_rgba(255,255,255,0.92)] sm:px-7 sm:py-8">
           <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffd9] blur-3xl" />
           <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#d9f0ee99] blur-3xl" />
+          <div className="absolute inset-y-0 right-0 w-1/3 bg-[linear-gradient(180deg,rgba(255,255,255,0.0)_0%,rgba(169,226,233,0.12)_45%,rgba(255,255,255,0.0)_100%)]" />
+          <div className="absolute inset-x-8 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(141,214,225,0.78),transparent)]" />
 
           <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#d8e5ed] bg-[#f9fcfecc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#6a909c] shadow-[0_10px_22px_rgba(151,176,191,0.12)]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#d8e5ed] bg-[#f9fcfecc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#5f95a2] shadow-[0_10px_22px_rgba(151,176,191,0.12)]">
               <Sparkles className="h-3.5 w-3.5" />
               AI social layer
             </div>
@@ -98,8 +101,8 @@ export default function HomeTestClient({
             </h1>
 
             <p className="mt-4 max-w-lg text-[14px] leading-6 text-[#667a89] sm:text-[15px]">
-              Same structure, different mood. Quiet silver surfaces, soft AI glow,
-              and a calmer way to browse local social energy.
+              Same structure, different mood. Quiet silver surfaces, ambient lab
+              glow, and a calmer way to browse local social energy.
             </p>
 
             <div className="mt-6 grid grid-cols-3 gap-3">
@@ -122,19 +125,19 @@ export default function HomeTestClient({
               </div>
 
               <div className="rounded-[24px] border border-[#eaf1f5] bg-[linear-gradient(180deg,rgba(252,254,255,0.96)_0%,rgba(229,236,242,0.96)_100%)] px-3 py-3.5 shadow-[0_14px_28px_rgba(162,179,192,0.1),inset_0_1px_0_rgba(255,255,255,0.9)]">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#7f9daa]">
+                <div className="text-[11px] uppercase tracking-[0.16em] text-[#6f96a1]">
                   Signal
                 </div>
                 <div className="mt-1 text-sm font-bold leading-5 text-[#24323f]">
                   Chill
                   <br />
-                  Silver
+                  Lab
                 </div>
               </div>
             </div>
 
             <div className="mt-6 flex flex-wrap gap-2">
-              {["Slow coffee", "Afterglow walks", "Quiet co-work"].map((label) => (
+              {["Signal drift", "Afterglow walks", "Quiet co-work"].map((label) => (
                 <span
                   key={label}
                   className="rounded-full border border-[#d9e6ee] bg-[#f9fcfecc] px-3 py-2 text-xs font-medium text-[#567382] shadow-[0_8px_18px_rgba(151,178,194,0.1)]"
@@ -151,7 +154,7 @@ export default function HomeTestClient({
             <div className="border-b border-[#dbe5ec] px-5 py-[18px]">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#6d94a0]">
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#6d94a0]">
                     <Search className="h-3.5 w-3.5" />
                     Featured signal
                   </div>
@@ -178,7 +181,7 @@ export default function HomeTestClient({
                 </div>
 
                 <div className="mt-2 text-sm leading-6 text-[#667a89]">
-                  Same featured module, re-skinned for a soft metallic, low-noise
+                  Same featured module, re-skinned for a soft metallic AI-lab
                   mood.
                 </div>
               </div>
@@ -217,7 +220,7 @@ export default function HomeTestClient({
                   Shape your signal
                 </div>
                 <div className="mt-2 text-sm text-[#6d818f]">
-                  Static test shell for silver surfaces, soft chill textures, and
+                  Static test shell for silver surfaces, lab-light accents, and
                   calmer chrome.
                 </div>
               </div>
@@ -231,7 +234,7 @@ export default function HomeTestClient({
 
         <div className="flex items-center justify-between px-1 pt-1">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6f96a1]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6f96a1]">
               Discover
             </div>
             <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#24323f]">
@@ -336,7 +339,7 @@ export default function HomeTestClient({
 
                 <div className="mt-4 flex items-center justify-between gap-3 rounded-[20px] border border-[#e3edf3] bg-[linear-gradient(90deg,rgba(250,252,254,0.88)_0%,rgba(234,241,245,0.72)_100%)] px-3 py-3">
                   <div className="text-xs uppercase tracking-[0.16em] text-[#7a9da9]">
-                    Silver calm mode
+                    Silver lab mode
                   </div>
                   <div className="text-sm font-semibold text-[#314454]">
                     {getPurposeLabel(post.meeting_purpose)}
