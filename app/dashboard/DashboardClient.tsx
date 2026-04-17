@@ -852,7 +852,18 @@ export default function DashboardClient({
             active={activeTab === "received"}
             label="Requests Received"
             value={receivedItems.length}
-            subtext={pendingReceived > 0 ? `${pendingReceived} pending` : "No pending"}
+            subtext={
+              pendingReceived > 0 ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#c96f5d] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
+                    {pendingReceived > 99 ? "99+" : pendingReceived}
+                  </span>
+                  <span>pending</span>
+                </span>
+              ) : (
+                "No pending"
+              )
+            }
             icon={<Inbox className="h-4 w-4" />}
             onClick={() => setActiveTab("received")}
           />
@@ -911,14 +922,7 @@ export default function DashboardClient({
                   active={receivedFilter === "pending"}
                   onClick={() => setReceivedFilter("pending")}
                 >
-                  <span className="inline-flex items-center gap-2">
-                    Pending
-                    {pendingReceived > 0 ? (
-                      <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#c96f5d] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
-                        {pendingReceived > 99 ? "99+" : pendingReceived}
-                      </span>
-                    ) : null}
-                  </span>
+                  Pending
                 </FilterPill>
               </div>
             </div>

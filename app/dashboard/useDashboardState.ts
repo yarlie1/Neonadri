@@ -60,7 +60,7 @@ export function useDashboardState({
   const [receivedItems, setReceivedItems] = useState(requestsReceived);
   const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
-  const [receivedFilter, setReceivedFilter] = useState<ReceivedFilter>("all");
+  const [receivedFilter, setReceivedFilter] = useState<ReceivedFilter>("pending");
   const [sentFilter, setSentFilter] = useState<SentFilter>("all");
   const [matchFilter, setMatchFilter] = useState<MatchFilter>("all");
   const [processingRequestId, setProcessingRequestId] = useState<number | null>(

@@ -179,7 +179,7 @@ export function DashboardTabCard({
   active: boolean;
   label: string;
   value: number;
-  subtext?: string;
+  subtext?: ReactNode;
   icon: ReactNode;
   onClick: () => void;
 }) {
