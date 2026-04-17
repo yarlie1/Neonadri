@@ -200,7 +200,7 @@ export default async function ProfilePage({ params }: PageProps) {
       <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
       <div className="mx-auto max-w-4xl space-y-5">
         <section className="rounded-[34px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] p-5 shadow-[0_18px_42px_rgba(92,69,52,0.08)] sm:p-6">
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] text-[#74675d]">
                 <UserCircle2 className="h-3.5 w-3.5" />
@@ -216,76 +216,68 @@ export default async function ProfilePage({ params }: PageProps) {
               )}
             </div>
 
-            <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-start">
-              <div className="min-w-0 pl-1">
-                <div className="flex items-center justify-between gap-3">
-                  <h1 className="min-w-0 truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
-                    {profile.display_name || "Unknown"}
-                  </h1>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
-                    <StarRating value={roundedAverage} size="sm" />
-                    <span className="font-semibold text-[#4f4339]">
-                      {averageRating.toFixed(1)}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-[22px] border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-3">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                      Attendance
-                    </div>
-                    <div className="mt-1 text-xl font-black tracking-[-0.03em] text-[#2f2a26]">
-                      {trustMetrics.attendanceRate === null
-                        ? "No data yet"
-                        : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
-                    </div>
-                    <div className="mt-1 text-[11px] text-[#8b7f74]">
-                      {trustMetrics.attendanceCount > 0
-                        ? `${trustMetrics.attendanceCount} meetup reviews`
-                        : "Not enough meetup reviews yet"}
-                    </div>
-                  </div>
-                  <div className="rounded-[22px] border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-3">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
-                      Host reliability
-                    </div>
-                    <div className="mt-1 text-xl font-black tracking-[-0.03em] text-[#2f2a26]">
-                      {trustMetrics.hostReliabilityRate === null
-                        ? "No data yet"
-                        : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
-                    </div>
-                    <div className="mt-1 text-[11px] text-[#8b7f74]">
-                      {trustMetrics.hostReliabilityCount > 0
-                        ? `${trustMetrics.hostReliabilityCount} payout reviews`
-                        : "No host payout reviews yet"}
-                    </div>
-                  </div>
+            <div className="min-w-0 pl-1">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h1 className="min-w-0 truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
+                  {profile.display_name || "Unknown"}
+                </h1>
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                  <StarRating value={roundedAverage} size="sm" />
+                  <span className="font-semibold text-[#4f4339]">
+                    {averageRating.toFixed(1)}
+                  </span>
                 </div>
               </div>
 
-              <div className="rounded-[24px] border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f6ede4_100%)] px-4 py-4">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9b8f84]">
-                  At a glance
-                </div>
-                <div className="mt-3 space-y-3">
-                  <div className="rounded-[18px] border border-[#eee3d8] bg-[#fcf8f3] px-3.5 py-3">
-                    <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                      <HeartHandshake className="h-3.5 w-3.5 text-[#8a7f74]" />
-                      Meeting style
-                    </div>
-                    <div className="mt-1.5 text-sm font-medium text-[#5f5347]">
-                      {hasMeetingStyle ? profile.meeting_style : "No meetup style added yet"}
-                    </div>
+              <div className="mt-3 grid gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.2fr)]">
+                <div className="rounded-[20px] border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2.5">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                    Attendance
                   </div>
+                  <div className="mt-1 text-lg font-black tracking-[-0.03em] text-[#2f2a26]">
+                    {trustMetrics.attendanceRate === null
+                      ? "No data yet"
+                      : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-[#8b7f74]">
+                    {trustMetrics.attendanceCount > 0
+                      ? `${trustMetrics.attendanceCount} meetup reviews`
+                      : "Not enough meetup reviews yet"}
+                  </div>
+                </div>
 
-                  <div className="rounded-[18px] border border-[#eee3d8] bg-[#fcf8f3] px-3.5 py-3">
-                    <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                      <Clock3 className="h-3.5 w-3.5 text-[#8a7f74]" />
-                      Response note
+                <div className="rounded-[20px] border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2.5">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                    Host reliability
+                  </div>
+                  <div className="mt-1 text-lg font-black tracking-[-0.03em] text-[#2f2a26]">
+                    {trustMetrics.hostReliabilityRate === null
+                      ? "No data yet"
+                      : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-[#8b7f74]">
+                    {trustMetrics.hostReliabilityCount > 0
+                      ? `${trustMetrics.hostReliabilityCount} payout reviews`
+                      : "No host payout reviews yet"}
+                  </div>
+                </div>
+
+                <div className="rounded-[20px] border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdfa_0%,#f6ede4_100%)] px-4 py-2.5">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9b8f84]">
+                    At a glance
+                  </div>
+                  <div className="mt-2 space-y-1.5 text-sm text-[#5f5347]">
+                    <div className="flex items-center gap-2">
+                      <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
+                      <span className="truncate">
+                        {hasMeetingStyle ? profile.meeting_style : "No meetup style added yet"}
+                      </span>
                     </div>
-                    <div className="mt-1.5 text-sm font-medium text-[#5f5347]">
-                      {hasResponseNote ? profile.response_time_note : "No response note added yet"}
+                    <div className="flex items-center gap-2">
+                      <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
+                      <span className="truncate">
+                        {hasResponseNote ? profile.response_time_note : "No response note added yet"}
+                      </span>
                     </div>
                   </div>
                 </div>
