@@ -1,6 +1,7 @@
 import { FALLBACK_TIME_ZONE } from "./userTimeZone";
 
 const MEETING_TIME_ZONE = FALLBACK_TIME_ZONE;
+const MEETING_DISPLAY_LOCALE = "en-US";
 
 function getTimeZoneOffsetMs(date: Date, timeZone: string) {
   const parts = new Intl.DateTimeFormat("en-US", {
@@ -83,9 +84,9 @@ export function formatMeetingTime(
   const date = parseMeetingTime(meetingTime, timeZone);
   if (!date) return null;
 
-  return `${date.toLocaleDateString(undefined, {
+  return `${date.toLocaleDateString(MEETING_DISPLAY_LOCALE, {
     timeZone,
-  })} ${date.toLocaleTimeString([], {
+  })} ${date.toLocaleTimeString(MEETING_DISPLAY_LOCALE, {
     timeZone,
     hour: "2-digit",
     minute: "2-digit",

@@ -169,13 +169,13 @@ function formatRecentChatTime(meetingTime: string | null, userTimeZone: string) 
   const parsed = parseMeetingTime(meetingTime, userTimeZone);
   if (!parsed) return "Time TBD";
 
-  const dateLabel = parsed.toLocaleDateString(undefined, {
+  const dateLabel = parsed.toLocaleDateString("en-US", {
     timeZone: userTimeZone,
     month: "short",
     day: "numeric",
   });
 
-  const timeLabel = parsed.toLocaleTimeString([], {
+  const timeLabel = parsed.toLocaleTimeString("en-US", {
     timeZone: userTimeZone,
     hour: "numeric",
     minute: "2-digit",
