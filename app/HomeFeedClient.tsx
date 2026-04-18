@@ -256,67 +256,73 @@ export default function HomeFeedClient({
   const highlightedPost = posts[0] || null;
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,#fffefb_0%,#fbf3eb_34%,#f2e5d8_100%)] px-4 py-5 text-[#2f2a26]">
+    <main className="min-h-screen overflow-hidden bg-[#eceff1] px-4 py-5 text-[#2f3a42]">
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#fbfcfd_20%,#edf1f4_56%,#dde4ea_100%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.84),transparent_24%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.48),transparent_22%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.3),transparent_34%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.18)_1px,transparent_1px)] bg-[size:22px_22px] opacity-26" />
       <div className="mx-auto max-w-2xl space-y-4 pb-24 sm:space-y-5">
-        <section className="relative overflow-hidden rounded-[36px] border border-[#ebddd0] bg-[linear-gradient(145deg,#fffdf9_0%,#f7eee6_52%,#eddaca_100%)] px-5 py-6 text-[#2a211d] shadow-[0_24px_72px_rgba(103,71,49,0.12)] sm:px-7 sm:py-8">
-          <div className="absolute -right-10 -top-10 h-44 w-44 rounded-full bg-white/45 blur-3xl" />
-          <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-[#8b5f4f]/10 blur-3xl" />
+        <section className="relative overflow-hidden rounded-[32px] border border-[#edf1f4] bg-[linear-gradient(145deg,rgba(255,255,255,0.995)_0%,rgba(247,249,250,0.985)_36%,rgba(232,236,239,0.99)_100%)] px-5 py-5 text-[#24323f] shadow-[0_26px_66px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,1)] sm:px-7 sm:py-7">
+          <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
+          <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#f5f9fcc7] blur-3xl" />
 
           <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/78 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8a5647] shadow-sm">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#eef2f4] bg-[#ffffffd9] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7e858b] shadow-[0_10px_22px_rgba(136,142,148,0.08)]">
               <Sparkles className="h-3.5 w-3.5" />
-              Social meetups near you
+              Soft social layer
             </div>
 
-            <h1 className="mt-4 max-w-md text-[35px] font-black leading-[0.94] tracking-[-0.06em] text-[#241915] sm:text-[42px]">
-              Meet someone new without the awkward start.
+            <h1 className="mt-3 max-w-lg text-[35px] font-black leading-[0.92] tracking-[-0.065em] text-[#1f2b34] sm:mt-4 sm:text-[44px]">
+              Find someone new, without the noise.
             </h1>
 
-            <p className="mt-4 max-w-lg text-[14px] leading-6 text-[#5f453b] sm:text-[15px]">
-              Browse warm, low-pressure meetups around you. Coffee, walks,
-              study sessions, game nights. Pick a mood and step in.
+            <p className="mt-3 max-w-xl text-[14px] leading-6 text-[#667179] sm:mt-4 sm:text-[15px]">
+              A quieter way to discover nearby meetups. Soft silver surfaces,
+              calm pacing, and just enough AI presence to make browsing feel easy.
             </p>
 
-            <div className="mt-6 grid grid-cols-3 gap-3">
-              <div className="rounded-[24px] border border-white/70 bg-white/74 px-3 py-3.5 shadow-[0_8px_20px_rgba(115,82,61,0.06)] backdrop-blur">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#906556]">
-                  Live now
+            <div className="mt-5 grid grid-cols-3 gap-2.5 sm:mt-7 sm:gap-3">
+              <div className="rounded-[22px] border border-[#e4e9ed] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(246,248,249,0.985)_40%,rgba(233,237,240,0.99)_100%)] px-3.5 py-3.5 shadow-[0_16px_30px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-[#888f94]">
+                  Happening now
                 </div>
-                <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#2b1f1a]">
+                <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
                   {upcomingCount}
                 </div>
+                <div className="mt-1 text-[11px] text-[#868d92]">Open right now</div>
               </div>
 
-              <div className="rounded-[24px] border border-white/70 bg-white/74 px-3 py-3.5 shadow-[0_8px_20px_rgba(115,82,61,0.06)] backdrop-blur">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#906556]">
-                  Hosts
+              <div className="rounded-[22px] border border-[#e4e9ed] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(246,248,249,0.985)_40%,rgba(233,237,240,0.99)_100%)] px-3.5 py-3.5 shadow-[0_16px_30px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
+                <div className="text-[11px] uppercase tracking-[0.12em] text-[#888f94]">
+                  Hosts nearby
                 </div>
-                <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#2b1f1a]">
+                <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
                   {hostCount}
                 </div>
+                <div className="mt-1 text-[11px] text-[#868d92]">Across the city</div>
               </div>
 
-              <div className="rounded-[24px] border border-white/70 bg-white/74 px-3 py-3.5 shadow-[0_8px_20px_rgba(115,82,61,0.06)] backdrop-blur">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#906556]">
+              <div className="rounded-[22px] border border-[#e4e9ed] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(246,248,249,0.985)_40%,rgba(233,237,240,0.99)_100%)] px-3.5 py-3.5 shadow-[0_16px_30px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
+                <div className="text-[11px] uppercase tracking-[0.16em] text-[#81878d]">
                   Mood
                 </div>
-                <div className="mt-1 text-sm font-bold leading-5 text-[#2b1f1a]">
-                  Cozy
+                <div className="mt-1.5 text-sm font-bold leading-5 text-[#24323f]">
+                  Chill
                   <br />
-                  Local
+                  Lab
                 </div>
+                <div className="mt-1 text-[11px] text-[#868d92]">Softly guided</div>
               </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-2">
-              <span className="rounded-full border border-white/70 bg-white/68 px-3 py-2 text-xs font-medium text-[#6a4b40] shadow-[0_4px_10px_rgba(115,82,61,0.04)]">
-                Coffee chats
+            <div className="mt-4 flex flex-wrap gap-2 sm:mt-6 sm:gap-2.5">
+              <span className="rounded-[15px] border border-[#e6ebef] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f6_100%)] px-3 py-1.5 text-[11px] font-medium text-[#66727a] shadow-[0_8px_16px_rgba(118,126,133,0.06)]">
+                Slow coffee
               </span>
-              <span className="rounded-full border border-white/70 bg-white/68 px-3 py-2 text-xs font-medium text-[#6a4b40] shadow-[0_4px_10px_rgba(115,82,61,0.04)]">
-                Walk dates
+              <span className="rounded-[15px] border border-[#e6ebef] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f6_100%)] px-3 py-1.5 text-[11px] font-medium text-[#66727a] shadow-[0_8px_16px_rgba(118,126,133,0.06)]">
+                Afterglow walks
               </span>
-              <span className="rounded-full border border-white/70 bg-white/68 px-3 py-2 text-xs font-medium text-[#6a4b40] shadow-[0_4px_10px_rgba(115,82,61,0.04)]">
-                Game nights
+              <span className="rounded-[15px] border border-[#e6ebef] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f6_100%)] px-3 py-1.5 text-[11px] font-medium text-[#66727a] shadow-[0_8px_16px_rgba(118,126,133,0.06)]">
+                Quiet co-work
               </span>
             </div>
           </div>
@@ -395,15 +401,15 @@ export default function HomeFeedClient({
 
         <div className="flex items-center justify-between px-1 pt-1">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9b8f84]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#848d93]">
               Discover
             </div>
-            <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#2f2a26]">
-              Nearby social moments
+            <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#24323f]">
+              Nearby invitations
             </div>
           </div>
 
-          <div className={`${SOFT_CARD_CLASS} px-3 py-1.5 text-xs font-medium text-[#7a6b61] shadow-none`}>
+          <div className={`${SOFT_CARD_CLASS} px-3 py-1.5 text-xs font-medium text-[#6f7a81] shadow-[0_10px_18px_rgba(118,126,133,0.07)]`}>
             {posts.length} results
           </div>
         </div>
@@ -472,7 +478,7 @@ export default function HomeFeedClient({
 
       <Link
         href="/write"
-        className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-full border border-[#d6b8a3] bg-[linear-gradient(135deg,#342621_0%,#9b6a58_100%)] text-white shadow-[0_22px_46px_rgba(80,60,40,0.30)] transition hover:scale-[1.02]"
+        className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-[24px] border border-[#d6e0e6] bg-[linear-gradient(135deg,#ffffff_0%,#e1eaef_100%)] text-[#5f7f8f] shadow-[0_24px_46px_rgba(118,126,133,0.18)] transition hover:scale-[1.02]"
         aria-label="Create meetup"
       >
         <Plus className="h-6 w-6" />

@@ -68,6 +68,7 @@ export default function TopNav() {
   const loggingOutRef = useRef(false);
   const pathname = usePathname();
   const isHomeTest = pathname.startsWith("/home-test");
+  const isSilverHome = isHomeTest || pathname === "/";
   
   const currentPathWithSearch = useMemo(() => {
     return currentSearch ? `${pathname}${currentSearch}` : pathname;
@@ -294,7 +295,7 @@ export default function TopNav() {
 
   const navBtn = (active: boolean) =>
     `inline-flex items-center gap-2 rounded-[18px] border px-3 py-2.5 text-sm font-medium transition ${
-      isHomeTest
+      isSilverHome
         ? active
           ? "border-[#e6edf1] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(240,244,246,0.995)_100%)] text-[#26343d] shadow-[0_12px_24px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,0.99)]"
           : "border-[#e6edf1] bg-[linear-gradient(180deg,rgba(253,253,253,0.98)_0%,rgba(243,246,248,0.98)_100%)] text-[#66737b] shadow-[0_8px_18px_rgba(118,126,133,0.06)] hover:border-[#dbe3e8] hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(245,248,250,1)_100%)] hover:text-[#495861]"
@@ -303,25 +304,25 @@ export default function TopNav() {
         : "border-[#e5d8cb] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e7_100%)] text-[#5a5149] shadow-[0_8px_18px_rgba(93,68,48,0.04)] hover:bg-[#f6eee6]"
     }`;
 
-  const primary = isHomeTest
+  const primary = isSilverHome
     ? "inline-flex items-center gap-2 rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(135deg,#ffffff_0%,#eef3f6_100%)] px-3 py-2.5 text-sm font-medium text-[#2f3f48] shadow-[0_14px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#dbe3e8] hover:text-[#223039]"
     : "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
 
-  const mobileItem = isHomeTest
+  const mobileItem = isSilverHome
     ? "inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium text-[#68757d] transition hover:bg-[#f4f7f9] hover:text-[#485760]"
     : "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
 
   return (
     <header
       className={`sticky top-0 z-50 backdrop-blur-xl ${
-        isHomeTest
+        isSilverHome
           ? "border-b border-[#eef3f6] bg-[rgba(248,250,251,0.84)]"
           : "border-b border-[#ebdfd4] bg-[rgba(255,250,245,0.84)]"
       }`}
     >
       <div
         className={
-          isHomeTest
+          isSilverHome
             ? "border-b border-[#eef3f6] bg-[linear-gradient(180deg,rgba(253,253,253,0.97),rgba(244,247,249,0.92))]"
             : "border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(255,252,248,0.95),rgba(249,240,232,0.88))]"
         }
@@ -331,7 +332,7 @@ export default function TopNav() {
             <Link
               href="/"
               className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base font-bold tracking-[-0.05em] text-white ${
-                isHomeTest
+                isSilverHome
                   ? "border-[#f7fbfd] bg-[radial-gradient(circle_at_top,_#ffffff,_#eef3f6_34%,_#9ea8b2_82%)] shadow-[0_18px_32px_rgba(146,154,162,0.16)]"
                   : "border-[#e6cdbb] bg-[radial-gradient(circle_at_top,_#f6e5d6,_#c99679_80%)] shadow-[0_14px_30px_rgba(160,111,82,0.18)]"
               }`}
@@ -350,10 +351,10 @@ export default function TopNav() {
                 <Link
                   href="/"
                   className={`block ${isHomeTest ? "" : "w-full"} text-[20px] font-extrabold leading-none tracking-[-0.05em] sm:text-[24px] ${
-                    isHomeTest ? "" : "text-[#1f1b18]"
+                  isSilverHome ? "" : "text-[#1f1b18]"
                   }`}
                   style={
-                    isHomeTest
+                    isSilverHome
                       ? {
                           color: "#303b44",
                           textShadow:
@@ -366,8 +367,8 @@ export default function TopNav() {
                   Neonadri
                 </Link>
                 <div
-                  className={`block ${isHomeTest ? "" : "w-full truncate"} text-[9px] font-medium uppercase leading-none tracking-[0.16em] sm:text-[10px] sm:tracking-[0.16em] ${
-                    isHomeTest ? "text-[#80898f]" : "text-[#8d7d71]"
+                  className={`block ${isSilverHome ? "" : "w-full truncate"} text-[9px] font-medium uppercase leading-none tracking-[0.16em] sm:text-[10px] sm:tracking-[0.16em] ${
+                    isSilverHome ? "text-[#80898f]" : "text-[#8d7d71]"
                   }`}
                 >
                   AI-generated social space
@@ -443,7 +444,7 @@ export default function TopNav() {
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((prev) => !prev)}
               className={`inline-flex h-10 w-10 items-center justify-center rounded-[18px] border transition ${
-                isHomeTest
+                isSilverHome
                   ? "border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] text-[#68767e] shadow-[0_10px_22px_rgba(118,126,133,0.09)] hover:bg-[#f6f9fb]"
                   : "border-[#e3d5c8] bg-[linear-gradient(180deg,#fffdfb_0%,#f6ede5_100%)] text-[#5a5149] shadow-[0_10px_24px_rgba(90,70,48,0.10)] hover:bg-[#f4ece4]"
               }`}
@@ -454,28 +455,28 @@ export default function TopNav() {
             {menuOpen && (
               <div
                 className={`absolute right-0 top-12 z-50 w-[15.25rem] overflow-hidden rounded-[22px] border ${
-                  isHomeTest
+                  isSilverHome
                     ? "border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] shadow-[0_24px_46px_rgba(118,126,133,0.16)]"
                     : "border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#f7efe7_100%)] shadow-[0_24px_50px_rgba(80,60,40,0.16)]"
                 }`}
               >
                 <div
                   className={`border-b px-3.5 py-2.5 ${
-                    isHomeTest
+                    isSilverHome
                       ? "border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff,#f5f8fa)]"
                       : "border-[#efe3d8] bg-[linear-gradient(180deg,#fff8f0,#fffdf8)]"
                   }`}
                 >
-                  <div className={`text-[11px] font-semibold uppercase tracking-[0.28em] ${isHomeTest ? "text-[#78838b]" : "text-[#b27f61]"}`}>
+                  <div className={`text-[11px] font-semibold uppercase tracking-[0.28em] ${isSilverHome ? "text-[#78838b]" : "text-[#b27f61]"}`}>
                     Neonadri
                   </div>
-                  <div className={`mt-1 text-[15px] font-semibold ${isHomeTest ? "text-[#26343d]" : "text-[#2d231d]"}`}>
-                    {isHomeTest
+                  <div className={`mt-1 text-[15px] font-semibold ${isSilverHome ? "text-[#26343d]" : "text-[#2d231d]"}`}>
+                    {isSilverHome
                       ? "AI-softened social discovery."
                       : "Meet someone new without the awkward start."}
                   </div>
-                  <div className={`mt-1 text-[13px] leading-5 ${isHomeTest ? "text-[#6f7a82]" : "text-[#786b61]"}`}>
-                    {isHomeTest
+                  <div className={`mt-1 text-[13px] leading-5 ${isSilverHome ? "text-[#6f7a82]" : "text-[#786b61]"}`}>
+                    {isSilverHome
                       ? "Cyber-chill surfaces, same routes, same structure."
                       : "Warm meetups, clear plans, and a softer way to begin."}
                   </div>
@@ -487,8 +488,8 @@ export default function TopNav() {
                     onClick={closeMenu}
                     className={`${mobileItem} ${
                       isActivePath(pathname, "/")
-                        ? isHomeTest
-                          ? "bg-[#eef4f7] text-[#33434c]"
+                          ? isSilverHome
+                            ? "bg-[#eef4f7] text-[#33434c]"
                           : "bg-[#f4e6d8] text-[#3f3226]"
                         : ""
                     }`}
@@ -503,9 +504,9 @@ export default function TopNav() {
                         href="/dashboard"
                         onClick={closeMenu}
                     className={`inline-flex items-center justify-between gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium transition ${
-                          isHomeTest && isActivePath(pathname, "/dashboard")
+                          isSilverHome && isActivePath(pathname, "/dashboard")
                             ? "!bg-[#eef4f7] !text-[#33434c]"
-                            : isHomeTest
+                            : isSilverHome
                             ? "!text-[#707b82] hover:!bg-[#f3f6f8]"
                             : isActivePath(pathname, "/dashboard")
                             ? "bg-[#f4e6d8] text-[#3f3226]"
@@ -527,7 +528,7 @@ export default function TopNav() {
                         onClick={closeMenu}
                         className={`${mobileItem} ${
                           pathname === "/profile" || pathname.startsWith("/profile/")
-                            ? isHomeTest
+                            ? isSilverHome
                               ? "bg-[#eef4f7] text-[#33434c]"
                               : "bg-[#f4e6d8] text-[#3f3226]"
                             : ""
@@ -541,7 +542,7 @@ export default function TopNav() {
                         href="/write"
                         onClick={closeMenu}
                         className={`mt-1 inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium transition ${
-                          isHomeTest
+                          isSilverHome
                             ? "border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] hover:bg-[#f7fafb]"
                             : "bg-[#a48f7a] text-white hover:bg-[#927d69]"
                         }`}
@@ -552,7 +553,7 @@ export default function TopNav() {
 
                       <div
                         className={`my-1 border-t ${
-                          isHomeTest ? "border-[#eef3f6]" : "border-[#f0e8de]"
+                          isSilverHome ? "border-[#eef3f6]" : "border-[#f0e8de]"
                         }`}
                       />
 
@@ -561,7 +562,7 @@ export default function TopNav() {
                         onClick={handleLogout}
                         disabled={isLoggingOut}
                         className={`inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-left text-sm font-medium transition ${
-                          isHomeTest
+                          isSilverHome
                             ? "text-[#707b82] hover:bg-[#f3f6f8]"
                             : "text-[#8b5e3c] hover:bg-[#f8efe7]"
                         } ${
@@ -579,7 +580,7 @@ export default function TopNav() {
                         onClick={closeMenu}
                         className={`${mobileItem} ${
                           isActivePath(pathname, "/login")
-                            ? isHomeTest
+                            ? isSilverHome
                               ? "bg-[#eef4f7] text-[#33434c]"
                               : "bg-[#f4e6d8] text-[#3f3226]"
                             : ""
@@ -593,7 +594,7 @@ export default function TopNav() {
                         href="/signup"
                         onClick={closeMenu}
                         className={`mt-1 inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium transition ${
-                          isHomeTest
+                          isSilverHome
                             ? "border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] hover:bg-[#f7fafb]"
                             : "bg-[#a48f7a] text-white hover:bg-[#927d69]"
                         }`}

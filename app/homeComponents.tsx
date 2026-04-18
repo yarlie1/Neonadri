@@ -31,8 +31,8 @@ export function FilterPill({
       onClick={onClick}
       className={`inline-flex items-center rounded-full px-3 py-2 text-sm font-medium transition ${
         active
-          ? "bg-[#a48f7a] text-white"
-          : "bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
+          ? "border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] text-[#33454f] shadow-[0_8px_16px_rgba(118,126,133,0.08)]"
+          : "border border-[#e5ebef] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] text-[#66737b] hover:bg-[#f6f9fb]"
       }`}
     >
       {label}
@@ -109,8 +109,8 @@ export function HomeFilterCard({
     <div
       className={`rounded-[28px] transition ${
         isPinned
-          ? "border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdf9_0%,#faf1e8_100%)] shadow-[0_18px_40px_rgba(92,69,52,0.12)]"
-          : "border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdf9_0%,#fbf3eb_100%)] shadow-[0_8px_20px_rgba(92,69,52,0.04)]"
+          ? "border border-[#e4e9ed] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] shadow-[0_18px_40px_rgba(118,126,133,0.12)]"
+          : "border border-[#e4e9ed] bg-[linear-gradient(180deg,#ffffff_0%,#f5f8fa_100%)] shadow-[0_8px_20px_rgba(118,126,133,0.05)]"
       }`}
     >
       <button
@@ -119,15 +119,15 @@ export function HomeFilterCard({
         className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left sm:py-4"
       >
         <div className="min-w-0">
-          <div className="flex items-center gap-2 text-sm font-semibold text-[#2f2a26]">
-            <SlidersHorizontal className="h-4 w-4" />
-            Shape your mood
+          <div className="flex items-center gap-2 text-sm font-semibold text-[#2f3b44]">
+            <SlidersHorizontal className="h-4 w-4 text-[#7f888e]" />
+            Refine your view
           </div>
           <div className="mt-2">{summaryText}</div>
         </div>
 
         <span
-          className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdf9_0%,#f5e8dc_100%)] text-[#6b5f52] shadow-sm transition ${
+          className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f7_100%)] text-[#737d84] shadow-[0_10px_18px_rgba(118,126,133,0.07)] transition ${
             isOpen ? "rotate-180" : ""
           }`}
         >
@@ -138,7 +138,7 @@ export function HomeFilterCard({
       {isOpen && (
         <div className="max-h-[calc(100vh-14rem)] overflow-y-auto border-t border-[#efe6db] px-4 py-4 pb-6 sm:pb-5">
           <div>
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
               Status
             </div>
             <div className="flex flex-wrap gap-2">
@@ -268,7 +268,7 @@ export function HomeFilterCard({
             </div>
 
             {(sort === "distance" || distance !== "all") && (
-              <div className="mt-3 text-xs text-[#8b7f74]">
+              <div className="mt-3 text-xs text-[#7f8990]">
                 {locationStatus === "loading" && "Finding nearby meetups..."}
                 {locationStatus === "denied" &&
                   "Location permission is off, so nearby filters may be less precise."}
@@ -284,7 +284,7 @@ export function HomeFilterCard({
             <button
               type="button"
               onClick={onReset}
-              className="inline-flex items-center gap-1 rounded-full border border-[#dccfc2] bg-white px-3 py-2 text-xs font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+              className="inline-flex items-center gap-1 rounded-full border border-[#dde5ea] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-3 py-2 text-xs font-medium text-[#5f6c74] transition hover:bg-[#f6f9fb]"
             >
               <RotateCcw className="h-3.5 w-3.5" />
               Reset
@@ -316,22 +316,22 @@ export function FeaturedMeetupCard({
   targetText: string;
 }) {
   return (
-    <section className="overflow-hidden rounded-[32px] border border-[#eee2d6] bg-[linear-gradient(180deg,rgba(255,253,250,0.97)_0%,rgba(250,244,237,0.94)_100%)] shadow-[0_24px_70px_rgba(86,63,44,0.12)] backdrop-blur">
-      <div className="border-b border-[#efe2d5] px-5 py-[18px]">
+    <section className="overflow-hidden rounded-[30px] border border-[#edf1f4] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(247,249,250,0.99)_38%,rgba(236,240,243,0.99)_100%)] shadow-[0_26px_64px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,1)]">
+      <div className="border-b border-[#e3e6e8] px-5 py-4 sm:py-5">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#838b91]">
               <Search className="h-3.5 w-3.5" />
-              Featured vibe
+              Featured moment
             </div>
-            <div className="mt-1 text-lg font-bold tracking-[-0.03em] text-[#2f2a26]">
+            <div className="mt-2 text-[28px] font-black tracking-[-0.05em] text-[#24323f]">
               {placeLabel}
             </div>
           </div>
 
           <Link
             href={`/posts/${postId}`}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#eaded2] bg-[linear-gradient(180deg,#fffdfa_0%,#f6ede4_100%)] text-[#6f5649] shadow-[0_6px_14px_rgba(109,78,57,0.05)] transition hover:bg-[#f7efe7]"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-[18px] border border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f7_100%)] text-[#747e85] shadow-[0_12px_22px_rgba(118,126,133,0.08)] transition hover:bg-[#f7fafb]"
             aria-label="Open featured meetup"
           >
             <ArrowUpRight className="h-4 w-4" />
@@ -339,37 +339,37 @@ export function FeaturedMeetupCard({
         </div>
       </div>
 
-      <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.4fr_1fr] sm:px-5">
-        <div className="rounded-[26px] border border-[#ebe0d4] bg-[linear-gradient(180deg,#f8f0e8_0%,#f2e7dc_100%)] px-4 py-4 text-[#302720] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#eee1d6] bg-[linear-gradient(180deg,#faf5ef_0%,#f1e6db_100%)] px-3 py-1.5 text-xs font-medium text-[#6e5b4e]">
+      <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.45fr_0.95fr] sm:px-5 sm:py-5">
+        <div className="relative overflow-hidden rounded-[24px] border border-[#e4e9ed] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(247,249,250,0.985)_50%,rgba(235,239,242,0.99)_100%)] px-4 py-3.5 text-[#24323f] shadow-[0_18px_34px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#eef2f4] bg-[#ffffffd8] px-3 py-1.5 text-xs font-medium text-[#788087]">
             {purposeIcon}
             {purposeLabel}
           </div>
 
-          <div className="mt-4 text-2xl font-black leading-[1.02] tracking-[-0.04em]">
+          <div className="mt-3 text-[30px] font-black leading-[0.98] tracking-[-0.05em] sm:mt-4">
             {purposeCopy}
           </div>
 
-          <div className="mt-2 text-sm leading-6 text-[#6a5d54]">
-            Low-pressure social energy with a clear plan, time, and place.
+          <div className="mt-2.5 max-w-md text-sm leading-6 text-[#707980] sm:mt-3">
+            A quieter featured moment with a little more room to breathe.
           </div>
         </div>
 
-        <div className="space-y-2.5 rounded-[24px] border border-[#efe4d9] bg-[linear-gradient(180deg,#fffdfb_0%,#f7efe7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)]">
-          <div className="flex items-center gap-2 text-sm text-[#5a5149]">
-            <Clock3 className="h-4 w-4 text-[#a27767]" />
+        <div className="relative overflow-hidden space-y-2 rounded-[20px] border border-[#e3e8ec] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(245,247,248,0.985)_100%)] px-4 py-3.5 text-[#38434b] shadow-[0_14px_26px_rgba(118,126,133,0.08)] sm:space-y-2.5 sm:py-4">
+          <div className="flex items-center gap-2 text-sm">
+            <Clock3 className="h-4 w-4 text-[#7c8489]" />
             <span>{timeLabel}</span>
           </div>
 
-          <div className="flex min-w-0 items-start gap-2 text-sm text-[#5a5149]">
-            <MapPin className="mt-0.5 h-4 w-4 text-[#a27767]" />
+          <div className="flex min-w-0 items-start gap-2 text-sm">
+            <MapPin className="mt-0.5 h-4 w-4 text-[#7c8489]" />
             <span className="block min-w-0 flex-1 break-words line-clamp-2">
               {placeText}
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-[#5a5149]">
-            <Search className="h-4 w-4 text-[#a27767]" />
+          <div className="flex items-center gap-2 text-sm">
+            <Search className="h-4 w-4 text-[#7c8489]" />
             <span>{targetText}</span>
           </div>
         </div>
@@ -416,121 +416,82 @@ export function MeetupFeedCard({
   return (
     <Link
       href={`/posts/${postId}`}
-      className={`block overflow-hidden rounded-[32px] border p-[14px] shadow-[0_20px_48px_rgba(92,69,52,0.10)] transition active:scale-[0.995] sm:p-4 ${
+      className={`block overflow-hidden rounded-[24px] border p-2.5 shadow-[0_18px_36px_rgba(118,126,133,0.12)] transition active:scale-[0.995] sm:p-3 ${
         isExpired
-          ? "border-[#ddd2c5] bg-[linear-gradient(180deg,#f4efe9_0%,#eee6dd_100%)] opacity-80"
-          : "border-[#e8ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#fbf3eb_100%)] hover:-translate-y-0.5"
+          ? "border-[#d6dde2] bg-[linear-gradient(180deg,rgba(236,240,243,0.97)_0%,rgba(221,227,232,0.95)_100%)] opacity-80"
+          : "border-[#e4ebef] bg-[linear-gradient(180deg,rgba(248,250,252,0.985)_0%,rgba(228,235,240,0.95)_100%)] hover:-translate-y-0.5"
       }`}
     >
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <div className="min-w-0 rounded-full border border-[#efe4da] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-medium leading-none tracking-[0.02em] text-[#74675d]">
-          <div className="truncate">{hostName}</div>
-        </div>
-
-        <div
-          className={`rounded-full px-3 py-[0.3125rem] text-[11px] font-medium leading-none tracking-[0.02em] ${matchBadgeClassName}`}
-        >
-          {matchBadgeLabel}
-        </div>
-      </div>
-
-      <div className="rounded-[26px] border border-[#efe2d5] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e8_100%)] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
-        <div className="flex items-stretch gap-2">
-          <div
-            className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[20px] px-4 py-3 ${purposeBandClass} shadow-[0_10px_20px_rgba(64,45,33,0.06)]`}
-          >
-            <div
-              className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] ${purposeIconWrapClass}`}
-            >
-              {purposeIcon}
-            </div>
-            <div className="min-w-0">
-              <div className="truncate text-[1.18rem] font-black tracking-[-0.03em] text-[#2f261f] sm:text-[1.28rem]">
+      <div className="rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(180deg,rgba(253,254,255,0.998)_0%,rgba(238,243,246,0.975)_100%)] px-4 py-3.5 shadow-[0_16px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)]">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] border border-[#d7dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f7_100%)] text-[#6f808a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]">
+                {purposeIcon}
+              </div>
+              <div className="min-w-0 truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
                 {purposeName}
               </div>
             </div>
+            <div className="mt-0.5 pl-[50px] text-[12px] leading-none text-[#75818a]">
+              Hosted by {hostName}
+              {hostMeta ? ` | ${hostMeta}` : ""}
+            </div>
           </div>
 
-          {durationLabel ? (
-            <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[18px] border border-[#eee4d9] bg-[linear-gradient(180deg,#fffdfb_0%,#f6eee6_100%)] px-1.5 py-2 text-[#5d5147] shadow-[0_4px_10px_rgba(86,65,47,0.04)]">
-              <Clock3 className="h-4 w-4" />
-              <span className="mt-1 text-sm font-semibold">{durationLabel}</span>
-            </div>
-          ) : null}
-
-          {amountText ? (
-            <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[18px] border border-[#efdcb8] bg-[linear-gradient(180deg,#f9ebcb_0%,#f3dba9_100%)] px-1.5 py-2 text-[#795527] shadow-[0_4px_10px_rgba(160,112,44,0.07)]">
-              <Coins className="h-4 w-4 shrink-0" />
-              <span className="mt-1 text-sm font-semibold">{amountText}</span>
-            </div>
-          ) : null}
+          <div
+            className={`shrink-0 rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${matchBadgeClassName}`}
+          >
+            {matchBadgeLabel}
+          </div>
         </div>
 
-        <div className="mt-3 grid gap-2.5 text-[#7d7268] sm:grid-cols-2">
+        <div className="mt-3.5 grid gap-1.5">
           {whenText && (
-            <div className="flex items-start gap-2 rounded-[18px] border border-[#f1e6dc] bg-[linear-gradient(180deg,#fffdfa_0%,#f7eee6_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)]">
-              <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-              <div className="min-w-0 leading-[1.2]">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
-                  When
-                </div>
-                <div className="truncate text-[12px] font-medium text-[#554a42]">
-                  {whenText}
-                </div>
-              </div>
+            <div className="flex min-h-[56px] items-center gap-2.5 rounded-[16px] border border-[#dde3e7] bg-[linear-gradient(180deg,#ffffff_0%,#f4f6f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_8px_18px_rgba(118,126,133,0.05),inset_0_1px_0_rgba(255,255,255,0.98)]">
+              <Clock3 className="h-4 w-4 shrink-0 text-[#788b95]" />
+              <span className="truncate">{whenText}</span>
+              {durationLabel ? (
+                <span className="ml-auto rounded-[14px] border border-[#cbd4db] bg-[linear-gradient(180deg,#ffffff_0%,#eceff2_100%)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#52616a] shadow-[0_8px_14px_rgba(118,126,133,0.12)]">
+                  {durationLabel}
+                </span>
+              ) : null}
             </div>
           )}
 
-          <div className="flex min-w-0 items-start gap-2 rounded-[18px] border border-[#f1e6dc] bg-[linear-gradient(180deg,#fffdfa_0%,#f7eee6_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)]">
-            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-            <div className="min-w-0 leading-[1.2]">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
-                Place
-              </div>
-              <div className="block truncate text-[12px] font-medium text-[#554a42]">
-                {placeText}
-              </div>
-            </div>
+          <div className="flex min-h-[56px] items-center gap-2.5 rounded-[16px] border border-[#dde3e7] bg-[linear-gradient(180deg,#ffffff_0%,#f4f6f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_8px_18px_rgba(118,126,133,0.05),inset_0_1px_0_rgba(255,255,255,0.98)]">
+            <MapPin className="h-4 w-4 shrink-0 text-[#788b95]" />
+            <span className="min-w-0 flex-1 break-words">{placeText}</span>
           </div>
 
-          <div className="flex items-start gap-2 rounded-[18px] border border-[#f1e6dc] bg-[linear-gradient(180deg,#fffdfa_0%,#f7eee6_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)]">
-            <UserCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-            <div className="min-w-0 leading-[1.2]">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
-                Hosted by
-              </div>
-              <div className="truncate text-[12px] font-medium text-[#554a42]">
-                {hostName}
-                {hostMeta ? ` - ${hostMeta}` : ""}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-2 rounded-[18px] border border-[#f1e6dc] bg-[linear-gradient(180deg,#fffdfa_0%,#f7eee6_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)]">
-            <UserRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-            <div className="min-w-0 leading-[1.2]">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
-                Looking for
-              </div>
-              <div className="truncate text-[12px] font-medium text-[#554a42]">
-                {lookingForText}
-              </div>
-            </div>
+          <div className="flex min-h-[34px] flex-wrap items-center justify-between gap-x-2.5 gap-y-0.5 px-1 pt-0 text-sm text-[#55646e]">
+            <span className="inline-flex items-center gap-2">
+              <UserRound className="h-4 w-4 text-[#788b95]" />
+              {lookingForText}
+            </span>
+            {amountText ? (
+              <span className="inline-flex items-center gap-2 rounded-[14px] border border-[#ced7de] bg-[linear-gradient(180deg,#ffffff_0%,#edf1f4_100%)] px-3 py-1.5 font-semibold text-[#435760] shadow-[0_8px_16px_rgba(118,126,133,0.12)]">
+                <Coins className="h-4 w-4 text-[#7b8d97]" />
+                {amountText.startsWith("+") ? `$${amountText.slice(1)}` : amountText}
+              </span>
+            ) : null}
           </div>
 
           {distanceText && (
-            <div className="flex items-start gap-2 rounded-[18px] border border-[#f1e6dc] bg-[linear-gradient(180deg,#fffdfa_0%,#f7eee6_100%)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)] sm:col-span-2">
-              <LocateFixed className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
-              <div className="leading-[1.2]">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
-                  Near you
-                </div>
-                <div className="text-[12px] font-medium text-[#554a42]">
-                  {distanceText}
-                </div>
-              </div>
+            <div className="flex min-h-[56px] items-center gap-2.5 rounded-[16px] border border-[#dde3e7] bg-[linear-gradient(180deg,#ffffff_0%,#f4f6f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_8px_18px_rgba(118,126,133,0.05),inset_0_1px_0_rgba(255,255,255,0.98)]">
+              <LocateFixed className="h-4 w-4 shrink-0 text-[#788b95]" />
+              <span>{distanceText}</span>
             </div>
           )}
+        </div>
+
+        <div className="mt-3 flex items-center justify-between gap-3 rounded-[14px] border border-[#dde4e9] bg-[linear-gradient(90deg,rgba(252,253,254,0.98)_0%,rgba(239,243,246,0.9)_100%)] px-3 py-1.5">
+          <div className="text-xs uppercase tracking-[0.16em] text-[#7a8b95]">
+            Refined mode
+          </div>
+          <div className="ml-auto text-right text-sm font-semibold text-[#314454]">
+            {getPurposeLabel(purposeName)}
+          </div>
         </div>
       </div>
     </Link>

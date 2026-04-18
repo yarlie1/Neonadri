@@ -21,9 +21,9 @@ import type { DistanceValue, SortValue } from "./useHomeFeedFilters";
 import type { DistanceUnit } from "./useDistanceUnit";
 
 export const SURFACE_CARD_CLASS =
-  "rounded-[32px] border border-[#eee2d6] bg-[linear-gradient(180deg,rgba(255,253,250,0.97)_0%,rgba(250,244,237,0.94)_100%)] shadow-[0_24px_70px_rgba(86,63,44,0.12)] backdrop-blur";
+  "rounded-[32px] border border-[#e5ebef] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(246,249,251,0.988)_36%,rgba(232,237,241,0.99)_100%)] shadow-[0_24px_60px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur";
 export const SOFT_CARD_CLASS =
-  "rounded-[24px] border border-[#eadfd3] bg-[linear-gradient(180deg,#fffdf9_0%,#f8efe6_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]";
+  "rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]";
 
 export function getPurposeIcon(purpose: string | null, className?: string) {
   const iconClassName = className || "h-[19px] w-[19px] shrink-0 text-[#7e746b]";
@@ -164,20 +164,23 @@ export function getMatchBadge(
   if (summary?.isMatched) {
     return {
       label: "Matched",
-      className: "bg-[#eee4d8] text-[#6f6256]",
+      className:
+        "border border-[#d4dfe6] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] text-[#536a75]",
     };
   }
 
   if (isExpired) {
     return {
       label: "Expired",
-      className: "bg-[#ebe2d9] text-[#85786d]",
+      className:
+        "border border-[#d7dde2] bg-[linear-gradient(180deg,#ffffff_0%,#eff3f5_100%)] text-[#75828a]",
     };
   }
 
   return {
     label: requestCount > 0 ? `Open / ${requestCount}` : "Open",
-    className: "bg-[#edf1ea] text-[#5e6f5f]",
+    className:
+      "border border-[#d6e0e7] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f7_100%)] text-[#4f6672]",
   };
 }
 
