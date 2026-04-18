@@ -301,9 +301,9 @@ export default function HomeFeedClient({
               Find someone new, without the noise.
             </h1>
 
-            <p className="mt-3 max-w-xl text-[14px] leading-6 text-[#667179] sm:mt-4 sm:text-[15px]">
+            <p className="mt-3 max-w-xl text-[14px] leading-6 text-[#626e77] sm:mt-4 sm:text-[15px]">
               A quieter way to discover nearby meetups. Soft silver surfaces,
-              calm pacing, and just enough AI presence to make browsing feel easy.
+              calm pacing, and just enough AI guidance to keep browsing easy.
             </p>
 
             <div className="mt-5 grid grid-cols-3 gap-2.5 sm:mt-7 sm:gap-3">
@@ -453,7 +453,7 @@ export default function HomeFeedClient({
               Discover
             </div>
             <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#24323f]">
-              Nearby invitations
+              Nearby meetups
             </div>
           </div>
 

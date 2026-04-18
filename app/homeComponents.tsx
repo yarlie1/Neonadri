@@ -109,8 +109,8 @@ export function HomeFilterCard({
     <div
       className={`rounded-[28px] transition ${
         isPinned
-          ? "border border-[#e4e9ed] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] shadow-[0_18px_40px_rgba(118,126,133,0.12)]"
-          : "border border-[#e4e9ed] bg-[linear-gradient(180deg,#ffffff_0%,#f5f8fa_100%)] shadow-[0_8px_20px_rgba(118,126,133,0.05)]"
+          ? "border border-[#dfe7ec] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] shadow-[0_18px_40px_rgba(118,126,133,0.11)]"
+          : "border border-[#e3eaee] bg-[linear-gradient(180deg,#ffffff_0%,#f4f7f9_100%)] shadow-[0_8px_20px_rgba(118,126,133,0.05)]"
       }`}
     >
       <button
@@ -340,7 +340,7 @@ export function FeaturedMeetupCard({
       </div>
 
       <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.45fr_0.95fr] sm:px-5 sm:py-5">
-        <div className="relative overflow-hidden rounded-[24px] border border-[#d7dfe5] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(247,249,250,0.995)_44%,rgba(234,239,243,0.995)_100%)] px-4 py-3.5 text-[#24323f] shadow-[0_18px_30px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
+        <div className="relative overflow-hidden rounded-[24px] border border-[#d8e1e6] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(247,249,250,0.996)_44%,rgba(235,240,244,0.996)_100%)] px-4 py-3.5 text-[#24323f] shadow-[0_18px_30px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#eef2f4] bg-[#ffffffd8] px-3 py-1.5 text-xs font-medium text-[#788087]">
             {purposeIcon}
             {purposeLabel}
@@ -350,8 +350,8 @@ export function FeaturedMeetupCard({
             {purposeCopy}
           </div>
 
-          <div className="mt-2.5 max-w-md text-sm leading-6 text-[#707980] sm:mt-3">
-            A quieter featured moment with a little more room to breathe.
+          <div className="mt-2.5 max-w-md text-sm leading-6 text-[#69747c] sm:mt-3">
+            A quieter featured moment, with just a little more room to breathe.
           </div>
         </div>
 
