@@ -316,7 +316,7 @@ export function FeaturedMeetupCard({
   targetText: string;
 }) {
   return (
-    <section className="overflow-hidden rounded-[30px] border border-[#edf1f4] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(247,249,250,0.99)_38%,rgba(236,240,243,0.99)_100%)] shadow-[0_26px_64px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,1)]">
+    <section className="overflow-hidden rounded-[30px] border border-[#e2e8ec] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(247,249,250,0.995)_34%,rgba(233,238,242,0.99)_100%)] shadow-[0_22px_46px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,1)]">
       <div className="border-b border-[#e3e6e8] px-5 py-4 sm:py-5">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -340,7 +340,7 @@ export function FeaturedMeetupCard({
       </div>
 
       <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.45fr_0.95fr] sm:px-5 sm:py-5">
-        <div className="relative overflow-hidden rounded-[24px] border border-[#e4e9ed] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(247,249,250,0.985)_50%,rgba(235,239,242,0.99)_100%)] px-4 py-3.5 text-[#24323f] shadow-[0_18px_34px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
+        <div className="relative overflow-hidden rounded-[24px] border border-[#dde4e8] bg-[linear-gradient(180deg,rgba(255,255,255,0.998)_0%,rgba(247,249,250,0.992)_46%,rgba(236,240,243,0.992)_100%)] px-4 py-3.5 text-[#24323f] shadow-[0_16px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#eef2f4] bg-[#ffffffd8] px-3 py-1.5 text-xs font-medium text-[#788087]">
             {purposeIcon}
             {purposeLabel}
@@ -355,7 +355,7 @@ export function FeaturedMeetupCard({
           </div>
         </div>
 
-        <div className="relative overflow-hidden space-y-2 rounded-[20px] border border-[#e3e8ec] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(245,247,248,0.985)_100%)] px-4 py-3.5 text-[#38434b] shadow-[0_14px_26px_rgba(118,126,133,0.08)] sm:space-y-2.5 sm:py-4">
+        <div className="relative overflow-hidden space-y-2 rounded-[20px] border border-[#dde4e8] bg-[linear-gradient(180deg,rgba(255,255,255,0.998)_0%,rgba(245,247,248,0.992)_100%)] px-4 py-3.5 text-[#38434b] shadow-[0_12px_22px_rgba(118,126,133,0.07)] sm:space-y-2.5 sm:py-4">
           <div className="flex items-center gap-2 text-sm">
             <Clock3 className="h-4 w-4 text-[#7c8489]" />
             <span>{timeLabel}</span>
@@ -412,13 +412,13 @@ export function MeetupFeedCard({
   return (
     <Link
       href={`/posts/${postId}`}
-      className={`block overflow-hidden rounded-[24px] border p-2.5 shadow-[0_18px_36px_rgba(118,126,133,0.12)] transition active:scale-[0.995] sm:p-3 ${
+      className={`block overflow-hidden rounded-[24px] border p-2.5 shadow-[0_16px_28px_rgba(118,126,133,0.1)] transition active:scale-[0.995] sm:p-3 ${
         isExpired
-          ? "border-[#d6dde2] bg-[linear-gradient(180deg,rgba(236,240,243,0.97)_0%,rgba(221,227,232,0.95)_100%)] opacity-80"
-          : "border-[#e4ebef] bg-[linear-gradient(180deg,rgba(248,250,252,0.985)_0%,rgba(228,235,240,0.95)_100%)] hover:-translate-y-0.5"
+          ? "border-[#d7dfe4] bg-[linear-gradient(180deg,rgba(241,244,247,0.98)_0%,rgba(229,234,238,0.96)_100%)]"
+          : "border-[#dfe7ec] bg-[linear-gradient(180deg,rgba(250,252,253,0.995)_0%,rgba(233,239,243,0.97)_100%)] hover:-translate-y-0.5 hover:shadow-[0_18px_32px_rgba(118,126,133,0.13)]"
       }`}
     >
-      <div className="rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(180deg,rgba(253,254,255,0.998)_0%,rgba(238,243,246,0.975)_100%)] px-4 py-3.5 shadow-[0_16px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)]">
+      <div className="rounded-[18px] border border-[#dde5ea] bg-[linear-gradient(180deg,rgba(255,255,255,0.998)_0%,rgba(240,244,247,0.985)_100%)] px-4 py-3.5 shadow-[0_12px_22px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,1)]">
         <div className="flex items-start justify-between gap-3">
           <div className="grid min-w-0 flex-1 grid-cols-[40px_minmax(0,1fr)] gap-x-2.5 gap-y-1">
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#d7dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f7_100%)] text-[#6f808a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]">
