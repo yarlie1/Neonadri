@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const HOME_FILTER_STICKY_TOP = 68;
+const HOME_FILTER_STICKY_TOP_MOBILE = 68;
+const HOME_FILTER_STICKY_TOP_DESKTOP = 76;
 
 export const PURPOSE_OPTIONS = [
   "All",
@@ -66,6 +67,7 @@ export function useHomeFeedFilters(viewerPreference: {
   const [sort, setSort] = useState<SortValue>("newest");
   const [isOpen, setIsOpen] = useState(false);
   const [isFilterPinned, setIsFilterPinned] = useState(false);
+  const [stickyTop, setStickyTop] = useState(HOME_FILTER_STICKY_TOP_MOBILE);
   const filterRef = useRef<HTMLDivElement | null>(null);
 
   const [userLocation, setUserLocation] = useState<{
@@ -106,10 +108,27 @@ export function useHomeFeedFilters(viewerPreference: {
   }, [distance, sort, userLocation, locationStatus]);
 
   useEffect(() => {
+    const updateStickyTop = () => {
+      setStickyTop(
+        window.innerWidth >= 640
+          ? HOME_FILTER_STICKY_TOP_DESKTOP
+          : HOME_FILTER_STICKY_TOP_MOBILE
+      );
+    };
+
+    updateStickyTop();
+    window.addEventListener("resize", updateStickyTop);
+
+    return () => {
+      window.removeEventListener("resize", updateStickyTop);
+    };
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => {
       if (!filterRef.current) return;
       setIsFilterPinned(
-        filterRef.current.getBoundingClientRect().top <= HOME_FILTER_STICKY_TOP
+        filterRef.current.getBoundingClientRect().top <= stickyTop
       );
     };
 
@@ -121,7 +140,7 @@ export function useHomeFeedFilters(viewerPreference: {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
-  }, []);
+  }, [stickyTop]);
 
   const applyAndClose = (fn: () => void) => {
     fn();
@@ -170,6 +189,7 @@ export function useHomeFeedFilters(viewerPreference: {
     isOpen,
     setIsOpen,
     isFilterPinned,
+    stickyTop,
     filterRef,
     userLocation,
     locationStatus,

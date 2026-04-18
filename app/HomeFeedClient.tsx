@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   formatMeetingTime,
   getMeetingStatus,
@@ -112,6 +112,7 @@ export default function HomeFeedClient({
     isOpen,
     setIsOpen,
     isFilterPinned,
+    stickyTop,
     filterRef,
     userLocation,
     locationStatus,
@@ -119,6 +120,31 @@ export default function HomeFeedClient({
     applyAudience,
     resetAll,
   } = useHomeFeedFilters(viewerPreference);
+  const filterCardRef = useRef<HTMLDivElement | null>(null);
+  const [filterReservedHeight, setFilterReservedHeight] = useState(0);
+
+  useEffect(() => {
+    if (!filterCardRef.current) return;
+
+    const element = filterCardRef.current;
+    const updateHeight = () => {
+      setFilterReservedHeight(element.getBoundingClientRect().height);
+    };
+
+    updateHeight();
+
+    const observer = new ResizeObserver(() => {
+      updateHeight();
+    });
+
+    observer.observe(element);
+    window.addEventListener("resize", updateHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateHeight);
+    };
+  }, [isOpen, isFilterPinned]);
 
   const posts = useMemo(() => {
     let next = initialPosts.filter((post) => {
@@ -144,11 +170,11 @@ export default function HomeFeedClient({
           : null;
       const distanceMatch =
         distance === "all" ||
-        distanceKm === null ||
-        (distance === "nearby" && distanceKm <= 3) ||
-        (distance === "within_5mi" && distanceKm <= 8.04672) ||
-        (distance === "within_10mi" && distanceKm <= 16.09344) ||
-        (distance === "within_20mi" && distanceKm <= 32.18688);
+        (distanceKm !== null &&
+          ((distance === "nearby" && distanceKm <= 3) ||
+            (distance === "within_5mi" && distanceKm <= 8.04672) ||
+            (distance === "within_10mi" && distanceKm <= 16.09344) ||
+            (distance === "within_20mi" && distanceKm <= 32.18688)));
 
       return (
         matchStateMatch &&
@@ -342,13 +368,24 @@ export default function HomeFeedClient({
 
         <div
           ref={filterRef}
-          className={`z-20 min-h-[74px] sm:min-h-[82px] ${isOpen ? "mb-40 sm:mb-44" : ""}`}
+          className="z-20"
+          style={
+            isFilterPinned && filterReservedHeight > 0
+              ? { height: `${filterReservedHeight}px` }
+              : undefined
+          }
         >
           <div
+            ref={filterCardRef}
             className={
               isFilterPinned
-                ? "fixed left-1/2 top-[68px] z-30 w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 sm:top-[76px]"
+                ? "fixed left-1/2 z-30 w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2"
                 : ""
+            }
+            style={
+              isFilterPinned
+                ? { top: `${stickyTop}px` }
+                : undefined
             }
           >
             <HomeFilterCard
