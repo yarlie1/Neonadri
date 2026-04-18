@@ -13,7 +13,7 @@ import {
   UserCircle2,
   UserRound,
 } from "lucide-react";
-import { getDistanceOptionLabel } from "./homeFeedHelpers";
+import { getDistanceOptionLabel, getPurposeLabel } from "./homeFeedHelpers";
 import type { DistanceUnit } from "./useDistanceUnit";
 
 export function FilterPill({
