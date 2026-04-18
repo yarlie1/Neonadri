@@ -420,16 +420,14 @@ export function MeetupFeedCard({
     >
       <div className="rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(180deg,rgba(253,254,255,0.998)_0%,rgba(238,243,246,0.975)_100%)] px-4 py-3.5 shadow-[0_16px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)]">
         <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <div className="flex min-w-0 items-center gap-2.5">
-              <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] border border-[#d7dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f7_100%)] text-[#6f808a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]">
-                {purposeIcon}
-              </div>
-              <div className="min-w-0 truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
-                {purposeName}
-              </div>
+          <div className="grid min-w-0 flex-1 grid-cols-[40px_minmax(0,1fr)] gap-x-2.5 gap-y-1">
+            <div className="inline-flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#d7dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f7_100%)] text-[#6f808a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]">
+              {purposeIcon}
             </div>
-            <div className="mt-0.5 pl-[50px] text-[12px] leading-none text-[#75818a]">
+            <div className="min-w-0 truncate self-center pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
+              {purposeName}
+            </div>
+            <div className="col-start-2 min-w-0 truncate text-[12px] leading-none text-[#75818a]">
               Hosted by {hostName}
               {hostMeta ? ` | ${hostMeta}` : ""}
             </div>
@@ -460,13 +458,13 @@ export function MeetupFeedCard({
             <span className="min-w-0 flex-1 break-words">{placeText}</span>
           </div>
 
-          <div className="flex min-h-[34px] flex-wrap items-center justify-between gap-x-2.5 gap-y-0.5 px-1 pt-0 text-sm text-[#55646e]">
-            <span className="inline-flex items-center gap-2">
-              <UserRound className="h-4 w-4 text-[#788b95]" />
-              {lookingForText}
+          <div className="flex min-h-[56px] items-center justify-between gap-2.5 rounded-[16px] border border-[#dde3e7] bg-[linear-gradient(180deg,#ffffff_0%,#f4f6f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_8px_18px_rgba(118,126,133,0.05),inset_0_1px_0_rgba(255,255,255,0.98)]">
+            <span className="inline-flex min-w-0 items-center gap-2 text-[#55646e]">
+              <UserRound className="h-4 w-4 shrink-0 text-[#788b95]" />
+              <span className="truncate">{lookingForText}</span>
             </span>
             {amountText ? (
-              <span className="inline-flex items-center gap-2 rounded-[14px] border border-[#ced7de] bg-[linear-gradient(180deg,#ffffff_0%,#edf1f4_100%)] px-3 py-1.5 font-semibold text-[#435760] shadow-[0_8px_16px_rgba(118,126,133,0.12)]">
+              <span className="inline-flex shrink-0 items-center gap-2 rounded-[14px] border border-[#ced7de] bg-[linear-gradient(180deg,#ffffff_0%,#edf1f4_100%)] px-3 py-1.5 font-semibold text-[#435760] shadow-[0_8px_16px_rgba(118,126,133,0.12)]">
                 <Coins className="h-4 w-4 text-[#7b8d97]" />
                 {amountText.startsWith("+") ? `$${amountText.slice(1)}` : amountText}
               </span>
