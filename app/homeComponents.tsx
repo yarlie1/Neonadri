@@ -136,7 +136,7 @@ export function HomeFilterCard({
       </button>
 
       {isOpen && (
-        <div className="max-h-[calc(100vh-14rem)] overflow-y-auto border-t border-[#efe6db] px-4 py-4 pb-6 sm:pb-5">
+        <div className="max-h-[calc(100vh-14rem)] overflow-y-auto border-t border-[#e6edf1] px-4 py-4 pb-6 sm:pb-5">
           <div>
             <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
               Status
@@ -154,7 +154,7 @@ export function HomeFilterCard({
           </div>
 
           <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
               Audience
             </div>
             <div className="flex flex-wrap gap-2">
@@ -170,7 +170,7 @@ export function HomeFilterCard({
           </div>
 
           <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
               Purpose
             </div>
             <div className="flex flex-wrap gap-2">
@@ -186,7 +186,7 @@ export function HomeFilterCard({
           </div>
 
           <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
               Gender
             </div>
             <div className="flex flex-wrap gap-2">
@@ -202,7 +202,7 @@ export function HomeFilterCard({
           </div>
 
           <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
               Age Group
             </div>
             <div className="flex flex-wrap gap-2">
@@ -218,7 +218,7 @@ export function HomeFilterCard({
           </div>
 
           <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
               Near you
             </div>
             <div className="flex flex-wrap gap-2">
@@ -253,7 +253,7 @@ export function HomeFilterCard({
           </div>
 
           <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8b7f74]">
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
               Sort
             </div>
             <div className="flex flex-wrap gap-2">

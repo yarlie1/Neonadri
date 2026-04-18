@@ -279,6 +279,7 @@ export default function HomeFeedClient({
   );
 
   const highlightedPost = posts[0] || null;
+  const feedPosts = highlightedPost ? posts.slice(1) : posts;
 
   return (
     <main className="relative isolate min-h-screen overflow-x-hidden bg-[#e6ebef] px-4 py-5 text-[#2f3a42]">
@@ -461,7 +462,7 @@ export default function HomeFeedClient({
           </div>
         </div>
 
-        {posts.map((post) => {
+        {feedPosts.map((post) => {
           const amount = parseBenefitAmount(post.benefit_amount);
           const host = hostProfileMap[post.user_id] || {
             displayName: "Unknown",
@@ -512,9 +513,13 @@ export default function HomeFeedClient({
           );
         })}
 
-        {posts.length === 0 && (
-          <div className={`${SURFACE_CARD_CLASS} px-5 py-10 text-center text-[#8b7f74] sm:px-6 sm:py-12`}>
-            No meetups found.
+        {feedPosts.length === 0 && (
+          <div
+            className={`${SURFACE_CARD_CLASS} px-5 py-10 text-center text-[#6b7881] sm:px-6 sm:py-12`}
+          >
+            {highlightedPost
+              ? "No more meetups match this view yet."
+              : "No meetups match this view right now."}
           </div>
         )}
       </div>
