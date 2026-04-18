@@ -316,7 +316,7 @@ export function FeaturedMeetupCard({
   targetText: string;
 }) {
   return (
-    <section className="overflow-hidden rounded-[30px] border border-[#e2e8ec] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(247,249,250,0.995)_34%,rgba(233,238,242,0.99)_100%)] shadow-[0_22px_46px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,1)]">
+    <section className="overflow-hidden rounded-[30px] border border-[#dbe3e8] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.995)_32%,rgba(229,235,240,0.995)_100%)] shadow-[0_24px_48px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,1)]">
       <div className="border-b border-[#e3e6e8] px-5 py-4 sm:py-5">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -340,7 +340,7 @@ export function FeaturedMeetupCard({
       </div>
 
       <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.45fr_0.95fr] sm:px-5 sm:py-5">
-        <div className="relative overflow-hidden rounded-[24px] border border-[#dde4e8] bg-[linear-gradient(180deg,rgba(255,255,255,0.998)_0%,rgba(247,249,250,0.992)_46%,rgba(236,240,243,0.992)_100%)] px-4 py-3.5 text-[#24323f] shadow-[0_16px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
+        <div className="relative overflow-hidden rounded-[24px] border border-[#d7dfe5] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(247,249,250,0.995)_44%,rgba(234,239,243,0.995)_100%)] px-4 py-3.5 text-[#24323f] shadow-[0_18px_30px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#eef2f4] bg-[#ffffffd8] px-3 py-1.5 text-xs font-medium text-[#788087]">
             {purposeIcon}
             {purposeLabel}
@@ -355,7 +355,7 @@ export function FeaturedMeetupCard({
           </div>
         </div>
 
-        <div className="relative overflow-hidden space-y-2 rounded-[20px] border border-[#dde4e8] bg-[linear-gradient(180deg,rgba(255,255,255,0.998)_0%,rgba(245,247,248,0.992)_100%)] px-4 py-3.5 text-[#38434b] shadow-[0_12px_22px_rgba(118,126,133,0.07)] sm:space-y-2.5 sm:py-4">
+        <div className="relative overflow-hidden space-y-2 rounded-[20px] border border-[#d8e0e5] bg-[linear-gradient(180deg,rgba(255,255,255,0.998)_0%,rgba(244,247,249,0.994)_100%)] px-4 py-3.5 text-[#38434b] shadow-[0_14px_24px_rgba(118,126,133,0.08)] sm:space-y-2.5 sm:py-4">
           <div className="flex items-center gap-2 text-sm">
             <Clock3 className="h-4 w-4 text-[#7c8489]" />
             <span>{timeLabel}</span>
@@ -412,16 +412,16 @@ export function MeetupFeedCard({
   return (
     <Link
       href={`/posts/${postId}`}
-      className={`block overflow-hidden rounded-[24px] border p-2.5 shadow-[0_16px_28px_rgba(118,126,133,0.1)] transition active:scale-[0.995] sm:p-3 ${
+      className={`block overflow-hidden rounded-[24px] border p-2.5 shadow-[0_18px_30px_rgba(118,126,133,0.12)] transition active:scale-[0.995] sm:p-3 ${
         isExpired
-          ? "border-[#d7dfe4] bg-[linear-gradient(180deg,rgba(241,244,247,0.98)_0%,rgba(229,234,238,0.96)_100%)]"
-          : "border-[#dfe7ec] bg-[linear-gradient(180deg,rgba(250,252,253,0.995)_0%,rgba(233,239,243,0.97)_100%)] hover:-translate-y-0.5 hover:shadow-[0_18px_32px_rgba(118,126,133,0.13)]"
+          ? "border-[#d2dbe1] bg-[linear-gradient(180deg,rgba(239,243,246,0.99)_0%,rgba(227,233,238,0.98)_100%)]"
+          : "border-[#d7e1e7] bg-[linear-gradient(180deg,rgba(250,252,254,1)_0%,rgba(231,238,243,0.985)_100%)] hover:-translate-y-0.5 hover:shadow-[0_20px_34px_rgba(118,126,133,0.15)]"
       }`}
     >
-      <div className="rounded-[18px] border border-[#dde5ea] bg-[linear-gradient(180deg,rgba(255,255,255,0.998)_0%,rgba(240,244,247,0.985)_100%)] px-4 py-3.5 shadow-[0_12px_22px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,1)]">
+      <div className="rounded-[18px] border border-[#d6e0e6] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(239,244,247,0.99)_100%)] px-4 py-3.5 shadow-[0_14px_24px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)]">
         <div className="flex items-start justify-between gap-3">
           <div className="grid min-w-0 flex-1 grid-cols-[40px_minmax(0,1fr)] gap-x-2.5 gap-y-1">
-            <div className="inline-flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#d7dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f7_100%)] text-[#6f808a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]">
+            <div className="inline-flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#d0dae1] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#6f808a] shadow-[0_8px_16px_rgba(118,126,133,0.1)]">
               {purposeIcon}
             </div>
             <div className="min-w-0 truncate self-center pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
@@ -440,9 +440,9 @@ export function MeetupFeedCard({
           </div>
         </div>
 
-        <div className="mt-3.5 grid gap-1.5">
+          <div className="mt-3.5 grid gap-2">
           {whenText && (
-            <div className="flex min-h-[56px] items-center gap-2.5 rounded-[16px] border border-[#dde3e7] bg-[linear-gradient(180deg,#ffffff_0%,#f4f6f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_8px_18px_rgba(118,126,133,0.05),inset_0_1px_0_rgba(255,255,255,0.98)]">
+            <div className="flex min-h-[56px] items-center gap-2.5 rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_10px_18px_rgba(118,126,133,0.07),inset_0_1px_0_rgba(255,255,255,0.98)]">
               <Clock3 className="h-4 w-4 shrink-0 text-[#788b95]" />
               <span className="truncate">{whenText}</span>
               {durationLabel ? (
@@ -453,18 +453,18 @@ export function MeetupFeedCard({
             </div>
           )}
 
-          <div className="flex min-h-[56px] items-center gap-2.5 rounded-[16px] border border-[#dde3e7] bg-[linear-gradient(180deg,#ffffff_0%,#f4f6f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_8px_18px_rgba(118,126,133,0.05),inset_0_1px_0_rgba(255,255,255,0.98)]">
+          <div className="flex min-h-[56px] items-center gap-2.5 rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_10px_18px_rgba(118,126,133,0.07),inset_0_1px_0_rgba(255,255,255,0.98)]">
             <MapPin className="h-4 w-4 shrink-0 text-[#788b95]" />
             <span className="min-w-0 flex-1 break-words">{placeText}</span>
           </div>
 
-          <div className="flex min-h-[56px] items-center justify-between gap-2.5 rounded-[16px] border border-[#dde3e7] bg-[linear-gradient(180deg,#ffffff_0%,#f4f6f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_8px_18px_rgba(118,126,133,0.05),inset_0_1px_0_rgba(255,255,255,0.98)]">
+          <div className="flex min-h-[56px] items-center justify-between gap-2.5 rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_10px_18px_rgba(118,126,133,0.07),inset_0_1px_0_rgba(255,255,255,0.98)]">
             <span className="inline-flex min-w-0 items-center gap-2 text-[#55646e]">
               <UserRound className="h-4 w-4 shrink-0 text-[#788b95]" />
               <span className="truncate">{lookingForText}</span>
             </span>
             {amountText ? (
-              <span className="inline-flex shrink-0 items-center gap-2 rounded-[14px] border border-[#ced7de] bg-[linear-gradient(180deg,#ffffff_0%,#edf1f4_100%)] px-3 py-1.5 font-semibold text-[#435760] shadow-[0_8px_16px_rgba(118,126,133,0.12)]">
+              <span className="inline-flex shrink-0 items-center gap-2 rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-3 py-1.5 font-semibold text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)]">
                 <Coins className="h-4 w-4 text-[#7b8d97]" />
                 {amountText.startsWith("+") ? `$${amountText.slice(1)}` : amountText}
               </span>
@@ -472,7 +472,7 @@ export function MeetupFeedCard({
           </div>
 
           {distanceText && (
-            <div className="flex min-h-[56px] items-center gap-2.5 rounded-[16px] border border-[#dde3e7] bg-[linear-gradient(180deg,#ffffff_0%,#f4f6f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_8px_18px_rgba(118,126,133,0.05),inset_0_1px_0_rgba(255,255,255,0.98)]">
+            <div className="flex min-h-[56px] items-center gap-2.5 rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_10px_18px_rgba(118,126,133,0.07),inset_0_1px_0_rgba(255,255,255,0.98)]">
               <LocateFixed className="h-4 w-4 shrink-0 text-[#788b95]" />
               <span>{distanceText}</span>
             </div>

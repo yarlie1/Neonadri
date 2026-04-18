@@ -255,8 +255,8 @@ export default function HomeFeedClient({
   const highlightedPost = posts[0] || null;
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#eceff1] px-4 py-5 text-[#2f3a42]">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#fbfcfd_22%,#eef2f5_58%,#e1e7ec_100%)]" />
+    <main className="min-h-screen overflow-x-hidden bg-[#e6ebef] px-4 py-5 text-[#2f3a42]">
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7fafc_20%,#e8edf1_56%,#d7dfe5_100%)]" />
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.62),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.28),transparent_20%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.16),transparent_32%)]" />
       <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.09)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.09)_1px,transparent_1px)] bg-[size:22px_22px] opacity-10" />
       <div className="mx-auto max-w-2xl space-y-4 pb-24 sm:space-y-5">
@@ -340,62 +340,73 @@ export default function HomeFeedClient({
           />
         )}
 
-        <div ref={filterRef} className="sticky top-[68px] z-20 sm:top-[76px]">
-          <HomeFilterCard
-            isPinned={isFilterPinned}
-            isOpen={isOpen}
-            onToggle={() => setIsOpen((v) => !v)}
-            summaryText={
-              <FilterSummaryText
-                matchState={matchState}
-                audience={audience}
-                purpose={purpose}
-                gender={gender}
-                ageGroup={ageGroup}
-                distance={distance}
-                distanceUnit={distanceUnit}
-                sort={sort}
-              />
+        <div
+          ref={filterRef}
+          className={`z-20 min-h-[74px] sm:min-h-[82px] ${isOpen ? "mb-40 sm:mb-44" : ""}`}
+        >
+          <div
+            className={
+              isFilterPinned
+                ? "fixed left-1/2 top-[68px] z-30 w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 sm:top-[76px]"
+                : ""
             }
-            matchState={matchState}
-            audience={audience}
-            purpose={purpose}
-            gender={gender}
-            ageGroup={ageGroup}
-            distance={distance}
-            distanceUnit={distanceUnit}
-            sort={sort}
-            matchStateOptions={MATCH_STATE_OPTIONS}
-            audienceOptions={AUDIENCE_OPTIONS}
-            purposeOptions={PURPOSE_OPTIONS}
-            genderOptions={GENDER_OPTIONS}
-            ageGroupOptions={AGE_GROUP_OPTIONS}
-            distanceOptions={DISTANCE_OPTIONS}
-            distanceUnitOptions={["mi", "km"]}
-            sortOptions={SORT_OPTIONS}
-            onMatchState={(option) => applyAndClose(() => setMatchState(option))}
-            onAudience={(option) => applyAndClose(() => applyAudience(option as (typeof AUDIENCE_OPTIONS)[number]))}
-            onPurpose={(option) => applyAndClose(() => setPurpose(option))}
-            onGender={(option) =>
-              applyAndClose(() => {
-                setAudience("All");
-                setGender(option);
-              })
-            }
-            onAgeGroup={(option) =>
-              applyAndClose(() => {
-                setAudience("All");
-                setAgeGroup(option);
-              })
-            }
-            onDistance={(option) =>
-              applyAndClose(() => setDistance(option as (typeof DISTANCE_OPTIONS)[number]["value"]))
-            }
-            onDistanceUnit={setDistanceUnit}
-            onSort={(option) => applyAndClose(() => setSort(option as SortValue))}
-            onReset={resetAll}
-            locationStatus={locationStatus}
-          />
+          >
+            <HomeFilterCard
+              isPinned={isFilterPinned}
+              isOpen={isOpen}
+              onToggle={() => setIsOpen((v) => !v)}
+              summaryText={
+                <FilterSummaryText
+                  matchState={matchState}
+                  audience={audience}
+                  purpose={purpose}
+                  gender={gender}
+                  ageGroup={ageGroup}
+                  distance={distance}
+                  distanceUnit={distanceUnit}
+                  sort={sort}
+                />
+              }
+              matchState={matchState}
+              audience={audience}
+              purpose={purpose}
+              gender={gender}
+              ageGroup={ageGroup}
+              distance={distance}
+              distanceUnit={distanceUnit}
+              sort={sort}
+              matchStateOptions={MATCH_STATE_OPTIONS}
+              audienceOptions={AUDIENCE_OPTIONS}
+              purposeOptions={PURPOSE_OPTIONS}
+              genderOptions={GENDER_OPTIONS}
+              ageGroupOptions={AGE_GROUP_OPTIONS}
+              distanceOptions={DISTANCE_OPTIONS}
+              distanceUnitOptions={["mi", "km"]}
+              sortOptions={SORT_OPTIONS}
+              onMatchState={(option) => applyAndClose(() => setMatchState(option))}
+              onAudience={(option) => applyAndClose(() => applyAudience(option as (typeof AUDIENCE_OPTIONS)[number]))}
+              onPurpose={(option) => applyAndClose(() => setPurpose(option))}
+              onGender={(option) =>
+                applyAndClose(() => {
+                  setAudience("All");
+                  setGender(option);
+                })
+              }
+              onAgeGroup={(option) =>
+                applyAndClose(() => {
+                  setAudience("All");
+                  setAgeGroup(option);
+                })
+              }
+              onDistance={(option) =>
+                applyAndClose(() => setDistance(option as (typeof DISTANCE_OPTIONS)[number]["value"]))
+              }
+              onDistanceUnit={setDistanceUnit}
+              onSort={(option) => applyAndClose(() => setSort(option as SortValue))}
+              onReset={resetAll}
+              locationStatus={locationStatus}
+            />
+          </div>
         </div>
 
         <div className="flex items-center justify-between px-1 pt-1">
