@@ -76,15 +76,15 @@ export default function HomeTestClient({
   ).length;
   const hostCount = Object.keys(hostProfileMap).length;
   const surfaceClass =
-    "border border-[#e2e7eb] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(246,248,249,0.985)_30%,rgba(231,235,238,0.985)_100%)] shadow-[0_16px_34px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(201,208,214,0.42)]";
+    "border border-[#e3e8ec] bg-[linear-gradient(180deg,rgba(255,255,255,0.997)_0%,rgba(247,249,250,0.988)_32%,rgba(233,237,240,0.988)_100%)] shadow-[0_18px_38px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(203,209,214,0.38)]";
   const metaRowClass =
-    "flex min-h-[62px] items-center gap-2.5 rounded-[16px] border border-[#dde3e7] bg-[linear-gradient(180deg,#ffffff_0%,#f3f5f7_100%)] px-3.5 py-2.5 text-sm text-[#364149] shadow-[inset_0_1px_0_rgba(255,255,255,0.98)]";
+    "flex min-h-[60px] items-center gap-2.5 rounded-[16px] border border-[#dde3e7] bg-[linear-gradient(180deg,#ffffff_0%,#f4f6f7_100%)] px-3.5 py-2.5 text-sm text-[#364149] shadow-[0_8px_18px_rgba(118,126,133,0.05),inset_0_1px_0_rgba(255,255,255,0.98)]";
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#eceff1] px-4 py-5 text-[#2f3a42]">
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#fcfdfe_24%,#eef2f4_58%,#e2e7eb_100%)]" />
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.76),transparent_24%),radial-gradient(circle_at_84%_16%,rgba(251,252,253,0.42),transparent_22%),radial-gradient(circle_at_60%_100%,rgba(228,233,237,0.24),transparent_34%)]" />
-      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.18)_1px,transparent_1px)] bg-[size:22px_22px] opacity-36" />
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.15)_1px,transparent_1px)] bg-[size:22px_22px] opacity-26" />
       <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(120deg,transparent_0%,transparent_44%,rgba(255,255,255,0.28)_49%,transparent_54%,transparent_100%)] opacity-85" />
 
       <div className="relative mx-auto max-w-2xl space-y-4 pb-24 sm:space-y-5">
@@ -151,7 +151,7 @@ export default function HomeTestClient({
               {["Slow coffee", "Afterglow walks", "Quiet co-work"].map((label) => (
                 <span
                   key={label}
-                  className="rounded-[15px] border border-[#e5eaee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f4f6_100%)] px-3 py-1.5 text-[11px] font-medium text-[#66727a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]"
+                  className="rounded-[15px] border border-[#e6ebef] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f6_100%)] px-3 py-1.5 text-[11px] font-medium text-[#66727a] shadow-[0_8px_16px_rgba(118,126,133,0.06)]"
                 >
                   {label}
                 </span>
@@ -174,7 +174,7 @@ export default function HomeTestClient({
                   </div>
                 </div>
 
-                <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#edf1f4] bg-[#ffffff] text-[#7e868d] shadow-[0_12px_24px_rgba(136,142,148,0.09)]">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-[18px] border border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f7_100%)] text-[#747e85] shadow-[0_12px_22px_rgba(118,126,133,0.08)]">
                   <Plus className="h-4 w-4 rotate-45" />
                 </div>
               </div>
@@ -224,7 +224,7 @@ export default function HomeTestClient({
         )}
 
         <div className="sticky top-[68px] z-20 sm:top-[76px]">
-          <div className="rounded-[22px] border border-[#e4e9ed] bg-[linear-gradient(180deg,rgba(253,253,253,0.995)_0%,rgba(243,245,246,0.98)_100%)] shadow-[0_16px_34px_rgba(118,126,133,0.09)]">
+          <div className="rounded-[22px] border border-[#e4e9ed] bg-[linear-gradient(180deg,rgba(253,253,253,0.998)_0%,rgba(244,246,247,0.985)_100%)] shadow-[0_18px_34px_rgba(118,126,133,0.08)]">
             <div className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left sm:py-4">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 text-sm font-semibold text-[#2f3b44]">
@@ -237,7 +237,7 @@ export default function HomeTestClient({
                 </div>
               </div>
 
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[16px] border border-[#edf1f4] bg-[#ffffff] text-[#7e878d] shadow-[0_10px_18px_rgba(146,154,162,0.08)]">
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[16px] border border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f7_100%)] text-[#737d84] shadow-[0_10px_18px_rgba(118,126,133,0.07)]">
                 <SlidersHorizontal className="h-4 w-4" />
               </span>
             </div>
@@ -254,7 +254,7 @@ export default function HomeTestClient({
             </div>
           </div>
 
-          <div className="rounded-[16px] border border-[#edf1f4] bg-[#ffffffd8] px-3 py-1.5 text-xs font-medium text-[#747f86] shadow-[0_8px_18px_rgba(146,154,162,0.07)]">
+          <div className="rounded-[16px] border border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f7_100%)] px-3 py-1.5 text-xs font-medium text-[#6f7a81] shadow-[0_10px_18px_rgba(118,126,133,0.07)]">
             {sortedPosts.length} results
           </div>
         </div>
@@ -306,10 +306,10 @@ export default function HomeTestClient({
                   <span
                     className={`shrink-0 rounded-[14px] border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_6px_14px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.78)] ${
                       matchBadge.label.startsWith("Open")
-                        ? "border-[#d9e0e5] bg-[linear-gradient(180deg,#ffffff_0%,#edf2f5_100%)] text-[#4d646c]"
+                        ? "border-[#d3dde3] bg-[linear-gradient(180deg,#ffffff_0%,#edf4f7_100%)] text-[#45606b]"
                         : matchBadge.label === "Matched"
-                        ? "border-[#d8e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#edf2f5_100%)] text-[#54656d]"
-                        : "border-[#d9e0e4] bg-[linear-gradient(180deg,#ffffff_0%,#eef2f4_100%)] text-[#7b858c]"
+                        ? "border-[#d2dbe2] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] text-[#4e646e]"
+                        : "border-[#d8dee2] bg-[linear-gradient(180deg,#fffdfa_0%,#f3ece5_100%)] text-[#87796d]"
                     } ${
                       isExpired ? "opacity-70" : ""
                     }`}
@@ -368,7 +368,7 @@ export default function HomeTestClient({
         )}
       </div>
 
-      <div className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-full border border-[#d8e6ee] bg-[linear-gradient(135deg,#fdfefe_0%,#dfe8ee_100%)] text-[#648996] shadow-[0_24px_48px_rgba(148,168,183,0.22)]">
+      <div className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-[24px] border border-[#d6e0e6] bg-[linear-gradient(135deg,#ffffff_0%,#e1eaef_100%)] text-[#5f7f8f] shadow-[0_24px_46px_rgba(118,126,133,0.18)]">
         <Plus className="h-6 w-6" />
       </div>
     </main>
