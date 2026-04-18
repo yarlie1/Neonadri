@@ -293,7 +293,7 @@ export default function TopNav() {
   const closeMenu = () => setMenuOpen(false);
 
   const navBtn = (active: boolean) =>
-    `inline-flex items-center gap-2 rounded-[18px] border px-3.5 py-2.5 text-sm font-medium transition ${
+    `inline-flex items-center gap-2 rounded-[18px] border px-3 py-2.5 text-sm font-medium transition ${
       isHomeTest
         ? active
           ? "border-[#e6edf1] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(240,244,246,0.995)_100%)] text-[#26343d] shadow-[0_12px_24px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,0.99)]"
@@ -304,11 +304,11 @@ export default function TopNav() {
     }`;
 
   const primary = isHomeTest
-    ? "inline-flex items-center gap-2 rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(135deg,#ffffff_0%,#eef3f6_100%)] px-3.5 py-2.5 text-sm font-medium text-[#2f3f48] shadow-[0_14px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#dbe3e8] hover:text-[#223039]"
+    ? "inline-flex items-center gap-2 rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(135deg,#ffffff_0%,#eef3f6_100%)] px-3 py-2.5 text-sm font-medium text-[#2f3f48] shadow-[0_14px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#dbe3e8] hover:text-[#223039]"
     : "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
 
   const mobileItem = isHomeTest
-    ? "inline-flex items-center gap-2 rounded-[16px] px-3.5 py-2.5 text-sm font-medium text-[#68757d] transition hover:bg-[#f4f7f9] hover:text-[#485760]"
+    ? "inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium text-[#68757d] transition hover:bg-[#f4f7f9] hover:text-[#485760]"
     : "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
 
   return (
@@ -326,7 +326,7 @@ export default function TopNav() {
             : "border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(255,252,248,0.95),rgba(249,240,232,0.88))]"
         }
       >
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"
@@ -453,14 +453,14 @@ export default function TopNav() {
 
             {menuOpen && (
               <div
-                className={`absolute right-0 top-12 z-50 w-[16.5rem] overflow-hidden rounded-[22px] border ${
+                className={`absolute right-0 top-12 z-50 w-[15.25rem] overflow-hidden rounded-[22px] border ${
                   isHomeTest
                     ? "border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] shadow-[0_24px_46px_rgba(118,126,133,0.16)]"
                     : "border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#f7efe7_100%)] shadow-[0_24px_50px_rgba(80,60,40,0.16)]"
                 }`}
               >
                 <div
-                  className={`border-b px-4 py-3 ${
+                  className={`border-b px-3.5 py-2.5 ${
                     isHomeTest
                       ? "border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff,#f5f8fa)]"
                       : "border-[#efe3d8] bg-[linear-gradient(180deg,#fff8f0,#fffdf8)]"
@@ -481,7 +481,7 @@ export default function TopNav() {
                   </div>
                 </div>
 
-                <div className="flex flex-col p-2.5">
+                <div className="flex flex-col p-2">
                   <Link
                     href="/"
                     onClick={closeMenu}
@@ -502,7 +502,7 @@ export default function TopNav() {
                       <Link
                         href="/dashboard"
                         onClick={closeMenu}
-                        className={`inline-flex items-center justify-between gap-2 rounded-[16px] px-3.5 py-2.5 text-sm font-medium transition ${
+                    className={`inline-flex items-center justify-between gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium transition ${
                           isHomeTest && isActivePath(pathname, "/dashboard")
                             ? "!bg-[#eef4f7] !text-[#33434c]"
                             : isHomeTest
@@ -540,7 +540,7 @@ export default function TopNav() {
                       <Link
                         href="/write"
                         onClick={closeMenu}
-                        className={`mt-1 inline-flex items-center gap-2 rounded-[16px] px-3.5 py-2.5 text-sm font-medium transition ${
+                        className={`mt-1 inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium transition ${
                           isHomeTest
                             ? "border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] hover:bg-[#f7fafb]"
                             : "bg-[#a48f7a] text-white hover:bg-[#927d69]"
@@ -551,7 +551,7 @@ export default function TopNav() {
                       </Link>
 
                       <div
-                        className={`my-1.5 border-t ${
+                        className={`my-1 border-t ${
                           isHomeTest ? "border-[#eef3f6]" : "border-[#f0e8de]"
                         }`}
                       />
@@ -560,7 +560,7 @@ export default function TopNav() {
                         type="button"
                         onClick={handleLogout}
                         disabled={isLoggingOut}
-                        className={`inline-flex items-center gap-2 rounded-[16px] px-3.5 py-2.5 text-left text-sm font-medium transition ${
+                        className={`inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-left text-sm font-medium transition ${
                           isHomeTest
                             ? "text-[#707b82] hover:bg-[#f3f6f8]"
                             : "text-[#8b5e3c] hover:bg-[#f8efe7]"
@@ -592,7 +592,7 @@ export default function TopNav() {
                       <Link
                         href="/signup"
                         onClick={closeMenu}
-                        className={`mt-1 inline-flex items-center gap-2 rounded-[16px] px-3.5 py-2.5 text-sm font-medium transition ${
+                        className={`mt-1 inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium transition ${
                           isHomeTest
                             ? "border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] hover:bg-[#f7fafb]"
                             : "bg-[#a48f7a] text-white hover:bg-[#927d69]"
