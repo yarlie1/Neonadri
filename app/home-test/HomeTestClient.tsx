@@ -162,7 +162,7 @@ export default function HomeTestClient({
 
         {highlightedPost && (
           <section className="overflow-hidden rounded-[30px] border border-[#edf1f4] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(247,249,250,0.99)_38%,rgba(236,240,243,0.99)_100%)] shadow-[0_26px_64px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(201,208,214,0.28)]">
-            <div className="border-b border-[#e3e6e8] px-5 py-5">
+            <div className="border-b border-[#e3e6e8] px-5 py-4 sm:py-5">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#838b91]">
@@ -180,24 +180,24 @@ export default function HomeTestClient({
               </div>
             </div>
 
-            <div className="grid gap-3 px-4 py-5 sm:grid-cols-[1.45fr_0.95fr] sm:px-5">
-              <div className="relative overflow-hidden rounded-[24px] border border-[#e4e9ed] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(247,249,250,0.985)_50%,rgba(235,239,242,0.99)_100%)] px-4 py-4 text-[#24323f] shadow-[0_18px_34px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1)]">
+            <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.45fr_0.95fr] sm:px-5 sm:py-5">
+              <div className="relative overflow-hidden rounded-[24px] border border-[#e4e9ed] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(247,249,250,0.985)_50%,rgba(235,239,242,0.99)_100%)] px-4 py-3.5 text-[#24323f] shadow-[0_18px_34px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
                 <div className="absolute inset-x-0 top-0 h-[1px] bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.94),transparent)]" />
                 <div className="inline-flex items-center gap-2 rounded-full border border-[#eef2f4] bg-[#ffffffd8] px-3 py-1.5 text-xs font-medium text-[#788087]">
                   {getPurposeIcon(highlightedPost.meeting_purpose)}
                   {highlightedPost.meeting_purpose || "Meetup"}
                 </div>
 
-                <div className="mt-4 text-[30px] font-black leading-[0.98] tracking-[-0.05em]">
+                <div className="mt-3 text-[30px] font-black leading-[0.98] tracking-[-0.05em] sm:mt-4">
                   {getPurposeLabel(highlightedPost.meeting_purpose)}
                 </div>
 
-                <div className="mt-3 max-w-md text-sm leading-6 text-[#707980]">
+                <div className="mt-2.5 max-w-md text-sm leading-6 text-[#707980] sm:mt-3">
                   A quieter featured moment with a little more room to breathe.
                 </div>
               </div>
 
-              <div className="relative overflow-hidden space-y-2.5 rounded-[20px] border border-[#e3e8ec] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(245,247,248,0.985)_100%)] px-4 py-4 text-[#38434b] shadow-[0_14px_26px_rgba(118,126,133,0.08)]">
+              <div className="relative overflow-hidden space-y-2 rounded-[20px] border border-[#e3e8ec] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(245,247,248,0.985)_100%)] px-4 py-3.5 text-[#38434b] shadow-[0_14px_26px_rgba(118,126,133,0.08)] sm:space-y-2.5 sm:py-4">
                 <div className="absolute inset-x-0 top-0 h-[1px] bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.92),transparent)]" />
                 <div className="flex items-center gap-2 text-sm">
                   <Clock3 className="h-4 w-4 text-[#7c8489]" />
