@@ -20,7 +20,6 @@ import {
   getMatchBadge,
   getPurposeIcon,
   getPurposeLabel,
-  getPurposeTheme,
   haversineKm,
   parseBenefitAmount,
   SOFT_CARD_CLASS,
@@ -424,8 +423,6 @@ export default function HomeFeedClient({
           const status = getPostStatus(post.meeting_time);
           const isExpired = status === "Expired";
           const matchBadge = getMatchBadge(status as "Upcoming" | "Expired", matchSummaryMap[post.id]);
-          const purposeTheme = getPurposeTheme(post.meeting_purpose);
-
           const distanceText =
             locationStatus === "granted" &&
             userLocation &&
@@ -455,8 +452,6 @@ export default function HomeFeedClient({
               }
               matchBadgeLabel={matchBadge.label}
               matchBadgeClassName={matchBadge.className}
-              purposeBandClass={purposeTheme.bandClass}
-              purposeIconWrapClass={purposeTheme.iconWrapClass}
               purposeIcon={getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}
               purposeName={post.meeting_purpose || "Social meetup"}
               durationLabel={formatDuration(post.duration_minutes)}

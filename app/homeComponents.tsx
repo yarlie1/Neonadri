@@ -385,8 +385,6 @@ export function MeetupFeedCard({
   hostMeta,
   matchBadgeLabel,
   matchBadgeClassName,
-  purposeBandClass,
-  purposeIconWrapClass,
   purposeIcon,
   purposeName,
   durationLabel,
@@ -402,8 +400,6 @@ export function MeetupFeedCard({
   hostMeta: string;
   matchBadgeLabel: string;
   matchBadgeClassName: string;
-  purposeBandClass: string;
-  purposeIconWrapClass: string;
   purposeIcon: ReactNode;
   purposeName: string;
   durationLabel: string;
