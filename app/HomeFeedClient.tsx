@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import {
   formatMeetingTime,
   getMeetingStatus,
@@ -120,31 +120,6 @@ export default function HomeFeedClient({
     applyAudience,
     resetAll,
   } = useHomeFeedFilters(viewerPreference);
-  const filterCardRef = useRef<HTMLDivElement | null>(null);
-  const [filterReservedHeight, setFilterReservedHeight] = useState(0);
-
-  useEffect(() => {
-    if (!filterCardRef.current) return;
-
-    const element = filterCardRef.current;
-    const updateHeight = () => {
-      setFilterReservedHeight(element.getBoundingClientRect().height);
-    };
-
-    updateHeight();
-
-    const observer = new ResizeObserver(() => {
-      updateHeight();
-    });
-
-    observer.observe(element);
-    window.addEventListener("resize", updateHeight);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", updateHeight);
-    };
-  }, [isOpen, isFilterPinned]);
 
   const posts = useMemo(() => {
     let next = initialPosts.filter((post) => {
@@ -369,26 +344,10 @@ export default function HomeFeedClient({
 
         <div
           ref={filterRef}
-          className="z-20"
-          style={
-            isFilterPinned && filterReservedHeight > 0
-              ? { height: `${filterReservedHeight}px` }
-              : undefined
-          }
+          className="sticky z-20"
+          style={{ top: `${stickyTop}px` }}
         >
-          <div
-            ref={filterCardRef}
-            className={
-              isFilterPinned
-                ? "fixed left-1/2 z-30 w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2"
-                : ""
-            }
-            style={
-              isFilterPinned
-                ? { top: `${stickyTop}px` }
-                : undefined
-            }
-          >
+          <div>
             <HomeFilterCard
               isPinned={isFilterPinned}
               isOpen={isOpen}
