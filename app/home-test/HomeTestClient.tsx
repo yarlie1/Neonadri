@@ -287,12 +287,12 @@ export default function HomeTestClient({
                 : index % 5 === 1
                 ? "ml-6 -mt-14 z-[2] sm:ml-8 sm:-mt-14"
                 : index % 5 === 2
-                ? "mr-6 -mt-16 z-[4] sm:mr-8 sm:-mt-16"
+                ? "mr-6 -mt-12 z-[4] sm:mr-8 sm:-mt-12"
                 : index % 5 === 3
-                ? "ml-3 -mt-12 z-[3] sm:ml-5 sm:-mt-12"
+                ? "ml-3 -mt-10 z-[3] sm:ml-5 sm:-mt-10"
                 : index % 5 === 4
-                ? "mr-3 -mt-11 z-[2] sm:mr-5 sm:-mt-11"
-                : "ml-1 -mt-10 z-[1] sm:ml-2 sm:-mt-10";
+                ? "mr-3 -mt-9 z-[2] sm:mr-5 sm:-mt-9"
+                : "ml-1 -mt-8 z-[1] sm:ml-2 sm:-mt-8";
 
             return (
               <section
