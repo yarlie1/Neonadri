@@ -283,18 +283,20 @@ export default function HomeTestClient({
 
             const offsetClass =
               index === 0
-                ? ""
-                : index % 3 === 1
-                ? "sm:ml-4 sm:-mt-2"
-                : index % 3 === 2
-                ? "sm:mr-4 sm:-mt-3"
-                : "sm:-mt-2";
+                ? "z-[1]"
+                : index % 4 === 1
+                ? "ml-4 -mt-8 sm:ml-6 sm:-mt-8 z-[2]"
+                : index % 4 === 2
+                ? "mr-4 -mt-10 sm:mr-6 sm:-mt-10 z-[3]"
+                : index % 4 === 3
+                ? "ml-2 -mt-7 sm:ml-3 sm:-mt-7 z-[2]"
+                : "mr-2 -mt-6 sm:mr-3 sm:-mt-6 z-[1]";
 
             return (
               <section
                 key={post.id}
-                className={`relative overflow-hidden rounded-[24px] border p-2.5 shadow-[0_18px_36px_rgba(118,126,133,0.12)] transition-transform duration-200 sm:p-3 ${offsetClass} ${
-                  index === 0 ? "" : "mt-3"
+                className={`relative overflow-hidden rounded-[24px] border p-2.5 shadow-[0_22px_42px_rgba(118,126,133,0.16)] transition-transform duration-200 sm:p-3 ${offsetClass} ${
+                  index === 0 ? "mt-2" : "mt-0"
                 } ${
                   isExpired
                     ? "border-[#d6dde2] bg-[linear-gradient(180deg,rgba(236,240,243,0.97)_0%,rgba(221,227,232,0.95)_100%)]"
