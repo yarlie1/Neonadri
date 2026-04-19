@@ -1,6 +1,9 @@
 import { cookies } from "next/headers";
 import { createClient } from "../../lib/supabase/server";
-import { normalizeUserTimeZone, USER_TIME_ZONE_COOKIE } from "../../lib/userTimeZone";
+import {
+  normalizeUserTimeZone,
+  USER_TIME_ZONE_COOKIE,
+} from "../../lib/userTimeZone";
 import HomeTestClient from "./HomeTestClient";
 
 type PostRow = {
@@ -54,6 +57,7 @@ type MatchSummaryMap = Record<
 export default async function HomeTestPage() {
   const supabase = await createClient();
   const cookieStore = await cookies();
+
   const initialUserTimeZone = normalizeUserTimeZone(
     cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
   );
@@ -67,10 +71,15 @@ export default async function HomeTestPage() {
 
   if (postsError) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] px-4 py-4 text-[#2f2a26]">
-        <div className="mx-auto max-w-2xl rounded-[24px] border border-[#e7ddd2] bg-white p-5 shadow-sm">
-          <div className="text-base font-semibold">Could not load home test</div>
-          <div className="mt-2 text-sm text-[#8b7f74]">{postsError.message}</div>
+      <main className="relative min-h-screen overflow-hidden bg-[#eceff1] px-4 py-5 text-[#2f3a42]">
+        <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#fbfcfd_20%,#edf1f4_56%,#dde4ea_100%)]" />
+        <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.84),transparent_24%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.48),transparent_22%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.3),transparent_34%)]" />
+
+        <div className="relative mx-auto max-w-2xl">
+          <div className="rounded-[28px] border border-[#e3e8ec] bg-[linear-gradient(180deg,rgba(255,255,255,0.997)_0%,rgba(247,249,250,0.988)_32%,rgba(233,237,240,0.988)_100%)] p-5 shadow-[0_18px_38px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(203,209,214,0.38)]">
+            <div className="text-base font-semibold">Could not load home test</div>
+            <div className="mt-2 text-sm text-[#6f7a81]">{postsError.message}</div>
+          </div>
         </div>
       </main>
     );
@@ -113,11 +122,20 @@ export default async function HomeTestPage() {
   }
 
   return (
-    <HomeTestClient
-      posts={posts}
-      hostProfileMap={hostProfileMap}
-      matchSummaryMap={matchSummaryMap}
-      initialUserTimeZone={initialUserTimeZone}
-    />
+    <main className="relative min-h-screen overflow-hidden bg-[#eceff1]">
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#ffffff_0%,#fbfcfd_20%,#edf1f4_56%,#dde4ea_100%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.84),transparent_24%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.48),transparent_22%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.3),transparent_34%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.18)_1px,transparent_1px)] bg-[size:22px_22px] opacity-26" />
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(120deg,transparent_0%,transparent_44%,rgba(255,255,255,0.28)_49%,transparent_54%,transparent_100%)] opacity-85" />
+
+      <div className="relative z-10">
+        <HomeTestClient
+          posts={posts}
+          hostProfileMap={hostProfileMap}
+          matchSummaryMap={matchSummaryMap}
+          initialUserTimeZone={initialUserTimeZone}
+        />
+      </div>
+    </main>
   );
 }
