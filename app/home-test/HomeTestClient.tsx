@@ -85,9 +85,9 @@ export default function HomeTestClient({
 
   return (
     <main className="min-h-screen overflow-hidden px-4 py-5 text-[#2f3a42]">
-      <div className="relative mx-auto max-w-2xl space-y-4 pb-24 pt-1 sm:space-y-5">
+      <div className="relative mx-auto max-w-2xl space-y-4 pb-28 pt-1 sm:space-y-5">
         {/* HERO / BACK LAYER */}
-        <section className="relative z-0 overflow-hidden rounded-[32px] border border-[#edf1f4] bg-[linear-gradient(145deg,rgba(255,255,255,0.995)_0%,rgba(247,249,250,0.985)_36%,rgba(232,236,239,0.99)_100%)] px-5 py-5 pb-12 shadow-[0_26px_66px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(204,210,215,0.36)] sm:px-7 sm:py-7 sm:pb-14">
+        <section className="relative z-0 overflow-hidden rounded-[32px] border border-[#edf1f4] bg-[linear-gradient(145deg,rgba(255,255,255,0.995)_0%,rgba(247,249,250,0.985)_36%,rgba(232,236,239,0.99)_100%)] px-5 py-5 pb-14 shadow-[0_26px_66px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(204,210,215,0.36)] sm:px-7 sm:py-7 sm:pb-16">
           <div className="pointer-events-none absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
           <div className="pointer-events-none absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#f5f9fcc7] blur-3xl" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-[linear-gradient(180deg,rgba(255,255,255,0.0)_0%,rgba(255,255,255,0.34)_45%,rgba(255,255,255,0.0)_100%)]" />
@@ -161,7 +161,7 @@ export default function HomeTestClient({
 
         {/* FEATURED / MID TOP LAYER */}
         {highlightedPost && (
-          <section className="relative z-10 -mt-7 overflow-hidden rounded-[30px] border border-[#edf1f4] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(247,249,250,0.94)_38%,rgba(236,240,243,0.94)_100%)] shadow-[0_34px_80px_rgba(118,126,133,0.22),0_8px_22px_rgba(255,255,255,0.35),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(201,208,214,0.28)] backdrop-blur-xl">
+          <section className="relative z-10 -mt-8 overflow-hidden rounded-[30px] border border-[#edf1f4] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(247,249,250,0.94)_38%,rgba(236,240,243,0.94)_100%)] shadow-[0_34px_80px_rgba(118,126,133,0.22),0_8px_22px_rgba(255,255,255,0.35),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(201,208,214,0.28)] backdrop-blur-xl">
             <div className="pointer-events-none absolute -right-10 top-0 h-40 w-40 rounded-full bg-white/70 blur-3xl" />
             <div className="pointer-events-none absolute -left-8 bottom-0 h-28 w-28 rounded-full bg-[#f5f9fc]/70 blur-3xl" />
 
@@ -283,21 +283,21 @@ export default function HomeTestClient({
 
             const offsetClass =
               index === 0
-                ? "z-[1]"
-                : index % 4 === 1
-                ? "ml-4 -mt-8 sm:ml-6 sm:-mt-8 z-[2]"
-                : index % 4 === 2
-                ? "mr-4 -mt-10 sm:mr-6 sm:-mt-10 z-[3]"
-                : index % 4 === 3
-                ? "ml-2 -mt-7 sm:ml-3 sm:-mt-7 z-[2]"
-                : "mr-2 -mt-6 sm:mr-3 sm:-mt-6 z-[1]";
+                ? "z-[1] mt-2"
+                : index % 5 === 1
+                ? "ml-6 -mt-14 z-[2] sm:ml-8 sm:-mt-14"
+                : index % 5 === 2
+                ? "mr-6 -mt-16 z-[4] sm:mr-8 sm:-mt-16"
+                : index % 5 === 3
+                ? "ml-3 -mt-12 z-[3] sm:ml-5 sm:-mt-12"
+                : index % 5 === 4
+                ? "mr-3 -mt-11 z-[2] sm:mr-5 sm:-mt-11"
+                : "ml-1 -mt-10 z-[1] sm:ml-2 sm:-mt-10";
 
             return (
               <section
                 key={post.id}
-                className={`relative overflow-hidden rounded-[24px] border p-2.5 shadow-[0_22px_42px_rgba(118,126,133,0.16)] transition-transform duration-200 sm:p-3 ${offsetClass} ${
-                  index === 0 ? "mt-2" : "mt-0"
-                } ${
+                className={`relative overflow-hidden rounded-[24px] border p-2.5 shadow-[0_24px_48px_rgba(118,126,133,0.18)] transition-transform duration-200 sm:p-3 ${offsetClass} ${
                   isExpired
                     ? "border-[#d6dde2] bg-[linear-gradient(180deg,rgba(236,240,243,0.97)_0%,rgba(221,227,232,0.95)_100%)]"
                     : "border-[#e4ebef] bg-[linear-gradient(180deg,rgba(248,250,252,0.985)_0%,rgba(228,235,240,0.95)_100%)]"
