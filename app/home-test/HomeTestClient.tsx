@@ -227,8 +227,8 @@ export default function HomeTestClient({
         )}
 
         {/* FLOATING CONTROL LAYER */}
-        <div className="sticky top-4 z-30 px-1">
-          <div className="relative rounded-[24px] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.72)_0%,rgba(244,246,247,0.64)_100%)] shadow-[0_30px_60px_rgba(118,126,133,0.20)] backdrop-blur-2xl">
+        <div className="sticky top-2 z-10 px-1">
+          <div className="relative rounded-[24px] border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.66)_0%,rgba(244,246,247,0.56)_100%)] shadow-[0_20px_36px_rgba(118,126,133,0.14)] backdrop-blur-xl">
             <div className="pointer-events-none absolute inset-x-5 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.96),transparent)]" />
             <div className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left sm:py-4">
               <div className="min-w-0">
