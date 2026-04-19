@@ -86,6 +86,7 @@ export default function HomeTestClient({
   return (
     <main className="min-h-screen overflow-hidden px-4 py-5 text-[#2f3a42]">
       <div className="relative mx-auto max-w-2xl space-y-4 pb-28 pt-1 sm:space-y-5">
+        {/* HERO */}
         <section className="relative z-0 overflow-hidden rounded-[32px] border border-[#edf1f4] bg-[linear-gradient(145deg,rgba(255,255,255,0.995)_0%,rgba(247,249,250,0.985)_36%,rgba(232,236,239,0.99)_100%)] px-5 py-5 pb-14 shadow-[0_26px_66px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(204,210,215,0.36)] sm:px-7 sm:py-7 sm:pb-16">
           <div className="pointer-events-none absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
           <div className="pointer-events-none absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#f5f9fcc7] blur-3xl" />
@@ -158,8 +159,9 @@ export default function HomeTestClient({
           </div>
         </section>
 
+        {/* FEATURED */}
         {highlightedPost && (
-          <section className="relative z-10 -mt-8 overflow-hidden rounded-[30px] border border-[#edf1f4] bg-[linear-gradient(180deg,rgba(255,255,255,0.90)_0%,rgba(247,249,250,0.86)_38%,rgba(236,240,243,0.84)_100%)] shadow-[0_34px_80px_rgba(118,126,133,0.22),0_8px_22px_rgba(255,255,255,0.35),inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(201,208,214,0.20)] backdrop-blur-xl">
+          <section className="relative z-10 -mt-4 overflow-hidden rounded-[30px] border border-[#edf1f4] bg-[linear-gradient(180deg,rgba(255,255,255,0.90)_0%,rgba(247,249,250,0.86)_38%,rgba(236,240,243,0.84)_100%)] shadow-[0_28px_64px_rgba(118,126,133,0.18),0_8px_22px_rgba(255,255,255,0.30),inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(201,208,214,0.20)] backdrop-blur-xl">
             <div className="pointer-events-none absolute -right-10 top-0 h-40 w-40 rounded-full bg-white/70 blur-3xl" />
             <div className="pointer-events-none absolute -left-8 bottom-0 h-28 w-28 rounded-full bg-[#f5f9fc]/70 blur-3xl" />
 
@@ -224,8 +226,9 @@ export default function HomeTestClient({
           </section>
         )}
 
+        {/* STICKY BAR */}
         <div className="sticky top-4 z-30 px-1">
-          <div className="relative rounded-[24px] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.70)_0%,rgba(244,246,247,0.58)_100%)] shadow-[0_30px_60px_rgba(118,126,133,0.20)] backdrop-blur-2xl">
+          <div className="relative rounded-[24px] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.70)_0%,rgba(244,246,247,0.58)_100%)] shadow-[0_22px_42px_rgba(118,126,133,0.16)] backdrop-blur-2xl">
             <div className="pointer-events-none absolute inset-x-5 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.96),transparent)]" />
             <div className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left sm:py-4">
               <div className="min-w-0">
@@ -261,7 +264,8 @@ export default function HomeTestClient({
           </div>
         </div>
 
-        <div className="relative z-10">
+        {/* LIST: no hidden overlap */}
+        <div className="relative z-10 space-y-3 sm:space-y-4">
           {sortedPosts.map((post, index) => {
             const amount = parseBenefitAmount(post.benefit_amount);
             const host = hostProfileMap[post.user_id] || {
@@ -277,22 +281,16 @@ export default function HomeTestClient({
             );
 
             const offsetClass =
-              index === 0
-                ? "z-[1] mt-2"
-                : index % 5 === 1
-                ? "ml-5 -mt-9 z-[2] sm:ml-6 sm:-mt-9"
-                : index % 5 === 2
-                ? "mr-5 -mt-8 z-[4] sm:mr-6 sm:-mt-8"
-                : index % 5 === 3
-                ? "ml-2 -mt-7 z-[3] sm:ml-3 sm:-mt-7"
-                : index % 5 === 4
-                ? "mr-2 -mt-6 z-[2] sm:mr-3 sm:-mt-6"
-                : "ml-1 -mt-5 z-[1] sm:ml-2 sm:-mt-5";
+              index % 3 === 1
+                ? "translate-x-[6px] sm:translate-x-[8px]"
+                : index % 3 === 2
+                ? "-translate-x-[6px] sm:-translate-x-[8px]"
+                : "";
 
             return (
               <section
                 key={post.id}
-                className={`relative overflow-hidden rounded-[24px] border p-2.5 shadow-[0_24px_48px_rgba(118,126,133,0.18)] transition-transform duration-200 backdrop-blur-lg sm:p-3 ${offsetClass} ${
+                className={`relative overflow-hidden rounded-[24px] border p-2.5 shadow-[0_20px_36px_rgba(118,126,133,0.14)] transition-transform duration-200 backdrop-blur-lg sm:p-3 ${offsetClass} ${
                   isExpired
                     ? "border-white/55 bg-[linear-gradient(180deg,rgba(236,240,243,0.72)_0%,rgba(221,227,232,0.62)_100%)]"
                     : "border-white/60 bg-[linear-gradient(180deg,rgba(248,250,252,0.72)_0%,rgba(228,235,240,0.58)_100%)]"
