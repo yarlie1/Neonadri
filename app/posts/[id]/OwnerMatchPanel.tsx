@@ -10,6 +10,16 @@ import {
   XCircle,
 } from "lucide-react";
 import { createClient } from "../../../lib/supabase/client";
+import {
+  APP_BODY_TEXT_CLASS,
+  APP_BUTTON_PRIMARY_CLASS,
+  APP_BUTTON_SECONDARY_CLASS,
+  APP_EYEBROW_CLASS,
+  APP_PILL_ACTIVE_CLASS,
+  APP_PILL_INACTIVE_CLASS,
+  APP_SOFT_CARD_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "../../designSystem";
 
 type RequesterRow = {
   id: number;
@@ -85,20 +95,20 @@ export default function OwnerMatchPanel({
   };
 
   return (
-    <div className="relative overflow-hidden rounded-[32px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(92,69,52,0.08)]">
-      <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
-      <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+    <div className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-6 py-6`}>
+      <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/55 blur-2xl" />
+      <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#c9d4db]/35 blur-2xl" />
       <div className="relative">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#74675d]">
+            <div className={APP_EYEBROW_CLASS}>
               Host controls
             </div>
-            <h2 className="mt-2 text-[1.7rem] font-black tracking-[-0.04em] text-[#2b1f1a]">
+            <h2 className="mt-2 text-[1.7rem] font-black tracking-[-0.04em] text-[#25333d]">
               {isMatched ? "This meetup is matched" : "Choose your guest"}
             </h2>
             {!isMatched && (
-              <p className="mt-1 max-w-xl text-sm leading-6 text-[#5f453b]">
+              <p className={`mt-1 max-w-xl ${APP_BODY_TEXT_CLASS}`}>
                 {pendingRequestCount > 0
                   ? `${pendingRequestCount} pending request${pendingRequestCount === 1 ? "" : "s"} waiting for your decision.`
                   : "No requests yet. You can still edit the meetup while it is open."}
@@ -107,19 +117,19 @@ export default function OwnerMatchPanel({
           </div>
 
           {!isMatched && (
-            <div className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-4 py-[0.45rem] text-sm font-medium leading-none text-[#6b5f52] backdrop-blur">
+            <div className={`rounded-full px-4 py-[0.45rem] text-sm font-medium leading-none backdrop-blur ${APP_PILL_ACTIVE_CLASS}`}>
               {`${pendingRequestCount} pending`}
             </div>
           )}
         </div>
 
         {isMatched && matchedPartner ? (
-          <div className="mt-5 rounded-[24px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4 backdrop-blur">
+          <div className={`mt-5 ${APP_SOFT_CARD_CLASS} p-4 backdrop-blur`}>
             <div>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5647]">
+              <div className={APP_EYEBROW_CLASS}>
                 Match completed
               </div>
-              <div className="mt-2 text-lg font-semibold text-[#2b1f1a]">
+              <div className="mt-2 text-lg font-semibold text-[#25333d]">
                 You matched with {matchedPartner.displayName}
               </div>
             </div>
@@ -134,27 +144,27 @@ export default function OwnerMatchPanel({
               return (
                 <div
                   key={request.id}
-                  className="rounded-[22px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] p-4 backdrop-blur"
+                  className={`${APP_SOFT_CARD_CLASS} p-4 backdrop-blur`}
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9d7362]">
+                      <div className={APP_EYEBROW_CLASS}>
                         Request
                       </div>
-                      <div className="mt-1 text-lg font-semibold text-[#2b1f1a]">
+                      <div className="mt-1 text-lg font-semibold text-[#25333d]">
                         {request.requesterName}
                       </div>
-                      <div className="mt-1 text-sm text-[#6f655c]">
+                      <div className="mt-1 text-sm text-[#64717a]">
                         {[request.requesterGender || "Unknown", request.requesterAgeGroup || null]
                           .filter(Boolean)
                           .join(" / ")}
                       </div>
-                      <div className="mt-2 text-sm text-[#8b7f74]">
+                      <div className="mt-2 text-sm text-[#86929a]">
                         {new Date(request.createdAt).toLocaleString()}
                       </div>
                     </div>
 
-                    <div className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-xs font-medium uppercase leading-none tracking-[0.12em] text-[#7b7067]">
+                    <div className={`rounded-full px-3 py-[0.3125rem] text-xs font-medium uppercase leading-none tracking-[0.12em] ${APP_PILL_INACTIVE_CLASS}`}>
                       {request.status}
                     </div>
                   </div>
@@ -162,7 +172,7 @@ export default function OwnerMatchPanel({
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Link
                       href={`/profile/${request.requesterUserId}`}
-                      className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#fbf4ed]"
+                      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                     >
                       <UserCircle2 className="h-4 w-4" />
                       View Profile
@@ -174,7 +184,7 @@ export default function OwnerMatchPanel({
                           type="button"
                           onClick={() => handleRequestAction(request.id, "accepted")}
                           disabled={processingRequestId !== null}
-                          className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-4 py-2 text-sm font-medium text-white shadow-[0_10px_18px_rgba(92,69,52,0.10)] transition hover:bg-[#927d69] disabled:opacity-50"
+                          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
                         >
                           <CheckCircle2 className="h-4 w-4" />
                           {processingRequestId === request.id && processingAction === "accepted"
@@ -186,7 +196,7 @@ export default function OwnerMatchPanel({
                           type="button"
                           onClick={() => handleRequestAction(request.id, "rejected")}
                           disabled={processingRequestId !== null}
-                          className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#fbf4ed] disabled:opacity-50"
+                          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_SECONDARY_CLASS}`}
                         >
                           <XCircle className="h-4 w-4" />
                           {processingRequestId === request.id && processingAction === "rejected"
@@ -195,7 +205,7 @@ export default function OwnerMatchPanel({
                         </button>
                       </>
                     ) : (
-                      <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-2 text-sm font-medium text-[#6b5f52]">
+                      <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                         <Clock3 className="h-4 w-4" />
                         {request.status}
                       </div>
@@ -208,13 +218,13 @@ export default function OwnerMatchPanel({
         )}
 
         {!isMatched && requests.length === 0 && (
-          <div className="mt-5 rounded-[22px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-4 text-sm leading-6 text-[#6b5f52] backdrop-blur">
+          <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} backdrop-blur`}>
             No one has requested this meetup yet. You can keep it open or edit the details first.
           </div>
         )}
 
         {isMatched && !matchedPartner && (
-          <div className="mt-5 rounded-[22px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-4 text-sm leading-6 text-[#6b5f52] backdrop-blur">
+          <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} backdrop-blur`}>
             A match has been recorded for this meetup.
           </div>
         )}

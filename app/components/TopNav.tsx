@@ -30,7 +30,7 @@ function PendingBadge({ count }: { count: number }) {
   if (count <= 0) return null;
 
   return (
-    <span className="inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#d7dde1] bg-[linear-gradient(180deg,#ffffff_0%,#e8edf0_100%)] px-1.5 py-0.5 text-[10px] font-bold leading-none text-[#5c6971] shadow-[0_6px_12px_rgba(136,142,148,0.12)]">
+    <span className="inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#b9c6cf] bg-[linear-gradient(180deg,#ffffff_0%,#dbe5eb_100%)] px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-[#2f404b] shadow-[0_10px_18px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.95)]">
       {count > 99 ? "99+" : count}
     </span>
   );
