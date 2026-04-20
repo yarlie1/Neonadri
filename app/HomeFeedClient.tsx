@@ -509,26 +509,6 @@ function ViewportMeetupFeedCard(
 ) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [visibilityRatio, setVisibilityRatio] = useState(1);
-  const [allowLiftMotion, setAllowLiftMotion] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-      return;
-    }
-
-    const mediaQuery = window.matchMedia("(pointer: fine)");
-    const applyPreference = () => setAllowLiftMotion(mediaQuery.matches);
-
-    applyPreference();
-
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", applyPreference);
-      return () => mediaQuery.removeEventListener("change", applyPreference);
-    }
-
-    mediaQuery.addListener(applyPreference);
-    return () => mediaQuery.removeListener(applyPreference);
-  }, []);
 
   useEffect(() => {
     const node = ref.current;
@@ -547,25 +527,17 @@ function ViewportMeetupFeedCard(
     return () => observer.disconnect();
   }, []);
 
-  const opacity = allowLiftMotion ? Math.max(0.5, 0.5 + visibilityRatio * 0.5) : 1;
-  const translateY = allowLiftMotion ? (1 - visibilityRatio) * 10 : 0;
+  const opacity = Math.max(0.5, 0.5 + visibilityRatio * 0.5);
+  const translateY = (1 - visibilityRatio) * 10;
 
   return (
     <div
       ref={ref}
-      style={
-        allowLiftMotion
-          ? {
-              opacity,
-              transform: `translateY(${translateY}px)`,
-            }
-          : undefined
-      }
-      className={
-        allowLiftMotion
-          ? "transition-[opacity,transform] duration-300 ease-out will-change-[opacity,transform]"
-          : ""
-      }
+      style={{
+        opacity,
+        transform: `translateY(${translateY}px)`,
+      }}
+      className="transition-[opacity,transform] duration-300 ease-out will-change-[opacity,transform]"
     >
       <MeetupFeedCard {...props} />
     </div>
