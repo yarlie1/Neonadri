@@ -3,6 +3,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { MapPost } from "../map/page";
+import {
+  APP_BODY_TEXT_CLASS,
+  APP_BUTTON_PRIMARY_CLASS,
+  APP_PILL_ACTIVE_CLASS,
+  APP_PILL_INACTIVE_CLASS,
+  APP_SOFT_CARD_CLASS,
+  APP_SUBTLE_TEXT_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "../designSystem";
 
 declare global {
   interface Window {
@@ -95,9 +104,9 @@ const formatTime = (meetingTime: string | null) => {
 
 const formatDuration = (minutes: number | null) => {
   if (!minutes) return null;
-  if (minutes === 60) return "1h";
-  if (minutes === 90) return "1.5h";
-  if (minutes === 120) return "2h";
+  if (minutes === 60) return "1H";
+  if (minutes === 90) return "1.5H";
+  if (minutes === 120) return "2H";
   return `${minutes}m`;
 };
 
@@ -275,23 +284,23 @@ export default function HomePostsMap({ posts }: Props) {
   };
 
   const badgeClass = (status: string | null) => {
-    if (!status) return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+    if (!status) return APP_PILL_INACTIVE_CLASS;
 
     const normalized = status.toLowerCase();
 
     if (normalized === "matched" || normalized === "accepted") {
-      return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
+      return APP_PILL_ACTIVE_CLASS;
     }
 
     if (normalized === "pending") {
-      return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+      return APP_PILL_INACTIVE_CLASS;
     }
 
     if (normalized === "rejected") {
-      return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
+      return "border border-[#d8e1e7] bg-[linear-gradient(180deg,#f8fbfd_0%,#eef3f6_100%)] text-[#7a8790]";
     }
 
-    return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+    return `border ${APP_PILL_INACTIVE_CLASS}`;
   };
 
   return (
@@ -301,7 +310,7 @@ export default function HomePostsMap({ posts }: Props) {
           type="button"
           onClick={handleUseCurrentLocation}
           disabled={locating}
-          className="rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69] disabled:opacity-50"
+          className={`rounded-xl px-4 py-2 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
         >
           {locating ? "Finding..." : "Use Current Location"}
         </button>
@@ -313,8 +322,8 @@ export default function HomePostsMap({ posts }: Props) {
             onClick={() => setRadius(value)}
             className={`rounded-xl px-4 py-2 text-sm transition ${
               radius === value
-                ? "bg-[#6b5f52] text-white"
-                : "border border-[#dccfc2] bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
+                ? APP_PILL_ACTIVE_CLASS
+                : APP_PILL_INACTIVE_CLASS
             }`}
           >
             {value} mi
@@ -326,20 +335,20 @@ export default function HomePostsMap({ posts }: Props) {
           onClick={() => setRadius("all")}
           className={`rounded-xl px-4 py-2 text-sm transition ${
             radius === "all"
-              ? "bg-[#6b5f52] text-white"
-              : "border border-[#dccfc2] bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
+              ? APP_PILL_ACTIVE_CLASS
+              : APP_PILL_INACTIVE_CLASS
           }`}
         >
           All
         </button>
 
-        <span className="text-sm text-[#6f655c]">
+        <span className={`text-sm ${APP_SUBTLE_TEXT_CLASS}`}>
           Showing {filteredPosts.length} meetup{filteredPosts.length === 1 ? "" : "s"}
         </span>
       </div>
 
       {locationMessage && (
-        <div className="rounded-2xl border border-[#e7ddd2] bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+        <div className={`rounded-2xl px-4 py-3 text-sm ${APP_SOFT_CARD_CLASS} ${APP_BODY_TEXT_CLASS}`}>
           {locationMessage}
         </div>
       )}
@@ -348,29 +357,29 @@ export default function HomePostsMap({ posts }: Props) {
         <div ref={mapRef} className="h-[30rem] w-full rounded-[1.5rem]" />
 
         {selectedPost && (
-          <div className="absolute bottom-4 left-4 right-4 z-10 rounded-[1.25rem] border border-[#e7ddd2] bg-white/95 px-5 py-4 shadow-[0_12px_28px_rgba(60,45,35,0.18)] backdrop-blur">
+          <div className={`absolute bottom-4 left-4 right-4 z-10 px-5 py-4 ${APP_SURFACE_CARD_CLASS}`}>
             <button
               type="button"
               onClick={() => setSelectedPost(null)}
-              className="absolute right-3 top-3 text-sm text-[#8a7d71]"
+              className={`absolute right-3 top-3 text-sm ${APP_SUBTLE_TEXT_CLASS}`}
             >
               Close</button>
 
             <div className="flex items-start justify-between gap-4 pr-6">
               <div className="min-w-0 flex-1">
-                <div className="text-base font-semibold">
+                <div className="text-base font-semibold text-[#26343d]">
                   {getPurposeIcon(selectedPost.meeting_purpose)}{" "}
                   {selectedPost.meeting_purpose || "Meetup"} ·{" "}
                   {formatDuration(selectedPost.duration_minutes)}
                 </div>
 
-                <div className="mt-1 truncate text-lg font-semibold">
+                <div className="mt-1 truncate text-lg font-semibold text-[#1f2e38]">
                   {selectedPost.place_name || selectedPost.location}
                 </div>
               </div>
 
               {selectedPost.benefit_amount && (
-                <div className="shrink-0 rounded-2xl bg-gradient-to-br from-[#f6e7b2] to-[#e8c97a] px-4 py-2 text-sm font-semibold text-[#5a4a1f] shadow">
+                <div className={`shrink-0 rounded-2xl px-4 py-2 text-sm font-semibold ${APP_PILL_ACTIVE_CLASS}`}>
                   Benefit {selectedPost.benefit_amount}
                 </div>
               )}
@@ -378,27 +387,27 @@ export default function HomePostsMap({ posts }: Props) {
 
             <div className="mt-3">
               {selectedPost.meeting_time && (
-                <div className="text-sm text-[#6f655c]">
+                <div className={`text-sm ${APP_BODY_TEXT_CLASS}`}>
                   Time: {formatTime(selectedPost.meeting_time)}
                 </div>
               )}
 
               {selectedPost.location && (
-                <div className="mt-1 line-clamp-1 text-sm text-[#6f655c]">
+                <div className={`mt-1 line-clamp-1 text-sm ${APP_BODY_TEXT_CLASS}`}>
                   Location: {selectedPost.location}
                 </div>
               )}
 
-              <div className="mt-1 text-sm text-[#6f655c]">
+              <div className={`mt-1 text-sm ${APP_BODY_TEXT_CLASS}`}>
                 Target: {selectedPost.target_gender || "Any"} /{" "}
                 {selectedPost.target_age_group || "Any"}
               </div>
 
-              <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-[#6f655c]">
+              <div className={`mt-2 flex flex-wrap items-center justify-between gap-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
                 <span>Host: {selectedPost.host_name}</span>
 
                 {selectedPost.is_my_post ? (
-                  <span className="rounded-full border border-[#e7ddd2] bg-[#f4ece4] px-3 py-1 text-xs text-[#6b5f52]">
+                  <span className={`rounded-full px-3 py-1 text-xs ${APP_PILL_INACTIVE_CLASS}`}>
                     My meetup
                   </span>
                 ) : selectedPost.my_match_status ? (
@@ -416,7 +425,7 @@ export default function HomePostsMap({ posts }: Props) {
             <div className="mt-4">
               <Link
                 href={`/posts/${selectedPost.id}`}
-                className="inline-flex rounded-xl bg-[#a48f7a] px-4 py-2 text-sm text-white transition hover:bg-[#927d69]"
+                className={`inline-flex rounded-xl px-4 py-2 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
               >
                 View Meetup
               </Link>
