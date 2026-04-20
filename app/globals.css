@@ -10,7 +10,6 @@ html {
   scroll-behavior: smooth;
   min-height: 100%;
   background-color: #dfe6eb;
-  overscroll-behavior-y: none;
 }
 
 /* ?„ì²´ ê¸°ë³¸ ?¤í???*/
@@ -97,5 +96,6 @@ textarea:focus {
 .btn-dark:hover {
   background: #1f2937;
 }
+
 
 
