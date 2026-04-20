@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { LocateFixed } from "lucide-react";
 import { useDistanceUnit } from "../../useDistanceUnit";
+import { APP_MUTED_TEXT_CLASS, APP_SOFT_CARD_CLASS, APP_SUBTLE_TEXT_CLASS } from "../../designSystem";
 
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number) {
   const toRad = (v: number) => (v * Math.PI) / 180;
@@ -78,11 +79,11 @@ export default function PostDistanceNote({
   if (!distanceText) return null;
 
   return (
-    <div className="mt-3 rounded-[16px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3 py-2.5">
-      <div className="flex items-start gap-2 text-sm text-[#5f5347]">
-        <LocateFixed className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
+    <div className={`mt-3 rounded-[16px] px-3 py-2.5 ${APP_SOFT_CARD_CLASS}`}>
+      <div className={`flex items-start gap-2 text-sm ${APP_MUTED_TEXT_CLASS}`}>
+        <LocateFixed className="mt-0.5 h-4 w-4 shrink-0 text-[#71828c]" />
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b8f84]">
+          <div className={`text-[11px] font-semibold uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
             Near you
           </div>
           <div className="mt-1">{distanceText}</div>

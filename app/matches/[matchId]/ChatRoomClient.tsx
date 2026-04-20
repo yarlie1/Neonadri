@@ -10,6 +10,14 @@ import {
   Send,
   ShieldCheck,
 } from "lucide-react";
+import {
+  APP_BUTTON_SECONDARY_CLASS,
+  APP_EYEBROW_CLASS,
+  APP_MUTED_TEXT_CLASS,
+  APP_PAGE_BG_CLASS,
+  APP_SOFT_CARD_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "../../designSystem";
 
 declare global {
   interface Window {
@@ -362,7 +370,7 @@ export default function ChatRoomClient({
   };
 
   return (
-    <main className="bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-4 text-[#2f2a26] sm:px-6 sm:py-6">
+    <main className={`${APP_PAGE_BG_CLASS} px-4 py-4 text-[#2f2a26] sm:px-6 sm:py-6`}>
       <Script
         src="https://cdn.pubnub.com/sdk/javascript/pubnub.10.2.8.js"
         strategy="afterInteractive"
@@ -374,17 +382,17 @@ export default function ChatRoomClient({
         }}
       />
       <div className="mx-auto max-w-3xl">
-        <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-5">
+        <div className={`${APP_SURFACE_CARD_CLASS} rounded-[24px] p-4 sm:p-5`}>
           {isProviderConfigured ? (
             <>
-              <div className="border-b border-[#eadfd3] pb-3">
-                <div className="flex items-center justify-between gap-3 text-xs font-medium text-[#8c7e73]">
-                  <span className="font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+              <div className="border-b border-[#dce4ea] pb-3">
+                <div className="flex items-center justify-between gap-3 text-xs font-medium text-[#7a8790]">
+                  <span className={APP_EYEBROW_CLASS}>
                     Live chat
                   </span>
                 </div>
-                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#5f453b]">
-                  <span className="inline-flex items-center gap-2 font-semibold text-[#2b1f1a]">
+                <div className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm ${APP_MUTED_TEXT_CLASS}`}>
+                  <span className="inline-flex items-center gap-2 font-semibold text-[#24323c]">
                     <span
                       className={`inline-flex h-2.5 w-2.5 rounded-full ${
                         isOtherUserActiveNow ? "bg-[#4e9d62]" : "bg-[#b6aea7]"
@@ -400,7 +408,7 @@ export default function ChatRoomClient({
 
               <div
                 ref={listRef}
-                className="mt-4 h-[315px] overflow-y-auto rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#fff8f1_100%)] px-3 py-3 sm:h-[345px] sm:px-4"
+                className="mt-4 h-[315px] overflow-y-auto rounded-[18px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-3 py-3 sm:h-[345px] sm:px-4"
               >
                 {messages.length > 0 ? (
                   <div className="space-y-3">
@@ -435,9 +443,9 @@ export default function ChatRoomClient({
                     })}
                   </div>
                 ) : (
-                  <div className="flex h-full flex-col items-center justify-center px-6 text-center text-sm text-[#8c7e73]">
-                    <MessageSquareMore className="h-8 w-8 text-[#b19b8d]" />
-                    <div className="mt-3 font-medium text-[#6f6258]">No messages yet</div>
+                  <div className="flex h-full flex-col items-center justify-center px-6 text-center text-sm text-[#7a8790]">
+                    <MessageSquareMore className="h-8 w-8 text-[#9aa6ad]" />
+                    <div className="mt-3 font-medium text-[#52616a]">No messages yet</div>
                     <div className="mt-1 max-w-xs leading-6">
                       Start with a quick hello, confirm the time, or share an arrival update.
                     </div>
@@ -445,7 +453,7 @@ export default function ChatRoomClient({
                 )}
               </div>
 
-              <div className="mt-4 rounded-[18px] border border-[#ece1d4] bg-white p-2 sm:p-3">
+              <div className={`mt-4 rounded-[18px] p-2 sm:p-3 ${APP_SOFT_CARD_CLASS}`}>
                 <div className="flex gap-2">
                   <textarea
                     value={draft}
@@ -458,7 +466,7 @@ export default function ChatRoomClient({
                     type="button"
                     onClick={() => void handleSend()}
                     disabled={!canSend}
-                    className="inline-flex h-[56px] shrink-0 items-center gap-2 self-end rounded-[16px] border border-[#dccfc2] bg-[#fff7ef] px-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4] disabled:cursor-not-allowed disabled:opacity-60"
+                    className={`inline-flex h-[56px] shrink-0 items-center gap-2 self-end rounded-[16px] px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${APP_BUTTON_SECONDARY_CLASS}`}
                   >
                     {sending ? (
                       <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -471,20 +479,20 @@ export default function ChatRoomClient({
               </div>
 
               {errorMessage && (
-                <div className="mt-3 rounded-[14px] border border-[#eadfd3] bg-[#fbf6f0] px-4 py-3 text-sm text-[#7b6256]">
+                <div className="mt-3 rounded-[14px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
                   {errorMessage}
                 </div>
               )}
 
-              <div className="mt-4 text-center text-[11px] font-medium text-[#9b8f84]">
+              <div className="mt-4 text-center text-[11px] font-medium text-[#7f8b92]">
                 Live Chat Powered by PubNub
               </div>
             </>
           ) : (
-            <div className="rounded-[18px] border border-[#ece1d4] bg-[linear-gradient(180deg,#fffdfa_0%,#f8f0e8_100%)] px-4 py-4">
+            <div className={`rounded-[18px] px-4 py-4 ${APP_SOFT_CARD_CLASS}`}>
               <div className="flex items-start gap-3">
-                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#8a7f74]" />
-                <div className="text-sm leading-6 text-[#5f5347]">
+                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#71828c]" />
+                <div className="text-sm leading-6 text-[#52616a]">
                   Chat is ready, but PubNub keys are not configured yet.
                 </div>
               </div>
@@ -496,7 +504,7 @@ export default function ChatRoomClient({
         <div className="mt-4 flex flex-wrap gap-2">
           <Link
             href="/dashboard?tab=matches"
-            className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
           >
             Back to Matches
           </Link>

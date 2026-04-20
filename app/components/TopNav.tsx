@@ -68,7 +68,7 @@ export default function TopNav() {
   const loggingOutRef = useRef(false);
   const pathname = usePathname();
   const isHomeTest = pathname.startsWith("/home-test");
-  const isSilverHome = isHomeTest || pathname === "/";
+  const isSilverHome = true;
   
   const currentPathWithSearch = useMemo(() => {
     return currentSearch ? `${pathname}${currentSearch}` : pathname;
@@ -298,7 +298,7 @@ export default function TopNav() {
       isSilverHome
         ? active
           ? "border-[#e6edf1] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(240,244,246,0.995)_100%)] text-[#26343d] shadow-[0_12px_24px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,0.99)]"
-          : "border-[#e6edf1] bg-[linear-gradient(180deg,rgba(253,253,253,0.98)_0%,rgba(243,246,248,0.98)_100%)] text-[#66737b] shadow-[0_8px_18px_rgba(118,126,133,0.06)] hover:border-[#dbe3e8] hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(245,248,250,1)_100%)] hover:text-[#495861]"
+          : "border-[#e6edf1] bg-[linear-gradient(180deg,rgba(253,253,253,0.98)_0%,rgba(243,246,248,0.98)_100%)] text-[#4f5f68] shadow-[0_8px_18px_rgba(118,126,133,0.06)] hover:border-[#dbe3e8] hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(245,248,250,1)_100%)] hover:text-[#33434c]"
         : active
         ? "border-[#dfcaba] bg-[linear-gradient(180deg,#fffdf9_0%,#f3e7db_100%)] text-[#3f3226] shadow-[0_12px_28px_rgba(120,86,52,0.10)]"
         : "border-[#e5d8cb] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e7_100%)] text-[#5a5149] shadow-[0_8px_18px_rgba(93,68,48,0.04)] hover:bg-[#f6eee6]"
@@ -309,7 +309,7 @@ export default function TopNav() {
     : "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
 
   const mobileItem = isSilverHome
-    ? "inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium text-[#68757d] transition hover:bg-[#f4f7f9] hover:text-[#485760]"
+    ? "inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium text-[#52616a] transition hover:bg-[#f4f7f9] hover:text-[#33434c]"
     : "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
 
   return (
@@ -507,7 +507,7 @@ export default function TopNav() {
                           isSilverHome && isActivePath(pathname, "/dashboard")
                             ? "!bg-[#eef4f7] !text-[#33434c]"
                             : isSilverHome
-                            ? "!text-[#707b82] hover:!bg-[#f3f6f8]"
+                            ? "!text-[#52616a] hover:!bg-[#f3f6f8]"
                             : isActivePath(pathname, "/dashboard")
                             ? "bg-[#f4e6d8] text-[#3f3226]"
                             : "text-[#5a5149] hover:bg-[#f4ece4]"
@@ -563,7 +563,7 @@ export default function TopNav() {
                         disabled={isLoggingOut}
                         className={`inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-left text-sm font-medium transition ${
                           isSilverHome
-                            ? "text-[#707b82] hover:bg-[#f3f6f8]"
+                            ? "text-[#52616a] hover:bg-[#f3f6f8]"
                             : "text-[#8b5e3c] hover:bg-[#f8efe7]"
                         } ${
                           isLoggingOut ? "cursor-not-allowed opacity-60" : ""
