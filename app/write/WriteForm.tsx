@@ -9,6 +9,7 @@ import {
   User,
   Coins,
   CheckCircle,
+  Check,
 } from "lucide-react";
 import { useCreateMeetupDraft } from "./useCreateMeetupDraft";
 import {
@@ -403,12 +404,13 @@ export default function WriteForm({ userId }: { userId: string }) {
                   onClick={() => setMeetingPurpose(item.value)}
                   className={`flex min-h-[52px] items-center gap-2 rounded-[20px] border px-4 py-3 text-left text-sm font-medium transition ${
                     isSelected
-                      ? `${APP_BUTTON_PRIMARY_CLASS} border-transparent`
+                      ? `${APP_BUTTON_PRIMARY_CLASS} border-[#b9c7d0] ring-2 ring-[#c5d0d7]/60 shadow-[0_14px_24px_rgba(118,126,133,0.16)]`
                       : "border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#52616a] hover:bg-[#f5f8fa]"
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
-                  <span>{item.value}</span>
+                  <span className="flex-1">{item.value}</span>
+                  {isSelected ? <Check className="h-4 w-4 shrink-0" /> : null}
                 </button>
               );
             })}

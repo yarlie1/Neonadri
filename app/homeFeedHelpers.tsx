@@ -75,8 +75,8 @@ export function getPurposeIcon(purpose: string | null, className?: string) {
 export function formatDuration(minutes: number | null) {
   if (!minutes) return "";
   const hours = minutes / 60;
-  if (Number.isInteger(hours)) return `${hours}h`;
-  return `${hours.toFixed(1).replace(/\.0$/, "")}h`;
+  if (Number.isInteger(hours)) return `${hours}H`;
+  return `${hours.toFixed(1).replace(/\.0$/, "")}H`;
 }
 
 export function getPurposeTheme(purpose: string | null) {
@@ -182,7 +182,7 @@ export function getMatchBadge(
   return {
     label: requestCount > 0 ? `Open / ${requestCount}` : "Open",
     className:
-      "border border-[#d6e0e7] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f7_100%)] text-[#4f6672]",
+      "border border-[#c9d8cf] bg-[linear-gradient(180deg,#ffffff_0%,#edf7f1_100%)] text-[#466958]",
   };
 }
 

@@ -446,7 +446,7 @@ export function MeetupFeedCard({
               <Clock3 className="h-4 w-4 shrink-0 text-[#788b95]" />
               <span className="truncate">{whenText}</span>
               {durationLabel ? (
-                <span className="ml-auto rounded-[14px] border border-[#cbd4db] bg-[linear-gradient(180deg,#ffffff_0%,#eceff2_100%)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#52616a] shadow-[0_8px_14px_rgba(118,126,133,0.12)]">
+                <span className="ml-auto rounded-[14px] border border-[#cbd4db] bg-[linear-gradient(180deg,#ffffff_0%,#eceff2_100%)] px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#3b4c56] shadow-[0_8px_14px_rgba(118,126,133,0.12)]">
                   {durationLabel}
                 </span>
               ) : null}

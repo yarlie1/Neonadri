@@ -189,7 +189,7 @@ export default function OwnerMatchPanel({
                           <CheckCircle2 className="h-4 w-4" />
                           {processingRequestId === request.id && processingAction === "accepted"
                             ? "Accepting..."
-                            : "Select"}
+                            : "Accept"}
                         </button>
 
                         <button

@@ -3,6 +3,17 @@
 import { useState } from "react";
 import { Clock3, MapPin, Sparkles, Star } from "lucide-react";
 import { formatMeetingTime } from "../../../../lib/meetingTime";
+import {
+  APP_BUTTON_PRIMARY_CLASS,
+  APP_BUTTON_SECONDARY_CLASS,
+  APP_BODY_TEXT_CLASS,
+  APP_EYEBROW_CLASS,
+  APP_PILL_ACTIVE_CLASS,
+  APP_PILL_INACTIVE_CLASS,
+  APP_PAGE_BG_CLASS,
+  APP_SOFT_CARD_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "../../../designSystem";
 
 type PostRow = {
   id: number;
@@ -89,26 +100,26 @@ export default function ReviewWriteForm({
   };
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-4 py-6">
+    <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6`}>
       <div className="mx-auto max-w-xl space-y-4">
-        <div className="rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
-          <h1 className="text-2xl font-bold text-[#2f2a26]">Leave a Review</h1>
+        <div className={`${APP_SURFACE_CARD_CLASS} rounded-[28px] p-6`}>
+          <h1 className="text-2xl font-bold text-[#24323c]">Leave a Review</h1>
 
           {initialPostInfo && (
-            <div className="mt-4 rounded-[20px] border border-[#e7ddd2] bg-[#fcfaf7] p-4">
-              <div className="text-sm font-medium text-[#7a6f65]">Review for</div>
-              <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
+            <div className={`mt-4 rounded-[20px] p-4 ${APP_SOFT_CARD_CLASS}`}>
+              <div className={APP_EYEBROW_CLASS}>Review for</div>
+              <div className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#24323c]">
                 {initialRevieweeName || "your match"}
               </div>
 
               <div className="mt-3 space-y-2">
-                <div className="flex items-center gap-2 text-sm text-[#766c62]">
-                  <Sparkles className="h-4 w-4 text-[#8a7f74]" />
+                <div className="flex items-center gap-2 text-sm text-[#66727a]">
+                  <Sparkles className="h-4 w-4 text-[#71828c]" />
                   <span>{initialPostInfo.meeting_purpose || "Meetup"}</span>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm text-[#766c62]">
-                  <MapPin className="h-4 w-4 text-[#8a7f74]" />
+                <div className="flex items-center gap-2 text-sm text-[#66727a]">
+                  <MapPin className="h-4 w-4 text-[#71828c]" />
                   <span>
                     {initialPostInfo.place_name ||
                       initialPostInfo.location ||
@@ -118,8 +129,8 @@ export default function ReviewWriteForm({
               </div>
 
               {initialPostInfo.meeting_time && (
-                <div className="mt-2 flex items-center gap-2 text-sm text-[#766c62]">
-                  <Clock3 className="h-4 w-4 text-[#8a7f74]" />
+                <div className="mt-2 flex items-center gap-2 text-sm text-[#66727a]">
+                  <Clock3 className="h-4 w-4 text-[#71828c]" />
                   <span>
                     {formatMeetingTime(
                       initialPostInfo.meeting_time,
@@ -132,13 +143,13 @@ export default function ReviewWriteForm({
           )}
 
           {!initialCanReview ? (
-            <div className="mt-5 rounded-2xl bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+            <div className={`mt-5 rounded-2xl px-4 py-3 text-sm ${APP_SOFT_CARD_CLASS} ${APP_BODY_TEXT_CLASS}`}>
               {message || "You cannot review this meetup yet."}
             </div>
           ) : (
             <div className="mt-5 space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#6f655c]">
+                <label className="mb-2 block text-sm font-medium text-[#52616a]">
                   Rating
                 </label>
 
@@ -152,7 +163,7 @@ export default function ReviewWriteForm({
                         type="button"
                         onClick={() => setRating(n)}
                         className={`rounded-full p-2 transition ${
-                          active ? "text-[#a48f7a]" : "text-[#d1c7bc]"
+                          active ? "text-[#71828c]" : "text-[#d1d9df]"
                         }`}
                       >
                         <Star
@@ -165,7 +176,7 @@ export default function ReviewWriteForm({
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#6f655c]">
+                <label className="mb-2 block text-sm font-medium text-[#52616a]">
                   Did your match show up for the meetup?
                 </label>
                 <div className="flex gap-2">
@@ -180,9 +191,7 @@ export default function ReviewWriteForm({
                         type="button"
                         onClick={() => setShowedUp(option.value)}
                         className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-                          active
-                            ? "border-[#a48f7a] bg-[#a48f7a] text-white"
-                            : "border-[#dccfc2] bg-white text-[#5a5149] hover:bg-[#f4ece4]"
+                          active ? APP_PILL_ACTIVE_CLASS : APP_PILL_INACTIVE_CLASS
                         }`}
                       >
                         {option.label}
@@ -194,7 +203,7 @@ export default function ReviewWriteForm({
 
               {initialRevieweeIsHost && (
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[#6f655c]">
+                  <label className="mb-2 block text-sm font-medium text-[#52616a]">
                     Did the host pay the promised benefit?
                   </label>
                   <div className="flex gap-2">
@@ -209,9 +218,7 @@ export default function ReviewWriteForm({
                           type="button"
                           onClick={() => setHostPaidBenefit(option.value)}
                           className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-                            active
-                              ? "border-[#a48f7a] bg-[#a48f7a] text-white"
-                              : "border-[#dccfc2] bg-white text-[#5a5149] hover:bg-[#f4ece4]"
+                            active ? APP_PILL_ACTIVE_CLASS : APP_PILL_INACTIVE_CLASS
                           }`}
                         >
                           {option.label}
@@ -223,12 +230,12 @@ export default function ReviewWriteForm({
               )}
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#6f655c]">
+                <label className="mb-2 block text-sm font-medium text-[#52616a]">
                   Comment
                 </label>
 
                 <textarea
-                  className="w-full rounded-2xl border border-[#dccfc2] px-4 py-3 text-sm text-[#2f2a26] outline-none"
+                  className="w-full rounded-2xl border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30"
                   rows={5}
                   placeholder="How was your meetup?"
                   value={reviewText}
@@ -240,7 +247,7 @@ export default function ReviewWriteForm({
                 <button
                   onClick={handleSubmit}
                   disabled={saving}
-                  className="rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+                  className={`rounded-full px-5 py-3 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
                 >
                   {saving ? "Submitting..." : "Submit Review"}
                 </button>
@@ -248,14 +255,14 @@ export default function ReviewWriteForm({
                 <button
                   type="button"
                   onClick={() => window.history.back()}
-                  className="rounded-full border border-[#dccfc2] bg-white px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                  className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                 >
                   Cancel
                 </button>
               </div>
 
               {message && (
-                <div className="rounded-2xl bg-[#f4ece4] px-4 py-3 text-sm text-[#6b5f52]">
+                <div className="rounded-2xl border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
                   {message}
                 </div>
               )}

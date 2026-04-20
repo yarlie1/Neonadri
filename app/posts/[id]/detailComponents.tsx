@@ -145,8 +145,8 @@ export const getPurposeTheme = (_purpose: string | null) => ({
 export const formatDuration = (minutes: number | null) => {
   if (!minutes) return null;
   const hours = minutes / 60;
-  if (Number.isInteger(hours)) return `${hours}h`;
-  return `${hours.toFixed(1).replace(/\.0$/, "")}h`;
+  if (Number.isInteger(hours)) return `${hours}H`;
+  return `${hours.toFixed(1).replace(/\.0$/, "")}H`;
 };
 
 function StarRating({
@@ -631,13 +631,13 @@ export function MeetupOverviewCard({
             </div>
             <div className={`inline-flex w-[58px] shrink-0 flex-col items-center justify-center ${APP_ROW_SURFACE_CLASS} px-1.5 py-2 text-center text-[#3c4850]`}>
               <Clock3 className="h-4 w-4" />
-              <span className="mt-1 text-sm font-semibold tracking-[-0.03em]">
+              <span className="mt-1 text-sm font-extrabold tracking-[-0.03em] text-[#23333d]">
                 {meetupDurationLabel}
               </span>
             </div>
             <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-1.5 py-2 text-center text-[#52616a] shadow-sm">
               <Coins className="h-4 w-4" />
-              <span className="mt-1 text-sm font-semibold tracking-[-0.03em]">
+              <span className="mt-1 text-sm font-extrabold tracking-[-0.03em] text-[#23333d]">
                 {post.benefit_amount || "N/A"}
               </span>
             </div>

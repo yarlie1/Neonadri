@@ -14,8 +14,6 @@ import {
   Inbox,
   Send,
   HeartHandshake,
-  CheckCircle2,
-  XCircle,
   Plus,
   Star,
 } from "lucide-react";
@@ -333,30 +331,6 @@ function ReceivedTabPanel({
 
             <MiniPostPreview post={postMap[item.post_id]} timeZone={userTimeZone} />
 
-            {item.status === "pending" ? (
-              <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
-                <CompactActionButton
-                  onClick={() => updateRequestStatus(item.id, "accepted")}
-                  disabled={processingRequestId !== null}
-                  primary
-                >
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  {processingRequestId === item.id && processingRequestAction === "accepted"
-                    ? "Accepting..."
-                    : "Accept"}
-                </CompactActionButton>
-
-                <CompactActionButton
-                  onClick={() => updateRequestStatus(item.id, "rejected")}
-                  disabled={processingRequestId !== null}
-                >
-                  <XCircle className="h-3.5 w-3.5" />
-                  {processingRequestId === item.id && processingRequestAction === "rejected"
-                    ? "Rejecting..."
-                    : "Reject"}
-                </CompactActionButton>
-              </div>
-            ) : null}
           </div>
         );
       })}

@@ -120,9 +120,9 @@ export function getPurposeIcon(purpose: string | null) {
 
 export function formatDuration(minutes: number | null) {
   if (!minutes) return "";
-  if (minutes === 60) return "1h";
-  if (minutes === 90) return "1.5h";
-  if (minutes === 120) return "2h";
+  if (minutes === 60) return "1H";
+  if (minutes === 90) return "1.5H";
+  if (minutes === 120) return "2H";
   return `${minutes}m`;
 }
 
