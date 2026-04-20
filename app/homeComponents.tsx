@@ -10,10 +10,20 @@ import {
   RotateCcw,
   Search,
   SlidersHorizontal,
-  UserCircle2,
   UserRound,
 } from "lucide-react";
 import { getDistanceOptionLabel, getPurposeLabel } from "./homeFeedHelpers";
+import {
+  APP_BODY_TEXT_CLASS,
+  APP_BUTTON_SECONDARY_CLASS,
+  APP_INNER_PANEL_CLASS,
+  APP_PILL_ACTIVE_CLASS,
+  APP_PILL_INACTIVE_CLASS,
+  APP_ROW_SURFACE_CLASS,
+  APP_SOFT_CARD_CLASS,
+  APP_SUBTLE_TEXT_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "./designSystem";
 import type { DistanceUnit } from "./useDistanceUnit";
 
 export function FilterPill({
@@ -30,9 +40,7 @@ export function FilterPill({
       type="button"
       onClick={onClick}
       className={`inline-flex items-center rounded-full px-3 py-2 text-sm font-medium transition ${
-        active
-          ? "border border-[#bfcbd3] bg-[linear-gradient(180deg,#ffffff_0%,#dde7ed_100%)] text-[#1f2e38] shadow-[0_12px_22px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,0.96)]"
-          : "border border-[#e5ebef] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] text-[#66737b] hover:bg-[#f6f9fb]"
+        active ? APP_PILL_ACTIVE_CLASS : APP_PILL_INACTIVE_CLASS
       }`}
     >
       {label}
@@ -109,8 +117,8 @@ export function HomeFilterCard({
     <div
       className={`rounded-[28px] transition ${
         isPinned
-          ? "border border-[#dfe7ec] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] shadow-[0_18px_40px_rgba(118,126,133,0.11)]"
-          : "border border-[#e3eaee] bg-[linear-gradient(180deg,#ffffff_0%,#f4f7f9_100%)] shadow-[0_8px_20px_rgba(118,126,133,0.05)]"
+          ? `${APP_SOFT_CARD_CLASS} shadow-[0_18px_40px_rgba(118,126,133,0.11)]`
+          : `${APP_SOFT_CARD_CLASS} shadow-[0_8px_20px_rgba(118,126,133,0.05)]`
       }`}
     >
       <button
@@ -120,14 +128,14 @@ export function HomeFilterCard({
       >
         <div className="min-w-0">
           <div className="flex items-center gap-2 text-sm font-semibold text-[#2f3b44]">
-            <SlidersHorizontal className="h-4 w-4 text-[#7f888e]" />
+            <SlidersHorizontal className={`h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
             Refine your view
           </div>
           <div className="mt-2">{summaryText}</div>
         </div>
 
         <span
-          className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f7_100%)] text-[#737d84] shadow-[0_10px_18px_rgba(118,126,133,0.07)] transition ${
+          className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full shadow-[0_10px_18px_rgba(118,126,133,0.07)] transition ${APP_PILL_INACTIVE_CLASS} ${
             isOpen ? "rotate-180" : ""
           }`}
         >
@@ -138,7 +146,7 @@ export function HomeFilterCard({
       {isOpen && (
         <div className="max-h-[calc(100vh-14rem)] overflow-y-auto border-t border-[#e6edf1] px-4 py-4 pb-6 sm:pb-5">
           <div>
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
+            <div className={`mb-2 text-xs font-medium uppercase tracking-[0.08em] ${APP_SUBTLE_TEXT_CLASS}`}>
               Status
             </div>
             <div className="flex flex-wrap gap-2">
@@ -154,7 +162,7 @@ export function HomeFilterCard({
           </div>
 
           <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
+            <div className={`mb-2 text-xs font-medium uppercase tracking-[0.08em] ${APP_SUBTLE_TEXT_CLASS}`}>
               Audience
             </div>
             <div className="flex flex-wrap gap-2">
@@ -170,7 +178,7 @@ export function HomeFilterCard({
           </div>
 
           <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
+            <div className={`mb-2 text-xs font-medium uppercase tracking-[0.08em] ${APP_SUBTLE_TEXT_CLASS}`}>
               Purpose
             </div>
             <div className="flex flex-wrap gap-2">
@@ -186,7 +194,7 @@ export function HomeFilterCard({
           </div>
 
           <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
+            <div className={`mb-2 text-xs font-medium uppercase tracking-[0.08em] ${APP_SUBTLE_TEXT_CLASS}`}>
               Gender
             </div>
             <div className="flex flex-wrap gap-2">
@@ -202,7 +210,7 @@ export function HomeFilterCard({
           </div>
 
           <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
+            <div className={`mb-2 text-xs font-medium uppercase tracking-[0.08em] ${APP_SUBTLE_TEXT_CLASS}`}>
               Age Group
             </div>
             <div className="flex flex-wrap gap-2">
@@ -218,7 +226,7 @@ export function HomeFilterCard({
           </div>
 
           <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
+            <div className={`mb-2 text-xs font-medium uppercase tracking-[0.08em] ${APP_SUBTLE_TEXT_CLASS}`}>
               Near you
             </div>
             <div className="flex flex-wrap gap-2">
@@ -253,7 +261,7 @@ export function HomeFilterCard({
           </div>
 
           <div className="mt-4">
-            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#7f8990]">
+            <div className={`mb-2 text-xs font-medium uppercase tracking-[0.08em] ${APP_SUBTLE_TEXT_CLASS}`}>
               Sort
             </div>
             <div className="flex flex-wrap gap-2">
@@ -268,7 +276,7 @@ export function HomeFilterCard({
             </div>
 
             {(sort === "distance" || distance !== "all") && (
-              <div className="mt-3 text-xs text-[#7f8990]">
+              <div className={`mt-3 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
                 {locationStatus === "loading" && "Finding nearby meetups..."}
                 {locationStatus === "denied" &&
                   "Location permission is off, so nearby filters may be less precise."}
@@ -284,7 +292,7 @@ export function HomeFilterCard({
             <button
               type="button"
               onClick={onReset}
-              className="inline-flex items-center gap-1 rounded-full border border-[#dde5ea] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-3 py-2 text-xs font-medium text-[#5f6c74] transition hover:bg-[#f6f9fb]"
+              className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-xs font-medium transition ${APP_PILL_INACTIVE_CLASS}`}
             >
               <RotateCcw className="h-3.5 w-3.5" />
               Reset
@@ -316,11 +324,11 @@ export function FeaturedMeetupCard({
   targetText: string;
 }) {
   return (
-    <section className="overflow-hidden rounded-[30px] border border-[#dbe3e8] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.995)_32%,rgba(229,235,240,0.995)_100%)] shadow-[0_24px_48px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,1)]">
+    <section className={`overflow-hidden ${APP_SURFACE_CARD_CLASS} shadow-[0_24px_48px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,1)]`}>
       <div className="border-b border-[#e3e6e8] px-5 py-4 sm:py-5">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#838b91]">
+            <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] ${APP_SUBTLE_TEXT_CLASS}`}>
               <Search className="h-3.5 w-3.5" />
               Featured moment
             </div>
@@ -331,7 +339,7 @@ export function FeaturedMeetupCard({
 
           <Link
             href={`/posts/${postId}`}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-[18px] border border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f7_100%)] text-[#747e85] shadow-[0_12px_22px_rgba(118,126,133,0.08)] transition hover:bg-[#f7fafb]"
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-[18px] shadow-[0_12px_22px_rgba(118,126,133,0.08)] transition ${APP_BUTTON_SECONDARY_CLASS}`}
             aria-label="Open featured meetup"
           >
             <ArrowUpRight className="h-4 w-4" />
@@ -340,8 +348,8 @@ export function FeaturedMeetupCard({
       </div>
 
       <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.45fr_0.95fr] sm:px-5 sm:py-5">
-        <div className="relative overflow-hidden rounded-[24px] border border-[#d8e1e6] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(247,249,250,0.996)_44%,rgba(235,240,244,0.996)_100%)] px-4 py-3.5 text-[#24323f] shadow-[0_18px_30px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#eef2f4] bg-[#ffffffd8] px-3 py-1.5 text-xs font-medium text-[#788087]">
+        <div className={`relative overflow-hidden px-4 py-3.5 text-[#24323f] sm:py-4 ${APP_INNER_PANEL_CLASS}`}>
+          <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
             {purposeIcon}
             {purposeLabel}
           </div>
@@ -350,26 +358,26 @@ export function FeaturedMeetupCard({
             {purposeCopy}
           </div>
 
-          <div className="mt-2.5 max-w-md text-sm leading-6 text-[#69747c] sm:mt-3">
+          <div className={`mt-2.5 max-w-md sm:mt-3 ${APP_BODY_TEXT_CLASS}`}>
             A quieter featured moment, with just a little more room to breathe.
           </div>
         </div>
 
-        <div className="relative overflow-hidden space-y-2 rounded-[20px] border border-[#d8e0e5] bg-[linear-gradient(180deg,rgba(255,255,255,0.998)_0%,rgba(244,247,249,0.994)_100%)] px-4 py-3.5 text-[#38434b] shadow-[0_14px_24px_rgba(118,126,133,0.08)] sm:space-y-2.5 sm:py-4">
+        <div className={`relative overflow-hidden space-y-2 px-4 py-3.5 text-[#38434b] sm:space-y-2.5 sm:py-4 ${APP_INNER_PANEL_CLASS}`}>
           <div className="flex items-center gap-2 text-sm">
-            <Clock3 className="h-4 w-4 text-[#7c8489]" />
+            <Clock3 className={`h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
             <span>{timeLabel}</span>
           </div>
 
           <div className="flex min-w-0 items-start gap-2 text-sm">
-            <MapPin className="mt-0.5 h-4 w-4 text-[#7c8489]" />
+            <MapPin className={`mt-0.5 h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
             <span className="block min-w-0 flex-1 break-words line-clamp-2">
               {placeText}
             </span>
           </div>
 
           <div className="flex items-center gap-2 text-sm">
-            <Search className="h-4 w-4 text-[#7c8489]" />
+            <Search className={`h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
             <span>{targetText}</span>
           </div>
         </div>
@@ -418,16 +426,16 @@ export function MeetupFeedCard({
           : "border-[#d7e1e7] bg-[linear-gradient(180deg,rgba(250,252,254,1)_0%,rgba(231,238,243,0.985)_100%)] hover:-translate-y-0.5 hover:shadow-[0_20px_34px_rgba(118,126,133,0.15)]"
       }`}
     >
-      <div className="rounded-[18px] border border-[#d6e0e6] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(239,244,247,0.99)_100%)] px-4 py-3.5 shadow-[0_14px_24px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)]">
+      <div className={`px-4 py-3.5 ${APP_INNER_PANEL_CLASS}`}>
         <div className="flex items-start justify-between gap-3">
           <div className="grid min-w-0 flex-1 grid-cols-[40px_minmax(0,1fr)] gap-x-2.5 gap-y-1">
-            <div className="inline-flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#d0dae1] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#6f808a] shadow-[0_8px_16px_rgba(118,126,133,0.1)]">
+            <div className={`inline-flex h-10 w-10 items-center justify-center rounded-[14px] shadow-[0_8px_16px_rgba(118,126,133,0.1)] ${APP_ROW_SURFACE_CLASS}`}>
               {purposeIcon}
             </div>
             <div className="min-w-0 truncate self-center pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
               {purposeName}
             </div>
-            <div className="col-start-2 min-w-0 truncate text-[12px] leading-none text-[#75818a]">
+            <div className={`col-start-2 min-w-0 truncate text-[12px] leading-none ${APP_SUBTLE_TEXT_CLASS}`}>
               Hosted by {hostName}
               {hostMeta ? ` | ${hostMeta}` : ""}
             </div>
@@ -440,10 +448,10 @@ export function MeetupFeedCard({
           </div>
         </div>
 
-          <div className="mt-3.5 grid gap-2">
+        <div className="mt-3.5 grid gap-2">
           {whenText && (
-            <div className="flex min-h-[56px] items-center gap-2.5 rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_10px_18px_rgba(118,126,133,0.07),inset_0_1px_0_rgba(255,255,255,0.98)]">
-              <Clock3 className="h-4 w-4 shrink-0 text-[#788b95]" />
+            <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
+              <Clock3 className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
               <span className="truncate">{whenText}</span>
               {durationLabel ? (
                 <span className="ml-auto rounded-[14px] border border-[#cbd4db] bg-[linear-gradient(180deg,#ffffff_0%,#eceff2_100%)] px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#3b4c56] shadow-[0_8px_14px_rgba(118,126,133,0.12)]">
@@ -453,34 +461,34 @@ export function MeetupFeedCard({
             </div>
           )}
 
-          <div className="flex min-h-[56px] items-center gap-2.5 rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_10px_18px_rgba(118,126,133,0.07),inset_0_1px_0_rgba(255,255,255,0.98)]">
-            <MapPin className="h-4 w-4 shrink-0 text-[#788b95]" />
+          <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
+            <MapPin className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
             <span className="min-w-0 flex-1 break-words">{placeText}</span>
           </div>
 
-          <div className="flex min-h-[56px] items-center justify-between gap-2.5 rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_10px_18px_rgba(118,126,133,0.07),inset_0_1px_0_rgba(255,255,255,0.98)]">
+          <div className={`flex min-h-[56px] items-center justify-between gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
             <span className="inline-flex min-w-0 items-center gap-2 text-[#55646e]">
-              <UserRound className="h-4 w-4 shrink-0 text-[#788b95]" />
+              <UserRound className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
               <span className="truncate">{lookingForText}</span>
             </span>
             {amountText ? (
               <span className="inline-flex shrink-0 items-center gap-2 rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-3 py-1.5 font-semibold text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)]">
-                <Coins className="h-4 w-4 text-[#7b8d97]" />
+                <Coins className={`h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
                 {amountText.startsWith("+") ? `$${amountText.slice(1)}` : amountText}
               </span>
             ) : null}
           </div>
 
           {distanceText && (
-            <div className="flex min-h-[56px] items-center gap-2.5 rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-3.5 py-2 text-sm text-[#364149] shadow-[0_10px_18px_rgba(118,126,133,0.07),inset_0_1px_0_rgba(255,255,255,0.98)]">
-              <LocateFixed className="h-4 w-4 shrink-0 text-[#788b95]" />
+            <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
+              <LocateFixed className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
               <span>{distanceText}</span>
             </div>
           )}
         </div>
 
-        <div className="mt-3 flex items-center justify-between gap-3 rounded-[14px] border border-[#dde4e9] bg-[linear-gradient(90deg,rgba(252,253,254,0.98)_0%,rgba(239,243,246,0.9)_100%)] px-3 py-1.5">
-          <div className="text-xs uppercase tracking-[0.16em] text-[#7a8b95]">
+        <div className={`mt-3 flex items-center justify-between gap-3 rounded-[14px] px-3 py-1.5 ${APP_SOFT_CARD_CLASS}`}>
+          <div className={`text-xs uppercase tracking-[0.16em] ${APP_SUBTLE_TEXT_CLASS}`}>
             Refined mode
           </div>
           <div className="ml-auto text-right text-sm font-semibold text-[#314454]">

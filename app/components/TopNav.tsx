@@ -389,13 +389,7 @@ export default function TopNav() {
                   href="/dashboard"
                   className={navBtn(isActivePath(pathname, "/dashboard"))}
                 >
-                  <span
-                    className={`inline-flex items-center gap-2 ${
-                      isActivePath(pathname, "/dashboard")
-                        ? "text-current"
-                        : "text-[#34424b]"
-                    }`}
-                  >
+                  <span className="inline-flex items-center gap-2 text-current">
                     <LayoutDashboard className="h-4 w-4" />
                     Dashboard
                   </span>
@@ -511,7 +505,7 @@ export default function TopNav() {
                       <Link
                         href="/dashboard"
                         onClick={closeMenu}
-                    className={`inline-flex items-center justify-between gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium transition ${
+                        className={`inline-flex items-center justify-between gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium transition ${
                           isSilverHome && isActivePath(pathname, "/dashboard")
                             ? "!bg-[#eef4f7] !text-[#33434c]"
                             : isSilverHome
@@ -521,13 +515,7 @@ export default function TopNav() {
                             : "text-[#5a5149] hover:bg-[#f4ece4]"
                         }`}
                       >
-                        <span
-                          className={`inline-flex items-center gap-2 ${
-                            isActivePath(pathname, "/dashboard")
-                              ? "text-current"
-                              : "text-[#34424b]"
-                          }`}
-                        >
+                        <span className="inline-flex items-center gap-2 text-current">
                           <LayoutDashboard className="h-4 w-4" />
                           Dashboard
                         </span>

@@ -20,7 +20,9 @@ import {
 import type { DistanceValue, SortValue } from "./useHomeFeedFilters";
 import type { DistanceUnit } from "./useDistanceUnit";
 import {
+  APP_BODY_TEXT_CLASS,
   APP_SOFT_CARD_CLASS,
+  APP_SUBTLE_TEXT_CLASS,
   APP_SURFACE_CARD_CLASS,
 } from "./designSystem";
 
@@ -342,11 +344,11 @@ export function FilterSummaryText({
   }
 
   if (parts.length === 0) {
-    return <span className="text-sm text-[#8b7f74]">All filters</span>;
+    return <span className={`text-sm ${APP_SUBTLE_TEXT_CLASS}`}>All filters</span>;
   }
 
   return (
-    <span className="text-sm font-medium text-[#5a5149]">
+    <span className={`text-sm font-medium ${APP_BODY_TEXT_CLASS}`}>
       {parts.join(" / ")}
     </span>
   );

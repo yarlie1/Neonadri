@@ -26,6 +26,14 @@ import {
   SURFACE_CARD_CLASS,
 } from "./homeFeedHelpers";
 import {
+  APP_BODY_TEXT_CLASS,
+  APP_EYEBROW_CLASS,
+  APP_INNER_PANEL_CLASS,
+  APP_PAGE_BG_CLASS,
+  APP_PILL_INACTIVE_CLASS,
+  APP_SUBTLE_TEXT_CLASS,
+} from "./designSystem";
+import {
   AGE_GROUP_OPTIONS,
   AUDIENCE_OPTIONS,
   DISTANCE_OPTIONS,
@@ -255,19 +263,21 @@ export default function HomeFeedClient({
 
   const highlightedPost = posts[0] || null;
   const feedPosts = highlightedPost ? posts.slice(1) : posts;
+  const heroStatClass = `${APP_INNER_PANEL_CLASS} px-3.5 py-3.5 sm:py-4`;
+  const heroChipClass = `${APP_PILL_INACTIVE_CLASS} rounded-[15px] px-3 py-1.5 text-[11px] font-medium shadow-[0_8px_16px_rgba(118,126,133,0.06)]`;
 
   return (
-    <main className="relative isolate min-h-screen bg-[#e6ebef] px-4 py-5 text-[#2f3a42]">
+    <main className={`relative isolate min-h-screen px-4 py-5 ${APP_PAGE_BG_CLASS}`}>
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7fafc_20%,#e8edf1_56%,#d7dfe5_100%)]" />
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.62),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.28),transparent_20%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.16),transparent_32%)]" />
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.09)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.09)_1px,transparent_1px)] bg-[size:22px_22px] opacity-10" />
       <div className="relative z-10 mx-auto max-w-2xl space-y-4 pb-24 sm:space-y-5">
-        <section className="relative overflow-hidden rounded-[32px] border border-[#edf1f4] bg-[linear-gradient(145deg,rgba(255,255,255,0.995)_0%,rgba(247,249,250,0.985)_36%,rgba(232,236,239,0.99)_100%)] px-5 py-5 text-[#24323f] shadow-[0_26px_66px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,1)] sm:px-7 sm:py-7">
+        <section className={`relative overflow-hidden px-5 py-5 text-[#24323f] sm:px-7 sm:py-7 ${SURFACE_CARD_CLASS}`}>
           <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
           <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#f5f9fcc7] blur-3xl" />
 
           <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#eef2f4] bg-[#ffffffd9] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7e858b] shadow-[0_10px_22px_rgba(136,142,148,0.08)]">
+            <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 shadow-[0_10px_22px_rgba(136,142,148,0.08)] ${APP_PILL_INACTIVE_CLASS} ${APP_EYEBROW_CLASS}`}>
               <Sparkles className="h-3.5 w-3.5" />
               Soft social layer
             </div>
@@ -276,34 +286,34 @@ export default function HomeFeedClient({
               Find someone new, without the noise.
             </h1>
 
-            <p className="mt-3 max-w-xl text-[14px] leading-6 text-[#626e77] sm:mt-4 sm:text-[15px]">
+            <p className={`mt-3 max-w-xl text-[14px] sm:mt-4 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
               A quieter way to discover nearby meetups. Soft silver surfaces,
               calm pacing, and just enough AI guidance to keep browsing easy.
             </p>
 
             <div className="mt-5 grid grid-cols-3 gap-2.5 sm:mt-7 sm:gap-3">
-              <div className="rounded-[22px] border border-[#e4e9ed] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(246,248,249,0.985)_40%,rgba(233,237,240,0.99)_100%)] px-3.5 py-3.5 shadow-[0_16px_30px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#888f94]">
+              <div className={heroStatClass}>
+                <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
                   Happening now
                 </div>
                 <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
                   {upcomingCount}
                 </div>
-                <div className="mt-1 text-[11px] text-[#868d92]">Open right now</div>
+                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Open right now</div>
               </div>
 
-              <div className="rounded-[22px] border border-[#e4e9ed] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(246,248,249,0.985)_40%,rgba(233,237,240,0.99)_100%)] px-3.5 py-3.5 shadow-[0_16px_30px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
-                <div className="text-[11px] uppercase tracking-[0.12em] text-[#888f94]">
+              <div className={heroStatClass}>
+                <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
                   Hosts nearby
                 </div>
                 <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
                   {hostCount}
                 </div>
-                <div className="mt-1 text-[11px] text-[#868d92]">Across the city</div>
+                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Across the city</div>
               </div>
 
-              <div className="rounded-[22px] border border-[#e4e9ed] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(246,248,249,0.985)_40%,rgba(233,237,240,0.99)_100%)] px-3.5 py-3.5 shadow-[0_16px_30px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1)] sm:py-4">
-                <div className="text-[11px] uppercase tracking-[0.16em] text-[#81878d]">
+              <div className={heroStatClass}>
+                <div className={`text-[11px] uppercase tracking-[0.16em] ${APP_SUBTLE_TEXT_CLASS}`}>
                   Mood
                 </div>
                 <div className="mt-1.5 text-sm font-bold leading-5 text-[#24323f]">
@@ -311,18 +321,18 @@ export default function HomeFeedClient({
                   <br />
                   Lab
                 </div>
-                <div className="mt-1 text-[11px] text-[#868d92]">Softly guided</div>
+                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Softly guided</div>
               </div>
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2 sm:mt-6 sm:gap-2.5">
-              <span className="rounded-[15px] border border-[#e6ebef] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f6_100%)] px-3 py-1.5 text-[11px] font-medium text-[#66727a] shadow-[0_8px_16px_rgba(118,126,133,0.06)]">
+              <span className={heroChipClass}>
                 Slow coffee
               </span>
-              <span className="rounded-[15px] border border-[#e6ebef] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f6_100%)] px-3 py-1.5 text-[11px] font-medium text-[#66727a] shadow-[0_8px_16px_rgba(118,126,133,0.06)]">
+              <span className={heroChipClass}>
                 Afterglow walks
               </span>
-              <span className="rounded-[15px] border border-[#e6ebef] bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f6_100%)] px-3 py-1.5 text-[11px] font-medium text-[#66727a] shadow-[0_8px_16px_rgba(118,126,133,0.06)]">
+              <span className={heroChipClass}>
                 Quiet co-work
               </span>
             </div>
@@ -533,6 +543,5 @@ function ViewportMeetupFeedCard(
     </div>
   );
 }
-
 
 
