@@ -389,8 +389,16 @@ export default function TopNav() {
                   href="/dashboard"
                   className={navBtn(isActivePath(pathname, "/dashboard"))}
                 >
-                  <LayoutDashboard className="h-4 w-4" />
-                  Dashboard
+                  <span
+                    className={`inline-flex items-center gap-2 ${
+                      isActivePath(pathname, "/dashboard")
+                        ? "text-current"
+                        : "text-[#34424b]"
+                    }`}
+                  >
+                    <LayoutDashboard className="h-4 w-4" />
+                    Dashboard
+                  </span>
                   <PendingBadge count={pendingCount} />
                   <NewChatBadge visible={hasNewChatActivity} />
                 </Link>
@@ -513,7 +521,13 @@ export default function TopNav() {
                             : "text-[#5a5149] hover:bg-[#f4ece4]"
                         }`}
                       >
-                        <span className="inline-flex items-center gap-2 text-current">
+                        <span
+                          className={`inline-flex items-center gap-2 ${
+                            isActivePath(pathname, "/dashboard")
+                              ? "text-current"
+                              : "text-[#34424b]"
+                          }`}
+                        >
                           <LayoutDashboard className="h-4 w-4" />
                           Dashboard
                         </span>

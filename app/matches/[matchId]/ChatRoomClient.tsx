@@ -420,21 +420,21 @@ export default function ChatRoomClient({
                           className={`flex items-end gap-2 ${isMine ? "justify-end" : "justify-start"}`}
                         >
                           {isMine ? (
-                            <span className="shrink-0 text-[10px] font-medium text-[#9b8f84]">
+                            <span className="shrink-0 text-[10px] font-medium text-[#859199]">
                               {formatMessageTime(message.createdAt)}
                             </span>
                           ) : null}
                           <div
                             className={`max-w-[82%] rounded-[20px] px-4 py-3 text-sm leading-6 shadow-sm ${
                               isMine
-                                ? "bg-[linear-gradient(135deg,#ffdca9_0%,#f7c87d_100%)] text-[#5d3e15]"
-                                : "bg-[#f7efe7] text-[#4f443b]"
+                                ? "border border-[#c9d5dd] bg-[linear-gradient(135deg,#ffffff_0%,#dde7ed_100%)] text-[#273740] shadow-[0_12px_22px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,0.96)]"
+                                : "border border-[#d8e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eff4f7_100%)] text-[#4c5b64]"
                             }`}
                           >
                             <div className="whitespace-pre-wrap break-words">{message.text}</div>
                           </div>
                           {!isMine ? (
-                            <span className="shrink-0 text-[10px] font-medium text-[#9b8f84]">
+                            <span className="shrink-0 text-[10px] font-medium text-[#859199]">
                               {formatMessageTime(message.createdAt)}
                             </span>
                           ) : null}
@@ -460,7 +460,7 @@ export default function ChatRoomClient({
                     onChange={(event) => setDraft(event.target.value)}
                     onKeyDown={handleDraftKeyDown}
                     placeholder={`Message ${otherUserName}...`}
-                    className="h-[56px] min-h-[56px] flex-1 resize-none rounded-[16px] border border-[#e3d7ca] bg-[#fffdfa] px-4 py-[17px] text-sm leading-5 text-[#2f2a26] outline-none transition placeholder:text-[#a29185] focus:border-[#cfb8a4]"
+                    className="h-[56px] min-h-[56px] flex-1 resize-none rounded-[16px] border border-[#d6e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-[17px] text-sm leading-5 text-[#2f3a42] outline-none transition placeholder:text-[#96a2aa] focus:border-[#bccad3] focus:bg-[#ffffff]"
                   />
                   <button
                     type="button"
