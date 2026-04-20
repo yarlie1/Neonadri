@@ -6,6 +6,18 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
 import { createClient } from "../../lib/supabase/client";
 import {
+  APP_BODY_TEXT_CLASS,
+  APP_BUTTON_PRIMARY_CLASS,
+  APP_BUTTON_SECONDARY_CLASS,
+  APP_EYEBROW_CLASS,
+  APP_PAGE_BG_CLASS,
+  APP_PILL_ACTIVE_CLASS,
+  APP_PILL_INACTIVE_CLASS,
+  APP_SOFT_CARD_CLASS,
+  APP_SUBTLE_TEXT_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "../designSystem";
+import {
   ABOUT_ME_RESTRICTION_MESSAGE,
   validateAboutMeContent,
 } from "../../lib/profileContent";
@@ -57,6 +69,10 @@ const DISPLAY_NAME_MAX_LENGTH = 24;
 const DISPLAY_NAME_LENGTH_MESSAGE = `Display name must be ${DISPLAY_NAME_MAX_LENGTH} characters or fewer.`;
 const DISPLAY_NAME_IN_USE_MESSAGE = "This display name is already in use.";
 const EMAIL_IN_USE_MESSAGE = "This email is already in use.";
+const INPUT_CLASS =
+  "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30";
+const HERO_SURFACE_CLASS =
+  "relative overflow-hidden rounded-[32px] border border-[#dde5eb] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.99)_0%,rgba(241,246,249,0.96)_44%,rgba(225,232,237,0.95)_100%)] px-6 py-7 text-[#25313a] shadow-[0_24px_52px_rgba(118,126,133,0.12)] sm:px-8 sm:py-9";
 
 function ToggleChip({
   label,
@@ -71,10 +87,8 @@ function ToggleChip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full px-3 py-2 text-sm font-medium transition ${
-        selected
-          ? "bg-[#a48f7a] text-white"
-          : "bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
+      className={`rounded-full border px-3 py-2 text-sm font-medium transition ${
+        selected ? APP_PILL_ACTIVE_CLASS : APP_PILL_INACTIVE_CLASS
       }`}
     >
       {label}
@@ -297,22 +311,22 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
+    <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-4 lg:grid-cols-[1.02fr_0.98fr]">
-          <section className="relative overflow-hidden rounded-[32px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] px-6 py-7 text-[#2a211d] shadow-[0_18px_42px_rgba(92,69,52,0.08)] sm:px-8 sm:py-9">
-            <div className="absolute -left-10 bottom-0 h-36 w-36 rounded-full bg-white/25 blur-2xl" />
-            <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+          <section className={HERO_SURFACE_CLASS}>
+            <div className="absolute -left-10 bottom-0 h-36 w-36 rounded-full bg-white/40 blur-2xl" />
+            <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-[#d9e2e8]/40 blur-2xl" />
 
             <div className="relative">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] text-[#74675d]">
+              <div className={`inline-flex items-center gap-2 rounded-full px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}>
                 <Sparkles className="h-3.5 w-3.5" />
                 Join the vibe
               </div>
-              <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#2b1f1a] sm:text-[42px]">
+              <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
                 Build your profile before the first hello.
               </h1>
-              <p className="mt-3 max-w-lg text-sm leading-6 text-[#5f453b] sm:text-[15px]">
+              <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
                 We guide people through account setup one step at a time, so you can finish your profile and join the app without friction.
               </p>
 
@@ -326,26 +340,26 @@ export default function SignupPage() {
                       key={item.number}
                       className={`flex items-center gap-3 rounded-[22px] border px-4 py-3 transition ${
                         active
-                          ? "border-white/80 bg-white/75 shadow-[0_12px_24px_rgba(126,80,54,0.12)]"
-                          : "border-white/45 bg-white/40"
+                          ? "border-[#cbd6dd] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(232,238,242,0.94)_100%)] shadow-[0_12px_24px_rgba(118,126,133,0.12)]"
+                          : "border-[#e0e7ec] bg-white/60"
                       }`}
                     >
                       <div
                         className={`inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${
                           complete
-                            ? "bg-[#8e6f58] text-white"
+                            ? "bg-[#273640] text-white"
                             : active
-                              ? "bg-[#2f241f] text-white"
-                              : "bg-white/80 text-[#8a5647]"
+                              ? "bg-[#2f3c46] text-white"
+                              : "bg-white/80 text-[#6e7d86]"
                         }`}
                       >
                         {complete ? <Check className="h-4 w-4" /> : item.number}
                       </div>
                       <div>
-                        <div className="text-sm font-semibold text-[#2d211c]">
+                        <div className="text-sm font-semibold text-[#24323c]">
                           {item.label}
                         </div>
-                        <div className="text-xs text-[#6f5448]">
+                        <div className="text-xs text-[#67747c]">
                           {item.number === 1 && "Name, gender, and age group"}
                           {item.number === 2 && "About you, style, and interests"}
                           {item.number === 3 && "Email and password"}
@@ -357,35 +371,35 @@ export default function SignupPage() {
               </div>
 
               <div className="mt-6 flex flex-wrap gap-2">
-                <span className="rounded-full border border-white/70 bg-white/65 px-3 py-2 text-xs font-medium text-[#6a4b40]">
+                <span className={`rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                   Coffee chats
                 </span>
-                <span className="rounded-full border border-white/70 bg-white/65 px-3 py-2 text-xs font-medium text-[#6a4b40]">
+                <span className={`rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                   Walk dates
                 </span>
-                <span className="rounded-full border border-white/70 bg-white/65 px-3 py-2 text-xs font-medium text-[#6a4b40]">
+                <span className={`rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                   Focus sessions
                 </span>
               </div>
             </div>
           </section>
 
-          <section className="rounded-[32px] border border-[#eadfd3] bg-white/90 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-8">
+          <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                <div className={APP_EYEBROW_CLASS}>
                   Sign Up
                 </div>
-                <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#2f2a26]">
+                <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
                   Step {step} of {STEPS.length}
                 </h2>
               </div>
-              <div className="rounded-full border border-[#eadfd3] bg-[#faf4ee] px-3 py-1.5 text-xs font-medium text-[#7a6b61]">
+              <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                 {STEPS[step - 1].label}
               </div>
             </div>
 
-            <p className="mt-2 text-sm leading-6 text-[#7a6b61]">
+            <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
               {step === 1 &&
                 "Add the basics people usually want to know first."}
               {step === 2 &&
@@ -394,9 +408,9 @@ export default function SignupPage() {
                 "Finish with the email and password you will use to sign in."}
             </p>
 
-            <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#f2e7dc]">
+            <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#e8eef2]">
               <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#b78363,#8f6c58)] transition-all"
+                className="h-full rounded-full bg-[linear-gradient(90deg,#d9e2e8,#aab8c1)] transition-all"
                 style={{ width: `${(step / STEPS.length) * 100}%` }}
               />
             </div>
@@ -405,7 +419,7 @@ export default function SignupPage() {
               {step === 1 && (
                 <>
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
                       Display Name
                     </label>
                     <input
@@ -414,20 +428,20 @@ export default function SignupPage() {
                         setDisplayName(e.target.value.slice(0, DISPLAY_NAME_MAX_LENGTH))
                       }
                       maxLength={DISPLAY_NAME_MAX_LENGTH}
-                      className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                      className={INPUT_CLASS}
                       placeholder="How people will see you"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                      <label className="mb-2 block text-sm font-medium text-[#52616a]">
                         Gender
                       </label>
                       <select
                         value={gender}
                         onChange={(e) => setGender(e.target.value)}
-                        className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                        className={INPUT_CLASS}
                       >
                         <option value="">Select gender</option>
                         <option value="Male">Male</option>
@@ -438,13 +452,13 @@ export default function SignupPage() {
                     </div>
 
                     <div>
-                      <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                      <label className="mb-2 block text-sm font-medium text-[#52616a]">
                         Age Group
                       </label>
                       <select
                         value={ageGroup}
                         onChange={(e) => setAgeGroup(e.target.value)}
-                        className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                        className={INPUT_CLASS}
                       >
                         <option value="">Select age group</option>
                         <option value="20s">20s</option>
@@ -460,10 +474,10 @@ export default function SignupPage() {
               {step === 2 && (
                 <>
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
                       Languages
                     </label>
-                    <div className="flex flex-wrap gap-2 rounded-[22px] border border-[#e7ddd2] bg-[#fcfaf7] p-3">
+                    <div className={`${APP_SOFT_CARD_CLASS} flex flex-wrap gap-2 p-3`}>
                       {LANGUAGE_OPTIONS.map((item) => (
                         <ToggleChip
                           key={item}
@@ -478,13 +492,13 @@ export default function SignupPage() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
                       Meeting Style
                     </label>
                     <select
                       value={meetingStyle}
                       onChange={(e) => setMeetingStyle(e.target.value)}
-                      className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                      className={INPUT_CLASS}
                     >
                       <option value="">Select meeting style</option>
                       {MEETING_STYLE_OPTIONS.map((item) => (
@@ -496,10 +510,10 @@ export default function SignupPage() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
                       Interests
                     </label>
-                    <div className="flex flex-wrap gap-2 rounded-[22px] border border-[#e7ddd2] bg-[#fcfaf7] p-3">
+                    <div className={`${APP_SOFT_CARD_CLASS} flex flex-wrap gap-2 p-3`}>
                       {INTEREST_OPTIONS.map((item) => (
                         <ToggleChip
                           key={item}
@@ -514,16 +528,16 @@ export default function SignupPage() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
                       About Me
                     </label>
                     <textarea
                       value={aboutMe}
                       onChange={(e) => setAboutMe(e.target.value)}
                       rows={4}
-                      className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                      className={INPUT_CLASS}
                     />
-                    <p className="mt-2 text-xs text-[#8c7668]">
+                    <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
                       Avoid prostitution, solicitation, or other unsafe sexual content.
                     </p>
                   </div>
@@ -533,31 +547,31 @@ export default function SignupPage() {
               {step === 3 && (
                 <>
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
                       Email
                     </label>
                     <input
                       type="email"
                       placeholder="you@example.com"
-                      className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                      className={INPUT_CLASS}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
                       Password
                     </label>
                     <input
                       type="password"
                       placeholder="At least 6 characters"
-                      className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                      className={INPUT_CLASS}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
                     {password.trim().length > 0 && password.trim().length < 6 ? (
-                      <p className="mt-2 text-xs text-[#8c7668]">
+                      <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
                         Password must be at least 6 characters.
                       </p>
                     ) : null}
@@ -568,7 +582,7 @@ export default function SignupPage() {
 
             <div className="mt-6 flex flex-wrap gap-3">
               {step === 2 && !canMoveNext && (
-                <p className="w-full text-xs text-[#8c7668]">
+                <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
                   Select a meeting style and at least one interest to continue.
                 </p>
               )}
@@ -577,7 +591,7 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={handleBack}
-                  className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
+                  className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Back
@@ -585,7 +599,7 @@ export default function SignupPage() {
               ) : (
                 <Link
                   href="/login"
-                  className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
+                  className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                 >
                   I already have one
                 </Link>
@@ -596,7 +610,7 @@ export default function SignupPage() {
                   type="button"
                   onClick={handleNext}
                   disabled={!canMoveNext}
-                  className="inline-flex items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:cursor-not-allowed disabled:bg-[#c8b8aa]"
+                  className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
                 >
                   Next
                   <ArrowRight className="h-4 w-4" />
@@ -606,7 +620,7 @@ export default function SignupPage() {
                   type="button"
                   onClick={handleSignup}
                   disabled={submitting}
-                  className="rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:cursor-not-allowed disabled:bg-[#c8b8aa]"
+                  className={`rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
                 >
                   {submitting ? "Creating account..." : "Create account"}
                 </button>
@@ -614,7 +628,7 @@ export default function SignupPage() {
             </div>
 
             {message && (
-              <p className="mt-4 rounded-[20px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
+              <p className="mt-4 rounded-[20px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
                 {message}
               </p>
             )}
