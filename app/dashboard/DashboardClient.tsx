@@ -905,7 +905,7 @@ export default function DashboardClient({
             subtext={
               pendingReceived > 0 ? (
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#c96f5d] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
+                  <span className="inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#d3dde3] bg-[linear-gradient(180deg,#ffffff_0%,#e7edf1_100%)] px-1.5 py-0.5 text-[10px] font-bold leading-none text-[#58666f] shadow-[0_6px_12px_rgba(118,126,133,0.12)]">
                     {pendingReceived > 99 ? "99+" : pendingReceived}
                   </span>
                   <span>pending</span>
