@@ -428,14 +428,14 @@ export function MeetupFeedCard({
     >
       <div className={`px-4 py-3.5 ${APP_INNER_PANEL_CLASS}`}>
         <div className="flex items-start justify-between gap-3">
-          <div className="grid min-w-0 flex-1 grid-cols-[40px_minmax(0,1fr)] gap-x-2.5 gap-y-1">
+          <div className="grid min-w-0 flex-1 grid-cols-[40px_minmax(0,1fr)] gap-x-2.5 gap-y-0.5">
             <div className={`inline-flex h-10 w-10 items-center justify-center rounded-[14px] shadow-[0_8px_16px_rgba(118,126,133,0.1)] ${APP_ROW_SURFACE_CLASS}`}>
               {purposeIcon}
             </div>
             <div className="min-w-0 truncate self-center pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
               {purposeName}
             </div>
-            <div className={`col-start-2 min-w-0 truncate text-[12px] leading-none ${APP_SUBTLE_TEXT_CLASS}`}>
+            <div className={`col-start-2 min-w-0 line-clamp-2 text-[12px] leading-[1.15] ${APP_SUBTLE_TEXT_CLASS}`}>
               Hosted by {hostName}
               {hostMeta ? ` | ${hostMeta}` : ""}
             </div>
@@ -448,7 +448,7 @@ export function MeetupFeedCard({
           </div>
         </div>
 
-        <div className="mt-3.5 grid gap-2">
+        <div className="mt-3 grid gap-2">
           {whenText && (
             <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
               <Clock3 className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
