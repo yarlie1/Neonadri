@@ -42,6 +42,7 @@ import {
   APP_EYEBROW_CLASS,
   APP_INNER_PANEL_CLASS,
   APP_PAGE_BG_CLASS,
+  APP_PILL_INACTIVE_CLASS,
   APP_ROW_SURFACE_CLASS,
 } from "../designSystem";
 import { useDashboardState } from "./useDashboardState";
