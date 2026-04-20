@@ -31,7 +31,7 @@ export function FilterPill({
       onClick={onClick}
       className={`inline-flex items-center rounded-full px-3 py-2 text-sm font-medium transition ${
         active
-          ? "border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] text-[#33454f] shadow-[0_8px_16px_rgba(118,126,133,0.08)]"
+          ? "border border-[#bfcbd3] bg-[linear-gradient(180deg,#ffffff_0%,#dde7ed_100%)] text-[#1f2e38] shadow-[0_12px_22px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,0.96)]"
           : "border border-[#e5ebef] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] text-[#66737b] hover:bg-[#f6f9fb]"
       }`}
     >

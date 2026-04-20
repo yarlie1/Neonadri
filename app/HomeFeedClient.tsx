@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   formatMeetingTime,
   getMeetingStatus,
@@ -448,7 +448,7 @@ export default function HomeFeedClient({
               : "";
 
           return (
-            <MeetupFeedCard
+            <ViewportMeetupFeedCard
               key={post.id}
               postId={post.id}
               isExpired={isExpired}
@@ -491,6 +491,46 @@ export default function HomeFeedClient({
         <Plus className="h-6 w-6" />
       </Link>
     </main>
+  );
+}
+
+function ViewportMeetupFeedCard(
+  props: Parameters<typeof MeetupFeedCard>[0]
+) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [visibilityRatio, setVisibilityRatio] = useState(1);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setVisibilityRatio(entry.intersectionRatio);
+      },
+      {
+        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
+      }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  const opacity = Math.max(0.5, 0.5 + visibilityRatio * 0.5);
+  const translateY = (1 - visibilityRatio) * 10;
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity,
+        transform: `translateY(${translateY}px)`,
+      }}
+      className="transition-[opacity,transform] duration-300 ease-out will-change-[opacity,transform]"
+    >
+      <MeetupFeedCard {...props} />
+    </div>
   );
 }
 
