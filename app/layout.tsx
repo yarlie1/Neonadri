@@ -13,7 +13,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className="bg-[#f7f1ea] text-[#2f2a26]">
+      <body className="min-h-screen bg-[#dfe6eb] text-[#2f3a42]">
         {mapsKey ? (
           <Script
             src={`https://maps.googleapis.com/maps/api/js?key=${mapsKey}&libraries=places`}
