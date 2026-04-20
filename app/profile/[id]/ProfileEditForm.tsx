@@ -7,6 +7,17 @@ import {
   ABOUT_ME_RESTRICTION_MESSAGE,
   validateAboutMeContent,
 } from "../../../lib/profileContent";
+import {
+  APP_BODY_TEXT_CLASS,
+  APP_BUTTON_PRIMARY_CLASS,
+  APP_BUTTON_SECONDARY_CLASS,
+  APP_EYEBROW_CLASS,
+  APP_PILL_ACTIVE_CLASS,
+  APP_PILL_INACTIVE_CLASS,
+  APP_SOFT_CARD_CLASS,
+  APP_SUBTLE_TEXT_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "../../designSystem";
 
 type ProfileRow = {
   id: string;
@@ -78,16 +89,17 @@ function ToggleChip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full px-3 py-2 text-sm font-medium transition ${
-        selected
-          ? "bg-[#a48f7a] text-white"
-          : "bg-[#f4ece4] text-[#5a5149] hover:bg-[#ede3da]"
+      className={`rounded-full border px-3 py-2 text-sm font-medium transition ${
+        selected ? APP_PILL_ACTIVE_CLASS : APP_PILL_INACTIVE_CLASS
       }`}
     >
       {label}
     </button>
   );
 }
+
+const INPUT_CLASS =
+  "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30";
 
 export default function ProfileEditForm({
   profile,
@@ -182,59 +194,59 @@ export default function ProfileEditForm({
   };
 
   return (
-    <div className="overflow-hidden rounded-[36px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] shadow-[0_18px_42px_rgba(92,69,52,0.08)] backdrop-blur">
-      <div className="bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-6 py-5">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+    <div className={`overflow-hidden rounded-[36px] ${APP_SURFACE_CARD_CLASS} backdrop-blur`}>
+      <div className="bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fa_100%)] px-6 py-5">
+        <div className={APP_EYEBROW_CLASS}>
           Edit profile
         </div>
-        <h2 className="mt-1 text-xl font-black tracking-[-0.03em] text-[#2f2a26]">
+        <h2 className="mt-1 text-xl font-black tracking-[-0.03em] text-[#24323c]">
           Keep your profile feeling current
         </h2>
       </div>
 
-      <div className="border-t border-[#eee3d8]/80 px-6 py-5">
-        <div className="mb-5 rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-4 text-sm leading-6 text-[#6b5f52]">
-          A clear, warm profile makes it easier for people to understand your energy before they send a request.
+      <div className="border-t border-[#e6edf2]/80 px-6 py-5">
+        <div className={`mb-5 rounded-[22px] px-4 py-4 text-sm leading-6 ${APP_SOFT_CARD_CLASS} ${APP_BODY_TEXT_CLASS}`}>
+          A clear profile makes it easier for people to understand your energy before they send a request.
         </div>
 
         <div className="space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                <label className="mb-2 block text-sm font-medium text-[#52616a]">
                   Display Name
                 </label>
                 <input
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                  className={INPUT_CLASS}
                   placeholder="Your name"
                 />
               </div>
 
               <div>
-              <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+              <label className="mb-2 block text-sm font-medium text-[#52616a]">
                 About Me
               </label>
                 <textarea
                   value={aboutMe}
                   onChange={(e) => setAboutMe(e.target.value)}
                   rows={4}
-                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                  className={INPUT_CLASS}
                   placeholder="Tell people more about yourself"
                 />
-                <p className="mt-2 text-xs text-[#8c7668]">
+                <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
                   Avoid prostitution, solicitation, or other unsafe sexual content.
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                  <label className="mb-2 block text-sm font-medium text-[#52616a]">
                     Gender
                   </label>
                   <select
                     value={gender}
                     onChange={(e) => setGender(e.target.value)}
-                    className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                    className={INPUT_CLASS}
                   >
                     <option value="">Select gender</option>
                     <option value="Male">Male</option>
@@ -245,13 +257,13 @@ export default function ProfileEditForm({
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                  <label className="mb-2 block text-sm font-medium text-[#52616a]">
                     Age Group
                   </label>
                   <select
                     value={ageGroup}
                     onChange={(e) => setAgeGroup(e.target.value)}
-                    className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                    className={INPUT_CLASS}
                   >
                     <option value="">Select age group</option>
                     <option value="20s">20s</option>
@@ -263,10 +275,10 @@ export default function ProfileEditForm({
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                <label className="mb-2 block text-sm font-medium text-[#52616a]">
                   Languages
                 </label>
-                <div className="flex flex-wrap gap-2 rounded-[22px] border border-[#e7ddd2] bg-[#fcfaf7] p-3">
+                <div className={`flex flex-wrap gap-2 rounded-[22px] p-3 ${APP_SOFT_CARD_CLASS}`}>
                   {LANGUAGE_OPTIONS.map((item) => (
                     <ToggleChip
                       key={item}
@@ -279,13 +291,13 @@ export default function ProfileEditForm({
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                <label className="mb-2 block text-sm font-medium text-[#52616a]">
                   Meeting Style
                 </label>
                 <select
                   value={meetingStyle}
                   onChange={(e) => setMeetingStyle(e.target.value)}
-                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                  className={INPUT_CLASS}
                 >
                   <option value="">Select meeting style</option>
                   {MEETING_STYLE_OPTIONS.map((item) => (
@@ -297,10 +309,10 @@ export default function ProfileEditForm({
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                <label className="mb-2 block text-sm font-medium text-[#52616a]">
                   Interests
                 </label>
-                <div className="flex flex-wrap gap-2 rounded-[22px] border border-[#e7ddd2] bg-[#fcfaf7] p-3">
+                <div className={`flex flex-wrap gap-2 rounded-[22px] p-3 ${APP_SOFT_CARD_CLASS}`}>
                   {INTEREST_OPTIONS.map((item) => (
                     <ToggleChip
                       key={item}
@@ -313,13 +325,13 @@ export default function ProfileEditForm({
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#5a5149]">
+                <label className="mb-2 block text-sm font-medium text-[#52616a]">
                   Response Note
                 </label>
                 <select
                   value={responseTimeNote}
                   onChange={(e) => setResponseTimeNote(e.target.value)}
-                  className="w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12"
+                  className={INPUT_CLASS}
                 >
                   <option value="">Select response note</option>
                   {RESPONSE_NOTE_OPTIONS.map((item) => (
@@ -331,20 +343,20 @@ export default function ProfileEditForm({
               </div>
 
               {message && (
-                <p className="rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
+                <p className="rounded-[22px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
                   {message}
                 </p>
               )}
         </div>
       </div>
 
-      <div className="border-t border-[#efe6db] bg-[#fffaf6] px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
+      <div className="border-t border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fa_100%)] px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
         <div className="flex flex-wrap gap-3">
           <button
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="touch-manipulation inline-flex min-h-[48px] items-center gap-2 rounded-full bg-[#a48f7a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#927d69] disabled:opacity-50"
+            className={`touch-manipulation inline-flex min-h-[48px] items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
           >
             <Save className="h-4 w-4" />
             {saving ? "Saving..." : "Save"}
@@ -352,7 +364,7 @@ export default function ProfileEditForm({
 
           <Link
             href={`/profile/${profile.id}`}
-            className="touch-manipulation inline-flex min-h-[48px] items-center rounded-full border border-[#dccfc2] bg-white px-5 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+            className={`touch-manipulation inline-flex min-h-[48px] items-center rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
           >
             Cancel
           </Link>

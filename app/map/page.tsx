@@ -1,5 +1,10 @@
 import { createClient } from "../../lib/supabase/server";
 import HomePostsMap from "../components/HomePostsMap";
+import {
+  APP_BODY_TEXT_CLASS,
+  APP_PAGE_BG_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "../designSystem";
 
 type PostRow = {
   id: number;
@@ -130,16 +135,16 @@ export default async function MapPage() {
   }));
 
   return (
-    <main className="min-h-screen bg-[#f7f1ea] px-6 py-6 text-[#2f2a26]">
+    <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-6 py-6`}>
       <div className="mx-auto max-w-5xl space-y-4">
         <div>
-          <h1 className="text-2xl font-semibold">Map View</h1>
-          <p className="mt-1 text-sm text-[#6f655c]">
+          <h1 className="text-2xl font-semibold text-[#24323c]">Map View</h1>
+          <p className={`mt-1 text-sm ${APP_BODY_TEXT_CLASS}`}>
             Tap a marker to see meetup details.
           </p>
         </div>
 
-        <div className="overflow-hidden rounded-[2rem] border border-[#e7ddd2] bg-[#fffaf5] p-3 shadow-sm">
+        <div className={`overflow-hidden rounded-[2rem] p-3 ${APP_SURFACE_CARD_CLASS}`}>
           <HomePostsMap posts={mapPosts} />
         </div>
       </div>
