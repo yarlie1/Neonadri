@@ -4,6 +4,13 @@ import { cookies } from "next/headers";
 import { Sparkles } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import {
+  APP_BUTTON_SECONDARY_CLASS,
+  APP_EYEBROW_CLASS,
+  APP_PAGE_BG_CLASS,
+  APP_SUBTLE_TEXT_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "../../designSystem";
+import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
 } from "../../../lib/userTimeZone";
@@ -317,7 +324,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     return `${reviewerLabel} reviewed ${revieweeLabel}`;
   };
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26] sm:px-6 sm:py-8">
+    <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
       <div className="mx-auto max-w-3xl space-y-5">
         <UpcomingMeetupCard
           isPostMatched={isPostMatched}
@@ -412,14 +419,14 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             />
 
             {user && user.id === post.user_id && !isPostMatched && !hasAnyRequests && (
-              <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-5 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
+              <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
+                <div className={APP_EYEBROW_CLASS}>
                   Meetup actions
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Link
                     href={`/write/${post.id}`}
-                    className="inline-flex items-center gap-2 rounded-full border border-[#dccfc2] bg-white px-4 py-2 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]"
+                    className={`inline-flex items-center gap-2 rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
                   >
                     <Sparkles className="h-4 w-4" />
                     Edit Meetup
@@ -431,7 +438,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        <div className="px-1 text-xs text-[#9b8f84]">
+        <div className={`px-1 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
           Created at {new Date(post.created_at).toLocaleString()}
         </div>
       </div>
