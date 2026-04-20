@@ -20,6 +20,17 @@ import {
   PURPOSE_HELP_TEXT,
   PURPOSE_OPTIONS,
 } from "../meetupFormShared";
+import {
+  APP_BUTTON_PRIMARY_CLASS,
+  APP_BUTTON_SECONDARY_CLASS,
+  APP_EYEBROW_CLASS,
+  APP_INNER_PANEL_CLASS,
+  APP_MUTED_TEXT_CLASS,
+  APP_PAGE_BG_CLASS,
+  APP_SOFT_CARD_CLASS,
+  APP_SUBTLE_TEXT_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "../../designSystem";
 
 declare global {
   interface Window {
@@ -98,7 +109,7 @@ export default function EditMeetupForm({
   const [saving, setSaving] = useState(false);
 
   const fieldClass =
-    "w-full rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] px-4 py-3 pl-16 text-sm text-[#2f2a26] outline-none transition focus:border-[#c8ad96] focus:ring-4 focus:ring-[#a48f7a]/12";
+    "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-3 pl-16 text-sm text-[#24323f] outline-none transition focus:border-[#c3cfd7] focus:ring-4 focus:ring-[#cfd8de]/35";
 
   const applyDraft = useCallback(
     (draft: {
@@ -353,43 +364,43 @@ export default function EditMeetupForm({
   };
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-5 py-6 text-[#2f2a26]">
+    <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-5 py-6`}>
       <div className="mx-auto max-w-2xl space-y-4">
-        <section className="relative overflow-hidden rounded-[32px] border border-[#ead7c8] bg-[radial-gradient(circle_at_top_left,#fff7ef_0%,#f5dacd_38%,#e8b9a7_100%)] px-5 py-6 text-[#2a211d] shadow-[0_24px_60px_rgba(120,76,52,0.16)] sm:px-6 sm:py-7">
-          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
-          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+        <section className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-5 py-6 sm:px-6 sm:py-7`}>
+          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/42 blur-2xl" />
+          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#cfd8de]/35 blur-2xl" />
           <div className="relative">
-            <div className="inline-flex items-center rounded-full bg-white/70 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a5647]">
+            <div className={`inline-flex items-center rounded-full ${APP_INNER_PANEL_CLASS} px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7b84]`}>
               Edit meetup
             </div>
-            <h1 className="mt-4 max-w-md text-[32px] font-black leading-[0.98] tracking-[-0.05em] text-[#2b1f1a] sm:text-[38px]">
+            <h1 className="mt-4 max-w-md text-[32px] font-black leading-[0.98] tracking-[-0.05em] text-[#24323f] sm:text-[38px]">
               Refine the plan without losing the vibe.
             </h1>
-            <p className="mt-3 max-w-lg text-sm leading-6 text-[#5f453b] sm:text-[15px]">
+            <p className={`mt-3 max-w-lg text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
               Update the details, keep the tone clear, and make sure the meetup still feels easy to say yes to.
             </p>
           </div>
         </section>
 
-        <div className="rounded-[30px] border border-[#eadfd3] bg-white/90 p-6 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur">
+        <div className={`${APP_SURFACE_CARD_CLASS} p-6`}>
           <div className="flex items-start gap-4">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+            <div className={APP_EYEBROW_CLASS}>
               Edit post
             </div>
-            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#2f2a26]">
+            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323f]">
               Update your meetup
             </h2>
           </div>
         </div>
 
-        <div className="mt-4 flex items-start gap-2 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
+        <div className={`mt-4 flex items-start gap-2 ${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm ${APP_MUTED_TEXT_CLASS}`}>
           <CheckCircle className="mt-0.5 h-4 w-4 shrink-0" />
           <p>{purposeHelpText}</p>
         </div>
 
         <div className="mt-6">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#8e7a6b]">
+          <h2 className={`mb-3 text-sm font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
             Choose Activity
           </h2>
 
@@ -405,8 +416,8 @@ export default function EditMeetupForm({
                   onClick={() => setMeetingPurpose(item.value)}
                   className={`flex items-center gap-2 rounded-[20px] border px-4 py-3 text-left text-sm font-medium transition ${
                     isSelected
-                      ? "border-[#a48f7a] bg-[#a48f7a] text-white shadow-sm"
-                      : "border-[#e7ddd2] bg-[#fffdfa] text-[#5a5149] hover:bg-[#faf4ee]"
+                      ? `${APP_BUTTON_PRIMARY_CLASS} border-transparent`
+                      : "border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#52616a] hover:bg-[#f5f8fa]"
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
@@ -417,30 +428,30 @@ export default function EditMeetupForm({
           </div>
         </div>
 
-        <h2 className="mt-6 text-sm font-semibold uppercase tracking-[0.14em] text-[#8e7a6b]">
+        <h2 className={`mt-6 text-sm font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
           Meetup Details
         </h2>
 
         <div className="mt-3 space-y-3">
           <div className="grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
-            <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
-              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
+            <div className="flex overflow-hidden rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] focus-within:border-[#c3cfd7] focus-within:ring-4 focus-within:ring-[#cfd8de]/35">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#71828c]">
                 <Clock className="h-4 w-4" />
               </div>
               <input
                 type="date"
-                className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 text-sm text-[#2f2a26] !shadow-none !outline-none !ring-0"
+                className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 text-sm text-[#24323f] !shadow-none !outline-none !ring-0"
                 value={meetingDate}
                 onChange={(e) => handleMeetingDateChange(e.target.value)}
               />
             </div>
 
-            <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
-              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
+            <div className="flex overflow-hidden rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] focus-within:border-[#c3cfd7] focus-within:ring-4 focus-within:ring-[#cfd8de]/35">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#71828c]">
                 <Clock className="h-4 w-4" />
               </div>
               <select
-                className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-10 text-sm text-[#2f2a26] outline-none"
+                className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-10 text-sm text-[#24323f] outline-none"
                 value={meetingTimeSlot}
                 onChange={(e) => handleMeetingTimeSlotChange(e.target.value)}
               >
@@ -459,12 +470,12 @@ export default function EditMeetupForm({
             </div>
           </div>
 
-          <div className="flex overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
-            <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
+          <div className="flex overflow-hidden rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] focus-within:border-[#c3cfd7] focus-within:ring-4 focus-within:ring-[#cfd8de]/35">
+            <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#71828c]">
               <Clock className="h-4 w-4" />
             </div>
             <select
-              className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-10 text-sm text-[#2f2a26] outline-none"
+              className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-10 text-sm text-[#24323f] outline-none"
               value={durationMinutes}
               onChange={(e) => setDurationMinutes(e.target.value)}
             >
@@ -479,13 +490,13 @@ export default function EditMeetupForm({
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex flex-1 overflow-hidden rounded-[20px] border border-[#dccfc2] bg-[#fffdfa] focus-within:border-[#c8ad96] focus-within:ring-4 focus-within:ring-[#a48f7a]/12">
-              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#8a7f74]">
+            <div className="flex flex-1 overflow-hidden rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] focus-within:border-[#c3cfd7] focus-within:ring-4 focus-within:ring-[#cfd8de]/35">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#71828c]">
                 <MapPin className="h-4 w-4" />
               </div>
               <input
                 ref={searchInputRef}
-                className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 pr-5 text-sm text-[#2f2a26] !shadow-none !outline-none !ring-0"
+                className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 pr-5 text-sm text-[#24323f] !shadow-none !outline-none !ring-0"
                 placeholder="Search exact place or address"
                 value={location}
                 onChange={handleLocationInputChange}
@@ -495,7 +506,7 @@ export default function EditMeetupForm({
             <button
               type="button"
               onClick={handleOpenMapPicker}
-              className="inline-flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[18px] border border-[#eee3d7] bg-[#f8f1ea] text-[#9d8f81] transition hover:bg-[#f2e8de] hover:text-[#857565]"
+              className={`inline-flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[18px] ${APP_BUTTON_SECONDARY_CLASS} transition`}
               aria-label="Pick on map"
               title="Pick on map"
             >
@@ -504,14 +515,14 @@ export default function EditMeetupForm({
           </div>
 
           {location && (
-            <div className="rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
-              <p className="font-medium text-[#2f2a26]">
+            <div className={`${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm ${APP_MUTED_TEXT_CLASS}`}>
+              <p className="font-medium text-[#24323f]">
                 {placeName || location}
               </p>
               <p className="mt-1">{confirmedAddress || location}</p>
 
               {latitude !== null && longitude !== null && (
-                <p className="mt-1 text-xs text-[#8b7f74]">
+                <p className={`mt-1 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
                   Lat: {latitude.toFixed(6)}, Lng: {longitude.toFixed(6)}
                 </p>
               )}
@@ -525,13 +536,13 @@ export default function EditMeetupForm({
           )}
         </div>
 
-        <h2 className="mt-6 text-sm font-semibold uppercase tracking-[0.14em] text-[#8e7a6b]">
+        <h2 className={`mt-6 text-sm font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
           Target & Benefit
         </h2>
 
         <div className="mt-3 space-y-3">
           <div className="relative">
-            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#71828c]" />
             <select
               className={`${fieldClass} pr-10`}
               value={targetGender}
@@ -545,7 +556,7 @@ export default function EditMeetupForm({
           </div>
 
           <div className="relative">
-            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#71828c]" />
             <select
               className={`${fieldClass} pr-10`}
               value={targetAgeGroup}
@@ -561,7 +572,7 @@ export default function EditMeetupForm({
           </div>
 
           <div className="relative">
-            <Coins className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7f74]" />
+            <Coins className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#71828c]" />
             <select
               className={`${fieldClass} pr-10`}
               value={benefitAmount}
@@ -579,16 +590,16 @@ export default function EditMeetupForm({
           </div>
 
           {benefitAmount && (
-            <label className="grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 rounded-[22px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#5f5347]">
+            <label className={`grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 ${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm ${APP_MUTED_TEXT_CLASS}`}>
               <input
                 type="checkbox"
                 checked={benefitConfirmed}
                 onChange={(e) => setBenefitConfirmed(e.target.checked)}
-                className="!mt-0.5 !h-4 !w-4 !appearance-auto !rounded !border-[#ccb9a7] !p-0 !shadow-none !outline-none !ring-0 accent-[#a48f7a]"
+                className="!mt-0.5 !h-4 !w-4 !appearance-auto !rounded !border-[#c7d2d9] !p-0 !shadow-none !outline-none !ring-0 accent-[#8fa1ac]"
               />
               <span className="min-w-0 flex-1 leading-6">
                 I understand that I will pay{" "}
-                <span className="font-semibold text-[#2f2a26]">{benefitAmount}</span>{" "}
+                <span className="font-semibold text-[#24323f]">{benefitAmount}</span>{" "}
                 directly to my guest after the meetup.
               </span>
             </label>
@@ -599,7 +610,7 @@ export default function EditMeetupForm({
           <button
             onClick={handleSave}
             disabled={saving || (!!benefitAmount && !benefitConfirmed)}
-            className="flex-1 rounded-full bg-[#a48f7a] py-4 text-base font-semibold text-white transition hover:bg-[#927d69] disabled:opacity-50"
+            className={`flex-1 rounded-full ${APP_BUTTON_PRIMARY_CLASS} py-4 text-base font-semibold disabled:opacity-50`}
           >
             {saving ? "Saving..." : "Save Meetup"}
           </button>
@@ -607,14 +618,14 @@ export default function EditMeetupForm({
             <button
               type="button"
               onClick={() => router.push(`/posts/${postId}`)}
-              className="rounded-full border border-[#dccfc2] bg-[#f6eee6] px-5 py-4 text-sm font-medium text-[#5a5149] transition hover:bg-[#efe4d9]"
+              className={`rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-5 py-4 text-sm font-medium transition`}
             >
               Cancel
           </button>
         </div>
 
         {message && (
-          <p className="mt-4 rounded-[20px] border border-[#eadfd3] bg-[#f9f1e9] px-4 py-3 text-sm text-[#6b5f52]">
+          <p className="mt-4 rounded-[20px] border border-[#e8cfd3] bg-[#fff6f7] px-4 py-3 text-sm text-[#b44f5b]">
             {message}
           </p>
         )}
