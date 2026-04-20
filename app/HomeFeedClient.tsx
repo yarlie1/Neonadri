@@ -547,19 +547,22 @@ function ViewportMeetupFeedCard(
     return () => observer.disconnect();
   }, []);
 
-  const opacity = allowLiftMotion
-    ? Math.max(0.5, 0.5 + visibilityRatio * 0.5)
-    : Math.max(0.82, 0.82 + visibilityRatio * 0.18);
+  const opacity = allowLiftMotion ? Math.max(0.5, 0.5 + visibilityRatio * 0.5) : 1;
   const translateY = allowLiftMotion ? (1 - visibilityRatio) * 10 : 0;
+  const scale = allowLiftMotion ? 1 : 0.985 + visibilityRatio * 0.015;
+  const brightness = allowLiftMotion ? 1 : 0.965 + visibilityRatio * 0.035;
 
   return (
     <div
       ref={ref}
       style={{
         opacity,
-        transform: `translateY(${translateY}px)`,
+        transform: allowLiftMotion
+          ? `translateY(${translateY}px)`
+          : `scale(${scale})`,
+        filter: allowLiftMotion ? "none" : `brightness(${brightness})`,
       }}
-      className="transition-[opacity,transform] duration-300 ease-out will-change-[opacity,transform]"
+      className="transition-[opacity,transform,filter] duration-300 ease-out will-change-[opacity,transform,filter]"
     >
       <MeetupFeedCard {...props} />
     </div>
