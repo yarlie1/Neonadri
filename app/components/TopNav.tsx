@@ -20,6 +20,10 @@ import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
 } from "../../lib/userTimeZone";
+import {
+  APP_PILL_ACTIVE_CLASS,
+  APP_PILL_INACTIVE_CLASS,
+} from "../designSystem";
 
 type SimpleUser = {
   id: string;
@@ -30,7 +34,9 @@ function PendingBadge({ count }: { count: number }) {
   if (count <= 0) return null;
 
   return (
-    <span className="inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#b9c6cf] bg-[linear-gradient(180deg,#ffffff_0%,#dbe5eb_100%)] px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-[#2f404b] shadow-[0_10px_18px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.95)]">
+    <span
+      className={`inline-flex min-w-[18px] items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-extrabold leading-none shadow-[0_10px_18px_rgba(118,126,133,0.16)] ${APP_PILL_ACTIVE_CLASS}`}
+    >
       {count > 99 ? "99+" : count}
     </span>
   );
@@ -41,12 +47,12 @@ function NewChatBadge({ visible }: { visible: boolean }) {
 
   return (
     <span
-      className="relative inline-flex h-5 w-5 items-center justify-center rounded-full border border-[#dde3e7] bg-[linear-gradient(180deg,#ffffff_0%,#eef2f5_100%)] text-[#6d7a83]"
+      className={`relative inline-flex h-5 w-5 items-center justify-center rounded-full ${APP_PILL_INACTIVE_CLASS}`}
       aria-label="New chat activity"
       title="New chat activity"
     >
       <MessageCircleMore className="h-3 w-3" />
-      <span className="absolute -right-0.5 -top-0.5 inline-flex h-2.5 w-2.5 rounded-full border border-white bg-[#88939a]" />
+      <span className="absolute -right-0.5 -top-0.5 inline-flex h-2.5 w-2.5 rounded-full border border-white bg-[#7b8790]" />
     </span>
   );
 }

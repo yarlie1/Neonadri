@@ -21,6 +21,9 @@ import type { DistanceValue, SortValue } from "./useHomeFeedFilters";
 import type { DistanceUnit } from "./useDistanceUnit";
 import {
   APP_BODY_TEXT_CLASS,
+  APP_PILL_ACTIVE_CLASS,
+  APP_PILL_INACTIVE_CLASS,
+  APP_ROW_SURFACE_CLASS,
   APP_SOFT_CARD_CLASS,
   APP_SUBTLE_TEXT_CLASS,
   APP_SURFACE_CARD_CLASS,
@@ -82,23 +85,22 @@ export function formatDuration(minutes: number | null) {
 }
 
 export function getPurposeTheme(purpose: string | null) {
-  const baseBandClass =
-    "border border-[#eadfd2] bg-[linear-gradient(180deg,#fbf5ef_0%,#f3e8dc_100%)] text-[#2f261f]";
+  const baseBandClass = `${APP_ROW_SURFACE_CLASS} text-[#24323f]`;
   const baseIconWrapClass =
-    "bg-[linear-gradient(180deg,#f7efe6_0%,#efe3d7_100%)] text-[#7e746b]";
+    "border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#71828c] shadow-[inset_0_1px_0_rgba(255,255,255,0.92)]";
 
   switch (purpose) {
     case "Coffee Chat":
     case "Coffee":
       return {
-        pillClass: "bg-[#f4ede6] text-[#7f6555]",
+        pillClass: `${APP_PILL_INACTIVE_CLASS} text-[#596c76]`,
         bandClass: baseBandClass,
         iconWrapClass: baseIconWrapClass,
       };
     case "Meal":
     case "Dessert":
       return {
-        pillClass: "bg-[#f4eee5] text-[#82674b]",
+        pillClass: `${APP_PILL_INACTIVE_CLASS} text-[#5f6f78]`,
         bandClass: baseBandClass,
         iconWrapClass: baseIconWrapClass,
       };
@@ -106,7 +108,7 @@ export function getPurposeTheme(purpose: string | null) {
     case "Jogging":
     case "Yoga":
       return {
-        pillClass: "bg-[#eef0ea] text-[#64705f]",
+        pillClass: `${APP_PILL_INACTIVE_CLASS} text-[#5d6f78]`,
         bandClass: baseBandClass,
         iconWrapClass: baseIconWrapClass,
       };
@@ -114,7 +116,7 @@ export function getPurposeTheme(purpose: string | null) {
     case "Theater":
     case "Karaoke":
       return {
-        pillClass: "bg-[#efedf2] text-[#6c6278]",
+        pillClass: `${APP_PILL_INACTIVE_CLASS} text-[#60707a]`,
         bandClass: baseBandClass,
         iconWrapClass: baseIconWrapClass,
       };
@@ -123,7 +125,7 @@ export function getPurposeTheme(purpose: string | null) {
     case "Bowling":
     case "Arcade":
       return {
-        pillClass: "bg-[#efedf2] text-[#675f77]",
+        pillClass: `${APP_PILL_ACTIVE_CLASS} text-[#344651]`,
         bandClass: baseBandClass,
         iconWrapClass: baseIconWrapClass,
       };
@@ -131,27 +133,27 @@ export function getPurposeTheme(purpose: string | null) {
     case "Book Talk":
     case "Book":
       return {
-        pillClass: "bg-[#edf0f2] text-[#61707f]",
+        pillClass: `${APP_PILL_INACTIVE_CLASS} text-[#5c6f7a]`,
         bandClass: baseBandClass,
         iconWrapClass: baseIconWrapClass,
       };
     case "Work Together":
     case "Work":
       return {
-        pillClass: "bg-[#f1ece6] text-[#6f645a]",
+        pillClass: `${APP_PILL_ACTIVE_CLASS} text-[#334650]`,
         bandClass: baseBandClass,
         iconWrapClass: baseIconWrapClass,
       };
     case "Photo Walk":
     case "Photo":
       return {
-        pillClass: "bg-[#f4ece8] text-[#80625d]",
+        pillClass: `${APP_PILL_INACTIVE_CLASS} text-[#5f6f78]`,
         bandClass: baseBandClass,
         iconWrapClass: baseIconWrapClass,
       };
     default:
       return {
-        pillClass: "bg-[#f3ede7] text-[#7b665a]",
+        pillClass: `${APP_PILL_INACTIVE_CLASS} text-[#60707a]`,
         bandClass: baseBandClass,
         iconWrapClass: baseIconWrapClass,
       };

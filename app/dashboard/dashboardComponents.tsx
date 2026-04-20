@@ -41,8 +41,7 @@ export const SOFT_CARD_CLASS =
   APP_SOFT_CARD_CLASS;
 
 export function getPurposeTheme(purpose: string | null) {
-  const baseBandClass =
-    "border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#24323f]";
+  const baseBandClass = `${APP_ROW_SURFACE_CLASS} text-[#24323f]`;
 
   switch (purpose) {
     case "Coffee Chat":
