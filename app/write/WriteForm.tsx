@@ -600,7 +600,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           type="button"
           onClick={handleCreate}
           disabled={saving || (!!benefitAmount && !benefitConfirmed)}
-          className={`mt-6 w-full ${PRIMARY_BUTTON_CLASS} py-4 text-base font-semibold`}
+          className={`mt-6 w-full ${APP_BUTTON_PRIMARY_CLASS} py-4 text-base font-semibold disabled:opacity-50`}
         >
           {saving ? "Creating..." : "Create Meetup"}
         </button>
