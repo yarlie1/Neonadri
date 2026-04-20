@@ -532,12 +532,12 @@ function MatchesTabPanel({
                   Leave Review
                 </CompactActionButton>
               ) : alreadyReviewed ? (
-                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-[#fcfaf7] px-3 py-2 text-xs font-medium text-[#7f8a92]">
+                <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                   <Star className="h-3.5 w-3.5" />
                   Review submitted
                 </div>
               ) : (
-                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-[#fcfaf7] px-3 py-2 text-xs font-medium text-[#7f8a92]">
+                <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                   <Star className="h-3.5 w-3.5" />
                   Review after meetup
                 </div>
