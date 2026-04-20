@@ -509,10 +509,30 @@ function ViewportMeetupFeedCard(
 ) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [visibilityRatio, setVisibilityRatio] = useState(1);
+  const [enableViewportMotion, setEnableViewportMotion] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia("(pointer: fine)");
+    const applyPreference = () => setEnableViewportMotion(mediaQuery.matches);
+
+    applyPreference();
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", applyPreference);
+      return () => mediaQuery.removeEventListener("change", applyPreference);
+    }
+
+    mediaQuery.addListener(applyPreference);
+    return () => mediaQuery.removeListener(applyPreference);
+  }, []);
 
   useEffect(() => {
     const node = ref.current;
-    if (!node || typeof IntersectionObserver === "undefined") return;
+    if (!node || !enableViewportMotion || typeof IntersectionObserver === "undefined") return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -529,18 +549,21 @@ function ViewportMeetupFeedCard(
 
   const opacity = Math.max(0.5, 0.5 + visibilityRatio * 0.5);
   const translateY = (1 - visibilityRatio) * 10;
+  const resolvedOpacity = enableViewportMotion ? opacity : 1;
+  const resolvedTranslateY = enableViewportMotion ? translateY : 0;
 
   return (
     <div
       ref={ref}
       style={{
-        opacity,
-        transform: `translateY(${translateY}px)`,
+        opacity: resolvedOpacity,
+        transform: `translateY(${resolvedTranslateY}px)`,
       }}
-      className="transition-[opacity,transform] duration-300 ease-out will-change-[opacity,transform]"
+      className={`transition-[opacity,transform] duration-300 ease-out ${
+        enableViewportMotion ? "will-change-[opacity,transform]" : ""
+      }`}
     >
       <MeetupFeedCard {...props} />
     </div>
   );
 }
-

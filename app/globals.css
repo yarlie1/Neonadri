@@ -8,13 +8,17 @@
 /* ?§ÌÅ¨Î°?Î∂Ä?úÎüΩÍ≤?*/
 html {
   scroll-behavior: smooth;
+  min-height: 100%;
+  background-color: #dfe6eb;
+  overscroll-behavior-y: none;
 }
 
 /* ?ÑÏ≤¥ Í∏∞Î≥∏ ?§Ì???*/
 body {
+  min-height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #f9fafb; /* ?¥Ïßù ?åÏÉâ Î∞∞Í≤Ω */
+  background-color: #dfe6eb; /* silver home/system background */
   color: #111827; /* Í∏∞Î≥∏ ?çÏä§??*/
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
@@ -93,4 +97,5 @@ textarea:focus {
 .btn-dark:hover {
   background: #1f2937;
 }
+
 
