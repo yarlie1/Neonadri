@@ -36,6 +36,14 @@ import {
   SURFACE_CARD_CLASS,
   formatDuration,
 } from "./dashboardComponents";
+import {
+  APP_BODY_TEXT_CLASS,
+  APP_BUTTON_PRIMARY_CLASS,
+  APP_EYEBROW_CLASS,
+  APP_INNER_PANEL_CLASS,
+  APP_PAGE_BG_CLASS,
+  APP_ROW_SURFACE_CLASS,
+} from "../designSystem";
 import { useDashboardState } from "./useDashboardState";
 
 function PostsTabPanel({
@@ -80,21 +88,21 @@ function PostsTabPanel({
               </div>
             </div>
 
-            <div className="rounded-[22px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-3">
+            <div className={`${APP_INNER_PANEL_CLASS} p-3`}>
               <div className="flex items-stretch gap-2">
                 <div
                   className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
                 >
-                  <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 bg-[linear-gradient(180deg,#f7efe6_0%,#efe3d7_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
+                  <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
                     {getPurposeIcon(post.meeting_purpose)}
                   </div>
-                  <span className="truncate text-[1.02rem] font-black tracking-[-0.03em] text-[#2f261f]">
+                  <span className="truncate text-[1.02rem] font-black tracking-[-0.03em] text-[#24323f]">
                     {post.meeting_purpose || "Meetup"}
                   </span>
                 </div>
 
                 {formatDuration(post.duration_minutes) ? (
-                  <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] bg-[#f4ece4] px-1.5 py-2 text-[#4f443b]">
+                  <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#edf2f5_100%)] px-1.5 py-2 text-[#52616a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]">
                     <Clock3 className="h-4 w-4" />
                     <span className="mt-1 text-sm font-semibold">
                       {formatDuration(post.duration_minutes)}
@@ -103,8 +111,8 @@ function PostsTabPanel({
                 ) : null}
 
                 {amount !== null && (
-                  <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[16px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-1.5 py-2 text-[#6e4715] shadow-sm">
-                    <Coins className="h-4 w-4 shrink-0" />
+                  <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[16px] border border-[#ccd6dd] bg-[linear-gradient(180deg,#ffffff_0%,#e7eef3_100%)] px-1.5 py-2 text-[#435760] shadow-[0_8px_16px_rgba(118,126,133,0.1)]">
+                    <Coins className="h-4 w-4 shrink-0 text-[#758893]" />
                     <span className="mt-1 text-sm font-semibold">
                       +${amount.toLocaleString()}
                     </span>
@@ -112,40 +120,40 @@ function PostsTabPanel({
                 )}
               </div>
 
-              <div className="mt-3 grid gap-2 text-[#7d7268] sm:grid-cols-2">
+              <div className="mt-3 grid gap-2 text-[#6f7a82] sm:grid-cols-2">
                 {post.meeting_time && (
-                  <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
-                    <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                  <div className={`flex items-start gap-2 ${APP_ROW_SURFACE_CLASS} px-3 py-2`}>
+                    <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#7a8b95]" />
                     <div className="min-w-0 leading-[1.2]">
-                      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#849099]">
                         When
                       </div>
-                      <div className="truncate text-[12px] font-medium text-[#554a42]">
+                      <div className="truncate text-[12px] font-medium text-[#3c4850]">
                         {formatTime(post.meeting_time)}
                       </div>
                     </div>
                   </div>
                 )}
 
-                <div className="flex min-w-0 items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
-                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                <div className={`flex min-w-0 items-start gap-2 ${APP_ROW_SURFACE_CLASS} px-3 py-2`}>
+                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#7a8b95]" />
                   <div className="min-w-0 leading-[1.2]">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#849099]">
                       Place
                     </div>
-                    <div className="block truncate text-[12px] font-medium text-[#554a42]">
+                    <div className="block truncate text-[12px] font-medium text-[#3c4850]">
                       {post.place_name || post.location || "No place"}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2 sm:col-span-2">
-                  <UserRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+                <div className={`flex items-start gap-2 ${APP_ROW_SURFACE_CLASS} px-3 py-2 sm:col-span-2`}>
+                  <UserRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#7a8b95]" />
                   <div className="min-w-0 leading-[1.2]">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#849099]">
                       Looking for
                     </div>
-                    <div className="truncate text-[12px] font-medium text-[#554a42]">
+                    <div className="truncate text-[12px] font-medium text-[#3c4850]">
                       {post.target_gender || "Any"} / {post.target_age_group || "Any"}
                     </div>
                   </div>
@@ -157,7 +165,7 @@ function PostsTabPanel({
       })}
 
       {filteredPosts.length === 0 && (
-        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
+        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#78848c]`}>
           No meetups in this filter.
         </div>
       )}
@@ -199,16 +207,16 @@ function RecentChatsPanel({
 }) {
   if (recentChats.length === 0) {
     return (
-      <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-5">
+      <div className={`${SURFACE_CARD_CLASS} p-4 sm:p-5`}>
         <div className="flex items-start gap-3">
-          <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ebded1] bg-[#fbf6f0] text-[#8d6f61]">
+          <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d8e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#738690]">
             <MessageSquareMore className="h-4 w-4" />
           </div>
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
+            <div className={APP_EYEBROW_CLASS}>
               Recent chats
             </div>
-            <div className="mt-2 text-sm leading-6 text-[#6f655c]">
+            <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
               When you match with someone, your chat rooms will show up here.
             </div>
           </div>
@@ -218,44 +226,44 @@ function RecentChatsPanel({
   }
 
   return (
-    <div className="rounded-[24px] border border-[#eadfd3] bg-white/92 p-4 shadow-[0_16px_40px_rgba(92,69,52,0.08)] backdrop-blur sm:p-5">
+    <div className={`${SURFACE_CARD_CLASS} p-4 sm:p-5`}>
       <div className="flex items-center justify-between gap-3">
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9d7362]">
+          <div className={APP_EYEBROW_CLASS}>
             Recent chats
           </div>
-          <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#2f2a26]">
+          <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#24323f]">
             Open a chat right away
           </div>
         </div>
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-[20px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)]">
+      <div className="mt-4 overflow-hidden rounded-[20px] border border-[#d8e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)]">
         {recentChats.map((chat, index) => (
           <Link
             key={chat.matchId}
             href={`/matches/${chat.matchId}/chat`}
             className={`flex items-center justify-between gap-3 px-4 py-3 transition hover:bg-white/80 ${
-              index !== recentChats.length - 1 ? "border-b border-[#eee3d8]" : ""
+              index !== recentChats.length - 1 ? "border-b border-[#dfe6ea]" : ""
             }`}
           >
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="truncate text-sm font-semibold text-[#2f2a26]">
+                <span className="truncate text-sm font-semibold text-[#24323f]">
                   {chat.otherUserName}
                 </span>
                 {chat.hasNewMessage ? (
-                  <span className="shrink-0 rounded-full border border-[#f1d8c8] bg-[#fff2e8] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a2654e]">
+                  <span className="shrink-0 rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#5f7480]">
                     New
                   </span>
                 ) : null}
               </div>
-              <div className="mt-1 truncate text-xs text-[#7d7268]">
+              <div className="mt-1 truncate text-xs text-[#78848c]">
                 {formatRecentChatTime(chat.meetingTime, userTimeZone)} · {chat.placeLabel}
               </div>
             </div>
 
-            <div className="shrink-0 text-xs font-medium text-[#7d7268]">Open</div>
+            <div className="shrink-0 text-xs font-medium text-[#78848c]">Open</div>
           </Link>
         ))}
       </div>
@@ -303,12 +311,12 @@ function ReceivedTabPanel({
           >
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7f8990]">
                   Incoming request
                 </div>
-                <div className="mt-2 text-lg font-semibold text-[#2f2a26]">{statusLine}</div>
-                <div className="mt-1 text-sm text-[#6f655c]">From {requesterName}</div>
-                <div className="mt-1 text-sm text-[#8b7f74]">
+                <div className="mt-2 text-lg font-semibold text-[#24323f]">{statusLine}</div>
+                <div className="mt-1 text-sm text-[#66727a]">From {requesterName}</div>
+                <div className="mt-1 text-sm text-[#7f8a92]">
                   {new Date(item.created_at).toLocaleString()}
                 </div>
               </div>
@@ -353,7 +361,7 @@ function ReceivedTabPanel({
       })}
 
       {receivedItems.length === 0 && (
-        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
+        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#7f8a92]`}>
           No requests received.
         </div>
       )}
@@ -391,20 +399,20 @@ function SentTabPanel({
           >
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7f8990]">
                   Outgoing request
                 </div>
-                <div className="mt-2 text-lg font-semibold text-[#2f2a26]">
+                <div className="mt-2 text-lg font-semibold text-[#24323f]">
                   You asked to join this meetup.
                 </div>
                 {acceptedMessage ? (
-                  <div className="mt-1 text-lg font-semibold text-[#2f2a26]">
+                  <div className="mt-1 text-lg font-semibold text-[#24323f]">
                     {acceptedMessage}
                   </div>
                 ) : (
-                  <div className="mt-1 text-sm text-[#6f655c]">{statusMessage}</div>
+                  <div className="mt-1 text-sm text-[#66727a]">{statusMessage}</div>
                 )}
-                <div className="mt-1 text-sm text-[#8b7f74]">
+                <div className="mt-1 text-sm text-[#7f8a92]">
                   {new Date(item.created_at).toLocaleString()}
                 </div>
               </div>
@@ -424,7 +432,7 @@ function SentTabPanel({
       })}
 
       {requestsSent.length === 0 && (
-        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
+        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#7f8a92]`}>
           No requests sent.
         </div>
       )}
@@ -483,17 +491,17 @@ function MatchesTabPanel({
           >
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7f8990]">
                   Match status
                 </div>
-                <div className="mt-2 flex items-center gap-2 text-lg font-semibold text-[#2f2a26]">
-                  <HeartHandshake className="h-5 w-5 text-[#a48f7a]" />
+                <div className="mt-2 flex items-center gap-2 text-lg font-semibold text-[#24323f]">
+                  <HeartHandshake className="h-5 w-5 text-[#738690]" />
                   <span>Match confirmed</span>
                 </div>
-                <div className="mt-1 text-sm text-[#6f655c]">
+                <div className="mt-1 text-sm text-[#66727a]">
                   You are matched with {profileMap[otherUserId] || "Unknown"}.
                 </div>
-                <div className="mt-1 text-sm text-[#8b7f74]">
+                <div className="mt-1 text-sm text-[#7f8a92]">
                   Matched on {new Date(item.created_at).toLocaleString()}
                 </div>
               </div>
@@ -524,12 +532,12 @@ function MatchesTabPanel({
                   Leave Review
                 </CompactActionButton>
               ) : alreadyReviewed ? (
-                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-[#fcfaf7] px-3 py-2 text-xs font-medium text-[#8b7f74]">
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-[#fcfaf7] px-3 py-2 text-xs font-medium text-[#7f8a92]">
                   <Star className="h-3.5 w-3.5" />
                   Review submitted
                 </div>
               ) : (
-                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-[#fcfaf7] px-3 py-2 text-xs font-medium text-[#8b7f74]">
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#dccfc2] bg-[#fcfaf7] px-3 py-2 text-xs font-medium text-[#7f8a92]">
                   <Star className="h-3.5 w-3.5" />
                   Review after meetup
                 </div>
@@ -540,7 +548,7 @@ function MatchesTabPanel({
       })}
 
       {filteredMatches.length === 0 && (
-        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#8b7f74]`}>
+        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#7f8a92]`}>
           No matches in this filter.
         </div>
       )}
@@ -754,39 +762,39 @@ export default function DashboardClient({
   };
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-5 text-[#2f2a26] sm:py-6">
+    <main className={`min-h-screen px-4 py-5 sm:py-6 ${APP_PAGE_BG_CLASS}`}>
       <div className="mx-auto max-w-2xl space-y-4 sm:space-y-5">
         {showMatchSuccess && (
-          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#5f5347] shadow-sm`}>
+          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#52616a] shadow-sm`}>
             Match created successfully.
           </div>
         )}
 
         {showReviewSuccess && (
-          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#5f5347] shadow-sm`}>
+          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#52616a] shadow-sm`}>
             Review submitted successfully.
           </div>
         )}
 
-        <div className="relative overflow-hidden rounded-[32px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(92,69,52,0.08)]">
-          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/35 blur-2xl" />
-          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#7b3f31]/10 blur-2xl" />
+        <div className="relative overflow-hidden rounded-[32px] border border-[#dfe7ec] bg-[radial-gradient(circle_at_top_left,#ffffff_0%,#f4f7f9_44%,#dfe7ec_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(118,126,133,0.11)]">
+          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/45 blur-2xl" />
+          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#d8e1e7]/55 blur-2xl" />
           <div className="relative">
-          <div className="text-[11px] tracking-[0.28em] text-[#9b8f84]">DASHBOARD</div>
+          <div className={APP_EYEBROW_CLASS}>DASHBOARD</div>
 
           <div className="mt-2 flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-black tracking-[-0.04em] text-[#2b1f1a] sm:text-[36px]">
+              <h1 className="text-3xl font-black tracking-[-0.04em] text-[#24323f] sm:text-[36px]">
                 My Meetups
               </h1>
-              <p className="mt-2 max-w-md text-sm leading-6 text-[#5f453b]">
+              <p className={`mt-2 max-w-md ${APP_BODY_TEXT_CLASS}`}>
                 Manage posts, requests, matches, and reviews.
               </p>
             </div>
 
             <Link
               href="/write"
-              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#d9c9bc] bg-[#fff6ee] px-4 py-2.5 text-sm font-medium text-[#6f5649] shadow-sm transition hover:bg-[#f7eadf]"
+              className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
             >
               <Plus className="h-4 w-4" />
               Create
@@ -796,16 +804,16 @@ export default function DashboardClient({
         </div>
 
         {upcomingMatchedMeetups.length > 0 && (
-          <div className="rounded-[28px] border border-[#e9ddd1] bg-[linear-gradient(180deg,#fffdfa_0%,#f6ede5_100%)] p-4 shadow-[0_12px_28px_rgba(92,69,52,0.06)] sm:p-5">
+          <div className={`${SURFACE_CARD_CLASS} p-4 sm:p-5`}>
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+                <div className={APP_EYEBROW_CLASS}>
                   Coming up next
                 </div>
-                <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#2f2a26]">
+                <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#24323f]">
                   Upcoming matched meetups
                 </div>
-                <div className="mt-2 text-sm leading-6 text-[#6f655c]">
+                <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
                   {upcomingMatchedMeetups.length} meetup{upcomingMatchedMeetups.length > 1 ? "s" : ""} already matched and still ahead.
                 </div>
               </div>
@@ -820,7 +828,7 @@ export default function DashboardClient({
                   <Link
                     key={item.match.id}
                     href={`/posts/${item.post.id}`}
-                    className="block rounded-[22px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-4 shadow-[0_10px_22px_rgba(92,69,52,0.05)] transition hover:bg-white/96"
+                    className={`block ${APP_INNER_PANEL_CLASS} p-4 transition hover:bg-white/96`}
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div
@@ -830,23 +838,23 @@ export default function DashboardClient({
                         {item.post.meeting_purpose || "Meetup"}
                       </div>
 
-                      <div className="rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.12em] text-[#74675d]">
+                      <div className="rounded-full border border-[#d4dfe6] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.12em] text-[#536a75]">
                         Matched
                       </div>
                     </div>
 
-                    <div className="mt-3 rounded-[18px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-4 py-3">
+                    <div className={`mt-3 ${APP_ROW_SURFACE_CLASS} px-4 py-3`}>
                       <div className="flex items-start justify-between gap-3">
-                        <div className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-[#2f2a26]">
-                          <Clock3 className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+                        <div className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-[#24323f]">
+                          <Clock3 className="h-4 w-4 shrink-0 text-[#7a8b95]" />
                           <span className="truncate">{formatTime(item.post.meeting_time)}</span>
                         </div>
-                        <div className="shrink-0 text-sm font-semibold text-[#2f2a26]">
+                        <div className="shrink-0 text-sm font-semibold text-[#24323f]">
                           {countdown || "Soon"}
                         </div>
                       </div>
-                      <div className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#5f5347]">
-                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#a27767]" />
+                      <div className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#66727a]">
+                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#7a8b95]" />
                         <span className="min-w-0 truncate">
                           {item.post.place_name || item.post.location || "Selected place"}
                         </span>
@@ -1094,6 +1102,8 @@ export default function DashboardClient({
     </main>
   );
 }
+
+
 
 
 

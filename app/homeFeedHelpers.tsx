@@ -19,11 +19,13 @@ import {
 } from "lucide-react";
 import type { DistanceValue, SortValue } from "./useHomeFeedFilters";
 import type { DistanceUnit } from "./useDistanceUnit";
+import {
+  APP_SOFT_CARD_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "./designSystem";
 
-export const SURFACE_CARD_CLASS =
-  "rounded-[32px] border border-[#e5ebef] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(246,249,251,0.988)_36%,rgba(232,237,241,0.99)_100%)] shadow-[0_24px_60px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur";
-export const SOFT_CARD_CLASS =
-  "rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]";
+export const SURFACE_CARD_CLASS = APP_SURFACE_CARD_CLASS;
+export const SOFT_CARD_CLASS = APP_SOFT_CARD_CLASS;
 
 export function getPurposeIcon(purpose: string | null, className?: string) {
   const iconClassName = className || "h-[19px] w-[19px] shrink-0 text-[#7e746b]";

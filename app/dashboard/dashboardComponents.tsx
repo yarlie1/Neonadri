@@ -23,15 +23,26 @@ import {
 } from "lucide-react";
 import { formatMeetingTime } from "../../lib/meetingTime";
 import type { PostRow } from "./page";
+import {
+  APP_BUTTON_PRIMARY_CLASS,
+  APP_BUTTON_SECONDARY_CLASS,
+  APP_EYEBROW_CLASS,
+  APP_INNER_PANEL_CLASS,
+  APP_PILL_ACTIVE_CLASS,
+  APP_PILL_INACTIVE_CLASS,
+  APP_ROW_SURFACE_CLASS,
+  APP_SOFT_CARD_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "../designSystem";
 
 export const SURFACE_CARD_CLASS =
-  "rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur";
+  APP_SURFACE_CARD_CLASS;
 export const SOFT_CARD_CLASS =
-  "rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)]";
+  APP_SOFT_CARD_CLASS;
 
 export function getPurposeTheme(purpose: string | null) {
   const baseBandClass =
-    "border border-[#eadfd2] bg-[linear-gradient(180deg,#fbf5ef_0%,#f3e8dc_100%)] text-[#2f261f]";
+    "border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#24323f]";
 
   switch (purpose) {
     case "Coffee Chat":
@@ -63,7 +74,7 @@ export function getPurposeTheme(purpose: string | null) {
 }
 
 export function getPurposeIcon(purpose: string | null) {
-  const className = "h-5 w-5 shrink-0 text-[#7b7067]";
+  const className = "h-5 w-5 shrink-0 text-[#71828c]";
 
   switch (purpose) {
     case "Coffee Chat":
@@ -119,30 +130,30 @@ export function getStatusBadgeClass(status: string) {
   const normalized = status.toLowerCase();
 
   if (normalized === "expired") {
-    return "bg-[#f4ece4] text-[#8b7f74] border border-[#e7ddd2]";
+    return "bg-[linear-gradient(180deg,#ffffff_0%,#eff3f5_100%)] text-[#75828a] border border-[#d7dde2]";
   }
 
   if (normalized === "upcoming") {
-    return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
+    return "bg-[linear-gradient(180deg,#ffffff_0%,#edf3f7_100%)] text-[#4f6672] border border-[#d6e0e7]";
   }
 
   if (normalized === "open") {
-    return "bg-[#eef7ee] text-[#4f8a54] border border-[#dce8dc]";
+    return "bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] text-[#536a75] border border-[#d4dfe6]";
   }
 
   if (normalized === "matched" || normalized === "accepted") {
-    return "bg-[#efe7dc] text-[#6b5f52] border border-[#dccfc2]";
+    return "bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] text-[#536a75] border border-[#d4dfe6]";
   }
 
   if (normalized === "pending") {
-    return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+    return "bg-[linear-gradient(180deg,#ffffff_0%,#eff3f5_100%)] text-[#75828a] border border-[#d7dde2]";
   }
 
   if (normalized === "rejected") {
-    return "bg-[#f7f1ea] text-[#9b8f84] border border-[#e7ddd2]";
+    return "bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f7_100%)] text-[#8a949b] border border-[#dce3e8]";
   }
 
-  return "bg-[#f4ece4] text-[#7b7067] border border-[#e7ddd2]";
+  return "bg-[linear-gradient(180deg,#ffffff_0%,#eff3f5_100%)] text-[#75828a] border border-[#d7dde2]";
 }
 
 export function getPostMatchState(
@@ -189,8 +200,8 @@ export function DashboardTabCard({
       onClick={onClick}
       className={`w-full rounded-[26px] border px-4 py-5 text-left transition ${
         active
-          ? "bg-[linear-gradient(135deg,#b79f89_0%,#927763_100%)] border-[#b7a38f] text-white shadow-[0_16px_32px_rgba(120,76,52,0.18)]"
-          : "bg-[#fcfaf7] border-[#e7ddd2] text-[#2f2a26] hover:bg-[#f6efe7]"
+          ? "border-[#c7d2d9] bg-[linear-gradient(180deg,#ffffff_0%,#e0e8ed_100%)] text-[#1f2e38] shadow-[0_16px_32px_rgba(118,126,133,0.14)]"
+          : "border-[#e0e7ec] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] text-[#2f3a42] hover:bg-[#f7fafb]"
       }`}
     >
       <div className="flex min-h-[108px] flex-col sm:min-h-[120px]">
@@ -221,9 +232,7 @@ export function FilterPill({
     <button
       onClick={onClick}
       className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-        active
-          ? "bg-[#a48f7a] text-white"
-          : "bg-[#f4ece4] text-[#6b5f52] hover:bg-[#ede3da]"
+        active ? APP_PILL_ACTIVE_CLASS : APP_PILL_INACTIVE_CLASS
       }`}
     >
       {children}
@@ -242,13 +251,13 @@ export function SectionIntro({
 }) {
   return (
     <div className={`${SOFT_CARD_CLASS} px-4 py-4`}>
-      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9d7362]">
+      <div className={APP_EYEBROW_CLASS}>
         {eyebrow}
       </div>
-      <div className="mt-2 text-lg font-black tracking-[-0.04em] text-[#2f2a26]">
+      <div className="mt-2 text-lg font-black tracking-[-0.04em] text-[#24323f]">
         {title}
       </div>
-      <p className="mt-2 text-sm leading-6 text-[#7a6b61]">{body}</p>
+      <p className="mt-2 text-sm leading-6 text-[#66727a]">{body}</p>
     </div>
   );
 }
@@ -268,8 +277,8 @@ export function CompactActionButton({
 }) {
   const className = `inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition ${
     primary
-      ? "bg-[#a48f7a] text-white shadow-sm hover:bg-[#927d69]"
-      : "border border-[#dccfc2] bg-[#fffdfa] text-[#5a5149] hover:bg-[#f4ece4]"
+      ? APP_BUTTON_PRIMARY_CLASS
+      : APP_BUTTON_SECONDARY_CLASS
   } ${disabled ? "opacity-50" : ""}`;
 
   if (href) {
@@ -296,7 +305,7 @@ export function MiniPostPreview({
 }) {
   if (!post) {
     return (
-      <div className={`mt-3 ${SOFT_CARD_CLASS} px-4 py-3 text-sm text-[#8b7f74]`}>
+      <div className={`mt-3 ${SOFT_CARD_CLASS} px-4 py-3 text-sm text-[#78848c]`}>
         Post details unavailable
       </div>
     );
@@ -306,21 +315,21 @@ export function MiniPostPreview({
   const purposeTheme = getPurposeTheme(post.meeting_purpose);
 
   return (
-    <div className="mt-3 rounded-[22px] border border-[#f1e4d8] bg-[linear-gradient(180deg,#fffdfa_0%,#fcfaf7_100%)] p-3">
+    <div className={`mt-3 ${APP_INNER_PANEL_CLASS} p-3`}>
       <div className="flex items-stretch gap-2">
         <div
           className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
         >
-          <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 bg-[linear-gradient(180deg,#f7efe6_0%,#efe3d7_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
+          <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
             {getPurposeIcon(post.meeting_purpose)}
           </div>
-          <span className="truncate text-[1.02rem] font-black tracking-[-0.03em] text-[#2f261f]">
+          <span className="truncate text-[1.02rem] font-black tracking-[-0.03em] text-[#24323f]">
             {post.meeting_purpose || "Meetup"}
           </span>
         </div>
 
         {formatDuration(post.duration_minutes) ? (
-          <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] bg-[#f4ece4] px-1.5 py-2 text-[#4f443b]">
+          <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#edf2f5_100%)] px-1.5 py-2 text-[#52616a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]">
             <Clock3 className="h-4 w-4" />
             <span className="mt-1 text-sm font-semibold">
               {formatDuration(post.duration_minutes)}
@@ -329,8 +338,8 @@ export function MiniPostPreview({
         ) : null}
 
         {amount !== null ? (
-          <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[16px] bg-[linear-gradient(135deg,#ffe5b6_0%,#ffd18e_100%)] px-1.5 py-2 text-[#6e4715] shadow-sm">
-            <Coins className="h-4 w-4 shrink-0" />
+          <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[16px] border border-[#ccd6dd] bg-[linear-gradient(180deg,#ffffff_0%,#e7eef3_100%)] px-1.5 py-2 text-[#435760] shadow-[0_8px_16px_rgba(118,126,133,0.1)]">
+            <Coins className="h-4 w-4 shrink-0 text-[#758893]" />
             <span className="mt-1 text-sm font-semibold">
               +${amount.toLocaleString()}
             </span>
@@ -338,40 +347,40 @@ export function MiniPostPreview({
         ) : null}
       </div>
 
-      <div className="mt-3 grid gap-2 text-[#7d7268] sm:grid-cols-2">
+      <div className="mt-3 grid gap-2 text-[#6f7a82] sm:grid-cols-2">
         {post.meeting_time && (
-          <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
-            <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+          <div className={`flex items-start gap-2 ${APP_ROW_SURFACE_CLASS} px-3 py-2`}>
+            <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#7a8b95]" />
             <div className="min-w-0 leading-[1.2]">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#849099]">
                 When
               </div>
-              <div className="truncate text-[12px] font-medium text-[#554a42]">
+              <div className="truncate text-[12px] font-medium text-[#3c4850]">
                 {formatMeetingTime(post.meeting_time, timeZone) || ""}
               </div>
             </div>
           </div>
         )}
 
-        <div className="flex min-w-0 items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2">
-          <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+        <div className={`flex min-w-0 items-start gap-2 ${APP_ROW_SURFACE_CLASS} px-3 py-2`}>
+          <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#7a8b95]" />
           <div className="min-w-0 leading-[1.2]">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#849099]">
               Place
             </div>
-            <div className="line-clamp-2 break-words text-[12px] font-medium text-[#554a42]">
+            <div className="line-clamp-2 break-words text-[12px] font-medium text-[#3c4850]">
               {post.place_name || post.location || "No place"}
             </div>
           </div>
         </div>
 
-        <div className="flex items-start gap-2 rounded-[16px] bg-[#faf3ec] px-3 py-2 sm:col-span-2">
-          <UserRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a6f5f]" />
+        <div className={`flex items-start gap-2 ${APP_ROW_SURFACE_CLASS} px-3 py-2 sm:col-span-2`}>
+          <UserRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#7a8b95]" />
           <div className="min-w-0 leading-[1.2]">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8f7d71]">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#849099]">
               Looking for
             </div>
-            <div className="truncate text-[12px] font-medium text-[#554a42]">
+            <div className="truncate text-[12px] font-medium text-[#3c4850]">
               {post.target_gender || "Any"} / {post.target_age_group || "Any"}
             </div>
           </div>
