@@ -427,22 +427,21 @@ export function MeetupFeedCard({
       }`}
     >
       <div className={`px-4 py-3.5 ${APP_INNER_PANEL_CLASS}`}>
-        <div className="flex items-start justify-between gap-3">
-          <div className="grid min-w-0 flex-1 grid-cols-[40px_minmax(0,1fr)] gap-x-2.5 gap-y-0.5">
+        <div className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-start gap-x-2.5 gap-y-0.5">
             <div className={`inline-flex h-10 w-10 items-center justify-center rounded-[14px] shadow-[0_8px_16px_rgba(118,126,133,0.1)] ${APP_ROW_SURFACE_CLASS}`}>
               {purposeIcon}
             </div>
-            <div className="min-w-0 truncate self-center pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
+            <div className="min-w-0 self-center truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
               {purposeName}
             </div>
-            <div className={`col-start-2 min-w-0 line-clamp-2 text-[12px] leading-[1.15] ${APP_SUBTLE_TEXT_CLASS}`}>
+            <div
+              className={`col-start-2 row-start-2 min-w-0 pr-2 line-clamp-2 text-[12px] leading-[1.15] ${APP_SUBTLE_TEXT_CLASS}`}
+            >
               Hosted by {hostName}
               {hostMeta ? ` | ${hostMeta}` : ""}
             </div>
-          </div>
-
           <div
-            className={`shrink-0 rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${matchBadgeClassName}`}
+            className={`col-start-3 row-span-2 shrink-0 rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${matchBadgeClassName}`}
           >
             {matchBadgeLabel}
           </div>
