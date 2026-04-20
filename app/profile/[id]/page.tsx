@@ -20,6 +20,15 @@ import {
   USER_TIME_ZONE_COOKIE,
 } from "../../../lib/userTimeZone";
 import { computeReviewTrustMetrics, type ReviewTrustRow } from "../../../lib/reviewTrust";
+import {
+  APP_EYEBROW_CLASS,
+  APP_MUTED_TEXT_CLASS,
+  APP_PAGE_BG_CLASS,
+  APP_ROW_SURFACE_CLASS,
+  APP_SOFT_CARD_CLASS,
+  APP_SUBTLE_TEXT_CLASS,
+  APP_SURFACE_CARD_CLASS,
+} from "../../designSystem";
 
 type PageProps = {
   params: {
@@ -76,7 +85,7 @@ function StarRating({
           <Star
             key={n}
             className={`${iconClass} ${
-              filled ? "fill-[#a48f7a] text-[#a48f7a]" : "text-[#d8cec3]"
+              filled ? "fill-[#71828c] text-[#71828c]" : "text-[#d3dce2]"
             }`}
           />
         );
@@ -95,12 +104,12 @@ function InfoItem({
   value: string;
 }) {
   return (
-    <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-4">
-      <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
+    <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
+      <div className={`flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
         {icon}
         <span>{label}</span>
       </div>
-      <div className="mt-2 text-sm leading-7 text-[#5f5347]">
+      <div className={`mt-2 text-sm leading-7 ${APP_MUTED_TEXT_CLASS}`}>
         {value}
       </div>
     </div>
@@ -177,10 +186,10 @@ export default async function ProfilePage({ params }: PageProps) {
 
   if (!isMyProfile && profile.is_public === false) {
     return (
-      <main className="min-h-screen bg-[#f7f1ea] px-4 py-6 text-[#2f2a26]">
-        <div className="mx-auto max-w-2xl rounded-[28px] border border-[#e7ddd2] bg-white p-6 shadow-sm">
+      <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6`}>
+        <div className={`mx-auto max-w-2xl ${APP_SURFACE_CARD_CLASS} p-6`}>
           <div className="text-2xl font-bold">Private Profile</div>
-          <p className="mt-2 text-sm text-[#6f655c]">
+          <p className={`mt-2 text-sm ${APP_MUTED_TEXT_CLASS}`}>
             This profile is currently private.
           </p>
         </div>
@@ -200,19 +209,19 @@ export default async function ProfilePage({ params }: PageProps) {
   const hasResponseNote = !!profile.response_time_note?.trim();
 
   return (
-      <main className="min-h-screen bg-[linear-gradient(180deg,#fff8f1_0%,#f8eee4_42%,#f7f1ea_100%)] px-4 py-6 text-[#2f2a26]">
+      <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6`}>
       <div className="mx-auto max-w-4xl space-y-5">
-        <section className="rounded-[34px] border border-[#ece0d4] bg-[radial-gradient(circle_at_top_left,#fffbf7_0%,#f6e8dd_44%,#edd8ca_100%)] p-5 shadow-[0_16px_36px_rgba(92,69,52,0.07)] sm:p-5">
+        <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-5`}>
           <div className="flex flex-col gap-3.5">
             <div className="flex items-center justify-between gap-3">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.28rem] text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-[#74675d]">
+              <div className={`inline-flex items-center gap-2 rounded-full ${APP_ROW_SURFACE_CLASS} px-3 py-[0.28rem] text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-[#6b7b84]`}>
                 <UserCircle2 className="h-3.5 w-3.5" />
                 <span>Profile</span>
               </div>
               {isMyProfile && (
                 <Link
                   href={`/profile/${profile.id}/edit`}
-                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3.5 py-[0.42rem] text-[11px] font-medium leading-none text-[#5f5347] transition hover:bg-[#f7eee6]"
+                  className={`inline-flex items-center gap-2 whitespace-nowrap rounded-full ${APP_ROW_SURFACE_CLASS} px-3.5 py-[0.42rem] text-[11px] font-medium leading-none text-[#52616a] transition`}
                 >
                   Edit Profile
                 </Link>
@@ -220,57 +229,57 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
 
             <div className="min-w-0">
-              <div className="rounded-[20px] border border-[#eadfd3] bg-[linear-gradient(180deg,rgba(255,253,250,0.78)_0%,rgba(247,239,231,0.72)_100%)] px-3.5 py-1 text-sm text-[#5f5347]">
+              <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-1 text-sm ${APP_MUTED_TEXT_CLASS}`}>
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 py-2">
-                  <h1 className="min-w-0 truncate text-3xl font-black tracking-[-0.05em] text-[#2b1f1a] sm:text-[2.6rem]">
+                  <h1 className="min-w-0 truncate text-3xl font-black tracking-[-0.05em] text-[#24323f] sm:text-[2.6rem]">
                     {profile.display_name || "Unknown"}
                   </h1>
                   {hasRating ? (
-                    <div className="inline-flex items-center gap-2 rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#5f5347] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                    <div className={`inline-flex items-center gap-2 rounded-full ${APP_ROW_SURFACE_CLASS} px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#52616a] shadow-[0_6px_14px_rgba(118,126,133,0.08)]`}>
                       <StarRating value={roundedAverage} size="sm" />
-                      <span className="font-semibold text-[#4f4339]">
+                      <span className="font-semibold text-[#3c4850]">
                         {averageRating.toFixed(1)}
                       </span>
                     </div>
                   ) : (
-                    <div className="inline-flex items-center rounded-full border border-[#ece0d4] bg-[linear-gradient(180deg,#faf6f1_0%,#f3ebe2_100%)] px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#6b5f52] shadow-[0_6px_14px_rgba(92,69,52,0.04)]">
+                    <div className={`inline-flex items-center rounded-full ${APP_ROW_SURFACE_CLASS} px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#52616a] shadow-[0_6px_14px_rgba(118,126,133,0.08)]`}>
                       No reviews yet
                     </div>
                   )}
                 </div>
 
-                <div className="border-t border-[#eadfd3]/70" />
+                <div className="border-t border-[#dbe3e8]/80" />
 
-                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 py-2 text-[#6a5e53]">
-                  <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
+                <div className={`grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 py-2 ${APP_MUTED_TEXT_CLASS}`}>
+                  <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#71828c]" />
                   <span>{hasMeetingStyle ? profile.meeting_style : "No meetup style yet"}</span>
                   <span />
                 </div>
 
-                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#eadfd3]/70 py-2 text-[#6a5e53]">
-                  <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
+                <div className={`grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#dbe3e8]/80 py-2 ${APP_MUTED_TEXT_CLASS}`}>
+                  <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#71828c]" />
                   <span>{hasResponseNote ? profile.response_time_note : "No response note yet"}</span>
                   <span />
                 </div>
 
-                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#eadfd3]/70 py-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#dbe3e8]/80 py-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[#71828c]" />
+                  <span className={`text-xs font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
                     Attendance
                   </span>
-                  <span className="justify-self-end font-semibold text-[#2f2a26]">
+                  <span className="justify-self-end font-semibold text-[#24323f]">
                     {trustMetrics.attendanceRate === null
                       ? "No data yet"
                       : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#eadfd3]/70 py-2">
-                  <DollarSign className="h-3.5 w-3.5 shrink-0 text-[#8a7f74]" />
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#dbe3e8]/80 py-2">
+                  <DollarSign className="h-3.5 w-3.5 shrink-0 text-[#71828c]" />
+                  <span className={`text-xs font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
                     Payout reliability
                   </span>
-                  <span className="justify-self-end font-semibold text-[#2f2a26]">
+                  <span className="justify-self-end font-semibold text-[#24323f]">
                     {trustMetrics.hostReliabilityRate === null
                       ? "No data yet"
                       : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
@@ -282,27 +291,27 @@ export default async function ProfilePage({ params }: PageProps) {
         </section>
 
         <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-          <section className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-5 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
+          <section className={`${APP_SURFACE_CARD_CLASS} p-5`}>
             <div className="grid gap-3">
               {(profile.gender || profile.age_group) && (
                 <InfoItem
-                  icon={<UserRound className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                  icon={<UserRound className="h-3.5 w-3.5 text-[#71828c]" />}
                   label="Identity"
                   value={[profile.gender, profile.age_group].filter(Boolean).join(" / ")}
                 />
               )}
 
               {hasInterests && (
-                <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-4">
-                  <div className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                    <Sparkles className="h-3.5 w-3.5 text-[#8a7f74]" />
+                <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
+                  <div className={`mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
+                    <Sparkles className="h-3.5 w-3.5 text-[#71828c]" />
                     Interests
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {profile.interests!.map((item) => (
                       <span
                         key={item}
-                        className="rounded-full bg-[#f4ece4] px-3 py-1.5 text-xs font-medium text-[#6b5f52]"
+                        className="rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-3 py-1.5 text-xs font-medium text-[#52616a]"
                       >
                         {item}
                       </span>
@@ -311,19 +320,19 @@ export default async function ProfilePage({ params }: PageProps) {
                 </div>
               )}
 
-              <div className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-4">
-                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#9b8f84]">
-                  <MessageSquareText className="h-4 w-4 shrink-0 text-[#8a7f74]" />
+              <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
+                <div className={`flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
+                  <MessageSquareText className="h-4 w-4 shrink-0 text-[#71828c]" />
                   <span>About me</span>
                 </div>
-                <div className="mt-2 text-sm leading-7 text-[#5f5347]">
+                <div className={`mt-2 text-sm leading-7 ${APP_MUTED_TEXT_CLASS}`}>
                   {hasAboutMe ? profile.about_me : "No introduction yet."}
                 </div>
               </div>
 
               {hasLanguages && (
                 <InfoItem
-                  icon={<Languages className="h-3.5 w-3.5 text-[#8a7f74]" />}
+                  icon={<Languages className="h-3.5 w-3.5 text-[#71828c]" />}
                   label="Languages"
                   value={profile.languages!.join(", ")}
                 />
@@ -332,63 +341,63 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
           </section>
 
-          <section className="rounded-[30px] border border-[#ece1d5] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe7_100%)] p-5 shadow-[0_14px_32px_rgba(92,69,52,0.07)] backdrop-blur">
+          <section className={`${APP_SURFACE_CARD_CLASS} p-5`}>
             <div className="flex items-center justify-between gap-3">
               <div>
-                <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#2f2a26]">
+                <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#24323f]">
                   Reviews
                 </h2>
-                <p className="mt-1 text-sm text-[#7a6d61]">
+                <p className={`mt-1 text-sm ${APP_MUTED_TEXT_CLASS}`}>
                   Signals from past meetups and how people felt afterward.
                 </p>
               </div>
             </div>
 
-            <div className="mt-4 rounded-[24px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-4">
+            <div className={`mt-4 ${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 {hasRating ? (
                   <div className="flex items-center gap-3">
                     <StarRating value={roundedAverage} size="md" />
-                    <div className="text-2xl font-black tracking-[-0.04em] text-[#2f2a26]">
+                    <div className="text-2xl font-black tracking-[-0.04em] text-[#24323f]">
                       {averageRating.toFixed(1)}
                     </div>
                   </div>
                 ) : (
-                  <div className="text-lg font-semibold text-[#5f5347]">
+                  <div className="text-lg font-semibold text-[#52616a]">
                     No reviews yet
                   </div>
                 )}
-                <div className="rounded-full border border-[#ece0d4] bg-[#fbf5ee] px-3 py-1 text-xs font-medium text-[#6b5f52]">
+                <div className={`rounded-full ${APP_ROW_SURFACE_CLASS} px-3 py-1 text-xs font-medium text-[#52616a]`}>
                   {reviewCount > 0 ? "Reviewed by meetup partners" : "No written reviews yet"}
                 </div>
               </div>
 
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-3.5 py-2.5">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-2.5`}>
+                  <div className={`text-[10px] font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
                     Attendance
                   </div>
-                  <div className="mt-1 text-sm font-semibold text-[#5f5347]">
+                  <div className="mt-1 text-sm font-semibold text-[#52616a]">
                     {trustMetrics.attendanceRate === null
                       ? "No data yet"
                       : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
                   </div>
-                  <div className="mt-0.5 text-[11px] text-[#8b7f74]">
+                  <div className={`mt-0.5 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>
                     {trustMetrics.attendanceCount > 0
                       ? `Based on ${trustMetrics.attendanceCount} meetup reviews`
                       : "Not enough meetup reviews yet"}
                   </div>
                 </div>
-                <div className="rounded-[18px] border border-[#ede2d7] bg-[#fcf8f3] px-3.5 py-2.5">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9b8f84]">
+                <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-2.5`}>
+                  <div className={`text-[10px] font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
                     Payout reliability
                   </div>
-                  <div className="mt-1 text-sm font-semibold text-[#5f5347]">
+                  <div className="mt-1 text-sm font-semibold text-[#52616a]">
                     {trustMetrics.hostReliabilityRate === null
                       ? "No data yet"
                       : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
                   </div>
-                  <div className="mt-0.5 text-[11px] text-[#8b7f74]">
+                  <div className={`mt-0.5 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>
                     {trustMetrics.hostReliabilityCount > 0
                       ? `Based on ${trustMetrics.hostReliabilityCount} host payout reviews`
                       : "No host payout reviews yet"}
@@ -399,30 +408,30 @@ export default async function ProfilePage({ params }: PageProps) {
 
             <div className="mt-3 space-y-3">
               {reviews.length === 0 ? (
-                <div className="rounded-[20px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-3 text-sm text-[#8b7f74]">
+                <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-3 text-sm ${APP_SUBTLE_TEXT_CLASS}`}>
                   No reviews yet.
                 </div>
               ) : (
                 reviews.map((review) => (
                   <div
                     key={review.id}
-                    className="rounded-[22px] border border-[#eee3d8] bg-[linear-gradient(180deg,#fffdfa_0%,#f7efe7_100%)] px-3.5 py-4"
+                    className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <StarRating value={review.rating} size="md" />
-                        <div className="text-sm font-semibold text-[#6b5f52]">
+                        <div className="text-sm font-semibold text-[#52616a]">
                           {review.rating}.0 / 5
                         </div>
                       </div>
-                      <div className="text-xs text-[#9b8f84]">
+                      <div className={`text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
                         {new Date(review.created_at).toLocaleDateString(undefined, {
                           timeZone: userTimeZone,
                         })}
                       </div>
                     </div>
 
-                    <p className="mt-3 text-sm leading-6 text-[#5f5347]">
+                    <p className={`mt-3 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}>
                       {review.review_text || "No comment."}
                     </p>
                   </div>
