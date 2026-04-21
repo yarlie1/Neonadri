@@ -571,6 +571,8 @@ export default function DashboardClient({
   const supabase = createClient();
   const router = useRouter();
   const previousActiveTabRef = useRef<string | null>(null);
+  const refreshInFlightRef = useRef(false);
+  const refreshQueuedRef = useRef(false);
   const [liveReceivedItems, setLiveReceivedItems] = useState(requestsReceived);
   const [liveSentItems, setLiveSentItems] = useState(requestsSent);
   const [liveMatches, setLiveMatches] = useState(matches);
@@ -868,7 +870,7 @@ export default function DashboardClient({
       setLiveMatchSummaryMap(nextSummaryMap);
     };
 
-    const refreshDashboardData = async () => {
+    const runRefreshDashboardData = async () => {
       const [receivedRes, sentRes, matchesRes] = await Promise.all([
         supabase
           .from("match_requests")
@@ -901,6 +903,26 @@ export default function DashboardClient({
       setMatchItems(nextMatches);
 
       await hydrateDashboardRelations(nextReceived, nextSent, nextMatches);
+    };
+
+    const refreshDashboardData = async () => {
+      if (refreshInFlightRef.current) {
+        refreshQueuedRef.current = true;
+        return;
+      }
+
+      refreshInFlightRef.current = true;
+
+      try {
+        await runRefreshDashboardData();
+      } finally {
+        refreshInFlightRef.current = false;
+
+        if (refreshQueuedRef.current) {
+          refreshQueuedRef.current = false;
+          void refreshDashboardData();
+        }
+      }
     };
 
     refreshChannel = supabase
@@ -987,6 +1009,8 @@ export default function DashboardClient({
 
     return () => {
       mounted = false;
+      refreshInFlightRef.current = false;
+      refreshQueuedRef.current = false;
       window.removeEventListener("focus", handleWindowFocus);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("pageshow", handlePageShow);
