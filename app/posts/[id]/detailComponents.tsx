@@ -790,15 +790,30 @@ export function MatchedChatPanel({
   isViewerParticipant,
   matchedRecordId,
   hasNewChatMessage,
+  meetupFinished,
+  chatClosed,
 }: {
   isPostMatched: boolean;
   isViewerParticipant: boolean;
   matchedRecordId?: number | null;
   hasNewChatMessage: boolean;
+  meetupFinished: boolean;
+  chatClosed: boolean;
 }) {
   if (!(isPostMatched && isViewerParticipant && matchedRecordId)) {
     return null;
   }
+
+  const heading = chatClosed
+    ? "Chat closed"
+    : meetupFinished
+    ? "Keep the conversation going"
+    : "Stay in touch before the meetup";
+  const body = chatClosed
+    ? "This chat closed 72 hours after the meetup."
+    : meetupFinished
+    ? "You can still chat for 72 hours after the meetup."
+    : "Use chat to confirm details and stay in sync before you meet.";
 
   return (
     <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
@@ -808,22 +823,32 @@ export function MatchedChatPanel({
             Chat
           </div>
           <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#24323f]">
-            Stay in touch before the meetup
+            {heading}
+          </div>
+          <div className="mt-2 text-sm leading-6 text-[#66727a]">
+            {body}
           </div>
         </div>
 
-        <Link
-          href={`/matches/${matchedRecordId}/chat`}
-          className={`inline-flex shrink-0 items-center gap-2 rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
-        >
-          <MessageSquare className="h-4 w-4 text-[#738690]" />
-          Open Chat
-          {hasNewChatMessage ? (
-            <span className="rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#5f7480]">
-              New
-            </span>
-          ) : null}
-        </Link>
+        {chatClosed ? (
+          <div className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-2 text-sm font-medium text-[#6b7981]">
+            <MessageSquare className="h-4 w-4 text-[#738690]" />
+            Closed
+          </div>
+        ) : (
+          <Link
+            href={`/matches/${matchedRecordId}/chat`}
+            className={`inline-flex shrink-0 items-center gap-2 rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
+          >
+            <MessageSquare className="h-4 w-4 text-[#738690]" />
+            Open Chat
+            {hasNewChatMessage ? (
+              <span className="rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#5f7480]">
+                New
+              </span>
+            ) : null}
+          </Link>
+        )}
       </div>
     </div>
   );

@@ -118,6 +118,8 @@ export default function ChatRoomClient({
   placeLabel,
   roomId,
   isProviderConfigured,
+  chatClosed,
+  chatClosedMessage,
   currentUserId,
   currentUserName,
 }: {
@@ -128,6 +130,8 @@ export default function ChatRoomClient({
   placeLabel: string;
   roomId: string;
   isProviderConfigured: boolean;
+  chatClosed: boolean;
+  chatClosedMessage: string;
   currentUserId: string;
   currentUserName: string;
 }) {
@@ -153,7 +157,8 @@ export default function ChatRoomClient({
     [otherUserLastSeenAt]
   );
   const isOtherUserActiveNow = presenceLabel === "Active now";
-  const canSend = connectionLabel === "Connected" && draft.trim().length > 0 && !sending;
+  const canSend =
+    !chatClosed && connectionLabel === "Connected" && draft.trim().length > 0 && !sending;
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.PubNub) {
@@ -178,9 +183,19 @@ export default function ChatRoomClient({
       if (!response.ok) {
         const payload = await response.json().catch(() => null);
         console.error("[match-chat-activity]", action, payload?.error || response.status);
+        return {
+          ok: false,
+          error: payload?.error || "Chat activity update failed.",
+        };
       }
+
+      return { ok: true as const };
     } catch {
       console.error("[match-chat-activity]", action, "network-failed");
+      return {
+        ok: false,
+        error: "Chat activity update failed.",
+      };
     }
   };
 
@@ -332,6 +347,10 @@ export default function ChatRoomClient({
   const handleSend = async () => {
     const text = draft.trim();
     if (!text) return;
+    if (chatClosed) {
+      setErrorMessage(chatClosedMessage);
+      return;
+    }
     if (!pubnubRef.current) {
       setErrorMessage("Chat is still connecting. Please try again in a moment.");
       return;
@@ -341,6 +360,12 @@ export default function ChatRoomClient({
     setErrorMessage(null);
 
     try {
+      const activityResult = await markActivity("message");
+      if (!activityResult?.ok) {
+        setErrorMessage(activityResult?.error || chatClosedMessage);
+        return;
+      }
+
       await pubnubRef.current.publish({
         channel: roomLabel,
         message: {
@@ -352,7 +377,6 @@ export default function ChatRoomClient({
         storeInHistory: true,
       });
       setDraft("");
-      void markActivity("message");
     } catch {
       setErrorMessage("Message could not be sent. Please try again.");
     } finally {
@@ -459,8 +483,15 @@ export default function ChatRoomClient({
                     value={draft}
                     onChange={(event) => setDraft(event.target.value)}
                     onKeyDown={handleDraftKeyDown}
-                    placeholder={`Message ${otherUserName}...`}
-                    className="h-[56px] min-h-[56px] flex-1 resize-none rounded-[16px] border border-[#d6e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-[17px] text-sm leading-5 text-[#2f3a42] outline-none transition placeholder:text-[#96a2aa] focus:border-[#bccad3] focus:bg-[#ffffff]"
+                    disabled={chatClosed}
+                    placeholder={
+                      chatClosed ? chatClosedMessage : `Message ${otherUserName}...`
+                    }
+                    className={`h-[56px] min-h-[56px] flex-1 resize-none rounded-[16px] border px-4 py-[17px] text-sm leading-5 outline-none transition placeholder:text-[#96a2aa] ${
+                      chatClosed
+                        ? "cursor-not-allowed border-[#d9e1e6] bg-[linear-gradient(180deg,#f7fafb_0%,#eef3f6_100%)] text-[#7f8b92]"
+                        : "border-[#d6e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] text-[#2f3a42] focus:border-[#bccad3] focus:bg-[#ffffff]"
+                    }`}
                   />
                   <button
                     type="button"
@@ -477,6 +508,12 @@ export default function ChatRoomClient({
                   </button>
                 </div>
               </div>
+
+              {chatClosed ? (
+                <div className="mt-3 rounded-[14px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
+                  {chatClosedMessage}
+                </div>
+              ) : null}
 
               {errorMessage && (
                 <div className="mt-3 rounded-[14px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">

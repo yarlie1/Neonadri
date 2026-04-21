@@ -1,11 +1,24 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createClient } from "../../../../../lib/supabase/server";
+import {
+  getChatWindowState,
+  MATCH_CHAT_CLOSED_MESSAGE,
+} from "../../../../../lib/chat/chatWindow";
 import { getOrCreateAuthorizedMatchChat } from "../../../../../lib/chat/matchChats";
+import {
+  normalizeUserTimeZone,
+  USER_TIME_ZONE_COOKIE,
+} from "../../../../../lib/userTimeZone";
 
 type ActivityAction = "seen" | "message";
 
 export async function GET(request: Request) {
   const supabase = await createClient();
+  const cookieStore = await cookies();
+  const userTimeZone = normalizeUserTimeZone(
+    cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
+  );
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -26,6 +39,15 @@ export async function GET(request: Request) {
       matchId,
       userId: user.id,
     });
+    const { data: postData } = await supabase
+      .from("posts")
+      .select("meeting_time")
+      .eq("id", matchChat.match.post_id)
+      .maybeSingle();
+    const { chatClosed } = getChatWindowState(
+      postData?.meeting_time || null,
+      userTimeZone
+    );
 
     const otherUserLastSeenAt =
       matchChat.participantRole === "host"
@@ -34,6 +56,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       ok: true,
+      chatClosed,
       otherUserLastSeenAt,
       lastChatActivityAt: matchChat.chat.last_chat_activity_at,
     });
@@ -45,6 +68,10 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const supabase = await createClient();
+  const cookieStore = await cookies();
+  const userTimeZone = normalizeUserTimeZone(
+    cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
+  );
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -76,6 +103,21 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("[match-chat-activity:post] access error", error);
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const { data: postData } = await supabase
+    .from("posts")
+    .select("meeting_time")
+    .eq("id", matchChat.match.post_id)
+    .maybeSingle();
+
+  const { chatClosed } = getChatWindowState(
+    postData?.meeting_time || null,
+    userTimeZone
+  );
+
+  if (action === "message" && chatClosed) {
+    return NextResponse.json({ error: MATCH_CHAT_CLOSED_MESSAGE }, { status: 403 });
   }
 
   const now = new Date().toISOString();

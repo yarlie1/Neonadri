@@ -2,6 +2,10 @@ import { redirect, notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { createClient } from "../../../../lib/supabase/server";
+import {
+  getChatWindowState,
+  MATCH_CHAT_CLOSED_MESSAGE,
+} from "../../../../lib/chat/chatWindow";
 import { getOrCreateAuthorizedMatchChat } from "../../../../lib/chat/matchChats";
 import {
   normalizeUserTimeZone,
@@ -125,6 +129,7 @@ export default async function MatchChatPage({ params }: PageProps) {
     postData?.meeting_time || null,
     userTimeZone
   );
+  const { chatClosed } = getChatWindowState(postData?.meeting_time || null, userTimeZone);
   const placeLabel = postData?.place_name || postData?.location || "Selected place";
   const otherUserName = otherProfileData?.display_name || "Participant";
   const currentUserName = currentProfileData?.display_name || "You";
@@ -146,6 +151,8 @@ export default async function MatchChatPage({ params }: PageProps) {
       placeLabel={placeLabel}
       roomId={matchChat.chat.external_room_id}
       isProviderConfigured={isProviderConfigured}
+      chatClosed={chatClosed}
+      chatClosedMessage={MATCH_CHAT_CLOSED_MESSAGE}
       currentUserId={user.id}
       currentUserName={currentUserName}
     />

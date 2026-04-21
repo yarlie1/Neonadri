@@ -14,6 +14,7 @@ import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
 } from "../../../lib/userTimeZone";
+import { getChatWindowState } from "../../../lib/chat/chatWindow";
 import MatchRequestBox from "./MatchRequestBox";
 import OwnerMatchPanel from "./OwnerMatchPanel";
 import DeletePostButton from "./DeletePostButton";
@@ -255,6 +256,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const requesterProfileMap = await fetchRequesterProfileMap(supabase, requesterIds);
 
   const ownerProfileHref = post.user_id ? `/profile/${post.user_id}` : "#";
+  const { chatClosed } = getChatWindowState(post.meeting_time, userTimeZone);
   const {
     mapUrl,
     targetLabel,
@@ -405,6 +407,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               isViewerParticipant={isViewerParticipant}
               matchedRecordId={matchedRecord?.id}
               hasNewChatMessage={hasNewChatMessage}
+              meetupFinished={meetupFinished}
+              chatClosed={chatClosed}
             />
 
             <MatchReviewPanel
