@@ -536,8 +536,8 @@ export default function TopNav() {
                           Dashboard
                         </NavLabel>
                         <span className="ml-auto inline-flex items-center gap-2">
-                          <PendingBadge count={pendingCount} />
                           <NewChatBadge visible={hasNewChatActivity} />
+                          <PendingBadge count={pendingCount} />
                         </span>
                       </Link>
 
