@@ -119,6 +119,7 @@ export default function TopNav() {
 
   useEffect(() => {
     let mounted = true;
+    let refreshChannel: ReturnType<typeof supabase.channel> | null = null;
 
     const resetSignedOutState = () => {
       setUser(null);
@@ -170,26 +171,78 @@ export default function TopNav() {
       });
     };
 
+    const refreshIndicators = async (userId: string) => {
+      const [count, hasNewChat] = await Promise.all([
+        loadPendingCount(userId),
+        loadHasNewChatActivity(userId),
+      ]);
+
+      if (!mounted || loggingOutRef.current) return;
+      setPendingCount(count);
+      setHasNewChatActivity(hasNewChat);
+    };
+
+    const attachRefreshChannel = (userId: string) => {
+      refreshChannel?.unsubscribe();
+      refreshChannel = supabase
+        .channel(`topnav-badges-${userId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "match_requests",
+            filter: `post_owner_user_id=eq.${userId}`,
+          },
+          () => {
+            void refreshIndicators(userId);
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "match_chats",
+            filter: `host_user_id=eq.${userId}`,
+          },
+          () => {
+            void refreshIndicators(userId);
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "match_chats",
+            filter: `guest_user_id=eq.${userId}`,
+          },
+          () => {
+            void refreshIndicators(userId);
+          }
+        )
+        .subscribe();
+    };
+
     const loadUser = async () => {
       try {
         const {
-          data: { user },
-        } = await supabase.auth.getUser();
+          data: { session },
+        } = await supabase.auth.getSession();
 
         if (!mounted || loggingOutRef.current) return;
 
+        const user = session?.user ?? null;
         const nextUser = user ? { id: user.id, email: user.email } : null;
         setUser(nextUser);
 
         if (user) {
-          const [count, hasNewChat] = await Promise.all([
-            loadPendingCount(user.id),
-            loadHasNewChatActivity(user.id),
-          ]);
-          if (!mounted || loggingOutRef.current) return;
-          setPendingCount(count);
-          setHasNewChatActivity(hasNewChat);
+          attachRefreshChannel(user.id);
+          await refreshIndicators(user.id);
         } else {
+          refreshChannel?.unsubscribe();
+          refreshChannel = null;
           setPendingCount(0);
           setHasNewChatActivity(false);
         }
@@ -215,6 +268,8 @@ export default function TopNav() {
         }
 
         if (!session?.user) {
+          refreshChannel?.unsubscribe();
+          refreshChannel = null;
           resetSignedOutState();
           return;
         }
@@ -229,14 +284,11 @@ export default function TopNav() {
         setMenuOpen(false);
 
         if (session?.user) {
-          const [count, hasNewChat] = await Promise.all([
-            loadPendingCount(session.user.id),
-            loadHasNewChatActivity(session.user.id),
-          ]);
-          if (!mounted || loggingOutRef.current) return;
-          setPendingCount(count);
-          setHasNewChatActivity(hasNewChat);
+          attachRefreshChannel(session.user.id);
+          await refreshIndicators(session.user.id);
         } else {
+          refreshChannel?.unsubscribe();
+          refreshChannel = null;
           setPendingCount(0);
           setHasNewChatActivity(false);
         }
@@ -248,9 +300,10 @@ export default function TopNav() {
     return () => {
       mounted = false;
       window.clearInterval(pollId);
+      refreshChannel?.unsubscribe();
       subscription.unsubscribe();
     };
-  }, [pathname, supabase]);
+  }, [supabase]);
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
