@@ -100,6 +100,8 @@ export default function TopNav() {
     pathname === "/login"
       ? "/login"
       : `/login?next=${encodeURIComponent(currentPathWithSearch)}`;
+  const dashboardHref =
+    user && pendingCount > 0 ? "/dashboard?tab=received" : "/dashboard";
 
   useEffect(() => {
     const browserTimeZone = normalizeUserTimeZone(
@@ -407,7 +409,7 @@ export default function TopNav() {
             {user ? (
               <>
                 <Link
-                  href="/dashboard"
+                  href={dashboardHref}
                   className={`${navBtn(isActivePath(pathname, "/dashboard"))} relative pr-12`}
                 >
                   <NavLabel icon={<LayoutDashboard className="h-4 w-4" />}>
@@ -522,7 +524,7 @@ export default function TopNav() {
                   {user ? (
                     <>
                       <Link
-                        href="/dashboard"
+                        href={dashboardHref}
                         onClick={closeMenu}
                         className={`${mobileItem} ${
                           isActivePath(pathname, "/dashboard")
