@@ -435,7 +435,7 @@ export function MeetupFeedCard({
               {purposeName}
             </div>
             <div
-              className={`col-span-2 row-start-2 min-w-0 pl-[50px] pr-2 line-clamp-2 text-[12px] leading-[1.15] ${APP_SUBTLE_TEXT_CLASS}`}
+              className={`col-span-3 row-start-2 min-w-0 pl-[50px] pr-1 line-clamp-2 text-[12px] leading-[1.15] ${APP_SUBTLE_TEXT_CLASS}`}
             >
               Hosted by {hostName}
               {hostMeta ? ` | ${hostMeta}` : ""}
