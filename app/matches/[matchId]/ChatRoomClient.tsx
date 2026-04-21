@@ -177,7 +177,7 @@ export default function ChatRoomClient({
           matchId,
           action,
         }),
-        keepalive: action === "message",
+        keepalive: true,
       });
 
       if (!response.ok) {
@@ -202,6 +202,11 @@ export default function ChatRoomClient({
   useEffect(() => {
     setOtherUserLastSeenAt(initialOtherUserLastSeenAt);
   }, [initialOtherUserLastSeenAt]);
+
+  useEffect(() => {
+    if (!isProviderConfigured) return;
+    void markActivity("seen");
+  }, [isProviderConfigured, matchId]);
 
   useEffect(() => {
     if (!sdkReady || !isProviderConfigured || !window.PubNub || !publishKey || !subscribeKey) {
@@ -340,6 +345,7 @@ export default function ChatRoomClient({
 
     return () => {
       cancelled = true;
+      void markActivity("seen");
       window.clearInterval(seenInterval);
     };
   }, [isProviderConfigured, matchId]);
