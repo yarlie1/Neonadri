@@ -25,6 +25,7 @@ import {
   FilterPill,
   getPostMatchState,
   getPurposeIcon,
+  getPurposeTheme,
   getStatusBadgeClass,
   MiniPostPreview,
   parseBenefitAmount,
