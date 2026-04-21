@@ -435,13 +435,13 @@ export function MeetupFeedCard({
               {purposeName}
             </div>
             <div
-              className={`col-span-3 row-start-2 min-w-0 pl-[50px] pr-1 line-clamp-2 text-[12px] leading-[1.15] ${APP_SUBTLE_TEXT_CLASS}`}
+              className={`col-span-2 row-start-2 min-w-0 pl-[50px] pr-2 line-clamp-2 text-[12px] leading-[1.15] ${APP_SUBTLE_TEXT_CLASS}`}
             >
               Hosted by {hostName}
               {hostMeta ? ` | ${hostMeta}` : ""}
             </div>
           <div
-            className={`col-start-3 row-span-2 shrink-0 rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${matchBadgeClassName}`}
+            className={`col-start-3 row-start-1 shrink-0 self-start rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${matchBadgeClassName}`}
           >
             {matchBadgeLabel}
           </div>
