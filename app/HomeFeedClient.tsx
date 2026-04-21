@@ -339,13 +339,13 @@ export default function HomeFeedClient({
               Soft social layer
             </div>
 
-            <h1 className="mt-3 max-w-lg text-[35px] font-black leading-[0.92] tracking-[-0.065em] text-[#1f2b34] sm:mt-4 sm:text-[44px]">
-              Find someone new, without the noise.
+            <h1 className="mt-3 max-w-[16ch] text-[33px] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#223039] sm:mt-4 sm:text-[41px]">
+              A calmer way to meet someone new.
             </h1>
 
             <p className={`mt-3 max-w-xl text-[14px] sm:mt-4 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-              A quieter way to discover nearby meetups. Soft silver surfaces,
-              calm pacing, and just enough AI guidance to keep browsing easy.
+              Discover nearby meetups, see who is hosting, and browse at a calmer
+              pace with light AI guidance.
             </p>
 
             <div className="mt-5 grid grid-cols-3 gap-2.5 sm:mt-7 sm:gap-3">
