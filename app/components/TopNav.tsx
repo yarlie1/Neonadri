@@ -408,13 +408,15 @@ export default function TopNav() {
               <>
                 <Link
                   href="/dashboard"
-                  className={navBtn(isActivePath(pathname, "/dashboard"))}
+                  className={`${navBtn(isActivePath(pathname, "/dashboard"))} relative pr-12`}
                 >
                   <NavLabel icon={<LayoutDashboard className="h-4 w-4" />}>
                     Dashboard
                   </NavLabel>
-                  <PendingBadge count={pendingCount} />
-                  <NewChatBadge visible={hasNewChatActivity} />
+                  <span className="absolute right-3 top-1/2 inline-flex -translate-y-1/2 items-center gap-1.5">
+                    <PendingBadge count={pendingCount} />
+                    <NewChatBadge visible={hasNewChatActivity} />
+                  </span>
                 </Link>
 
                 <Link
