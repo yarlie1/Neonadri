@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
 import {
   Menu,
@@ -89,6 +89,7 @@ export default function TopNav() {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const loggingOutRef = useRef(false);
   const pathname = usePathname();
+  const router = useRouter();
   const isHomeTest = pathname.startsWith("/home-test");
   const isSilverHome = true;
   
@@ -364,7 +365,15 @@ export default function TopNav() {
     } catch (error) {
       console.error("TopNav logout error:", error);
     } finally {
-      window.location.replace(`/?signed_out=${Date.now()}`);
+      const target = `/?signed_out=${Date.now()}`;
+
+      if (window.location.pathname === "/") {
+        router.refresh();
+        window.location.search = `?signed_out=${Date.now()}`;
+        return;
+      }
+
+      window.location.replace(target);
     }
   };
 
