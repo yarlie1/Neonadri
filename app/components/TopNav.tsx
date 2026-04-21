@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
 import {
@@ -60,6 +61,21 @@ function NewChatBadge({ visible }: { visible: boolean }) {
 function isActivePath(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function NavLabel({
+  icon,
+  children,
+}: {
+  icon: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <>
+      {icon}
+      <span>{children}</span>
+    </>
+  );
 }
 
 export default function TopNav() {
@@ -385,8 +401,7 @@ export default function TopNav() {
 
           <div className="hidden items-center gap-2 sm:flex">
             <Link href="/" className={navBtn(isActivePath(pathname, "/"))}>
-              <House className="h-4 w-4" />
-              Home
+              <NavLabel icon={<House className="h-4 w-4" />}>Home</NavLabel>
             </Link>
 
             {user ? (
@@ -395,10 +410,9 @@ export default function TopNav() {
                   href="/dashboard"
                   className={navBtn(isActivePath(pathname, "/dashboard"))}
                 >
-                  <span className="inline-flex items-center gap-2 text-current">
-                    <LayoutDashboard className="h-4 w-4" />
+                  <NavLabel icon={<LayoutDashboard className="h-4 w-4" />}>
                     Dashboard
-                  </span>
+                  </NavLabel>
                   <PendingBadge count={pendingCount} />
                   <NewChatBadge visible={hasNewChatActivity} />
                 </Link>
@@ -407,8 +421,7 @@ export default function TopNav() {
                   href="/profile"
                   className={navBtn(pathname === "/profile" || pathname.startsWith("/profile/"))}
                 >
-                  <UserCircle2 className="h-4 w-4" />
-                  Profile
+                  <NavLabel icon={<UserCircle2 className="h-4 w-4" />}>Profile</NavLabel>
                 </Link>
 
                 <Link href="/write" className={primary}>
@@ -433,8 +446,7 @@ export default function TopNav() {
             ) : (
               <>
                 <Link href={loginHref} className={navBtn(isActivePath(pathname, "/login"))}>
-                  <LogIn className="h-4 w-4" />
-                  Log In
+                  <NavLabel icon={<LogIn className="h-4 w-4" />}>Log In</NavLabel>
                 </Link>
 
                 <Link href="/signup" className={primary}>
@@ -502,8 +514,7 @@ export default function TopNav() {
                         : ""
                     }`}
                   >
-                    <House className="h-4 w-4" />
-                    Home
+                    <NavLabel icon={<House className="h-4 w-4" />}>Home</NavLabel>
                   </Link>
 
                   {user ? (
@@ -521,10 +532,9 @@ export default function TopNav() {
                             : "text-[#5a5149] hover:bg-[#f4ece4]"
                         }`}
                       >
-                        <span className="inline-flex items-center gap-2 text-current">
-                          <LayoutDashboard className="h-4 w-4" />
+                        <NavLabel icon={<LayoutDashboard className="h-4 w-4" />}>
                           Dashboard
-                        </span>
+                        </NavLabel>
                         <span className="inline-flex items-center gap-2">
                           <PendingBadge count={pendingCount} />
                           <NewChatBadge visible={hasNewChatActivity} />
@@ -542,8 +552,7 @@ export default function TopNav() {
                             : ""
                         }`}
                       >
-                        <UserCircle2 className="h-4 w-4" />
-                        Profile
+                        <NavLabel icon={<UserCircle2 className="h-4 w-4" />}>Profile</NavLabel>
                       </Link>
 
                       <Link
