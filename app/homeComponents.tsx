@@ -391,6 +391,7 @@ export function MeetupFeedCard({
   isExpired,
   hostName,
   hostMeta,
+  isFeatured,
   matchBadgeLabel,
   matchBadgeClassName,
   purposeIcon,
@@ -406,6 +407,7 @@ export function MeetupFeedCard({
   isExpired: boolean;
   hostName: string;
   hostMeta: string;
+  isFeatured?: boolean;
   matchBadgeLabel: string;
   matchBadgeClassName: string;
   purposeIcon: ReactNode;
@@ -428,22 +430,31 @@ export function MeetupFeedCard({
     >
       <div className={`px-4 py-3.5 ${APP_INNER_PANEL_CLASS}`}>
         <div className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-start gap-x-2.5 gap-y-0.5">
-            <div className={`inline-flex h-10 w-10 items-center justify-center rounded-[14px] shadow-[0_8px_16px_rgba(118,126,133,0.1)] ${APP_ROW_SURFACE_CLASS}`}>
-              {purposeIcon}
-            </div>
-            <div className="min-w-0 self-center truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
-              {purposeName}
-            </div>
+          <div className={`inline-flex h-10 w-10 items-center justify-center rounded-[14px] shadow-[0_8px_16px_rgba(118,126,133,0.1)] ${APP_ROW_SURFACE_CLASS}`}>
+            {purposeIcon}
+          </div>
+          <div className="min-w-0 self-center truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
+            {purposeName}
+          </div>
+          <div className="col-start-3 row-start-1 flex items-center gap-1.5 self-start">
+            {isFeatured ? (
+              <span
+                className={`shrink-0 rounded-[12px] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.88)] ${APP_PILL_INACTIVE_CLASS}`}
+              >
+                Featured
+              </span>
+            ) : null}
             <div
-              className={`col-span-3 row-start-2 min-w-0 pl-[50px] pr-1 line-clamp-2 text-[12px] leading-[1.15] ${APP_SUBTLE_TEXT_CLASS}`}
+              className={`shrink-0 rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${matchBadgeClassName}`}
             >
-              Hosted by {hostName}
-              {hostMeta ? ` | ${hostMeta}` : ""}
+              {matchBadgeLabel}
             </div>
+          </div>
           <div
-            className={`col-start-3 row-start-1 shrink-0 self-start rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${matchBadgeClassName}`}
+            className={`col-span-3 row-start-2 min-w-0 pl-[50px] pr-1 line-clamp-2 text-[12px] leading-[1.15] ${APP_SUBTLE_TEXT_CLASS}`}
           >
-            {matchBadgeLabel}
+            Hosted by {hostName}
+            {hostMeta ? ` | ${hostMeta}` : ""}
           </div>
         </div>
 

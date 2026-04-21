@@ -80,6 +80,60 @@ type MatchSummaryMap = Record<
   }
 >;
 
+function getFeaturedPost(
+  posts: PostRow[],
+  matchSummaryMap: MatchSummaryMap,
+  userTimeZone: string
+) {
+  const now = Date.now();
+  let bestPost: PostRow | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
+
+  for (const post of posts) {
+    const meetingDate = parseMeetingTime(post.meeting_time, userTimeZone);
+    const meetingTime = meetingDate?.getTime() ?? now;
+    const isExpired = meetingTime < now;
+    const hoursUntilMeetup = (meetingTime - now) / (1000 * 60 * 60);
+    const benefitAmount = parseBenefitAmount(post.benefit_amount) ?? 0;
+    const matchSummary = matchSummaryMap[post.id];
+
+    let score = 0;
+
+    if (!isExpired) score += 80;
+    if (matchSummary?.isMatched) score -= 20;
+
+    if (!isExpired) {
+      if (hoursUntilMeetup <= 72) score += 40;
+      else if (hoursUntilMeetup <= 168) score += 28;
+      else if (hoursUntilMeetup <= 336) score += 18;
+      else score += 8;
+    } else {
+      score -= 60;
+    }
+
+    score += Math.min(benefitAmount / 10, 12);
+    score += Math.min(matchSummary?.pendingRequestCount ?? 0, 6);
+
+    const recencyHours =
+      (now - new Date(post.created_at).getTime()) / (1000 * 60 * 60);
+    if (Number.isFinite(recencyHours)) {
+      score += Math.max(0, 18 - recencyHours / 12);
+    }
+
+    if (
+      score > bestScore ||
+      (score === bestScore &&
+        new Date(post.created_at).getTime() >
+          new Date(bestPost?.created_at ?? 0).getTime())
+    ) {
+      bestPost = post;
+      bestScore = score;
+    }
+  }
+
+  return bestPost;
+}
+
 export default function HomeFeedClient({
   initialPosts,
   hostProfileMap,
@@ -261,8 +315,11 @@ export default function HomeFeedClient({
     [hostProfileMap]
   );
 
-  const highlightedPost = posts[0] || null;
-  const feedPosts = highlightedPost ? posts.slice(1) : posts;
+  const highlightedPost = useMemo(
+    () => getFeaturedPost(posts, matchSummaryMap, userTimeZone),
+    [posts, matchSummaryMap, userTimeZone]
+  );
+  const feedPosts = posts;
   const heroStatClass = `${APP_INNER_PANEL_CLASS} px-3.5 py-3.5 sm:py-4`;
   const heroChipClass = `${APP_PILL_INACTIVE_CLASS} rounded-[15px] px-3 py-1.5 text-[11px] font-medium shadow-[0_8px_16px_rgba(118,126,133,0.06)]`;
 
@@ -478,6 +535,7 @@ export default function HomeFeedClient({
               placeText={post.place_name || post.location || "No place"}
               lookingForText={`${post.target_gender || "Any"} / ${post.target_age_group || "Any"}`}
               distanceText={distanceText}
+              isFeatured={highlightedPost?.id === post.id}
             />
           );
         })}
