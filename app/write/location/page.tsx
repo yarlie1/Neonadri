@@ -59,7 +59,7 @@ export default function WriteLocationPage() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
-  const resultMarkersRef = useRef<any[]>([]);
+  const resultMarkersRef = useRef<Array<{ key: string; marker: any }>>([]);
   const geocoderRef = useRef<any>(null);
   const placesServiceRef = useRef<any>(null);
   const selectionRequestRef = useRef(0);
@@ -112,6 +112,7 @@ export default function WriteLocationPage() {
           const lng = e.latLng.lng();
 
           setSelectedResultKey(null);
+          updateResultMarkerStyles(null);
           setMessage("");
 
           updateMarker({ lat, lng });
@@ -134,10 +135,46 @@ export default function WriteLocationPage() {
     };
   }, [defaultCenter]);
 
-  const updateMarker = (position: LatLng) => {
+  const getResultMarkerIcon = (active: boolean) => {
+    if (!window.google?.maps) return undefined;
+
+    return {
+      path: window.google.maps.SymbolPath.CIRCLE,
+      fillColor: active ? "#d14c4c" : "#f6fafc",
+      fillOpacity: 1,
+      strokeColor: active ? "#b13d3d" : "#bccad3",
+      strokeWeight: 2,
+      scale: 13,
+    };
+  };
+
+  const updateResultMarkerStyles = (activeKey: string | null) => {
+    resultMarkersRef.current.forEach(({ key, marker }, index) => {
+      const active = key === activeKey;
+      marker.setIcon(getResultMarkerIcon(active));
+      marker.setLabel({
+        text: String(index + 1),
+        color: active ? "#ffffff" : "#31424d",
+        fontSize: "12px",
+        fontWeight: "700",
+      });
+      marker.setZIndex(active ? 200 : 100);
+    });
+  };
+
+  const updateMarker = (position: LatLng, showSelectionMarker = true) => {
     setSelectedLatLng(position);
 
     if (!window.google || !mapRef.current) return;
+
+    if (!showSelectionMarker) {
+      if (markerRef.current) {
+        markerRef.current.setMap(null);
+        markerRef.current = null;
+      }
+      mapRef.current.panTo(position);
+      return;
+    }
 
     if (!markerRef.current) {
       markerRef.current = new window.google.maps.Marker({
@@ -153,7 +190,7 @@ export default function WriteLocationPage() {
   };
 
   const clearResultMarkers = () => {
-    resultMarkersRef.current.forEach((marker) => marker.setMap(null));
+    resultMarkersRef.current.forEach(({ marker }) => marker.setMap(null));
     resultMarkersRef.current = [];
   };
 
@@ -309,18 +346,14 @@ export default function WriteLocationPage() {
               fontSize: "12px",
               fontWeight: "700",
             },
-            icon: {
-              path: window.google.maps.SymbolPath.CIRCLE,
-              fillColor: "#f6fafc",
-              fillOpacity: 1,
-              strokeColor: "#bccad3",
-              strokeWeight: 2,
-              scale: 13,
-            },
+            icon: getResultMarkerIcon(false),
           });
 
           marker.addListener("click", () => handleChooseResult(item, index));
-          return marker;
+          return {
+            key: item.place_id || `${item.name || "result"}-${index}`,
+            marker,
+          };
         })
         .filter(Boolean);
 
@@ -339,11 +372,14 @@ export default function WriteLocationPage() {
       return;
     }
 
-    updateMarker({ lat, lng });
+    const resultKey = item.place_id || `${item.name || "result"}-${index ?? "x"}`;
+
+    updateMarker({ lat, lng }, false);
     setSelectedPlaceName(item.name || item.formatted_address || "Selected Place");
     setSelectedAddress(item.formatted_address || "");
     setQuery(item.formatted_address || item.name || "");
-    setSelectedResultKey(item.place_id || `${item.name || "result"}-${index ?? "x"}`);
+    setSelectedResultKey(resultKey);
+    updateResultMarkerStyles(resultKey);
     setMessage("");
   };
 
