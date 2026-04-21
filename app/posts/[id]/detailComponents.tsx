@@ -813,7 +813,11 @@ export function MatchedChatPanel({
     ? "This chat closed 72 hours after the meetup."
     : meetupFinished
     ? "You can still chat for 72 hours after the meetup."
-    : "Use chat to confirm details and stay in sync before you meet. (Chat stays open until 72 hours after the meetup.)";
+    : "Use chat to confirm details and stay in sync before you meet.";
+  const subBody =
+    !chatClosed && !meetupFinished
+      ? "Chat stays open for 72 hours after the meetup."
+      : null;
 
   return (
     <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
@@ -828,6 +832,11 @@ export function MatchedChatPanel({
           <div className="mt-2 text-sm leading-6 text-[#66727a]">
             {body}
           </div>
+          {subBody ? (
+            <div className="mt-1 text-xs leading-5 text-[#859199]">
+              {subBody}
+            </div>
+          ) : null}
         </div>
 
         {chatClosed ? (
