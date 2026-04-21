@@ -25,7 +25,6 @@ import {
   FilterPill,
   getPostMatchState,
   getPurposeIcon,
-  getPurposeTheme,
   getStatusBadgeClass,
   MiniPostPreview,
   parseBenefitAmount,
@@ -48,6 +47,7 @@ import { useDashboardState } from "./useDashboardState";
 function PostsTabPanel({
   filteredPosts,
   matchSummaryMap,
+  currentUserMeta,
   getPostStatus,
   formatTime,
   openPostDetail,
@@ -57,6 +57,7 @@ function PostsTabPanel({
     number,
     { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
   >;
+  currentUserMeta: string;
   getPostStatus: (meetingTime: string | null) => "Upcoming" | "Expired";
   formatTime: (meetingTime: string | null) => string;
   openPostDetail: (postId: number) => void;
@@ -69,7 +70,6 @@ function PostsTabPanel({
           matchSummaryMap[post.id]
         );
         const amount = parseBenefitAmount(post.benefit_amount);
-        const purposeTheme = getPurposeTheme(post.meeting_purpose);
         const durationLabel = formatDuration(post.duration_minutes);
 
         return (
@@ -83,7 +83,7 @@ function PostsTabPanel({
                 <div className={`inline-flex h-10 w-10 items-center justify-center rounded-[14px] shadow-[0_8px_16px_rgba(118,126,133,0.1)] ${APP_ROW_SURFACE_CLASS}`}>
                   {getPurposeIcon(post.meeting_purpose)}
                 </div>
-                <div className={`min-w-0 self-center truncate rounded-[18px] px-3 py-2.5 text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34] ${purposeTheme.bandClass}`}>
+                <div className="min-w-0 self-center truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
                   {post.meeting_purpose || "Meetup"}
                 </div>
                 <div
@@ -96,7 +96,7 @@ function PostsTabPanel({
               </div>
 
               <div className="mt-1 min-w-0 pr-1 text-[12px] leading-[1.15] text-[#849099]">
-                Hosted by you
+                Hosted by you{currentUserMeta ? ` | ${currentUserMeta}` : ""}
               </div>
 
               <div className="mt-3 grid gap-2">
@@ -258,6 +258,7 @@ function RecentChatsPanel({
 function ReceivedTabPanel({
   receivedItems,
   profileMap,
+  currentUserMeta,
   postMap,
   userTimeZone,
   processingRequestId,
@@ -268,6 +269,7 @@ function ReceivedTabPanel({
 }: {
   receivedItems: MatchRequestRow[];
   profileMap: Record<string, string>;
+  currentUserMeta: string;
   postMap: Record<number, PostRow>;
   userTimeZone: string;
   processingRequestId: number | null;
@@ -317,7 +319,7 @@ function ReceivedTabPanel({
             <MiniPostPreview
               post={postMap[item.post_id]}
               timeZone={userTimeZone}
-              hostLine="Hosted by you"
+              hostLine={`Hosted by you${currentUserMeta ? ` | ${currentUserMeta}` : ""}`}
             />
 
           </div>
@@ -336,12 +338,14 @@ function ReceivedTabPanel({
 function SentTabPanel({
   requestsSent,
   profileMap,
+  profileMetaMap,
   postMap,
   userTimeZone,
   openPostDetail,
 }: {
   requestsSent: MatchRequestRow[];
   profileMap: Record<string, string>;
+  profileMetaMap: Record<string, string>;
   postMap: Record<number, PostRow>;
   userTimeZone: string;
   openPostDetail: (postId: number) => void;
@@ -350,6 +354,7 @@ function SentTabPanel({
     <div className="space-y-4">
       {requestsSent.map((item) => {
         const hostName = profileMap[item.post_owner_user_id] || "Unknown";
+        const hostMeta = profileMetaMap[item.post_owner_user_id] || "";
         const acceptedMessage =
           item.status === "accepted" ? `${hostName} accepted your request.` : null;
         const statusMessage =
@@ -393,7 +398,7 @@ function SentTabPanel({
             <MiniPostPreview
               post={postMap[item.post_id]}
               timeZone={userTimeZone}
-              hostLine={`Hosted by ${hostName}`}
+              hostLine={`Hosted by ${hostName}${hostMeta ? ` | ${hostMeta}` : ""}`}
             />
           </div>
         );
@@ -412,6 +417,7 @@ function MatchesTabPanel({
   filteredMatches,
   userId,
   profileMap,
+  profileMetaMap,
   postMap,
   reviewedMatchIds,
   matchChatMetaMap,
@@ -423,6 +429,7 @@ function MatchesTabPanel({
   filteredMatches: MatchRow[];
   userId: string;
   profileMap: Record<string, string>;
+  profileMetaMap: Record<string, string>;
   postMap: Record<number, PostRow>;
   reviewedMatchIds: number[];
   matchChatMetaMap: Record<number, MatchChatMetaRow>;
@@ -437,6 +444,7 @@ function MatchesTabPanel({
         const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
         const post = postMap[item.post_id];
         const hostName = post?.user_id ? profileMap[post.user_id] || "Unknown" : "Unknown";
+        const hostMeta = post?.user_id ? profileMetaMap[post.user_id] || "" : "";
         const alreadyReviewed = reviewedMatchIds.includes(item.id);
         const meetupStatus = getPostStatus(post?.meeting_time || null).toLowerCase();
         const canLeaveReview = meetupStatus === "expired" && !alreadyReviewed;
@@ -487,7 +495,7 @@ function MatchesTabPanel({
             <MiniPostPreview
               post={post}
               timeZone={userTimeZone}
-              hostLine={`Hosted by ${hostName}`}
+              hostLine={`Hosted by ${hostName}${hostMeta ? ` | ${hostMeta}` : ""}`}
             />
 
             <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
@@ -536,6 +544,7 @@ export default function DashboardClient({
   requestsSent,
   matches,
   profileMap,
+  profileMetaMap,
   postMap,
   matchSummaryMap,
   reviewedMatchIds,
@@ -548,6 +557,7 @@ export default function DashboardClient({
   requestsSent: MatchRequestRow[];
   matches: MatchRow[];
   profileMap: Record<string, string>;
+  profileMetaMap: Record<string, string>;
   postMap: Record<number, PostRow>;
   matchSummaryMap: Record<
     number,
@@ -603,6 +613,7 @@ export default function DashboardClient({
     userId,
     initialUserTimeZone,
   });
+  const currentUserMeta = profileMetaMap[userId] || "";
 
   useEffect(() => {
     if (previousActiveTabRef.current === activeTab) return;
@@ -1046,6 +1057,7 @@ export default function DashboardClient({
           <PostsTabPanel
             filteredPosts={filteredPosts}
             matchSummaryMap={matchSummaryMap}
+            currentUserMeta={currentUserMeta}
             getPostStatus={getPostStatus}
             formatTime={formatTime}
             openPostDetail={openPostDetail}
@@ -1056,6 +1068,7 @@ export default function DashboardClient({
           <ReceivedTabPanel
             receivedItems={filteredReceived}
             profileMap={profileMap}
+            currentUserMeta={currentUserMeta}
             postMap={postMap}
             userTimeZone={userTimeZone}
             processingRequestId={processingRequestId}
@@ -1070,6 +1083,7 @@ export default function DashboardClient({
           <SentTabPanel
             requestsSent={filteredSent}
             profileMap={profileMap}
+            profileMetaMap={profileMetaMap}
             postMap={postMap}
             userTimeZone={userTimeZone}
             openPostDetail={openPostDetail}
@@ -1081,6 +1095,7 @@ export default function DashboardClient({
             filteredMatches={filteredMatches}
             userId={userId}
             profileMap={profileMap}
+            profileMetaMap={profileMetaMap}
             postMap={postMap}
             reviewedMatchIds={reviewedMatchIds}
             matchChatMetaMap={matchChatMetaMap}

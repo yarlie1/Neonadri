@@ -48,6 +48,8 @@ export type MatchChatMetaRow = {
 export type ProfileRow = {
   id: string;
   display_name: string | null;
+  gender: string | null;
+  age_group: string | null;
 };
 
 export type MatchReviewRow = {
@@ -133,6 +135,7 @@ export default async function DashboardPage() {
       ...matches.flatMap((item) => [item.user_a, item.user_b]),
     ])
   ).filter((id) => id !== user.id);
+  const profileUserIds = Array.from(new Set([...relatedUserIds, user.id]));
 
   const relatedPostIds = Array.from(
     new Set([
@@ -143,16 +146,23 @@ export default async function DashboardPage() {
   );
 
   let profileMap: Record<string, string> = {};
+  let profileMetaMap: Record<string, string> = {};
   let postMap: Record<number, PostRow> = {};
 
-  if (relatedUserIds.length > 0) {
+  if (profileUserIds.length > 0) {
     const { data: profilesData } = await supabase
       .from("profiles")
-      .select("id, display_name")
-      .in("id", relatedUserIds);
+      .select("id, display_name, gender, age_group")
+      .in("id", profileUserIds);
 
     ((profilesData || []) as ProfileRow[]).forEach((profile) => {
       profileMap[profile.id] = profile.display_name || "Unknown";
+      const gender = profile.gender || "";
+      const ageGroup = profile.age_group || "";
+      profileMetaMap[profile.id] =
+        gender || ageGroup
+          ? `${gender || "Unknown"}${ageGroup ? ` / ${ageGroup}` : ""}`
+          : "";
     });
   }
 
@@ -206,6 +216,7 @@ export default async function DashboardPage() {
       requestsSent={requestsSent}
       matches={matches}
       profileMap={profileMap}
+      profileMetaMap={profileMetaMap}
       postMap={postMap}
       matchSummaryMap={matchSummaryMap}
       reviewedMatchIds={reviewedMatchIds}

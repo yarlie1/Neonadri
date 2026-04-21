@@ -319,7 +319,6 @@ export function MiniPostPreview({
   }
 
   const amount = parseBenefitAmount(post.benefit_amount);
-  const purposeTheme = getPurposeTheme(post.meeting_purpose);
   const durationLabel = formatDuration(post.duration_minutes);
 
   return (
@@ -328,7 +327,7 @@ export function MiniPostPreview({
         <div className={`inline-flex h-10 w-10 items-center justify-center rounded-[14px] shadow-[0_8px_16px_rgba(118,126,133,0.1)] ${APP_ROW_SURFACE_CLASS}`}>
           {getPurposeIcon(post.meeting_purpose)}
         </div>
-        <div className={`min-w-0 self-center truncate rounded-[18px] px-3 py-2.5 text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34] ${purposeTheme.bandClass}`}>
+        <div className="min-w-0 self-center truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
           {post.meeting_purpose || "Meetup"}
         </div>
         {hostLine ? (
