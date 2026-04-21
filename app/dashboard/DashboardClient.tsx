@@ -967,8 +967,29 @@ export default function DashboardClient({
       )
       .subscribe();
 
+    const handleWindowFocus = () => {
+      void refreshDashboardData();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        void refreshDashboardData();
+      }
+    };
+
+    const handlePageShow = () => {
+      void refreshDashboardData();
+    };
+
+    window.addEventListener("focus", handleWindowFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pageshow", handlePageShow);
+
     return () => {
       mounted = false;
+      window.removeEventListener("focus", handleWindowFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pageshow", handlePageShow);
       refreshChannel?.unsubscribe();
     };
   }, [
