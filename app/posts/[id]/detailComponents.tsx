@@ -813,7 +813,7 @@ export function MatchedChatPanel({
     ? "This chat closed 72 hours after the meetup."
     : meetupFinished
     ? "You can still chat for 72 hours after the meetup."
-    : "Use chat to confirm details and stay in sync before you meet.";
+    : "Use chat to confirm details and stay in sync before you meet. (Chat stays open until 72 hours after the meetup.)";
 
   return (
     <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
