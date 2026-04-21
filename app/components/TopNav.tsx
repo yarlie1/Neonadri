@@ -524,14 +524,12 @@ export default function TopNav() {
                       <Link
                         href="/dashboard"
                         onClick={closeMenu}
-                        className={`inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium transition ${
-                          isSilverHome && isActivePath(pathname, "/dashboard")
-                            ? "!bg-[#eef4f7] !text-[#33434c]"
-                            : isSilverHome
-                            ? "!text-[#52616a] hover:!bg-[#f3f6f8]"
-                            : isActivePath(pathname, "/dashboard")
-                            ? "bg-[#f4e6d8] text-[#3f3226]"
-                            : "text-[#5a5149] hover:bg-[#f4ece4]"
+                        className={`${mobileItem} ${
+                          isActivePath(pathname, "/dashboard")
+                            ? isSilverHome
+                              ? "bg-[#eef4f7] text-[#33434c]"
+                              : "bg-[#f4e6d8] text-[#3f3226]"
+                            : ""
                         }`}
                         >
                         <NavLabel icon={<LayoutDashboard className="h-4 w-4" />}>
