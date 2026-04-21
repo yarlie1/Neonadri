@@ -57,6 +57,14 @@ const INTEREST_OPTIONS = [
   "Photography",
 ];
 
+const RESPONSE_NOTE_OPTIONS = [
+  "Usually replies within a few hours",
+  "Usually replies within a day",
+  "Usually replies within 2 days",
+  "Replies may be slow on weekdays",
+  "Usually replies in the evening",
+];
+
 const STEPS = [
   { number: 1, label: "Basics" },
   { number: 2, label: "Vibe" },
@@ -113,6 +121,7 @@ export default function SignupPage() {
   const [languages, setLanguages] = useState<string[]>(["English"]);
   const [meetingStyle, setMeetingStyle] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
+  const [responseTimeNote, setResponseTimeNote] = useState("");
 
   const canMoveNext = useMemo(() => {
     if (step === 1) {
@@ -274,7 +283,7 @@ export default function SignupPage() {
           languages: languages.length > 0 ? languages : null,
           meeting_style: meetingStyle || null,
           interests: interests.length > 0 ? interests : null,
-          response_time_note: null,
+          response_time_note: responseTimeNote.trim() || null,
         };
 
         const response = await fetch("/api/profile/save", {
@@ -525,6 +534,24 @@ export default function SignupPage() {
                         />
                       ))}
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                      Response Note
+                    </label>
+                    <select
+                      value={responseTimeNote}
+                      onChange={(e) => setResponseTimeNote(e.target.value)}
+                      className={INPUT_CLASS}
+                    >
+                      <option value="">Select response note</option>
+                      {RESPONSE_NOTE_OPTIONS.map((item) => (
+                        <option key={item} value={item}>
+                          {item}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div>

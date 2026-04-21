@@ -59,6 +59,7 @@ export default function WriteLocationPage() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
+  const resultMarkersRef = useRef<any[]>([]);
   const geocoderRef = useRef<any>(null);
   const placesServiceRef = useRef<any>(null);
   const selectionRequestRef = useRef(0);
@@ -72,6 +73,7 @@ export default function WriteLocationPage() {
   const [searching, setSearching] = useState(false);
   const [message, setMessage] = useState("");
   const [results, setResults] = useState<any[]>([]);
+  const [selectedResultKey, setSelectedResultKey] = useState<string | null>(null);
 
   const defaultCenter = useMemo<LatLng>(
     () => ({ lat: 34.0522, lng: -118.2437 }),
@@ -109,7 +111,7 @@ export default function WriteLocationPage() {
           const lat = e.latLng.lat();
           const lng = e.latLng.lng();
 
-          setResults([]);
+          setSelectedResultKey(null);
           setMessage("");
 
           updateMarker({ lat, lng });
@@ -148,6 +150,11 @@ export default function WriteLocationPage() {
     }
 
     mapRef.current.panTo(position);
+  };
+
+  const clearResultMarkers = () => {
+    resultMarkersRef.current.forEach((marker) => marker.setMap(null));
+    resultMarkersRef.current = [];
   };
 
   const reverseGeocode = (lat: number, lng: number) => {
@@ -261,6 +268,8 @@ export default function WriteLocationPage() {
 
     setSearching(true);
     setMessage("");
+    setSelectedResultKey(null);
+    clearResultMarkers();
     setResults([]);
 
     const request = {
@@ -282,18 +291,46 @@ export default function WriteLocationPage() {
       }
 
       setResults(searchResults);
+      const bounds = new window.google.maps.LatLngBounds();
 
-      const first = searchResults[0];
-      const location = first.geometry?.location;
+      resultMarkersRef.current = searchResults
+        .map((item: any, index: number) => {
+          const location = item.geometry?.location;
+          if (!location) return null;
 
-      if (location) {
-        mapRef.current.panTo(location);
-        mapRef.current.setZoom(14);
+          bounds.extend(location);
+
+          const marker = new window.google.maps.Marker({
+            map: mapRef.current,
+            position: location,
+            label: {
+              text: String(index + 1),
+              color: "#31424d",
+              fontSize: "12px",
+              fontWeight: "700",
+            },
+            icon: {
+              path: window.google.maps.SymbolPath.CIRCLE,
+              fillColor: "#f6fafc",
+              fillOpacity: 1,
+              strokeColor: "#bccad3",
+              strokeWeight: 2,
+              scale: 13,
+            },
+          });
+
+          marker.addListener("click", () => handleChooseResult(item, index));
+          return marker;
+        })
+        .filter(Boolean);
+
+      if (!bounds.isEmpty()) {
+        mapRef.current.fitBounds(bounds);
       }
     });
   };
 
-  const handleChooseResult = (item: any) => {
+  const handleChooseResult = (item: any, index?: number) => {
     const lat = item.geometry?.location?.lat?.();
     const lng = item.geometry?.location?.lng?.();
 
@@ -305,8 +342,8 @@ export default function WriteLocationPage() {
     updateMarker({ lat, lng });
     setSelectedPlaceName(item.name || item.formatted_address || "Selected Place");
     setSelectedAddress(item.formatted_address || "");
-    setResults([]);
     setQuery(item.formatted_address || item.name || "");
+    setSelectedResultKey(item.place_id || `${item.name || "result"}-${index ?? "x"}`);
     setMessage("");
   };
 
@@ -355,19 +392,31 @@ export default function WriteLocationPage() {
             <div className={`rounded-[24px] p-2 ${APP_SOFT_CARD_CLASS}`}>
               <div className="max-h-64 overflow-y-auto">
                 {results.map((item, index) => (
+                  (() => {
+                    const resultKey =
+                      item.place_id || `${item.name || "result"}-${index}`;
+                    const active = selectedResultKey === resultKey;
+
+                    return (
                   <button
-                    key={`${item.place_id || item.name}-${index}`}
+                    key={resultKey}
                     type="button"
-                    onClick={() => handleChooseResult(item)}
-                    className="block w-full rounded-xl px-3 py-3 text-left transition hover:bg-[#f5f8fa]"
+                    onClick={() => handleChooseResult(item, index)}
+                    className={`block w-full rounded-xl px-3 py-3 text-left transition ${
+                      active
+                        ? "bg-[#eef4f7] shadow-[inset_0_0_0_1px_rgba(191,203,211,0.9)]"
+                        : "hover:bg-[#f5f8fa]"
+                    }`}
                   >
                     <div className="text-sm font-medium text-[#24323c]">
-                      {item.name || "Unnamed place"}
+                      {index + 1}. {item.name || "Unnamed place"}
                     </div>
                     <div className={`mt-1 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
                       {item.formatted_address || ""}
                     </div>
                   </button>
+                    );
+                  })()
                 ))}
               </div>
             </div>
