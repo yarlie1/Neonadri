@@ -78,89 +78,60 @@ function PostsTabPanel({
             onClick={() => openPostDetail(post.id)}
             className={`cursor-pointer ${SURFACE_CARD_CLASS} p-4`}
           >
-            <div className="mb-4 flex items-center justify-start gap-3">
-              <div
-                className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${getStatusBadgeClass(
-                  postStatus
-                )}`}
-              >
-                {postStatus}
-              </div>
-            </div>
-
             <div className={`${APP_INNER_PANEL_CLASS} p-3`}>
-              <div className="flex items-stretch gap-2">
-                <div
-                  className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3 ${purposeTheme.bandClass}`}
-                >
-                  <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
-                    {getPurposeIcon(post.meeting_purpose)}
-                  </div>
-                  <span className="truncate text-[1.02rem] font-black tracking-[-0.03em] text-[#24323f]">
-                    {post.meeting_purpose || "Meetup"}
-                  </span>
+              <div className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-start gap-x-2.5 gap-y-0.5">
+                <div className={`inline-flex h-10 w-10 items-center justify-center rounded-[14px] shadow-[0_8px_16px_rgba(118,126,133,0.1)] ${APP_ROW_SURFACE_CLASS}`}>
+                  {getPurposeIcon(post.meeting_purpose)}
                 </div>
-
-                {durationLabel ? (
-                  <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#edf2f5_100%)] px-1.5 py-2 text-[#52616a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]">
-                    <Clock3 className="h-4 w-4" />
-                    <span className="mt-1 text-sm font-semibold">
-                      {durationLabel}
-                    </span>
-                  </div>
-                ) : null}
-
-                {amount !== null && (
-                  <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center whitespace-nowrap rounded-[16px] border border-[#ccd6dd] bg-[linear-gradient(180deg,#ffffff_0%,#e7eef3_100%)] px-1.5 py-2 text-[#435760] shadow-[0_8px_16px_rgba(118,126,133,0.1)]">
-                    <Coins className="h-4 w-4 shrink-0 text-[#758893]" />
-                    <span className="mt-1 text-sm font-semibold">
-                      +${amount.toLocaleString()}
-                    </span>
-                  </div>
-                )}
+                <div className={`min-w-0 self-center truncate rounded-[18px] px-3 py-2.5 text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34] ${purposeTheme.bandClass}`}>
+                  {post.meeting_purpose || "Meetup"}
+                </div>
+                <div
+                  className={`col-start-3 row-start-1 shrink-0 self-start rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${getStatusBadgeClass(
+                    postStatus
+                  )}`}
+                >
+                  {postStatus}
+                </div>
               </div>
 
-              <div className="mt-2 px-1 text-[12px] leading-[1.15] text-[#849099]">
+              <div className="mt-1 min-w-0 pr-1 text-[12px] leading-[1.15] text-[#849099]">
                 Hosted by you
               </div>
 
-              <div className="mt-3 grid gap-2 text-[#6f7a82] sm:grid-cols-2">
+              <div className="mt-3 grid gap-2">
                 {post.meeting_time && (
-                  <div className={`flex items-start gap-2 ${APP_ROW_SURFACE_CLASS} px-3 py-2`}>
-                    <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#7a8b95]" />
-                    <div className="min-w-0 leading-[1.2]">
-                      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#849099]">
-                        When
-                      </div>
-                      <div className="truncate text-[12px] font-medium text-[#3c4850]">
-                        {formatTime(post.meeting_time)}
-                      </div>
-                    </div>
+                  <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
+                    <Clock3 className="h-4 w-4 shrink-0 text-[#7a8b95]" />
+                    <span className="truncate">{formatTime(post.meeting_time)}</span>
+                    {durationLabel ? (
+                      <span className="ml-auto rounded-[14px] border border-[#cbd4db] bg-[linear-gradient(180deg,#ffffff_0%,#eceff2_100%)] px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#3b4c56] shadow-[0_8px_14px_rgba(118,126,133,0.12)]">
+                        {durationLabel}
+                      </span>
+                    ) : null}
                   </div>
                 )}
 
-                <div className={`flex min-w-0 items-start gap-2 ${APP_ROW_SURFACE_CLASS} px-3 py-2`}>
-                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#7a8b95]" />
-                  <div className="min-w-0 leading-[1.2]">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#849099]">
-                      Place
-                    </div>
-                    <div className="block truncate text-[12px] font-medium text-[#3c4850]">
-                      {post.place_name || post.location || "No place"}
-                    </div>
-                  </div>
+                <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
+                  <MapPin className="h-4 w-4 shrink-0 text-[#7a8b95]" />
+                  <span className="min-w-0 flex-1 break-words line-clamp-2">
+                    {post.place_name || post.location || "No place"}
+                  </span>
                 </div>
 
-                <div className={`flex items-start gap-2 ${APP_ROW_SURFACE_CLASS} px-3 py-2 sm:col-span-2`}>
-                  <UserRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#7a8b95]" />
-                  <div className="min-w-0 leading-[1.2]">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#849099]">
-                      Looking for
-                    </div>
-                    <div className="truncate text-[12px] font-medium text-[#3c4850]">
+                <div className={`flex min-h-[56px] items-center justify-between gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
+                  <span className="inline-flex min-w-0 items-center gap-2 text-[#55646e]">
+                    <UserRound className="h-4 w-4 shrink-0 text-[#7a8b95]" />
+                    <span className="truncate">
                       {post.target_gender || "Any"} / {post.target_age_group || "Any"}
-                    </div>
-                  </div>
+                    </span>
+                  </span>
+                  {amount !== null ? (
+                    <span className="inline-flex shrink-0 items-center gap-2 rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-3 py-1.5 font-semibold text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)]">
+                      <Coins className="h-4 w-4 text-[#7a8b95]" />
+                      +${amount.toLocaleString()}
+                    </span>
+                  ) : null}
                 </div>
               </div>
 
