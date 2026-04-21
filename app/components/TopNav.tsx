@@ -222,6 +222,18 @@ export default function TopNav() {
           {
             event: "*",
             schema: "public",
+            table: "match_requests",
+            filter: `requester_user_id=eq.${userId}`,
+          },
+          () => {
+            void refreshIndicators(userId);
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
             table: "match_chats",
             filter: `host_user_id=eq.${userId}`,
           },

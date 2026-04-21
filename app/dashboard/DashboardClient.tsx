@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import {
   Coins,
@@ -571,6 +571,14 @@ export default function DashboardClient({
   const supabase = createClient();
   const router = useRouter();
   const previousActiveTabRef = useRef<string | null>(null);
+  const [liveReceivedItems, setLiveReceivedItems] = useState(requestsReceived);
+  const [liveSentItems, setLiveSentItems] = useState(requestsSent);
+  const [liveMatches, setLiveMatches] = useState(matches);
+  const [livePostMap, setLivePostMap] = useState(postMap);
+  const [liveProfileMap, setLiveProfileMap] = useState(profileMap);
+  const [liveProfileMetaMap, setLiveProfileMetaMap] = useState(profileMetaMap);
+  const [liveMatchSummaryMap, setLiveMatchSummaryMap] = useState(matchSummaryMap);
+  const [liveMatchChatMetaMap, setLiveMatchChatMetaMap] = useState(matchChatMetaMap);
   const {
     userTimeZone,
     formatTime,
@@ -579,6 +587,10 @@ export default function DashboardClient({
     posts,
     receivedItems,
     setReceivedItems,
+    sentItems,
+    setSentItems,
+    matchItems,
+    setMatchItems,
     activeTab,
     setActiveTab,
     postFilter,
@@ -604,17 +616,17 @@ export default function DashboardClient({
     upcomingMatchedMeetups,
   } = useDashboardState({
     initialPosts,
-    requestsReceived,
-    requestsSent,
-    matches,
-    postMap,
-    profileMap,
-    matchSummaryMap,
+    requestsReceived: liveReceivedItems,
+    requestsSent: liveSentItems,
+    matches: liveMatches,
+    postMap: livePostMap,
+    profileMap: liveProfileMap,
+    matchSummaryMap: liveMatchSummaryMap,
     reviewedMatchIds,
     userId,
     initialUserTimeZone,
   });
-  const currentUserMeta = profileMetaMap[userId] || "";
+  const currentUserMeta = liveProfileMetaMap[userId] || "";
 
   useEffect(() => {
     if (previousActiveTabRef.current === activeTab) return;
@@ -643,11 +655,11 @@ export default function DashboardClient({
     upcomingMatchedMeetups.length,
   ]);
 
-  const recentChats = matches
+  const recentChats = matchItems
     .map((item) => {
       const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
-      const post = postMap[item.post_id];
-      const chatMeta = matchChatMetaMap[item.id];
+      const post = livePostMap[item.post_id];
+      const chatMeta = liveMatchChatMetaMap[item.id];
       const viewerLastSeen =
         chatMeta?.host_user_id === userId
           ? chatMeta.last_seen_by_host_at
@@ -661,7 +673,7 @@ export default function DashboardClient({
 
       return {
         matchId: item.id,
-        otherUserName: profileMap[otherUserId] || "Unknown",
+        otherUserName: liveProfileMap[otherUserId] || "Unknown",
         meetingTime: post?.meeting_time || null,
         placeLabel: post?.place_name || post?.location || "Selected place",
         hasNewMessage,
@@ -745,6 +757,228 @@ export default function DashboardClient({
     setProcessingRequestAction(null);
     router.refresh();
   };
+
+  useEffect(() => {
+    let mounted = true;
+    let refreshChannel: ReturnType<typeof supabase.channel> | null = null;
+
+    const hydrateDashboardRelations = async (
+      nextReceived: MatchRequestRow[],
+      nextSent: MatchRequestRow[],
+      nextMatches: MatchRow[]
+    ) => {
+      const relatedUserIds = Array.from(
+        new Set([
+          ...nextReceived.map((item) => item.requester_user_id),
+          ...nextSent.map((item) => item.post_owner_user_id),
+          ...nextMatches.flatMap((item) => [item.user_a, item.user_b]),
+        ])
+      ).filter((id) => id !== userId);
+      const profileUserIds = Array.from(new Set([...relatedUserIds, userId]));
+      const relatedPostIds = Array.from(
+        new Set([
+          ...nextReceived.map((item) => item.post_id),
+          ...nextSent.map((item) => item.post_id),
+          ...nextMatches.map((item) => item.post_id),
+        ])
+      );
+
+      const [profilesRes, postsRes, chatsRes, summaryRes] = await Promise.all([
+        profileUserIds.length > 0
+          ? supabase
+              .from("profiles")
+              .select("id, display_name, gender, age_group")
+              .in("id", profileUserIds)
+          : Promise.resolve({ data: [], error: null }),
+        relatedPostIds.length > 0
+          ? supabase
+              .from("posts")
+              .select(
+                "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
+              )
+              .in("id", relatedPostIds)
+          : Promise.resolve({ data: [], error: null }),
+        nextMatches.length > 0
+          ? supabase
+              .from("match_chats")
+              .select(
+                "match_id, last_chat_activity_at, last_seen_by_host_at, last_seen_by_guest_at, host_user_id, guest_user_id"
+              )
+              .in("match_id", nextMatches.map((match) => match.id))
+          : Promise.resolve({ data: [], error: null }),
+        initialPosts.length > 0
+          ? supabase.rpc("get_post_match_summaries", {
+              p_post_ids: initialPosts.map((post) => post.id),
+            })
+          : Promise.resolve({ data: [], error: null }),
+      ]);
+
+      if (!mounted) return;
+
+      const nextProfileMap: Record<string, string> = {};
+      const nextProfileMetaMap: Record<string, string> = {};
+      (
+        (profilesRes.data || []) as Array<{
+          id: string;
+          display_name: string | null;
+          gender: string | null;
+          age_group: string | null;
+        }>
+      ).forEach((profile) => {
+        nextProfileMap[profile.id] = profile.display_name || "Unknown";
+        nextProfileMetaMap[profile.id] =
+          profile.gender || profile.age_group
+            ? `${profile.gender || "Unknown"}${profile.age_group ? ` / ${profile.age_group}` : ""}`
+            : "";
+      });
+
+      const nextPostMap: Record<number, PostRow> = {};
+      ((postsRes.data || []) as PostRow[]).forEach((post) => {
+        nextPostMap[post.id] = post;
+      });
+
+      const nextChatMetaMap: Record<number, MatchChatMetaRow> = {};
+      ((chatsRes.data || []) as MatchChatMetaRow[]).forEach((item) => {
+        nextChatMetaMap[item.match_id] = item;
+      });
+
+      const nextSummaryMap: Record<
+        number,
+        { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
+      > = {};
+      (
+        (summaryRes.data || []) as Array<{
+          post_id: number;
+          is_matched: boolean;
+          pending_request_count: number;
+          total_request_count: number;
+        }>
+      ).forEach((summary) => {
+        nextSummaryMap[summary.post_id] = {
+          isMatched: !!summary.is_matched,
+          pendingRequestCount: Number(summary.pending_request_count || 0),
+          totalRequestCount: Number(summary.total_request_count || 0),
+        };
+      });
+
+      setLiveProfileMap(nextProfileMap);
+      setLiveProfileMetaMap(nextProfileMetaMap);
+      setLivePostMap(nextPostMap);
+      setLiveMatchChatMetaMap(nextChatMetaMap);
+      setLiveMatchSummaryMap(nextSummaryMap);
+    };
+
+    const refreshDashboardData = async () => {
+      const [receivedRes, sentRes, matchesRes] = await Promise.all([
+        supabase
+          .from("match_requests")
+          .select("id, post_id, requester_user_id, post_owner_user_id, status, created_at")
+          .eq("post_owner_user_id", userId)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("match_requests")
+          .select("id, post_id, requester_user_id, post_owner_user_id, status, created_at")
+          .eq("requester_user_id", userId)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("matches")
+          .select("id, post_id, user_a, user_b, status, created_at")
+          .or(`user_a.eq.${userId},user_b.eq.${userId}`)
+          .order("created_at", { ascending: false }),
+      ]);
+
+      if (!mounted) return;
+
+      const nextReceived = (receivedRes.data || []) as MatchRequestRow[];
+      const nextSent = (sentRes.data || []) as MatchRequestRow[];
+      const nextMatches = (matchesRes.data || []) as MatchRow[];
+
+      setLiveReceivedItems(nextReceived);
+      setLiveSentItems(nextSent);
+      setLiveMatches(nextMatches);
+      setReceivedItems(nextReceived);
+      setSentItems(nextSent);
+      setMatchItems(nextMatches);
+
+      await hydrateDashboardRelations(nextReceived, nextSent, nextMatches);
+    };
+
+    refreshChannel = supabase
+      .channel(`dashboard-live-${userId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "match_requests",
+          filter: `post_owner_user_id=eq.${userId}`,
+        },
+        () => void refreshDashboardData()
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "match_requests",
+          filter: `requester_user_id=eq.${userId}`,
+        },
+        () => void refreshDashboardData()
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "matches",
+          filter: `user_a=eq.${userId}`,
+        },
+        () => void refreshDashboardData()
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "matches",
+          filter: `user_b=eq.${userId}`,
+        },
+        () => void refreshDashboardData()
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "match_chats",
+          filter: `host_user_id=eq.${userId}`,
+        },
+        () => void refreshDashboardData()
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "match_chats",
+          filter: `guest_user_id=eq.${userId}`,
+        },
+        () => void refreshDashboardData()
+      )
+      .subscribe();
+
+    return () => {
+      mounted = false;
+      refreshChannel?.unsubscribe();
+    };
+  }, [
+    initialPosts,
+    setMatchItems,
+    setReceivedItems,
+    setSentItems,
+    supabase,
+    userId,
+  ]);
 
   return (
     <main className={`min-h-screen px-4 py-5 sm:py-6 ${APP_PAGE_BG_CLASS}`}>
@@ -866,7 +1100,7 @@ export default function DashboardClient({
           <DashboardTabCard
             active={activeTab === "matches"}
             label="Matches"
-            value={matches.length}
+            value={matchItems.length}
             subtext={
               upcomingMatchedMeetups.length > 0
                 ? (
@@ -885,7 +1119,7 @@ export default function DashboardClient({
           <DashboardTabCard
             active={activeTab === "sent"}
             label="Requests Sent"
-            value={requestsSent.length}
+            value={sentItems.length}
             subtext={
               acceptedSent > 0 ? (
                 <span className="inline-flex items-center gap-1.5">
@@ -1057,7 +1291,7 @@ export default function DashboardClient({
         {activeTab === "posts" && (
           <PostsTabPanel
             filteredPosts={filteredPosts}
-            matchSummaryMap={matchSummaryMap}
+            matchSummaryMap={liveMatchSummaryMap}
             currentUserMeta={currentUserMeta}
             getPostStatus={getPostStatus}
             formatTime={formatTime}
@@ -1068,9 +1302,9 @@ export default function DashboardClient({
         {activeTab === "received" && (
           <ReceivedTabPanel
             receivedItems={filteredReceived}
-            profileMap={profileMap}
+            profileMap={liveProfileMap}
             currentUserMeta={currentUserMeta}
-            postMap={postMap}
+            postMap={livePostMap}
             userTimeZone={userTimeZone}
             processingRequestId={processingRequestId}
             processingRequestAction={processingRequestAction}
@@ -1083,9 +1317,9 @@ export default function DashboardClient({
         {activeTab === "sent" && (
           <SentTabPanel
             requestsSent={filteredSent}
-            profileMap={profileMap}
-            profileMetaMap={profileMetaMap}
-            postMap={postMap}
+            profileMap={liveProfileMap}
+            profileMetaMap={liveProfileMetaMap}
+            postMap={livePostMap}
             userTimeZone={userTimeZone}
             openPostDetail={openPostDetail}
           />
@@ -1095,11 +1329,11 @@ export default function DashboardClient({
           <MatchesTabPanel
             filteredMatches={filteredMatches}
             userId={userId}
-            profileMap={profileMap}
-            profileMetaMap={profileMetaMap}
-            postMap={postMap}
+            profileMap={liveProfileMap}
+            profileMetaMap={liveProfileMetaMap}
+            postMap={livePostMap}
             reviewedMatchIds={reviewedMatchIds}
-            matchChatMetaMap={matchChatMetaMap}
+            matchChatMetaMap={liveMatchChatMetaMap}
             userTimeZone={userTimeZone}
             getPostStatus={getPostStatus}
             openPostDetail={openPostDetail}
@@ -1110,8 +1344,3 @@ export default function DashboardClient({
     </main>
   );
 }
-
-
-
-
-

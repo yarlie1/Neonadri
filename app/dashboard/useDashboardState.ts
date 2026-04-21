@@ -58,6 +58,8 @@ export function useDashboardState({
 
   const [posts] = useState(initialPosts);
   const [receivedItems, setReceivedItems] = useState(requestsReceived);
+  const [sentItems, setSentItems] = useState(requestsSent);
+  const [matchItems, setMatchItems] = useState(matches);
   const [activeTab, setActiveTab] = useState<DashboardTab>("posts");
   const [postFilter, setPostFilter] = useState<PostFilter>("all");
   const [receivedFilter, setReceivedFilter] = useState<ReceivedFilter>("pending");
@@ -95,6 +97,18 @@ export function useDashboardState({
     }
   }, []);
 
+  useEffect(() => {
+    setReceivedItems(requestsReceived);
+  }, [requestsReceived]);
+
+  useEffect(() => {
+    setSentItems(requestsSent);
+  }, [requestsSent]);
+
+  useEffect(() => {
+    setMatchItems(matches);
+  }, [matches]);
+
   const filteredPosts = useMemo(() => {
     if (postFilter === "all") return posts;
     return posts.filter(
@@ -112,23 +126,23 @@ export function useDashboardState({
   }, [receivedItems, receivedFilter]);
 
   const filteredSent = useMemo(() => {
-    if (sentFilter === "all") return requestsSent;
-    return requestsSent.filter((item) => item.status === sentFilter);
-  }, [requestsSent, sentFilter]);
+    if (sentFilter === "all") return sentItems;
+    return sentItems.filter((item) => item.status === sentFilter);
+  }, [sentItems, sentFilter]);
 
   const pendingSent = useMemo(
-    () => requestsSent.filter((item) => item.status === "pending").length,
-    [requestsSent]
+    () => sentItems.filter((item) => item.status === "pending").length,
+    [sentItems]
   );
 
   const acceptedSent = useMemo(
-    () => requestsSent.filter((item) => item.status === "accepted").length,
-    [requestsSent]
+    () => sentItems.filter((item) => item.status === "accepted").length,
+    [sentItems]
   );
 
   const filteredMatches = useMemo(() => {
-    if (matchFilter === "all") return matches;
-    return matches.filter((match) => {
+    if (matchFilter === "all") return matchItems;
+    return matchItems.filter((match) => {
       const post = postMap[match.post_id];
       const status = getPostStatus(post?.meeting_time || null).toLowerCase();
       if (matchFilter === "review_due") {
@@ -136,7 +150,7 @@ export function useDashboardState({
       }
       return status === matchFilter;
     });
-  }, [matches, matchFilter, postMap, reviewedMatchIds]);
+  }, [matchItems, matchFilter, postMap, reviewedMatchIds]);
 
   const pendingReceived = useMemo(
     () => receivedItems.filter((item) => item.status === "pending").length,
@@ -144,7 +158,7 @@ export function useDashboardState({
   );
 
   const upcomingMatchedMeetups = useMemo(() => {
-    return matches
+    return matchItems
       .map((match) => {
         const post = postMap[match.post_id];
         if (!post?.meeting_time) return null;
@@ -165,7 +179,7 @@ export function useDashboardState({
       })
       .filter(Boolean)
       .sort((a, b) => a!.time - b!.time);
-  }, [matches, postMap, profileMap, userId, userTimeZone]);
+  }, [matchItems, postMap, profileMap, userId, userTimeZone]);
 
   return {
     userTimeZone,
@@ -175,6 +189,10 @@ export function useDashboardState({
     posts,
     receivedItems,
     setReceivedItems,
+    sentItems,
+    setSentItems,
+    matchItems,
+    setMatchItems,
     activeTab,
     setActiveTab,
     postFilter,
