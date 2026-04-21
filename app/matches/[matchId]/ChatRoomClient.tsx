@@ -259,7 +259,7 @@ export default function ChatRoomClient({
       try {
         const history = await pubnub.fetchMessages({
           channels: [roomLabel],
-          count: 25,
+          count: 50,
           includeUUID: true,
         });
 
@@ -412,7 +412,7 @@ export default function ChatRoomClient({
               <div className="border-b border-[#dce4ea] pb-3">
                 <div className="flex items-center justify-between gap-3 text-xs font-medium text-[#7a8790]">
                   <span className={APP_EYEBROW_CLASS}>
-                    Live chat
+                    {chatClosed ? "Read-only chat" : "Live chat"}
                   </span>
                 </div>
                 <div className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm ${APP_MUTED_TEXT_CLASS}`}>
@@ -469,9 +469,13 @@ export default function ChatRoomClient({
                 ) : (
                   <div className="flex h-full flex-col items-center justify-center px-6 text-center text-sm text-[#7a8790]">
                     <MessageSquareMore className="h-8 w-8 text-[#9aa6ad]" />
-                    <div className="mt-3 font-medium text-[#52616a]">No messages yet</div>
+                    <div className="mt-3 font-medium text-[#52616a]">
+                      {chatClosed ? "No saved messages" : "No messages yet"}
+                    </div>
                     <div className="mt-1 max-w-xs leading-6">
-                      Start with a quick hello, confirm the time, or share an arrival update.
+                      {chatClosed
+                        ? "This conversation is now read-only."
+                        : "Start with a quick hello, confirm the time, or share an arrival update."}
                     </div>
                   </div>
                 )}
@@ -511,7 +515,7 @@ export default function ChatRoomClient({
 
               {chatClosed ? (
                 <div className="mt-3 rounded-[14px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
-                  {chatClosedMessage}
+                  {chatClosedMessage} You can still read previous messages here.
                 </div>
               ) : null}
 
