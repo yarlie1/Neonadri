@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
 import {
   Menu,
@@ -86,13 +86,17 @@ export default function TopNav() {
   const [acceptedSentCount, setAcceptedSentCount] = useState(0);
   const [hasNewChatActivity, setHasNewChatActivity] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [currentSearch, setCurrentSearch] = useState("");
   const menuRef = useRef<HTMLDivElement | null>(null);
   const loggingOutRef = useRef(false);
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const isHomeTest = pathname.startsWith("/home-test");
   const isSilverHome = true;
+  const currentSearch = useMemo(() => {
+    const nextSearch = searchParams?.toString() || "";
+    return nextSearch ? `?${nextSearch}` : "";
+  }, [searchParams]);
   
   const currentPathWithSearch = useMemo(() => {
     return currentSearch ? `${pathname}${currentSearch}` : pathname;
@@ -117,11 +121,6 @@ export default function TopNav() {
       browserTimeZone
     )}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
   }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    setCurrentSearch(window.location.search || "");
-  }, [pathname]);
 
   useEffect(() => {
     let mounted = true;

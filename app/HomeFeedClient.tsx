@@ -83,13 +83,14 @@ type MatchSummaryMap = Record<
 function getFeaturedPost(
   posts: PostRow[],
   matchSummaryMap: MatchSummaryMap,
-  userTimeZone: string
+  userTimeZone: string,
+  sort: SortValue
 ) {
   const now = Date.now();
   let bestPost: PostRow | null = null;
   let bestScore = Number.NEGATIVE_INFINITY;
 
-  for (const post of posts) {
+  for (const [index, post] of posts.entries()) {
     const meetingDate = parseMeetingTime(post.meeting_time, userTimeZone);
     const meetingTime = meetingDate?.getTime() ?? now;
     const isExpired = meetingTime < now;
@@ -118,6 +119,17 @@ function getFeaturedPost(
       (now - new Date(post.created_at).getTime()) / (1000 * 60 * 60);
     if (Number.isFinite(recencyHours)) {
       score += Math.max(0, 18 - recencyHours / 12);
+    }
+
+    const orderBoost = Math.max(0, 6 - index);
+    if (sort === "distance") {
+      score += orderBoost * 7;
+    } else if (sort === "benefit_desc" || sort === "benefit_asc") {
+      score += orderBoost * 6;
+    } else if (sort === "soonest") {
+      score += orderBoost * 5;
+    } else {
+      score += orderBoost * 4;
     }
 
     if (
@@ -316,8 +328,8 @@ export default function HomeFeedClient({
   );
 
   const highlightedPost = useMemo(
-    () => getFeaturedPost(posts, matchSummaryMap, userTimeZone),
-    [posts, matchSummaryMap, userTimeZone]
+    () => getFeaturedPost(posts, matchSummaryMap, userTimeZone, sort),
+    [posts, matchSummaryMap, sort, userTimeZone]
   );
   const feedPosts = posts;
   const heroStatClass = `${APP_INNER_PANEL_CLASS} px-3.5 py-3.5 sm:py-4`;
