@@ -19,6 +19,7 @@ import MatchRequestBox from "./MatchRequestBox";
 import OwnerMatchPanel from "./OwnerMatchPanel";
 import DeletePostButton from "./DeletePostButton";
 import PostDistanceNote from "./PostDistanceNote";
+import ScrollReveal from "./ScrollReveal";
 import {
   buildDetailViewModel,
   fetchProfileShowcaseData,
@@ -359,85 +360,99 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
         <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
           <div className="space-y-5">
-            <ProfileShowcaseCard
-              title="Host"
-              subtitle="Warm, low-pressure meetup host"
-              profileHref={post.user_id ? ownerProfileHref : undefined}
-              data={ownerProfileData}
-              isCurrentUser={user?.id === post.user_id}
-              summaryOnly
-            />
-
-            {isPostMatched && isViewerParticipant && guestProfileData && (
+            <ScrollReveal>
               <ProfileShowcaseCard
-                title="Guest"
-                subtitle="Confirmed guest for this meetup"
-                profileHref={matchedGuestUserId ? `/profile/${matchedGuestUserId}` : undefined}
-                data={guestProfileData}
-                isCurrentUser={user?.id === matchedGuestUserId}
+                title="Host"
+                subtitle="Warm, low-pressure meetup host"
+                profileHref={post.user_id ? ownerProfileHref : undefined}
+                data={ownerProfileData}
+                isCurrentUser={user?.id === post.user_id}
                 summaryOnly
               />
+            </ScrollReveal>
+
+            {isPostMatched && isViewerParticipant && guestProfileData && (
+              <ScrollReveal>
+                <ProfileShowcaseCard
+                  title="Guest"
+                  subtitle="Confirmed guest for this meetup"
+                  profileHref={matchedGuestUserId ? `/profile/${matchedGuestUserId}` : undefined}
+                  data={guestProfileData}
+                  isCurrentUser={user?.id === matchedGuestUserId}
+                  summaryOnly
+                />
+              </ScrollReveal>
             )}
           </div>
 
           <div className="space-y-5 lg:sticky lg:top-36">
             {user && user.id === post.user_id ? (
-              <OwnerMatchPanel
-                postId={post.id}
-                isMatched={isPostMatched}
-                pendingRequestCount={pendingRequestCount}
-                requests={ownerRequestItems}
-                matchedPartner={matchedPartner}
-              />
+              <ScrollReveal>
+                <OwnerMatchPanel
+                  postId={post.id}
+                  isMatched={isPostMatched}
+                  pendingRequestCount={pendingRequestCount}
+                  requests={ownerRequestItems}
+                  matchedPartner={matchedPartner}
+                />
+              </ScrollReveal>
             ) : post.user_id ? (
-              <MatchRequestBox
-                postId={post.id}
-                postOwnerUserId={post.user_id}
-                benefitAmount={post.benefit_amount}
-                requestCount={totalRequestCount}
-                isPostMatched={isPostMatched}
-                isViewerParticipant={isViewerParticipant}
-                myRequestId={myRequestId}
-                myRequestStatus={myRequestStatus}
-              />
+              <ScrollReveal>
+                <MatchRequestBox
+                  postId={post.id}
+                  postOwnerUserId={post.user_id}
+                  benefitAmount={post.benefit_amount}
+                  requestCount={totalRequestCount}
+                  isPostMatched={isPostMatched}
+                  isViewerParticipant={isViewerParticipant}
+                  myRequestId={myRequestId}
+                  myRequestStatus={myRequestStatus}
+                />
+              </ScrollReveal>
             ) : null}
 
-            <MatchedChatPanel
-              isPostMatched={isPostMatched}
-              isViewerParticipant={isViewerParticipant}
-              matchedRecordId={matchedRecord?.id}
-              hasNewChatMessage={hasNewChatMessage}
-              meetupFinished={meetupFinished}
-              chatClosed={chatClosed}
-            />
+            <ScrollReveal>
+              <MatchedChatPanel
+                isPostMatched={isPostMatched}
+                isViewerParticipant={isViewerParticipant}
+                matchedRecordId={matchedRecord?.id}
+                hasNewChatMessage={hasNewChatMessage}
+                meetupFinished={meetupFinished}
+                chatClosed={chatClosed}
+              />
+            </ScrollReveal>
 
-            <MatchReviewPanel
-              isPostMatched={isPostMatched}
-              isViewerParticipant={isViewerParticipant}
-              matchedRecordId={matchedRecord?.id}
-              canLeaveReview={canLeaveReview}
-              meetupFinished={meetupFinished}
-              viewerHasReview={viewerHasReview}
-              matchReviews={matchReviews}
-              getMatchReviewAuthorLabel={getMatchReviewAuthorLabel}
-            />
+            <ScrollReveal>
+              <MatchReviewPanel
+                isPostMatched={isPostMatched}
+                isViewerParticipant={isViewerParticipant}
+                matchedRecordId={matchedRecord?.id}
+                canLeaveReview={canLeaveReview}
+                meetupFinished={meetupFinished}
+                viewerHasReview={viewerHasReview}
+                matchReviews={matchReviews}
+                getMatchReviewAuthorLabel={getMatchReviewAuthorLabel}
+              />
+            </ScrollReveal>
 
             {user && user.id === post.user_id && !isPostMatched && !hasAnyRequests && (
-              <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
-                <div className={APP_EYEBROW_CLASS}>
-                  Meetup actions
+              <ScrollReveal>
+                <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
+                  <div className={APP_EYEBROW_CLASS}>
+                    Meetup actions
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Link
+                      href={`/write/${post.id}`}
+                      className={`inline-flex items-center gap-2 rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      Edit Meetup
+                    </Link>
+                    <DeletePostButton postId={post.id} />
+                  </div>
                 </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Link
-                    href={`/write/${post.id}`}
-                    className={`inline-flex items-center gap-2 rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
-                  >
-                    <Sparkles className="h-4 w-4" />
-                    Edit Meetup
-                  </Link>
-                  <DeletePostButton postId={post.id} />
-                </div>
-              </div>
+              </ScrollReveal>
             )}
           </div>
         </div>
