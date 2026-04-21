@@ -31,7 +31,7 @@ type SimpleUser = {
   email?: string | null;
 } | null;
 
-function PendingBadge({ count }: { count: number }) {
+function CountBadge({ count }: { count: number }) {
   if (count <= 0) return null;
 
   return (
@@ -83,6 +83,7 @@ export default function TopNav() {
   const [user, setUser] = useState<SimpleUser>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const [acceptedSentCount, setAcceptedSentCount] = useState(0);
   const [hasNewChatActivity, setHasNewChatActivity] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [currentSearch, setCurrentSearch] = useState("");
@@ -102,7 +103,11 @@ export default function TopNav() {
       ? "/login"
       : `/login?next=${encodeURIComponent(currentPathWithSearch)}`;
   const dashboardHref =
-    user && pendingCount > 0 ? "/dashboard?tab=received" : "/dashboard";
+    user && acceptedSentCount > 0
+      ? "/dashboard?tab=sent"
+      : user && pendingCount > 0
+      ? "/dashboard?tab=received"
+      : "/dashboard";
 
   useEffect(() => {
     const browserTimeZone = normalizeUserTimeZone(
@@ -125,6 +130,7 @@ export default function TopNav() {
     const resetSignedOutState = () => {
       setUser(null);
       setPendingCount(0);
+      setAcceptedSentCount(0);
       setHasNewChatActivity(false);
       setMenuOpen(false);
       setIsLoggingOut(false);
@@ -137,6 +143,16 @@ export default function TopNav() {
         .select("*", { count: "exact", head: true })
         .eq("post_owner_user_id", userId)
         .eq("status", "pending");
+
+      return count || 0;
+    };
+
+    const loadAcceptedSentCount = async (userId: string) => {
+      const { count } = await supabase
+        .from("match_requests")
+        .select("*", { count: "exact", head: true })
+        .eq("requester_user_id", userId)
+        .eq("status", "accepted");
 
       return count || 0;
     };
@@ -173,13 +189,15 @@ export default function TopNav() {
     };
 
     const refreshIndicators = async (userId: string) => {
-      const [count, hasNewChat] = await Promise.all([
+      const [count, acceptedCount, hasNewChat] = await Promise.all([
         loadPendingCount(userId),
+        loadAcceptedSentCount(userId),
         loadHasNewChatActivity(userId),
       ]);
 
       if (!mounted || loggingOutRef.current) return;
       setPendingCount(count);
+      setAcceptedSentCount(acceptedCount);
       setHasNewChatActivity(hasNewChat);
     };
 
@@ -245,6 +263,7 @@ export default function TopNav() {
           refreshChannel?.unsubscribe();
           refreshChannel = null;
           setPendingCount(0);
+          setAcceptedSentCount(0);
           setHasNewChatActivity(false);
         }
       } catch (error) {
@@ -291,6 +310,7 @@ export default function TopNav() {
           refreshChannel?.unsubscribe();
           refreshChannel = null;
           setPendingCount(0);
+          setAcceptedSentCount(0);
           setHasNewChatActivity(false);
         }
       } catch (error) {
@@ -337,6 +357,7 @@ export default function TopNav() {
     setMenuOpen(false);
     setUser(null);
     setPendingCount(0);
+    setAcceptedSentCount(0);
     setHasNewChatActivity(false);
 
     try {
@@ -478,8 +499,9 @@ export default function TopNav() {
                     Dashboard
                   </NavLabel>
                   <span className="absolute right-3 top-1/2 inline-flex -translate-y-1/2 items-center gap-1.5">
-                    <PendingBadge count={pendingCount} />
                     <NewChatBadge visible={hasNewChatActivity} />
+                    <CountBadge count={acceptedSentCount} />
+                    <CountBadge count={pendingCount} />
                   </span>
                 </Link>
 
@@ -601,7 +623,8 @@ export default function TopNav() {
                         </NavLabel>
                         <span className="ml-auto inline-flex items-center gap-2">
                           <NewChatBadge visible={hasNewChatActivity} />
-                          <PendingBadge count={pendingCount} />
+                          <CountBadge count={acceptedSentCount} />
+                          <CountBadge count={pendingCount} />
                         </span>
                       </Link>
 

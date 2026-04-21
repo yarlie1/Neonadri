@@ -197,12 +197,15 @@ export function DashboardTabCard({
     <button
       type="button"
       onClick={onClick}
-      className={`w-full rounded-[26px] border px-4 py-5 text-left transition ${
+      className={`relative w-full rounded-[26px] border px-4 py-5 text-left transition ${
         active
-          ? "border-[#c7d2d9] bg-[linear-gradient(180deg,#ffffff_0%,#e0e8ed_100%)] text-[#1f2e38] shadow-[0_16px_32px_rgba(118,126,133,0.14)]"
-          : "border-[#e0e7ec] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] text-[#2f3a42] hover:bg-[#f7fafb]"
+          ? "border-[#bcc9d2] bg-[linear-gradient(180deg,#ffffff_0%,#dbe5eb_100%)] text-[#1f2e38] shadow-[0_18px_34px_rgba(118,126,133,0.16)] ring-1 ring-[#d1dbe1]"
+          : "border-[#e0e7ec] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] text-[#2f3a42] hover:bg-[#f7fafb] hover:border-[#d3dde4]"
       }`}
     >
+      {active ? (
+        <span className="absolute right-4 top-4 inline-flex h-2.5 w-2.5 rounded-full bg-[#607480]" />
+      ) : null}
       <div className="flex min-h-[108px] flex-col sm:min-h-[120px]">
         <div className="flex items-center gap-2 text-sm font-semibold">
           {icon}
@@ -230,10 +233,13 @@ export function FilterPill({
   return (
     <button
       onClick={onClick}
-      className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-        active ? APP_PILL_ACTIVE_CLASS : APP_PILL_INACTIVE_CLASS
+      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
+        active
+          ? `${APP_PILL_ACTIVE_CLASS} ring-1 ring-[#c6d1d8]`
+          : APP_PILL_INACTIVE_CLASS
       }`}
     >
+      {active ? <span className="h-1.5 w-1.5 rounded-full bg-[#435760]" /> : null}
       {children}
     </button>
   );
@@ -298,9 +304,11 @@ export function CompactActionButton({
 export function MiniPostPreview({
   post,
   timeZone,
+  hostLine,
 }: {
   post?: PostRow;
   timeZone: string;
+  hostLine?: string;
 }) {
   if (!post) {
     return (
@@ -346,6 +354,12 @@ export function MiniPostPreview({
         ) : null}
       </div>
 
+      {hostLine ? (
+        <div className="mt-2 px-1 text-[12px] leading-[1.15] text-[#849099]">
+          {hostLine}
+        </div>
+      ) : null}
+
       <div className="mt-3 grid gap-2 text-[#6f7a82] sm:grid-cols-2">
         {post.meeting_time && (
           <div className={`flex items-start gap-2 ${APP_ROW_SURFACE_CLASS} px-3 py-2`}>
@@ -384,6 +398,15 @@ export function MiniPostPreview({
             </div>
           </div>
         </div>
+      </div>
+
+      <div className={`mt-3 flex items-center justify-between gap-3 rounded-[16px] px-3.5 py-2 ${APP_SOFT_CARD_CLASS}`}>
+        <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-[#8a949b]">
+          Refined mode
+        </span>
+        <span className="truncate text-sm font-semibold text-[#314454]">
+          {post.meeting_purpose || "Meetup"}
+        </span>
       </div>
     </div>
   );

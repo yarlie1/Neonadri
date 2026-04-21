@@ -70,6 +70,7 @@ function PostsTabPanel({
         );
         const amount = parseBenefitAmount(post.benefit_amount);
         const purposeTheme = getPurposeTheme(post.meeting_purpose);
+        const durationLabel = formatDuration(post.duration_minutes);
 
         return (
           <div
@@ -100,11 +101,11 @@ function PostsTabPanel({
                   </span>
                 </div>
 
-                {formatDuration(post.duration_minutes) ? (
+                {durationLabel ? (
                   <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#edf2f5_100%)] px-1.5 py-2 text-[#52616a] shadow-[0_8px_16px_rgba(118,126,133,0.08)]">
                     <Clock3 className="h-4 w-4" />
                     <span className="mt-1 text-sm font-semibold">
-                      {formatDuration(post.duration_minutes)}
+                      {durationLabel}
                     </span>
                   </div>
                 ) : null}
@@ -117,6 +118,10 @@ function PostsTabPanel({
                     </span>
                   </div>
                 )}
+              </div>
+
+              <div className="mt-2 px-1 text-[12px] leading-[1.15] text-[#849099]">
+                Hosted by you
               </div>
 
               <div className="mt-3 grid gap-2 text-[#6f7a82] sm:grid-cols-2">
@@ -157,6 +162,15 @@ function PostsTabPanel({
                     </div>
                   </div>
                 </div>
+              </div>
+
+              <div className={`mt-3 flex items-center justify-between gap-3 rounded-[16px] px-3.5 py-2 ${SOFT_CARD_CLASS}`}>
+                <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-[#8a949b]">
+                  Refined mode
+                </span>
+                <span className="truncate text-sm font-semibold text-[#314454]">
+                  {post.meeting_purpose || "Meetup"}
+                </span>
               </div>
             </div>
           </div>
@@ -329,7 +343,11 @@ function ReceivedTabPanel({
               </span>
             </div>
 
-            <MiniPostPreview post={postMap[item.post_id]} timeZone={userTimeZone} />
+            <MiniPostPreview
+              post={postMap[item.post_id]}
+              timeZone={userTimeZone}
+              hostLine="Hosted by you"
+            />
 
           </div>
         );
@@ -401,7 +419,11 @@ function SentTabPanel({
               </span>
             </div>
 
-            <MiniPostPreview post={postMap[item.post_id]} timeZone={userTimeZone} />
+            <MiniPostPreview
+              post={postMap[item.post_id]}
+              timeZone={userTimeZone}
+              hostLine={`Hosted by ${hostName}`}
+            />
           </div>
         );
       })}
@@ -443,6 +465,7 @@ function MatchesTabPanel({
       {filteredMatches.map((item) => {
         const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
         const post = postMap[item.post_id];
+        const hostName = post?.user_id ? profileMap[post.user_id] || "Unknown" : "Unknown";
         const alreadyReviewed = reviewedMatchIds.includes(item.id);
         const meetupStatus = getPostStatus(post?.meeting_time || null).toLowerCase();
         const canLeaveReview = meetupStatus === "expired" && !alreadyReviewed;
@@ -490,7 +513,11 @@ function MatchesTabPanel({
               </span>
             </div>
 
-            <MiniPostPreview post={post} timeZone={userTimeZone} />
+            <MiniPostPreview
+              post={post}
+              timeZone={userTimeZone}
+              hostLine={`Hosted by ${hostName}`}
+            />
 
             <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
               <CompactActionButton href={`/matches/${item.id}/chat`}>
@@ -849,6 +876,7 @@ export default function DashboardClient({
             active={activeTab === "posts"}
             label="My Posts"
             value={posts.length}
+            subtext={activeTab === "posts" ? "Currently selected" : "Manage your meetups"}
             icon={<FileText className="h-4 w-4" />}
             onClick={() => setActiveTab("posts")}
           />
@@ -858,7 +886,14 @@ export default function DashboardClient({
             value={matches.length}
             subtext={
               upcomingMatchedMeetups.length > 0
-                ? `${upcomingMatchedMeetups.length} upcoming`
+                ? (
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#b9c6cf] bg-[linear-gradient(180deg,#ffffff_0%,#dbe5eb_100%)] px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-[#2f404b] shadow-[0_10px_18px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.95)]">
+                        {upcomingMatchedMeetups.length > 99 ? "99+" : upcomingMatchedMeetups.length}
+                      </span>
+                      <span>upcoming</span>
+                    </span>
+                  )
                 : "No upcoming"
             }
             icon={<HeartHandshake className="h-4 w-4" />}
@@ -868,7 +903,18 @@ export default function DashboardClient({
             active={activeTab === "sent"}
             label="Requests Sent"
             value={requestsSent.length}
-            subtext={acceptedSent > 0 ? `${acceptedSent} accepted` : null}
+            subtext={
+              acceptedSent > 0 ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#a9b7c1] bg-[linear-gradient(180deg,#ffffff_0%,#d0dce4_100%)] px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-[#263844] shadow-[0_10px_18px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.95)]">
+                    {acceptedSent > 99 ? "99+" : acceptedSent}
+                  </span>
+                  <span>accepted</span>
+                </span>
+              ) : activeTab === "sent" ? (
+                "Currently selected"
+              ) : null
+            }
             icon={<Send className="h-4 w-4" />}
             onClick={() => setActiveTab("sent")}
           />
@@ -885,7 +931,7 @@ export default function DashboardClient({
                   <span>pending</span>
                 </span>
               ) : (
-                "No pending"
+                activeTab === "received" ? "Currently selected" : "No pending"
               )
             }
             icon={<Inbox className="h-4 w-4" />}
