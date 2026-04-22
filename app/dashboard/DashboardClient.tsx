@@ -716,55 +716,51 @@ export default function DashboardClient({
     setProcessingRequestId(requestId);
     setProcessingRequestAction(nextStatus);
 
-    const rpcName =
-      nextStatus === "accepted" ? "accept_match_request" : "reject_match_request";
+    try {
+      const response = await fetch("/api/match-requests/respond", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          requestId,
+          action: nextStatus,
+        }),
+      });
 
-    const { data, error } = await supabase.rpc(rpcName, {
-      p_request_id: requestId,
-    });
+      const result = (await response.json()) as { ok?: boolean; error?: string };
 
-    if (error) {
-      setProcessingRequestId(null);
-      setProcessingRequestAction(null);
-      alert(error.message);
-      return;
-    }
+      if (!response.ok || !result?.ok) {
+        alert(result?.error || "Failed to update request");
+        return;
+      }
 
-    const result = data as { ok?: boolean; error?: string } | null;
-    if (!result?.ok) {
-      setProcessingRequestId(null);
-      setProcessingRequestAction(null);
-      alert(result?.error || "Failed to update request");
-      return;
-    }
+      if (nextStatus === "accepted") {
+        setReceivedItems((prev) =>
+          prev.map((item) =>
+            item.post_id === targetRequest.post_id
+              ? { ...item, status: item.id === requestId ? "accepted" : "rejected" }
+              : item
+          )
+        );
+        router.replace("/dashboard?tab=matches&success=1");
+        router.refresh();
+        return;
+      }
 
-    if (nextStatus === "accepted") {
-      setReceivedItems((prev) =>
-        prev.map((item) =>
-          item.post_id === targetRequest.post_id
-            ? { ...item, status: item.id === requestId ? "accepted" : "rejected" }
-            : item
-        )
-      );
-    } else {
       setReceivedItems((prev) =>
         prev.map((item) =>
           item.id === requestId ? { ...item, status: "rejected" } : item
         )
       );
-    }
-
-    if (nextStatus === "accepted") {
+      router.refresh();
+    } catch (error) {
+      console.error("Dashboard request action failed", error);
+      alert("Failed to update request");
+    } finally {
       setProcessingRequestId(null);
       setProcessingRequestAction(null);
-      router.replace("/dashboard?tab=matches&success=1");
-      router.refresh();
-      return;
     }
-
-    setProcessingRequestId(null);
-    setProcessingRequestAction(null);
-    router.refresh();
   };
 
   useEffect(() => {

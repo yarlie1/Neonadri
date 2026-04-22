@@ -9,7 +9,6 @@ import {
   UserCircle2,
   XCircle,
 } from "lucide-react";
-import { createClient } from "../../../lib/supabase/client";
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_PRIMARY_CLASS,
@@ -53,7 +52,6 @@ export default function OwnerMatchPanel({
   requests,
   matchedPartner,
 }: Props) {
-  const supabase = createClient();
   const router = useRouter();
   const [processingRequestId, setProcessingRequestId] = useState<number | null>(null);
   const [processingAction, setProcessingAction] = useState<"accepted" | "rejected" | null>(
@@ -69,31 +67,33 @@ export default function OwnerMatchPanel({
     setProcessingRequestId(requestId);
     setProcessingAction(nextStatus);
 
-    const rpcName =
-      nextStatus === "accepted" ? "accept_match_request" : "reject_match_request";
+    try {
+      const response = await fetch("/api/match-requests/respond", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          requestId,
+          action: nextStatus,
+        }),
+      });
 
-    const { data, error } = await supabase.rpc(rpcName, {
-      p_request_id: requestId,
-    });
+      const result = (await response.json()) as { ok?: boolean; error?: string };
 
-    if (error) {
-      alert(error.message);
+      if (!response.ok || !result?.ok) {
+        alert(result?.error || "Failed to update request");
+        return;
+      }
+
+      router.refresh();
+    } catch (error) {
+      console.error("Owner request action failed", error);
+      alert("Failed to update request");
+    } finally {
       setProcessingRequestId(null);
       setProcessingAction(null);
-      return;
     }
-
-    const result = data as { ok?: boolean; error?: string } | null;
-    if (!result?.ok) {
-      alert(result?.error || "Failed to update request");
-      setProcessingRequestId(null);
-      setProcessingAction(null);
-      return;
-    }
-
-    setProcessingRequestId(null);
-    setProcessingAction(null);
-    router.refresh();
   };
 
   return (
