@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
 import {
   Menu,
@@ -91,7 +91,6 @@ export default function TopNav() {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const loggingOutRef = useRef(false);
   const pathname = usePathname();
-  const router = useRouter();
   const isHomeTest = pathname.startsWith("/home-test");
   const isSilverHome = true;
   
@@ -402,40 +401,14 @@ export default function TopNav() {
 
     try {
       sessionStorage.clear();
-      const [localLogoutResult, serverLogoutResult] = await Promise.allSettled([
-        supabase.auth.signOut({ scope: "local" }),
-        fetch("/api/auth/logout", {
-          method: "POST",
-          credentials: "include",
-          cache: "no-store",
-        }),
-      ]);
-
-      if (localLogoutResult.status === "rejected") {
-        console.error("TopNav local logout error:", localLogoutResult.reason);
-      }
-
-      if (serverLogoutResult.status === "rejected") {
-        console.error("TopNav server logout error:", serverLogoutResult.reason);
-      } else if (!serverLogoutResult.value.ok) {
-        console.error(
-          "TopNav server logout response error:",
-          await serverLogoutResult.value.text()
-        );
-      }
     } catch (error) {
-      console.error("TopNav logout error:", error);
-    } finally {
-      const target = `/?signed_out=${Date.now()}`;
-
-      if (window.location.pathname === "/") {
-        router.refresh();
-        window.location.search = `?signed_out=${Date.now()}`;
-        return;
-      }
-
-      window.location.replace(target);
+      console.error("TopNav session storage clear error:", error);
     }
+
+    const target = `/?signed_out=${Date.now()}`;
+    window.location.assign(
+      `/api/auth/logout?redirect=${encodeURIComponent(target)}`
+    );
   };
 
   const closeMenu = () => setMenuOpen(false);

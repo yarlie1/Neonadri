@@ -246,11 +246,6 @@ export default async function ProfilePage({ params }: PageProps) {
                 <SafetyActions
                   currentUserId={user.id}
                   targetUserId={profile.id}
-                  reportConfig={{
-                    targetType: "user",
-                    targetId: profile.id,
-                    label: "User profile",
-                  }}
                 />
               ) : null}
             </div>

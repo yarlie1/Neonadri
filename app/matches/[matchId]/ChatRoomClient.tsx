@@ -454,11 +454,6 @@ export default function ChatRoomClient({
                   <SafetyActions
                     currentUserId={currentUserId}
                     targetUserId={otherUserId}
-                    reportConfig={{
-                      targetType: "chat",
-                      targetId: String(matchId),
-                      label: "Conversation",
-                    }}
                   />
                 </div>
                 <div className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm ${APP_MUTED_TEXT_CLASS}`}>

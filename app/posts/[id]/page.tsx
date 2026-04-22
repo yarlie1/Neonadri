@@ -434,6 +434,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                   isViewerParticipant={isViewerParticipant}
                   myRequestId={myRequestId}
                   myRequestStatus={myRequestStatus}
+                  meetupFinished={meetupFinished}
                 />
               </ScrollReveal>
             ) : null}
@@ -489,17 +490,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                     Safety
                   </div>
                   <div className="mt-2 text-sm text-[#6c7880]">
-                    Report this meetup or block the host if you no longer want to interact.
+                    Block the host if you no longer want to interact here.
                   </div>
                   <div className="mt-4">
                     <SafetyActions
                       currentUserId={user.id}
                       targetUserId={post.user_id}
-                      reportConfig={{
-                        targetType: "post",
-                        targetId: String(post.id),
-                        label: "Meetup",
-                      }}
                     />
                   </div>
                 </div>

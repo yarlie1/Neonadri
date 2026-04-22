@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-export async function POST(request: Request) {
-  const response = NextResponse.json({ success: true });
+async function buildLogoutResponse(request: Request, response: NextResponse) {
   const cookieHeader = request.headers.get("cookie") || "";
 
   const cookieMap = new Map<string, string>();
@@ -55,4 +54,14 @@ export async function POST(request: Request) {
   }
 
   return response;
+}
+
+export async function POST(request: Request) {
+  return buildLogoutResponse(request, NextResponse.json({ success: true }));
+}
+
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const redirectTo = url.searchParams.get("redirect") || "/";
+  return buildLogoutResponse(request, NextResponse.redirect(new URL(redirectTo, url)));
 }

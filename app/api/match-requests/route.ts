@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     const supabase = await createClient();
     const body = await req.json();
     const targetMismatchMessage =
-      "You can’t send a request because this meetup is set for a different gender or age group.";
+      "You cannot send a request because this meetup is set for a different gender or age group.";
 
     const {
       data: { user },
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       await Promise.all([
         supabase
           .from("posts")
-          .select("user_id, target_gender, target_age_group")
+          .select("user_id, target_gender, target_age_group, meeting_time")
           .eq("id", postId)
           .maybeSingle(),
         supabase
@@ -69,6 +69,17 @@ export async function POST(req: Request) {
 
     if (String(postData.user_id || "") !== postOwnerUserId) {
       return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+    }
+
+    const meetingTimeValue = String(postData.meeting_time || "").trim();
+    if (meetingTimeValue) {
+      const meetingTime = new Date(meetingTimeValue).getTime();
+      if (!Number.isNaN(meetingTime) && meetingTime < Date.now()) {
+        return NextResponse.json(
+          { error: "This meetup has already expired." },
+          { status: 409 }
+        );
+      }
     }
 
     if (profileError) {
@@ -172,10 +183,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error) {
     console.error("Match request route unexpected error", error);
-    return NextResponse.json(
-      { error: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
@@ -222,9 +230,6 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error) {
     console.error("Match request delete route unexpected error", error);
-    return NextResponse.json(
-      { error: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

@@ -22,6 +22,7 @@ type Props = {
   isViewerParticipant: boolean;
   myRequestId: number | null;
   myRequestStatus: string;
+  meetupFinished: boolean;
 };
 
 export default function MatchRequestBox({
@@ -33,6 +34,7 @@ export default function MatchRequestBox({
   isViewerParticipant,
   myRequestId,
   myRequestStatus,
+  meetupFinished,
 }: Props) {
   const router = useRouter();
 
@@ -45,19 +47,26 @@ export default function MatchRequestBox({
   const hasPendingRequest = normalizedStatus === "pending" && !!myRequestId;
   const hasMatchedRequest = isViewerParticipant;
   const isUnavailableBecauseMatched = isPostMatched && !isViewerParticipant;
+  const isUnavailableBecauseExpired = meetupFinished && !hasMatchedRequest;
   const isRejectedRequest = normalizedStatus === "rejected";
   const headerEyebrow = hasMatchedRequest
     ? "Matched meetup"
+    : isUnavailableBecauseExpired
+    ? "Meetup expired"
     : isUnavailableBecauseMatched
     ? "Meetup closed"
     : "Join this meetup";
   const headerTitle = hasMatchedRequest
     ? "You're matched"
+    : isUnavailableBecauseExpired
+    ? "Meetup expired"
     : isUnavailableBecauseMatched
     ? "Already matched"
     : "Request Match";
   const headerDescription = hasMatchedRequest
     ? "Your request was accepted and this meetup is now confirmed."
+    : isUnavailableBecauseExpired
+    ? "This meetup has already passed, so new requests are no longer available."
     : isUnavailableBecauseMatched
     ? "This meetup has already been matched with another guest, so new requests are closed."
     : "Send your request to the host and wait for approval.";
@@ -169,7 +178,10 @@ export default function MatchRequestBox({
       <p className={`mt-4 ${APP_BODY_TEXT_CLASS}`}>
         {headerDescription}
       </p>
-      {!hasMatchedRequest && !isUnavailableBecauseMatched && !isRejectedRequest && (
+      {!hasMatchedRequest &&
+        !isUnavailableBecauseMatched &&
+        !isUnavailableBecauseExpired &&
+        !isRejectedRequest && (
         <p className={`mt-1 ${APP_BODY_TEXT_CLASS}`}>
           Once the meetup is completed, the host will pay you{" "}
           {benefitAmount || "the listed amount"} directly.
@@ -183,6 +195,8 @@ export default function MatchRequestBox({
         <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
           {hasMatchedRequest
             ? "This meetup is confirmed. You can review the details above and connect with the host here."
+            : isUnavailableBecauseExpired
+            ? "This meetup has already ended, so requests are closed."
             : isUnavailableBecauseMatched
             ? "This meetup is no longer accepting requests because the host already matched with another guest."
             : hasPendingRequest
@@ -198,6 +212,11 @@ export default function MatchRequestBox({
           <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium ${APP_PILL_INACTIVE_CLASS}`}>
             <CheckCircle2 className="h-4 w-4" />
             Match completed
+          </div>
+        ) : isUnavailableBecauseExpired ? (
+          <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+            <AlertCircle className="h-4 w-4" />
+            Meetup expired
           </div>
         ) : isUnavailableBecauseMatched ? (
           <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium ${APP_PILL_INACTIVE_CLASS}`}>
