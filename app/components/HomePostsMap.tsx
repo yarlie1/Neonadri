@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { MapPost } from "../map/page";
 import { getPublicLocationLabel } from "../../lib/locationPrivacy";
+import { Coins } from "lucide-react";
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_PRIMARY_CLASS,
@@ -384,11 +385,12 @@ export default function HomePostsMap({ posts }: Props) {
                 </div>
               </div>
 
-              {selectedPost.benefit_amount && (
-                <div className={`shrink-0 rounded-2xl px-4 py-2 text-sm font-semibold ${APP_PILL_ACTIVE_CLASS}`}>
-                  Cost support {selectedPost.benefit_amount}
-                </div>
-              )}
+                {selectedPost.benefit_amount && (
+                  <div className={`inline-flex shrink-0 items-center gap-2 rounded-2xl px-4 py-2 text-sm font-semibold ${APP_PILL_ACTIVE_CLASS}`}>
+                    <Coins className="h-4 w-4" />
+                    {selectedPost.benefit_amount}
+                  </div>
+                )}
             </div>
 
             <div className="mt-3">

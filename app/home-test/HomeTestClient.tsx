@@ -407,7 +407,7 @@ export default function HomeTestClient({
                         </span>
                         <span className="inline-flex items-center gap-2 rounded-[14px] border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.90)_0%,rgba(237,241,244,0.76)_100%)] px-3 py-1.5 font-semibold text-[#435760] shadow-[0_8px_16px_rgba(118,126,133,0.10)]">
                           <Coins className="h-4 w-4 text-[#7b8d97]" />
-                          {amount !== null ? `CS $${amount.toLocaleString()}` : "No CS"}
+                          {amount !== null ? `$${amount.toLocaleString()}` : "N/A"}
                         </span>
                       </div>
                     </div>
