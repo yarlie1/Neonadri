@@ -414,20 +414,24 @@ export default function HomeFeedClient({
           <FeaturedMeetupCard
             postId={highlightedPost.id}
             placeLabel={
+              highlightedPost.place_name ||
               getPublicLocationLabel(
                 highlightedPost.place_name,
                 highlightedPost.location
-              ) || "Meetup"
+              ) ||
+              "Meetup"
             }
             purposeIcon={getPurposeIcon(highlightedPost.meeting_purpose)}
             purposeLabel={highlightedPost.meeting_purpose || "Meetup"}
             purposeCopy={getPurposeLabel(highlightedPost.meeting_purpose)}
             timeLabel={formatTime(highlightedPost.meeting_time) || "Time TBD"}
             placeText={
+              highlightedPost.place_name ||
               getPublicLocationLabel(
                 highlightedPost.place_name,
                 highlightedPost.location
-              ) || "Location TBD"
+              ) ||
+              "Location TBD"
             }
             targetText={`${highlightedPost.target_gender || "Any"} / ${highlightedPost.target_age_group || "Any"}`}
           />
@@ -557,6 +561,7 @@ export default function HomeFeedClient({
               amountText={amount !== null ? `CS $${amount.toLocaleString()}` : ""}
               whenText={post.meeting_time ? formatTime(post.meeting_time) : ""}
               placeText={
+                post.place_name ||
                 getPublicLocationLabel(post.place_name, post.location) ||
                 "No place"
               }

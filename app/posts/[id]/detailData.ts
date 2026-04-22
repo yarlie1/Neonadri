@@ -253,7 +253,9 @@ export function buildDetailViewModel({
 }): DetailViewModel {
   const revealExactLocation = isViewerParticipant;
   const placeDisplay =
-    getPublicLocationLabel(post.place_name, post.location) || "Selected place";
+    post.place_name ||
+    getPublicLocationLabel(post.place_name, post.location) ||
+    "Selected place";
   const locationDisplay =
     getVisibleLocationLabel({
       placeName: post.place_name,
