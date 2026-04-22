@@ -1,5 +1,30 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
+import { isAdultConfirmedUser } from "../../../../lib/adultGate";
+
+function normalizeMatchRequestError(message: string, action: string) {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("request not found")) {
+    return "This request could not be found anymore.";
+  }
+
+  if (normalized.includes("already") && normalized.includes("matched")) {
+    return "This meetup has already been matched with someone else.";
+  }
+
+  if (normalized.includes("not authorized") || normalized.includes("not your")) {
+    return "You can no longer update this request.";
+  }
+
+  if (normalized.includes("pending")) {
+    return "This request is no longer pending.";
+  }
+
+  return action === "accepted"
+    ? "We couldn't accept this request right now."
+    : "We couldn't decline this request right now.";
+}
 
 export async function POST(req: Request) {
   try {
@@ -13,6 +38,13 @@ export async function POST(req: Request) {
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (!isAdultConfirmedUser(user)) {
+      return NextResponse.json(
+        { error: "Please confirm that you are 18 or older before managing requests." },
+        { status: 403 }
+      );
     }
 
     const requestId = Number(body.requestId);
@@ -41,7 +73,7 @@ export async function POST(req: Request) {
       });
 
       return NextResponse.json(
-        { error: error.message || "Failed to update request." },
+        { error: normalizeMatchRequestError(error.message || "", action) },
         { status: 500 }
       );
     }
@@ -50,7 +82,7 @@ export async function POST(req: Request) {
 
     if (!result?.ok) {
       return NextResponse.json(
-        { error: result?.error || "Failed to update request." },
+        { error: normalizeMatchRequestError(result?.error || "", action) },
         { status: 400 }
       );
     }

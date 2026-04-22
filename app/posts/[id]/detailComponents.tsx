@@ -591,6 +591,7 @@ export function MeetupOverviewCard({
   placeDisplay,
   locationDisplay,
   locationHeading,
+  locationPrivacyNote,
 }: {
   isPostMatched: boolean;
   purposeTheme: { bandClass: string };
@@ -606,6 +607,7 @@ export function MeetupOverviewCard({
   placeDisplay: string;
   locationDisplay: string;
   locationHeading: string;
+  locationPrivacyNote: string | null;
 }) {
   return (
     <div className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-6 py-6`}>
@@ -641,12 +643,12 @@ export function MeetupOverviewCard({
                 {meetupDurationLabel}
               </span>
             </div>
-            <div className="inline-flex w-[66px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-1.5 py-2 text-center text-[#52616a] shadow-sm">
-              <Coins className="h-4 w-4" />
-              <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7e8d96]">
+            <div className="inline-flex w-[92px] shrink-0 flex-col justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-3 py-2 text-[#52616a] shadow-sm">
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase leading-none tracking-[0.12em] text-[#7e8d96]">
+                <Coins className="h-3.5 w-3.5" />
                 Cost support
               </span>
-              <span className="mt-1 text-sm font-extrabold tracking-[-0.03em] text-[#23333d]">
+              <span className="mt-1 text-sm font-extrabold leading-tight tracking-[-0.03em] text-[#23333d]">
                 {post.benefit_amount || "N/A"}
               </span>
             </div>
@@ -695,6 +697,11 @@ export function MeetupOverviewCard({
                     </div>
                   </div>
                   <div className="mt-1 pl-6 line-clamp-3">{locationDisplay}</div>
+                  {locationPrivacyNote ? (
+                    <div className="mt-2 pl-6 text-xs leading-5 text-[#859199]">
+                      {locationPrivacyNote}
+                    </div>
+                  ) : null}
                 </div>
               )}
               {distanceNote}

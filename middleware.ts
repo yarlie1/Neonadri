@@ -4,8 +4,10 @@ import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
 } from "./lib/userTimeZone";
+import { isAdultConfirmedUser } from "./lib/adultGate";
 
 const PROTECTED_PATHS = ["/dashboard", "/write", "/account", "/reviews/write"];
+const ADULT_CHECK_PATH = "/adult-check";
 
 function isProtectedPath(pathname: string) {
   return PROTECTED_PATHS.some(
@@ -76,9 +78,31 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
+  if (user && isProtectedPath(request.nextUrl.pathname) && !isAdultConfirmedUser(user)) {
+    const redirectUrl = request.nextUrl.clone();
+    const requestedPath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+    redirectUrl.pathname = ADULT_CHECK_PATH;
+    redirectUrl.search = "";
+    redirectUrl.searchParams.set("next", requestedPath);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  if (
+    user &&
+    request.nextUrl.pathname === ADULT_CHECK_PATH &&
+    isAdultConfirmedUser(user)
+  ) {
+    const requestedNext = request.nextUrl.searchParams.get("next") || "/";
+    const safeNext =
+      requestedNext.startsWith("/") && !requestedNext.startsWith("//")
+        ? requestedNext
+        : "/";
+    return NextResponse.redirect(new URL(safeNext, request.url));
+  }
+
   return response;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/write/:path*", "/account/:path*", "/reviews/write/:path*"],
+  matcher: ["/dashboard/:path*", "/write/:path*", "/account/:path*", "/reviews/write/:path*", "/adult-check"],
 };

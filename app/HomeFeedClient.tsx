@@ -554,7 +554,7 @@ export default function HomeFeedClient({
               purposeIcon={getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}
               purposeName={post.meeting_purpose || "Social meetup"}
               durationLabel={formatDuration(post.duration_minutes)}
-              amountText={amount !== null ? `Cost support $${amount.toLocaleString()}` : ""}
+              amountText={amount !== null ? `CS $${amount.toLocaleString()}` : ""}
               whenText={post.meeting_time ? formatTime(post.meeting_time) : ""}
               placeText={
                 getPublicLocationLabel(post.place_name, post.location) ||

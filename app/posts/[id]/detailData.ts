@@ -93,6 +93,7 @@ export type DetailViewModel = {
   placeDisplay: string;
   locationDisplay: string;
   locationHeading: string;
+  locationPrivacyNote: string | null;
 };
 
 export async function fetchProfileShowcaseData(
@@ -260,12 +261,15 @@ export function buildDetailViewModel({
       revealExact: revealExactLocation,
     }) || "Location shared after matching";
   const locationHeading = revealExactLocation ? "Address" : "Area";
+  const locationPrivacyNote = revealExactLocation
+    ? null
+    : "Full address is shared only with confirmed participants after the meetup is matched.";
   const mapQuery = revealExactLocation
     ? post.location || post.place_name || ""
     : getPublicLocationLabel(post.place_name, post.location) || "";
   const mapUrl = mapQuery
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
-    : post.latitude !== null && post.longitude !== null
+    : revealExactLocation && post.latitude !== null && post.longitude !== null
     ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
     : "";
 
@@ -308,5 +312,6 @@ export function buildDetailViewModel({
     placeDisplay,
     locationDisplay,
     locationHeading,
+    locationPrivacyNote,
   };
 }
