@@ -6,6 +6,15 @@ import {
 } from "../../../../lib/profileContent";
 
 const DISPLAY_NAME_MAX_LENGTH = 24;
+const VALID_GENDERS = ["Male", "Female", "Other", "Prefer not to say"] as const;
+const VALID_AGE_GROUPS = ["20s", "30s", "40s", "50s+"] as const;
+
+function sanitizeAllowedValue(value: unknown, allowedValues: readonly string[]) {
+  if (typeof value !== "string") return null;
+  const normalized = value.trim();
+  if (!normalized) return null;
+  return allowedValues.includes(normalized) ? normalized : null;
+}
 
 export async function POST(req: Request) {
   try {
@@ -55,14 +64,8 @@ export async function POST(req: Request) {
       bio:
         typeof body.bio === "string" && body.bio.trim() ? body.bio.trim() : null,
       about_me: aboutMeValue || null,
-      gender:
-        typeof body.gender === "string" && body.gender.trim()
-          ? body.gender.trim()
-          : null,
-      age_group:
-        typeof body.age_group === "string" && body.age_group.trim()
-          ? body.age_group.trim()
-          : null,
+      gender: sanitizeAllowedValue(body.gender, VALID_GENDERS),
+      age_group: sanitizeAllowedValue(body.age_group, VALID_AGE_GROUPS),
       preferred_area:
         typeof body.preferred_area === "string" && body.preferred_area.trim()
           ? body.preferred_area.trim()

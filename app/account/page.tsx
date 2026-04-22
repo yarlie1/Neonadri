@@ -82,22 +82,10 @@ export default async function AccountPage() {
 
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
-              href={`/profile/${user.id}`}
-              className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-            >
-              View public profile
-            </Link>
-            <Link
               href="/account/password"
               className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               Change password
-            </Link>
-            <Link
-              href="/account/delete"
-              className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-            >
-              Delete account
             </Link>
           </div>
         </section>
@@ -123,6 +111,24 @@ export default async function AccountPage() {
         ) : null}
 
         <BlockedUsersCard />
+
+        <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
+          <div className={APP_EYEBROW_CLASS}>Account removal</div>
+          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
+            Delete this account
+          </h2>
+          <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
+            Open the final confirmation screen if you want to permanently remove this account.
+          </p>
+          <div className="mt-4">
+            <Link
+              href="/account/delete"
+              className={`inline-flex rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+            >
+              Delete account
+            </Link>
+          </div>
+        </section>
       </div>
     </main>
   );

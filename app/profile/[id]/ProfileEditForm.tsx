@@ -76,6 +76,9 @@ const RESPONSE_NOTE_OPTIONS = [
   "Usually replies in the evening",
 ];
 
+const GENDER_OPTIONS = ["Male", "Female", "Other", "Prefer not to say"] as const;
+const AGE_GROUP_OPTIONS = ["20s", "30s", "40s", "50s+"] as const;
+
 function ToggleChip({
   label,
   selected,
@@ -110,6 +113,15 @@ function sanitizeSelectValue(value: string | null | undefined, placeholderPrefix
   return normalized;
 }
 
+function sanitizeAllowedValue(
+  value: string | null | undefined,
+  allowedValues: readonly string[]
+) {
+  const normalized = String(value || "").trim();
+  if (!normalized) return "";
+  return allowedValues.includes(normalized) ? normalized : "";
+}
+
 export default function ProfileEditForm({
   profile,
 }: {
@@ -120,10 +132,16 @@ export default function ProfileEditForm({
   const [displayName, setDisplayName] = useState(profile.display_name || "");
   const [aboutMe, setAboutMe] = useState(profile.about_me || "");
   const [gender, setGender] = useState(
-    sanitizeSelectValue(profile.gender, "select gender")
+    sanitizeAllowedValue(
+      sanitizeSelectValue(profile.gender, "select gender"),
+      GENDER_OPTIONS
+    )
   );
   const [ageGroup, setAgeGroup] = useState(
-    sanitizeSelectValue(profile.age_group, "select age group")
+    sanitizeAllowedValue(
+      sanitizeSelectValue(profile.age_group, "select age group"),
+      AGE_GROUP_OPTIONS
+    )
   );
   const [languages, setLanguages] = useState<string[]>(profile.languages || []);
   const [meetingStyle, setMeetingStyle] = useState(profile.meeting_style || "");
@@ -172,8 +190,16 @@ export default function ProfileEditForm({
         display_name: displayName.trim() || null,
         bio: aboutMeSummary || null,
         about_me: aboutMe.trim() || null,
-        gender: sanitizeSelectValue(gender, "select gender") || null,
-        age_group: sanitizeSelectValue(ageGroup, "select age group") || null,
+        gender:
+          sanitizeAllowedValue(
+            sanitizeSelectValue(gender, "select gender"),
+            GENDER_OPTIONS
+          ) || null,
+        age_group:
+          sanitizeAllowedValue(
+            sanitizeSelectValue(ageGroup, "select age group"),
+            AGE_GROUP_OPTIONS
+          ) || null,
         languages: languages.length > 0 ? languages : null,
         meeting_style: meetingStyle || null,
         interests: interests.length > 0 ? interests : null,
