@@ -18,6 +18,11 @@ type SupabaseLikeClient = {
   };
 };
 
+type BlockRelationRow = {
+  user_id: string;
+  blocked_user_id: string;
+};
+
 export async function isBlockedBetween(
   supabase: SupabaseLikeClient,
   firstUserId: string,
@@ -36,4 +41,27 @@ export async function isBlockedBetween(
   }
 
   return Number(count || 0) > 0;
+}
+
+export async function getBlockedUserIdsForViewer(
+  supabase: SupabaseLikeClient,
+  userId: string | null | undefined
+) {
+  if (!userId) return new Set<string>();
+
+  const { data, error } = await supabase
+    .from("blocked_users")
+    .select("user_id, blocked_user_id")
+    .or(`user_id.eq.${userId},blocked_user_id.eq.${userId}`);
+
+  if (error) {
+    console.error("Blocked users list lookup failed", error);
+    return new Set<string>();
+  }
+
+  return new Set(
+    ((data || []) as BlockRelationRow[]).flatMap((row) =>
+      row.user_id === userId ? [row.blocked_user_id] : [row.user_id]
+    )
+  );
 }

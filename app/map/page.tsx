@@ -1,4 +1,5 @@
 import { createClient } from "../../lib/supabase/server";
+import { getBlockedUserIdsForViewer } from "../../lib/safety";
 import HomePostsMap from "../components/HomePostsMap";
 import {
   APP_BODY_TEXT_CLASS,
@@ -60,6 +61,7 @@ export default async function MapPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const blockedUserIds = await getBlockedUserIdsForViewer(supabase, user?.id);
 
   const { data: postsData } = await supabase
     .from("posts")
@@ -71,7 +73,10 @@ export default async function MapPage() {
     .order("created_at", { ascending: false });
 
   const posts = ((postsData as PostRow[]) || []).filter(
-    (post) => post.latitude !== null && post.longitude !== null
+    (post) =>
+      post.latitude !== null &&
+      post.longitude !== null &&
+      !blockedUserIds.has(post.user_id)
   );
 
   const ownerIds = Array.from(new Set(posts.map((post) => post.user_id)));

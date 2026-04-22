@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { createClient } from "../../lib/supabase/server";
+import { getBlockedUserIdsForViewer } from "../../lib/safety";
 import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
@@ -61,6 +62,10 @@ export default async function HomeTestPage() {
   const initialUserTimeZone = normalizeUserTimeZone(
     cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
   );
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const blockedUserIds = await getBlockedUserIdsForViewer(supabase, user?.id);
 
   const { data: postsData, error: postsError } = await supabase
     .from("posts")
@@ -85,7 +90,9 @@ export default async function HomeTestPage() {
     );
   }
 
-  const posts = ((postsData as PostRow[]) || []).slice();
+  const posts = ((postsData as PostRow[]) || [])
+    .filter((post) => !blockedUserIds.has(post.user_id))
+    .slice();
   const ownerIds = Array.from(new Set(posts.map((post) => post.user_id))).filter(Boolean);
   const postIds = posts.map((post) => post.id);
 
