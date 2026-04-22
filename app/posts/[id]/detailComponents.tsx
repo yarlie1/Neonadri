@@ -621,7 +621,7 @@ export function MeetupOverviewCard({
               {isPostMatched ? "Matched" : "Open"}
             </span>
           </div>
-          <div className="mt-4 flex flex-wrap items-stretch gap-3">
+          <div className="mt-4 flex flex-wrap items-stretch gap-2.5">
             <div
               className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3.5 shadow-[0_10px_20px_rgba(118,126,133,0.09)] ${purposeTheme.bandClass}`}
             >
@@ -637,13 +637,13 @@ export function MeetupOverviewCard({
                 </div>
               </div>
             </div>
-            <div className="inline-flex w-[64px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-1.5 py-2 text-center text-[#52616a] shadow-sm">
+            <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-1 py-2 text-center text-[#52616a] shadow-sm">
               <Clock3 className="h-3.5 w-3.5 text-[#7e8d96]" />
               <span className="mt-1 text-sm font-extrabold tracking-[-0.03em] text-[#23333d]">
                 {meetupDurationLabel}
               </span>
             </div>
-            <div className="inline-flex w-[64px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-1.5 py-2 text-center text-[#52616a] shadow-sm">
+            <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-1 py-2 text-center text-[#52616a] shadow-sm">
               <Coins className="h-3.5 w-3.5 text-[#7e8d96]" />
               <span className="mt-1 text-sm font-extrabold leading-tight tracking-[-0.03em] text-[#23333d]">
                 {post.benefit_amount || "N/A"}
