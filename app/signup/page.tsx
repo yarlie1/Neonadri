@@ -651,6 +651,23 @@ export default function SignupPage() {
                   Confirm that you are 18 or older to continue.
                 </p>
               )}
+              {step === 3 && (
+                <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+                  By creating an account, you agree to Neonadri's{" "}
+                  <Link href="/terms" className="underline underline-offset-2 transition hover:text-[#24323c]">
+                    Terms
+                  </Link>
+                  ,{" "}
+                  <Link href="/privacy" className="underline underline-offset-2 transition hover:text-[#24323c]">
+                    Privacy Policy
+                  </Link>
+                  , and{" "}
+                  <Link href="/community" className="underline underline-offset-2 transition hover:text-[#24323c]">
+                    Community Guidelines
+                  </Link>
+                  .
+                </p>
+              )}
 
               {step > 1 ? (
                 <button

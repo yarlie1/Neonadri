@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import {
@@ -112,6 +113,17 @@ export default function LoginPage() {
             <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
               By using Neonadri, you confirm that you are 18 or older.
             </p>
+            <div className={`mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+              <Link href="/terms" className="transition hover:text-[#24323c]">
+                Terms
+              </Link>
+              <Link href="/privacy" className="transition hover:text-[#24323c]">
+                Privacy
+              </Link>
+              <Link href="/community" className="transition hover:text-[#24323c]">
+                Community
+              </Link>
+            </div>
 
             <div className="mt-6 space-y-4">
               <div>
