@@ -1,9 +1,6 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { createClient } from "../../lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
+import { createClient } from "../../lib/supabase/server";
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_PRIMARY_CLASS,
@@ -38,105 +35,61 @@ function summarizeAbout(text: string | null) {
   return `${normalized.slice(0, 107).trimEnd()}...`;
 }
 
-export default function AccountPage() {
-  const supabase = useMemo(() => createClient(), []);
-  const router = useRouter();
+export default async function AccountPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const [userId, setUserId] = useState("");
-  const [email, setEmail] = useState("");
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const {
-          data: { user },
-          error: authError,
-        } = await supabase.auth.getUser();
-
-        if (authError) {
-          setMessage(authError.message || "Could not load account.");
-          return;
-        }
-
-        if (!user) {
-          setLoading(false);
-          router.push("/login");
-          return;
-        }
-
-        setUserId(user.id);
-        setEmail(user.email || "");
-
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("id, display_name, about_me, interests, response_time_note, is_admin")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        if (error) {
-          setMessage(error.message);
-          return;
-        }
-
-        if (!data) {
-          const { error: insertError } = await supabase.from("profiles").insert({
-            id: user.id,
-            display_name: "",
-            about_me: "",
-            interests: [],
-            response_time_note: "",
-            is_admin: false,
-          });
-
-          if (insertError) {
-            setMessage(insertError.message);
-            return;
-          }
-
-          setProfile({
-            id: user.id,
-            display_name: "",
-            about_me: "",
-            interests: [],
-            response_time_note: "",
-            is_admin: false,
-          });
-          return;
-        }
-
-        setProfile(data as Profile);
-      } catch (error) {
-        console.error("Account load failed", error);
-        setMessage("Could not load account.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void loadProfile();
-  }, [router, supabase]);
-
-  if (loading) {
-    return (
-      <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-6 py-8`}>
-        <div className={`mx-auto max-w-3xl ${SURFACE_CARD_CLASS} p-8 text-center`}>
-          Loading...
-        </div>
-      </main>
-    );
+  if (!user) {
+    redirect("/login");
   }
 
-  const displayName = profile?.display_name?.trim() || "Your public profile";
-  const aboutSummary = summarizeAbout(profile?.about_me || null);
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, display_name, about_me, interests, response_time_note, is_admin")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Account profile load failed", error);
+  }
+
+  let profile = (data as Profile | null) ?? null;
+
+  if (!profile) {
+    const fallbackProfile: Profile = {
+      id: user.id,
+      display_name: "",
+      about_me: "",
+      interests: [],
+      response_time_note: "",
+      is_admin: false,
+    };
+
+    const { data: insertedProfile, error: insertError } = await supabase
+      .from("profiles")
+      .upsert(fallbackProfile)
+      .select("id, display_name, about_me, interests, response_time_note, is_admin")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (insertError) {
+      console.error("Account profile create failed", insertError);
+      profile = fallbackProfile;
+    } else {
+      profile = (insertedProfile as Profile | null) ?? fallbackProfile;
+    }
+  }
+
+  const displayName = profile.display_name?.trim() || "Your public profile";
+  const aboutSummary = summarizeAbout(profile.about_me || null);
   const interestSummary =
-    profile?.interests && profile.interests.length > 0
+    profile.interests && profile.interests.length > 0
       ? `${profile.interests.length} selected`
       : "No interests added yet";
-  const responseNote = profile?.response_time_note?.trim() || "No response note yet";
-  const isAdmin = !!profile?.is_admin;
+  const responseNote = profile.response_time_note?.trim() || "No response note yet";
+  const isAdmin = !!profile.is_admin;
 
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
@@ -216,13 +169,13 @@ export default function AccountPage() {
 
           <div className="mt-5 flex flex-wrap gap-3">
             <Link
-              href={userId ? `/profile/${userId}` : "/profile"}
+              href={`/profile/${user.id}`}
               className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               View public profile
             </Link>
             <Link
-              href={userId ? `/profile/${userId}/edit` : "/profile"}
+              href={`/profile/${user.id}/edit`}
               className={`rounded-full border px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
             >
               Edit public profile
@@ -243,7 +196,7 @@ export default function AccountPage() {
                 Account email
               </div>
               <div className="mt-2 text-sm font-medium text-[#52616a]">
-                {email || "Not available"}
+                {user.email || "Not available"}
               </div>
             </div>
             <div className={`${SOFT_CARD_CLASS} p-4`}>
@@ -253,7 +206,7 @@ export default function AccountPage() {
                 Account id
               </div>
               <div className="mt-2 break-all text-sm font-medium text-[#52616a]">
-                {userId || "Not available"}
+                {user.id}
               </div>
             </div>
           </div>
@@ -281,12 +234,6 @@ export default function AccountPage() {
         ) : null}
 
         <BlockedUsersCard />
-
-        {message ? (
-          <p className="rounded-[20px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
-            {message}
-          </p>
-        ) : null}
       </div>
     </main>
   );
