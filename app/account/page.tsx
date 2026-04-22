@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -79,6 +80,7 @@ type Profile = {
   languages: string[] | null;
   interests: string[] | null;
   response_time_note: string | null;
+  is_admin: boolean | null;
 };
 
 const INPUT_CLASS =
@@ -126,6 +128,7 @@ export default function AccountPage() {
   const [languages, setLanguages] = useState<string[]>([]);
   const [interests, setInterests] = useState<string[]>([]);
   const [responseTimeNote, setResponseTimeNote] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -179,7 +182,8 @@ export default function AccountPage() {
             meeting_style,
             languages,
             interests,
-            response_time_note
+            response_time_note,
+            is_admin
           `
         )
         .eq("id", user.id)
@@ -224,6 +228,7 @@ export default function AccountPage() {
         setLanguages(profile.languages || []);
         setInterests(profile.interests || []);
         setResponseTimeNote(profile.response_time_note || "");
+        setIsAdmin(!!profile.is_admin);
       }
 
       setLoading(false);
@@ -570,6 +575,26 @@ export default function AccountPage() {
           </p>
         )}
         </div>
+
+        {isAdmin ? (
+          <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
+            <div className={APP_EYEBROW_CLASS}>Admin tools</div>
+            <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
+              Review safety reports
+            </h2>
+            <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
+              Open the admin reports queue to review new reports, update status, and jump to the affected target.
+            </p>
+            <div className="mt-4">
+              <Link
+                href="/admin/reports"
+                className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+              >
+                Open admin reports
+              </Link>
+            </div>
+          </section>
+        ) : null}
 
         <BlockedUsersCard />
       </div>
