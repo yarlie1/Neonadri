@@ -90,7 +90,8 @@ function getFeaturedPost(
   let bestPost: PostRow | null = null;
   let bestScore = Number.NEGATIVE_INFINITY;
 
-  for (const [index, post] of posts.entries()) {
+  for (let index = 0; index < posts.length; index += 1) {
+    const post = posts[index];
     const meetingDate = parseMeetingTime(post.meeting_time, userTimeZone);
     const meetingTime = meetingDate?.getTime() ?? now;
     const isExpired = meetingTime < now;
