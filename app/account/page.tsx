@@ -19,6 +19,7 @@ import {
   ABOUT_ME_RESTRICTION_MESSAGE,
   validateAboutMeContent,
 } from "../../lib/profileContent";
+import BlockedUsersCard from "../components/BlockedUsersCard";
 
 const LANGUAGE_OPTIONS = [
   "English",
@@ -569,6 +570,8 @@ export default function AccountPage() {
           </p>
         )}
         </div>
+
+        <BlockedUsersCard />
       </div>
     </main>
   );

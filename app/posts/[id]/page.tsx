@@ -20,6 +20,7 @@ import OwnerMatchPanel from "./OwnerMatchPanel";
 import DeletePostButton from "./DeletePostButton";
 import PostDistanceNote from "./PostDistanceNote";
 import ScrollReveal from "./ScrollReveal";
+import SafetyActions from "../../components/SafetyActions";
 import {
   buildDetailViewModel,
   fetchProfileShowcaseData,
@@ -454,6 +455,30 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 </div>
               </ScrollReveal>
             )}
+
+            {user && user.id !== post.user_id ? (
+              <ScrollReveal>
+                <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
+                  <div className={APP_EYEBROW_CLASS}>
+                    Safety
+                  </div>
+                  <div className="mt-2 text-sm text-[#6c7880]">
+                    Report this meetup or block the host if you no longer want to interact.
+                  </div>
+                  <div className="mt-4">
+                    <SafetyActions
+                      currentUserId={user.id}
+                      targetUserId={post.user_id}
+                      reportConfig={{
+                        targetType: "post",
+                        targetId: String(post.id),
+                        label: "Meetup",
+                      }}
+                    />
+                  </div>
+                </div>
+              </ScrollReveal>
+            ) : null}
           </div>
         </div>
 

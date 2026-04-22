@@ -50,6 +50,11 @@ function formatShortMeetingTime(
 }
 
 function MatchChatErrorState({ code }: { code: string }) {
+  const body =
+    code === "MATCH_BLOCKED"
+      ? "This chat is unavailable because one participant has blocked the other."
+      : "We could not open this match chat yet.";
+
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
       <div className={`mx-auto max-w-2xl rounded-[24px] p-5 backdrop-blur ${APP_SURFACE_CARD_CLASS}`}>
@@ -57,7 +62,7 @@ function MatchChatErrorState({ code }: { code: string }) {
           Chat unavailable
         </div>
         <div className="mt-2 text-xl font-bold tracking-[-0.03em] text-[#24323c]">
-          We could not open this match chat yet.
+          {body}
         </div>
         <p className={`mt-3 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
           Debug code: <span className="font-semibold text-[#34424b]">{code}</span>
@@ -155,6 +160,7 @@ export default async function MatchChatPage({ params }: PageProps) {
       chatClosedMessage={MATCH_CHAT_CLOSED_MESSAGE}
       currentUserId={user.id}
       currentUserName={currentUserName}
+      otherUserId={matchChat.otherUserId}
     />
   );
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../lib/supabase/server";
+import { isBlockedBetween } from "../../../lib/safety";
 
 export async function POST(req: Request) {
   try {
@@ -28,6 +29,13 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: "You cannot request your own meetup." },
         { status: 400 }
+      );
+    }
+
+    if (await isBlockedBetween(supabase, user.id, postOwnerUserId)) {
+      return NextResponse.json(
+        { error: "You cannot interact with this user." },
+        { status: 403 }
       );
     }
 

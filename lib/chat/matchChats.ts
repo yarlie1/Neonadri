@@ -1,3 +1,5 @@
+import { isBlockedBetween } from "../safety";
+
 type SupabaseLikeClient = {
   from: (table: string) => {
     select: (columns: string) => any;
@@ -85,6 +87,10 @@ export async function getOrCreateAuthorizedMatchChat(
 
   const participantRole = userId === hostUserId ? "host" : "guest";
   const otherUserId = participantRole === "host" ? guestUserId : hostUserId;
+
+  if (await isBlockedBetween(supabase as unknown as SupabaseLikeClient, userId, otherUserId)) {
+    throw new Error("MATCH_BLOCKED");
+  }
 
   const rpcClient = supabase as SupabaseLikeClient & {
     rpc: (fn: string, args: Record<string, unknown>) => Promise<{

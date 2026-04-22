@@ -18,6 +18,7 @@ import {
   APP_SOFT_CARD_CLASS,
   APP_SURFACE_CARD_CLASS,
 } from "../../designSystem";
+import SafetyActions from "../../components/SafetyActions";
 
 declare global {
   interface Window {
@@ -122,6 +123,7 @@ export default function ChatRoomClient({
   chatClosedMessage,
   currentUserId,
   currentUserName,
+  otherUserId,
 }: {
   matchId: number;
   otherUserName: string;
@@ -134,6 +136,7 @@ export default function ChatRoomClient({
   chatClosedMessage: string;
   currentUserId: string;
   currentUserName: string;
+  otherUserId: string;
 }) {
   const [sdkReady, setSdkReady] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -448,6 +451,15 @@ export default function ChatRoomClient({
                   <span className={APP_EYEBROW_CLASS}>
                     {chatClosed ? "Read-only chat" : "Live chat"}
                   </span>
+                  <SafetyActions
+                    currentUserId={currentUserId}
+                    targetUserId={otherUserId}
+                    reportConfig={{
+                      targetType: "chat",
+                      targetId: String(matchId),
+                      label: "Conversation",
+                    }}
+                  />
                 </div>
                 <div className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm ${APP_MUTED_TEXT_CLASS}`}>
                   <span className="inline-flex items-center gap-2 font-semibold text-[#24323c]">

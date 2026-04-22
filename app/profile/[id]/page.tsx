@@ -29,6 +29,7 @@ import {
   APP_SUBTLE_TEXT_CLASS,
   APP_SURFACE_CARD_CLASS,
 } from "../../designSystem";
+import SafetyActions from "../../components/SafetyActions";
 
 type PageProps = {
   params: {
@@ -226,6 +227,17 @@ export default async function ProfilePage({ params }: PageProps) {
                   Edit Profile
                 </Link>
               )}
+              {!isMyProfile && user ? (
+                <SafetyActions
+                  currentUserId={user.id}
+                  targetUserId={profile.id}
+                  reportConfig={{
+                    targetType: "user",
+                    targetId: profile.id,
+                    label: "User profile",
+                  }}
+                />
+              ) : null}
             </div>
 
             <div className="min-w-0">
