@@ -375,10 +375,12 @@ export default function HomePostsMap({ posts }: Props) {
                 </div>
 
                 <div className="mt-1 truncate text-lg font-semibold text-[#1f2e38]">
-                  {getPublicLocationLabel(
-                    selectedPost.place_name,
-                    selectedPost.location
-                  ) || "Meetup"}
+                  {selectedPost.place_name ||
+                    getPublicLocationLabel(
+                      selectedPost.place_name,
+                      selectedPost.location
+                    ) ||
+                    "Meetup"}
                 </div>
               </div>
 
@@ -399,10 +401,11 @@ export default function HomePostsMap({ posts }: Props) {
               {selectedPost.location && (
                 <div className={`mt-1 line-clamp-1 text-sm ${APP_BODY_TEXT_CLASS}`}>
                   Location:{" "}
-                  {getPublicLocationLabel(
-                    selectedPost.place_name,
-                    selectedPost.location
-                  )}
+                  {selectedPost.place_name ||
+                    getPublicLocationLabel(
+                      selectedPost.place_name,
+                      selectedPost.location
+                    )}
                 </div>
               )}
 

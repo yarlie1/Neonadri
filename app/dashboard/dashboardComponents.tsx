@@ -355,7 +355,9 @@ export function MiniPostPreview({
 
         <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
           <MapPin className="h-4 w-4 shrink-0 text-[#7a8b95]" />
-          <span className="min-w-0 flex-1 break-words line-clamp-2">{getPublicLocationLabel(post.place_name, post.location) || "No place"}</span>
+          <span className="min-w-0 flex-1 break-words line-clamp-2">
+            {post.place_name || getPublicLocationLabel(post.place_name, post.location) || "No place"}
+          </span>
         </div>
 
         <div className={`flex min-h-[56px] items-center justify-between gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
