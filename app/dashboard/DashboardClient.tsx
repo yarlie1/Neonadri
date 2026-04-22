@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import {
-  Coins,
   Clock3,
   MapPin,
   MessageSquareMore,
@@ -134,9 +133,8 @@ function PostsTabPanel({
                     </span>
                   </span>
                   {amount !== null ? (
-                    <span className="inline-flex shrink-0 items-center gap-2 rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-3 py-1.5 font-semibold text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)]">
-                      <Coins className="h-4 w-4 text-[#7a8b95]" />
-                      +${amount.toLocaleString()}
+                    <span className="inline-flex shrink-0 items-center rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-3 py-1.5 text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)]">
+                      CS ${amount.toLocaleString()}
                     </span>
                   ) : null}
                 </div>
