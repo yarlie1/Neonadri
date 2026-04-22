@@ -755,6 +755,8 @@ export default function DashboardClient({
     }
 
     if (nextStatus === "accepted") {
+      setProcessingRequestId(null);
+      setProcessingRequestAction(null);
       router.replace("/dashboard?tab=matches&success=1");
       router.refresh();
       return;

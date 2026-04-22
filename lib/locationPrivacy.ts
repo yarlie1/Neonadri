@@ -67,15 +67,6 @@ export function getPublicLocationLabel(
   const normalizedPlaceName = normalizeAddress(placeName);
   const normalizedLocation = normalizeAddress(location);
 
-  if (
-    normalizedPlaceName &&
-    (!normalizedLocation ||
-      normalizedPlaceName.toLowerCase() !== normalizedLocation.toLowerCase()) &&
-    !isAddressLikeValue(normalizedPlaceName)
-  ) {
-    return normalizedPlaceName;
-  }
-
   if (normalizedLocation) {
     return maskPreciseAddress(normalizedLocation);
   }

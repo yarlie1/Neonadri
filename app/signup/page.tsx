@@ -74,6 +74,7 @@ const STEPS = [
 const DEFAULT_ABOUT_ME =
   "I enjoy meeting new people over coffee, walks, or low-pressure plans. I usually appreciate clear communication, relaxed energy, and a meetup that feels easy to settle into.";
 const DISPLAY_NAME_MAX_LENGTH = 24;
+const PASSWORD_MIN_LENGTH = 8;
 const DISPLAY_NAME_LENGTH_MESSAGE = `Display name must be ${DISPLAY_NAME_MAX_LENGTH} characters or fewer.`;
 const DISPLAY_NAME_IN_USE_MESSAGE = "This display name is already in use.";
 const EMAIL_IN_USE_MESSAGE = "This email is already in use.";
@@ -144,7 +145,7 @@ export default function SignupPage() {
     if (step === 3) {
       return (
         email.trim().length > 0 &&
-        password.trim().length >= 6 &&
+        password.trim().length >= PASSWORD_MIN_LENGTH &&
         isAdultConfirmed
       );
     }
@@ -608,14 +609,14 @@ export default function SignupPage() {
                     </label>
                     <input
                       type="password"
-                      placeholder="At least 6 characters"
+                      placeholder={`At least ${PASSWORD_MIN_LENGTH} characters`}
                       className={INPUT_CLASS}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
-                    {password.trim().length > 0 && password.trim().length < 6 ? (
+                    {password.trim().length > 0 && password.trim().length < PASSWORD_MIN_LENGTH ? (
                       <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                        Password must be at least 6 characters.
+                        Password must be at least {PASSWORD_MIN_LENGTH} characters.
                       </p>
                     ) : null}
                   </div>
