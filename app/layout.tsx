@@ -3,6 +3,7 @@
 import "./globals.css";
 import Script from "next/script";
 import TopNav from "./components/TopNav";
+import LegalFooter from "./components/LegalFooter";
 
 export default function RootLayout({
   children,
@@ -23,6 +24,7 @@ export default function RootLayout({
 
         <TopNav />
         {children}
+        <LegalFooter />
       </body>
     </html>
   );
