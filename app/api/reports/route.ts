@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import { createClient } from "../../../lib/supabase/server";
 import { REPORT_REASON_OPTIONS } from "../../../lib/safety";
 
-const VALID_TARGET_TYPES = new Set(["user", "post", "chat"]);
-const VALID_REASONS = new Set(REPORT_REASON_OPTIONS.map((option) => option.value));
+const VALID_TARGET_TYPES = new Set<string>(["user", "post", "chat"]);
+const VALID_REASONS = new Set<string>(
+  REPORT_REASON_OPTIONS.map((option) => option.value)
+);
 
 export async function POST(req: Request) {
   try {
