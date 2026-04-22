@@ -467,6 +467,8 @@ export default async function ProfilePage({ params }: PageProps) {
               <SafetyActions
                 currentUserId={user.id}
                 targetUserId={profile.id}
+                reportTargetType="user"
+                reportTargetId={profile.id}
               />
             </div>
           </section>

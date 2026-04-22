@@ -12,23 +12,32 @@ import {
 export default function SafetyActions({
   currentUserId,
   targetUserId,
+  reportTargetType,
+  reportTargetId,
   className = "",
 }: {
   currentUserId: string | null;
   targetUserId?: string | null;
+  reportTargetType?: "user" | "post" | "chat" | null;
+  reportTargetId?: string | number | null;
   className?: string;
 }) {
   const router = useRouter();
-  const [openPanel, setOpenPanel] = useState<"block" | null>(null);
+  const [openPanel, setOpenPanel] = useState<"block" | "report" | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
+  const [reportDetail, setReportDetail] = useState("");
 
   const canBlock = useMemo(
     () => Boolean(currentUserId && targetUserId && currentUserId !== targetUserId),
     [currentUserId, targetUserId]
   );
+  const canReport = useMemo(
+    () => Boolean(currentUserId && reportTargetType && reportTargetId),
+    [currentUserId, reportTargetId, reportTargetType]
+  );
 
-  if (!canBlock) return null;
+  if (!canBlock && !canReport) return null;
 
   const handleBlock = async () => {
     if (!targetUserId) return;
@@ -54,9 +63,49 @@ export default function SafetyActions({
     router.refresh();
   };
 
+  const handleReport = async () => {
+    if (!reportTargetType || !reportTargetId) return;
+    setSubmitting(true);
+    setMessage("");
+
+    const response = await fetch("/api/reports", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        targetType: reportTargetType,
+        targetId: String(reportTargetId),
+        reason: "unsafe_behavior",
+        detail: reportDetail.trim()
+          ? `Unsafe payment request: ${reportDetail.trim()}`
+          : "Unsafe payment request.",
+      }),
+    });
+
+    const payload = await response.json().catch(() => ({}));
+    setSubmitting(false);
+
+    if (!response.ok) {
+      setMessage(payload.error || "Could not submit report.");
+      return;
+    }
+
+    setOpenPanel(null);
+    setReportDetail("");
+    setMessage("Unsafe payment request reported.");
+  };
+
   return (
     <div className={`space-y-2 ${className}`}>
       <div className="flex flex-wrap gap-2">
+        {canReport ? (
+          <button
+            type="button"
+            onClick={() => setOpenPanel(openPanel === "report" ? null : "report")}
+            className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+          >
+            Report unsafe payment request
+          </button>
+        ) : null}
         {canBlock ? (
           <button
             type="button"
@@ -85,6 +134,43 @@ export default function SafetyActions({
               className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium ${APP_ROW_SURFACE_CLASS}`}
             >
               {submitting ? "Blocking..." : "Block user"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpenPanel(null)}
+              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {openPanel === "report" && canReport ? (
+        <div className={`${APP_SOFT_CARD_CLASS} p-4`}>
+          <div className={APP_EYEBROW_CLASS}>Report</div>
+          <div className="mt-2 text-sm font-semibold text-[#24323c]">
+            Report an unsafe payment request?
+          </div>
+          <p className="mt-1 text-sm text-[#6c7880]">
+            Use this if someone asks for money in a way that feels unsafe or unrelated to direct meetup costs.
+          </p>
+          <textarea
+            value={reportDetail}
+            onChange={(e) => setReportDetail(e.target.value)}
+            rows={4}
+            maxLength={1000}
+            placeholder="Optional details"
+            className={`mt-3 w-full rounded-[18px] border border-[#d6dee4] bg-white/90 px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#c3cfd7] focus:ring-4 focus:ring-[#cfd8de]/35`}
+          />
+          <div className="mt-3 flex gap-2">
+            <button
+              type="button"
+              disabled={submitting}
+              onClick={() => void handleReport()}
+              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium ${APP_ROW_SURFACE_CLASS}`}
+            >
+              {submitting ? "Reporting..." : "Submit report"}
             </button>
             <button
               type="button"
