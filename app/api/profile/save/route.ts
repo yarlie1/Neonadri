@@ -58,6 +58,15 @@ export async function POST(req: Request) {
       );
     }
 
+    const ageGroupValue = sanitizeAllowedValue(body.age_group, VALID_AGE_GROUPS);
+
+    if (!ageGroupValue) {
+      return NextResponse.json(
+        { error: "Please select an age group." },
+        { status: 400 }
+      );
+    }
+
     const payload = {
       id: user.id,
       display_name: displayNameValue || null,
@@ -65,7 +74,7 @@ export async function POST(req: Request) {
         typeof body.bio === "string" && body.bio.trim() ? body.bio.trim() : null,
       about_me: aboutMeValue || null,
       gender: sanitizeAllowedValue(body.gender, VALID_GENDERS),
-      age_group: sanitizeAllowedValue(body.age_group, VALID_AGE_GROUPS),
+      age_group: ageGroupValue,
       preferred_area:
         typeof body.preferred_area === "string" && body.preferred_area.trim()
           ? body.preferred_area.trim()

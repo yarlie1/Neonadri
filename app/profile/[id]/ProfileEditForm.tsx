@@ -151,6 +151,10 @@ export default function ProfileEditForm({
   );
 
   const [message, setMessage] = useState("");
+  const normalizedAgeGroup = sanitizeAllowedValue(
+    sanitizeSelectValue(ageGroup, "select age group"),
+    AGE_GROUP_OPTIONS
+  );
 
   const aboutMeSummary = aboutMe.replace(/\s+/g, " ").trim()
     ? aboutMe.replace(/\s+/g, " ").trim().length <= 110
@@ -185,6 +189,12 @@ export default function ProfileEditForm({
         return;
       }
 
+      if (!normalizedAgeGroup) {
+        setMessage("Please select an age group before saving.");
+        setSaving(false);
+        return;
+      }
+
       const payload = {
         id: profile.id,
         display_name: displayName.trim() || null,
@@ -196,10 +206,7 @@ export default function ProfileEditForm({
             GENDER_OPTIONS
           ) || null,
         age_group:
-          sanitizeAllowedValue(
-            sanitizeSelectValue(ageGroup, "select age group"),
-            AGE_GROUP_OPTIONS
-          ) || null,
+          normalizedAgeGroup || null,
         languages: languages.length > 0 ? languages : null,
         meeting_style: meetingStyle || null,
         interests: interests.length > 0 ? interests : null,
@@ -310,6 +317,11 @@ export default function ProfileEditForm({
                     <option value="40s">40s</option>
                     <option value="50s+">50s+</option>
                   </select>
+                  {!normalizedAgeGroup ? (
+                    <p className="mt-2 text-xs font-medium text-[#8a6458]">
+                      Choose an age group to save this profile.
+                    </p>
+                  ) : null}
                 </div>
               </div>
 
