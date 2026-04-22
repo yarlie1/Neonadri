@@ -357,7 +357,7 @@ export default function HomeFeedClient({
 
             <p className={`mt-3 max-w-xl text-[14px] sm:mt-4 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
               Discover nearby meetups, see who is hosting, and browse at a calmer
-              pace with light AI guidance.
+              pace.
             </p>
 
             <div className="mt-5 grid grid-cols-3 gap-2.5 sm:mt-7 sm:gap-3">
