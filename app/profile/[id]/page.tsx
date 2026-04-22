@@ -14,6 +14,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
+import { getBlockedUserIdsForViewer } from "../../../lib/safety";
 import {
   FALLBACK_TIME_ZONE,
   normalizeUserTimeZone,
@@ -128,8 +129,22 @@ export default async function ProfilePage({ params }: PageProps) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const blockedUserIds = await getBlockedUserIdsForViewer(supabase, user?.id);
 
   const isMyProfile = user?.id === userId;
+
+  if (!isMyProfile && blockedUserIds.has(userId)) {
+    return (
+      <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6`}>
+        <div className={`mx-auto max-w-2xl ${APP_SURFACE_CARD_CLASS} p-6`}>
+          <div className="text-2xl font-bold">Profile unavailable</div>
+          <p className={`mt-2 text-sm ${APP_MUTED_TEXT_CLASS}`}>
+            You cannot view this profile because one participant has blocked the other.
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   const [profileRes, statsRes, reviewsRes, trustRes] = await Promise.all([
     supabase

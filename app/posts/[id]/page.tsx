@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import { Sparkles } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
+import { getBlockedUserIdsForViewer } from "../../../lib/safety";
 import {
   APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
@@ -59,6 +60,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const blockedUserIds = await getBlockedUserIdsForViewer(supabase, user?.id);
 
   const { data: postData, error: postError } = await supabase
     .from("posts")
@@ -73,6 +75,30 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }
 
   const post = postData as PostRow;
+
+  if (blockedUserIds.has(post.user_id)) {
+    return (
+      <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6`}>
+        <div className={`mx-auto max-w-2xl ${APP_SURFACE_CARD_CLASS} p-6`}>
+          <div className={APP_EYEBROW_CLASS}>Unavailable</div>
+          <div className="mt-3 text-2xl font-bold text-[#24323c]">
+            This meetup is unavailable.
+          </div>
+          <p className={`mt-2 text-sm ${APP_SUBTLE_TEXT_CLASS}`}>
+            You cannot view this meetup because one participant has blocked the other.
+          </p>
+          <div className="mt-4">
+            <Link
+              href="/"
+              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+            >
+              Back home
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   let ownerName = "Unknown";
   let ownerAboutMe = "";
