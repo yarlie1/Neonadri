@@ -229,7 +229,7 @@ export default async function ProfilePage({ params }: PageProps) {
       <div className="mx-auto max-w-4xl space-y-5">
         <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-5`}>
           <div className="flex flex-col gap-3.5">
-            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center justify-between gap-3">
               <div className={`inline-flex items-center gap-2 rounded-full ${APP_ROW_SURFACE_CLASS} px-3 py-[0.28rem] text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-[#6b7b84]`}>
                 <UserCircle2 className="h-3.5 w-3.5" />
                 <span>Profile</span>
@@ -242,12 +242,6 @@ export default async function ProfilePage({ params }: PageProps) {
                   Edit Profile
                 </Link>
               )}
-              {!isMyProfile && user ? (
-                <SafetyActions
-                  currentUserId={user.id}
-                  targetUserId={profile.id}
-                />
-              ) : null}
             </div>
 
             <div className="min-w-0">
@@ -462,6 +456,21 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
           </section>
         </div>
+
+        {!isMyProfile && user ? (
+          <section className={`${APP_SURFACE_CARD_CLASS} p-5`}>
+            <div className={APP_EYEBROW_CLASS}>Safety</div>
+            <div className="mt-2 text-sm text-[#6c7880]">
+              Block this user if you no longer want to see or interact with this profile.
+            </div>
+            <div className="mt-4">
+              <SafetyActions
+                currentUserId={user.id}
+                targetUserId={profile.id}
+              />
+            </div>
+          </section>
+        ) : null}
       </div>
     </main>
   );

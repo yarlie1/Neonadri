@@ -18,7 +18,6 @@ import {
   APP_SOFT_CARD_CLASS,
   APP_SURFACE_CARD_CLASS,
 } from "../../designSystem";
-import SafetyActions from "../../components/SafetyActions";
 
 declare global {
   interface Window {
@@ -451,10 +450,6 @@ export default function ChatRoomClient({
                   <span className={APP_EYEBROW_CLASS}>
                     {chatClosed ? "Read-only chat" : "Live chat"}
                   </span>
-                  <SafetyActions
-                    currentUserId={currentUserId}
-                    targetUserId={otherUserId}
-                  />
                 </div>
                 <div className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm ${APP_MUTED_TEXT_CLASS}`}>
                   <span className="inline-flex items-center gap-2 font-semibold text-[#24323c]">

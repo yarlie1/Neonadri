@@ -101,6 +101,15 @@ function ToggleChip({
 const INPUT_CLASS =
   "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30";
 
+function sanitizeSelectValue(value: string | null | undefined, placeholderPrefix: string) {
+  const normalized = String(value || "").trim();
+  if (!normalized) return "";
+  if (normalized.toLowerCase().startsWith(placeholderPrefix.toLowerCase())) {
+    return "";
+  }
+  return normalized;
+}
+
 export default function ProfileEditForm({
   profile,
 }: {
@@ -110,8 +119,12 @@ export default function ProfileEditForm({
 
   const [displayName, setDisplayName] = useState(profile.display_name || "");
   const [aboutMe, setAboutMe] = useState(profile.about_me || "");
-  const [gender, setGender] = useState(profile.gender || "");
-  const [ageGroup, setAgeGroup] = useState(profile.age_group || "");
+  const [gender, setGender] = useState(
+    sanitizeSelectValue(profile.gender, "select gender")
+  );
+  const [ageGroup, setAgeGroup] = useState(
+    sanitizeSelectValue(profile.age_group, "select age group")
+  );
   const [languages, setLanguages] = useState<string[]>(profile.languages || []);
   const [meetingStyle, setMeetingStyle] = useState(profile.meeting_style || "");
   const [interests, setInterests] = useState<string[]>(profile.interests || []);
@@ -159,8 +172,8 @@ export default function ProfileEditForm({
         display_name: displayName.trim() || null,
         bio: aboutMeSummary || null,
         about_me: aboutMe.trim() || null,
-        gender: gender || null,
-        age_group: ageGroup || null,
+        gender: sanitizeSelectValue(gender, "select gender") || null,
+        age_group: sanitizeSelectValue(ageGroup, "select age group") || null,
         languages: languages.length > 0 ? languages : null,
         meeting_style: meetingStyle || null,
         interests: interests.length > 0 ? interests : null,

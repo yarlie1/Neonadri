@@ -10,7 +10,6 @@ import {
   APP_SURFACE_CARD_CLASS,
 } from "../designSystem";
 import BlockedUsersCard from "../components/BlockedUsersCard";
-import AccountSecurityActions from "./AccountSecurityActions";
 
 type Profile = {
   id: string;
@@ -83,21 +82,25 @@ export default async function AccountPage() {
 
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
-              href={`/profile/${user.id}/edit`}
-              className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-            >
-              Edit public profile
-            </Link>
-            <Link
               href={`/profile/${user.id}`}
               className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               View public profile
             </Link>
+            <Link
+              href="/account/password"
+              className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+            >
+              Change password
+            </Link>
+            <Link
+              href="/account/delete"
+              className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+            >
+              Delete account
+            </Link>
           </div>
         </section>
-
-        <AccountSecurityActions />
 
         {!!profile.is_admin ? (
           <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
