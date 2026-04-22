@@ -643,11 +643,8 @@ export function MeetupOverviewCard({
                 {meetupDurationLabel}
               </span>
             </div>
-            <div className="inline-flex w-[92px] shrink-0 flex-col justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-3 py-2 text-[#52616a] shadow-sm">
-              <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase leading-none tracking-[0.12em] text-[#7e8d96]">
-                <Coins className="h-3.5 w-3.5" />
-                Cost support
-              </span>
+            <div className="inline-flex w-[74px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2 py-2 text-center text-[#52616a] shadow-sm">
+              <Coins className="h-3.5 w-3.5 text-[#7e8d96]" />
               <span className="mt-1 text-sm font-extrabold leading-tight tracking-[-0.03em] text-[#23333d]">
                 {post.benefit_amount || "N/A"}
               </span>
