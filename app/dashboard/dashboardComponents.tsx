@@ -199,12 +199,12 @@ export function DashboardTabCard({
       onClick={onClick}
       className={`relative w-full rounded-[26px] border px-4 py-5 text-left transition ${
         active
-          ? "border-[#bcc9d2] bg-[linear-gradient(180deg,#ffffff_0%,#dbe5eb_100%)] text-[#1f2e38] shadow-[0_18px_34px_rgba(118,126,133,0.16)] ring-1 ring-[#d1dbe1]"
+          ? "border-[#b7c6d0] bg-[linear-gradient(180deg,#ffffff_0%,#d8e3ea_100%)] text-[#1c2a34] shadow-[0_20px_38px_rgba(118,126,133,0.18)] ring-1 ring-[#c8d4dc]"
           : "border-[#e0e7ec] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] text-[#2f3a42] hover:bg-[#f7fafb] hover:border-[#d3dde4]"
       }`}
     >
       {active ? (
-        <span className="absolute right-4 top-4 inline-flex h-2.5 w-2.5 rounded-full bg-[#607480]" />
+        <span className="absolute right-4 top-4 inline-flex h-2.5 w-2.5 rounded-full bg-[#506873] shadow-[0_0_0_4px_rgba(255,255,255,0.62)]" />
       ) : null}
       <div className="flex min-h-[108px] flex-col sm:min-h-[120px]">
         <div className="flex items-center gap-2 text-sm font-semibold">
@@ -214,7 +214,9 @@ export function DashboardTabCard({
 
         <div className="mt-auto">
           <div className="text-[36px] font-extrabold leading-none">{value}</div>
-          <div className="mt-2 min-h-[16px] text-xs opacity-80">{subtext || ""}</div>
+          <div className={`mt-2 min-h-[16px] text-xs ${active ? "text-[#4f6672]" : "opacity-80"}`}>
+            {subtext || ""}
+          </div>
         </div>
       </div>
     </button>
@@ -235,11 +237,11 @@ export function FilterPill({
       onClick={onClick}
       className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
         active
-          ? `${APP_PILL_ACTIVE_CLASS} ring-1 ring-[#c6d1d8]`
-          : APP_PILL_INACTIVE_CLASS
+          ? `${APP_PILL_ACTIVE_CLASS} ring-1 ring-[#c6d1d8] shadow-[0_10px_18px_rgba(118,126,133,0.14)] text-[#22323d]`
+          : `${APP_PILL_INACTIVE_CLASS} text-[#61717a]`
       }`}
     >
-      {active ? <span className="h-1.5 w-1.5 rounded-full bg-[#435760]" /> : null}
+      {active ? <span className="h-1.5 w-1.5 rounded-full bg-[#435760] shadow-[0_0_0_3px_rgba(255,255,255,0.54)]" /> : null}
       {children}
     </button>
   );

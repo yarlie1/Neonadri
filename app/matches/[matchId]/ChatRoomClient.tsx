@@ -160,6 +160,18 @@ export default function ChatRoomClient({
   const canSend =
     !chatClosed && connectionLabel === "Connected" && draft.trim().length > 0 && !sending;
 
+  const canMarkSeen = () => {
+    if (typeof document === "undefined") return true;
+    const isVisible = document.visibilityState === "visible";
+    const hasFocus = typeof document.hasFocus === "function" ? document.hasFocus() : true;
+    return isVisible && hasFocus;
+  };
+
+  const markSeenIfVisible = async () => {
+    if (!canMarkSeen()) return;
+    await markActivity("seen");
+  };
+
   useEffect(() => {
     if (typeof window !== "undefined" && window.PubNub) {
       setSdkReady(true);
@@ -205,7 +217,7 @@ export default function ChatRoomClient({
 
   useEffect(() => {
     if (!isProviderConfigured) return;
-    void markActivity("seen");
+    void markSeenIfVisible();
   }, [isProviderConfigured, matchId]);
 
   useEffect(() => {
@@ -247,7 +259,7 @@ export default function ChatRoomClient({
         });
 
         if ((payload.senderId || "unknown") !== currentUserId) {
-          void markActivity("seen");
+          void markSeenIfVisible();
         }
       },
     });
@@ -286,7 +298,7 @@ export default function ChatRoomClient({
             .filter(Boolean) || [];
 
         setMessages(historyMessages as ChatMessage[]);
-        void markActivity("seen");
+        void markSeenIfVisible();
       } catch {
         setErrorMessage("Past messages could not be loaded. New chat still works.");
       }
@@ -306,6 +318,22 @@ export default function ChatRoomClient({
     if (!listRef.current) return;
     listRef.current.scrollTop = listRef.current.scrollHeight;
   }, [messages]);
+
+  useEffect(() => {
+    if (!isProviderConfigured) return;
+
+    const handleVisibilityOrFocus = () => {
+      void markSeenIfVisible();
+    };
+
+    window.addEventListener("focus", handleVisibilityOrFocus);
+    document.addEventListener("visibilitychange", handleVisibilityOrFocus);
+
+    return () => {
+      window.removeEventListener("focus", handleVisibilityOrFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityOrFocus);
+    };
+  }, [isProviderConfigured, matchId]);
 
   useEffect(() => {
     if (!isProviderConfigured) {
@@ -339,13 +367,13 @@ export default function ChatRoomClient({
 
     void syncPresence();
     const seenInterval = window.setInterval(() => {
-      void markActivity("seen");
+      void markSeenIfVisible();
       void syncPresence();
     }, 30000);
 
     return () => {
       cancelled = true;
-      void markActivity("seen");
+      void markSeenIfVisible();
       window.clearInterval(seenInterval);
     };
   }, [isProviderConfigured, matchId]);
