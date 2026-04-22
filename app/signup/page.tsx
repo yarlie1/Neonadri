@@ -122,6 +122,7 @@ export default function SignupPage() {
   const [meetingStyle, setMeetingStyle] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
   const [responseTimeNote, setResponseTimeNote] = useState("");
+  const [isAdultConfirmed, setIsAdultConfirmed] = useState(false);
 
   const canMoveNext = useMemo(() => {
     if (step === 1) {
@@ -141,11 +142,15 @@ export default function SignupPage() {
     }
 
     if (step === 3) {
-      return email.trim().length > 0 && password.trim().length >= 6;
+      return (
+        email.trim().length > 0 &&
+        password.trim().length >= 6 &&
+        isAdultConfirmed
+      );
     }
 
     return false;
-  }, [aboutMe, ageGroup, displayName, email, gender, interests.length, meetingStyle, password, step]);
+  }, [aboutMe, ageGroup, displayName, email, gender, interests.length, isAdultConfirmed, meetingStyle, password, step]);
 
   const profileSummary = useMemo(() => {
     const normalized = aboutMe.replace(/\s+/g, " ").trim();
@@ -230,6 +235,12 @@ export default function SignupPage() {
         return;
       }
 
+      if (!isAdultConfirmed) {
+        setMessage("Please confirm that you are 18 or older.");
+        setSubmitting(false);
+        return;
+      }
+
       const aboutMeValidation = validateAboutMeContent(aboutMe);
 
       if (!aboutMeValidation.ok) {
@@ -245,6 +256,8 @@ export default function SignupPage() {
           data: {
             full_name: displayName.trim(),
             display_name: displayName.trim(),
+            is_adult_confirmed: true,
+            age_gate_confirmed_at: new Date().toISOString(),
           },
         },
       });
@@ -338,6 +351,9 @@ export default function SignupPage() {
               <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
                 We guide people through account setup one step at a time, so you can finish your profile and join the app without friction.
               </p>
+              <div className={`mt-4 inline-flex rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                Neonadri is for adults 18+ only.
+              </div>
 
               <div className="mt-7 space-y-3">
                 {STEPS.map((item) => {
@@ -603,6 +619,23 @@ export default function SignupPage() {
                       </p>
                     ) : null}
                   </div>
+
+                  <label className={`${APP_SOFT_CARD_CLASS} grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 p-4 text-sm ${APP_BODY_TEXT_CLASS}`}>
+                    <input
+                      type="checkbox"
+                      checked={isAdultConfirmed}
+                      onChange={(e) => setIsAdultConfirmed(e.target.checked)}
+                      className="!mt-0.5 !h-4 !w-4 !appearance-auto !rounded !border-[#c7d2d9] !p-0 !shadow-none !outline-none !ring-0 accent-[#8fa1ac]"
+                    />
+                    <span className="min-w-0 leading-6">
+                      I confirm that I am 18 or older and understand that Neonadri is for adults only.
+                    </span>
+                  </label>
+                  {!isAdultConfirmed ? (
+                    <p className={`text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+                      You need to confirm you are 18 or older to create an account.
+                    </p>
+                  ) : null}
                 </>
               )}
             </div>
@@ -611,6 +644,11 @@ export default function SignupPage() {
               {step === 2 && !canMoveNext && (
                 <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
                   Select a meeting style and at least one interest to continue.
+                </p>
+              )}
+              {step === 3 && !isAdultConfirmed && (
+                <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+                  Confirm that you are 18 or older to continue.
                 </p>
               )}
 

@@ -72,6 +72,9 @@ export default function LoginPage() {
               <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
                 Check your requests, confirm matches, and jump back into nearby meetups without losing the warm tone of the app.
               </p>
+              <div className={`mt-4 inline-flex rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                Neonadri is for adults 18+ only.
+              </div>
 
               <div className="mt-6 grid grid-cols-3 gap-2.5">
                 <div className={`${APP_SURFACE_CARD_CLASS} rounded-[22px] px-3 py-3 shadow-sm backdrop-blur`}>
@@ -105,6 +108,9 @@ export default function LoginPage() {
             </h2>
             <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
               Sign in to manage requests, review hosts, and keep your next meetup moving.
+            </p>
+            <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+              By using Neonadri, you confirm that you are 18 or older.
             </p>
 
             <div className="mt-6 space-y-4">
