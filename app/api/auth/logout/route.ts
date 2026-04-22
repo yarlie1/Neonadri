@@ -47,10 +47,7 @@ async function buildLogoutResponse(request: Request, response: NextResponse) {
   const { error } = await supabase.auth.signOut({ scope: "global" });
 
   if (error) {
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 500 }
-    );
+    console.error("Logout route signOut error", error);
   }
 
   return response;

@@ -97,8 +97,14 @@ export default function AccountSecurityActions() {
       return;
     }
 
-    await supabase.auth.signOut().catch(() => undefined);
-    window.location.assign(`/?account_deleted=${Date.now()}`);
+    try {
+      sessionStorage.clear();
+    } catch {}
+
+    const target = `/?account_deleted=${Date.now()}`;
+    window.location.assign(
+      `/api/auth/logout?redirect=${encodeURIComponent(target)}`
+    );
   };
 
   return (
