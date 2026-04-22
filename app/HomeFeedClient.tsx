@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { getPublicLocationLabel } from "../lib/locationPrivacy";
 import {
   formatMeetingTime,
   getMeetingStatus,
@@ -412,12 +413,22 @@ export default function HomeFeedClient({
         {highlightedPost && (
           <FeaturedMeetupCard
             postId={highlightedPost.id}
-            placeLabel={highlightedPost.place_name || highlightedPost.location || "Meetup"}
+            placeLabel={
+              getPublicLocationLabel(
+                highlightedPost.place_name,
+                highlightedPost.location
+              ) || "Meetup"
+            }
             purposeIcon={getPurposeIcon(highlightedPost.meeting_purpose)}
             purposeLabel={highlightedPost.meeting_purpose || "Meetup"}
             purposeCopy={getPurposeLabel(highlightedPost.meeting_purpose)}
             timeLabel={formatTime(highlightedPost.meeting_time) || "Time TBD"}
-            placeText={highlightedPost.location || highlightedPost.place_name || "Location TBD"}
+            placeText={
+              getPublicLocationLabel(
+                highlightedPost.place_name,
+                highlightedPost.location
+              ) || "Location TBD"
+            }
             targetText={`${highlightedPost.target_gender || "Any"} / ${highlightedPost.target_age_group || "Any"}`}
           />
         )}
@@ -545,7 +556,10 @@ export default function HomeFeedClient({
               durationLabel={formatDuration(post.duration_minutes)}
               amountText={amount !== null ? `Cost support $${amount.toLocaleString()}` : ""}
               whenText={post.meeting_time ? formatTime(post.meeting_time) : ""}
-              placeText={post.place_name || post.location || "No place"}
+              placeText={
+                getPublicLocationLabel(post.place_name, post.location) ||
+                "No place"
+              }
               lookingForText={`${post.target_gender || "Any"} / ${post.target_age_group || "Any"}`}
               distanceText={distanceText}
               isFeatured={highlightedPost?.id === post.id}

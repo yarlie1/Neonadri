@@ -3,6 +3,10 @@ import {
   formatMeetingTime,
   isMeetingFinished,
 } from "../../../lib/meetingTime";
+import {
+  getPublicLocationLabel,
+  getVisibleLocationLabel,
+} from "../../../lib/locationPrivacy";
 import { computeReviewTrustMetrics, type ReviewTrustRow } from "../../../lib/reviewTrust";
 import {
   formatDuration,
@@ -86,6 +90,9 @@ export type DetailViewModel = {
   viewerHasReview: boolean;
   benefitExplanation: string;
   purposeTheme: { bandClass: string };
+  placeDisplay: string;
+  locationDisplay: string;
+  locationHeading: string;
 };
 
 export async function fetchProfileShowcaseData(
@@ -243,7 +250,19 @@ export function buildDetailViewModel({
   userId?: string;
   matchReviews: MatchReviewRow[];
 }): DetailViewModel {
-  const mapQuery = post.place_name || post.location || "";
+  const revealExactLocation = isViewerParticipant;
+  const placeDisplay =
+    getPublicLocationLabel(post.place_name, post.location) || "Selected place";
+  const locationDisplay =
+    getVisibleLocationLabel({
+      placeName: post.place_name,
+      location: post.location,
+      revealExact: revealExactLocation,
+    }) || "Location shared after matching";
+  const locationHeading = revealExactLocation ? "Address" : "Area";
+  const mapQuery = revealExactLocation
+    ? post.location || post.place_name || ""
+    : getPublicLocationLabel(post.place_name, post.location) || "";
   const mapUrl = mapQuery
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
     : post.latitude !== null && post.longitude !== null
@@ -286,5 +305,8 @@ export function buildDetailViewModel({
     viewerHasReview,
     benefitExplanation,
     purposeTheme,
+    placeDisplay,
+    locationDisplay,
+    locationHeading,
   };
 }

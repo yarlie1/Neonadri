@@ -20,6 +20,10 @@ import {
 import type { MatchChatMetaRow, MatchRow, MatchRequestRow, PostRow } from "./page";
 import { parseMeetingTime } from "../../lib/meetingTime";
 import {
+  getPublicLocationLabel,
+  getVisibleLocationLabel,
+} from "../../lib/locationPrivacy";
+import {
   CompactActionButton,
   DashboardTabCard,
   FilterPill,
@@ -116,7 +120,8 @@ function PostsTabPanel({
                 <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
                   <MapPin className="h-4 w-4 shrink-0 text-[#7a8b95]" />
                   <span className="min-w-0 flex-1 break-words line-clamp-2">
-                    {post.place_name || post.location || "No place"}
+                    {getPublicLocationLabel(post.place_name, post.location) ||
+                      "No place"}
                   </span>
                 </div>
 
@@ -1120,7 +1125,11 @@ export default function DashboardClient({
                       <div className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#66727a]">
                         <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#7a8b95]" />
                         <span className="min-w-0 truncate">
-                          {item.post.place_name || item.post.location || "Selected place"}
+                          {getVisibleLocationLabel({
+                            placeName: item.post.place_name,
+                            location: item.post.location,
+                            revealExact: true,
+                          }) || "Selected place"}
                         </span>
                       </div>
                     </div>

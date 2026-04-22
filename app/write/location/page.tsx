@@ -480,12 +480,6 @@ export default function WriteLocationPage() {
 
               {selectedAddress && <p className="mt-1">{selectedAddress}</p>}
 
-              {selectedLatLng && (
-                <p className={`mt-1 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                  Lat: {selectedLatLng.lat.toFixed(6)}, Lng:{" "}
-                  {selectedLatLng.lng.toFixed(6)}
-                </p>
-              )}
             </div>
           )}
 

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { MapPost } from "../map/page";
+import { getPublicLocationLabel } from "../../lib/locationPrivacy";
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_PRIMARY_CLASS,
@@ -374,7 +375,10 @@ export default function HomePostsMap({ posts }: Props) {
                 </div>
 
                 <div className="mt-1 truncate text-lg font-semibold text-[#1f2e38]">
-                  {selectedPost.place_name || selectedPost.location}
+                  {getPublicLocationLabel(
+                    selectedPost.place_name,
+                    selectedPost.location
+                  ) || "Meetup"}
                 </div>
               </div>
 
@@ -394,7 +398,11 @@ export default function HomePostsMap({ posts }: Props) {
 
               {selectedPost.location && (
                 <div className={`mt-1 line-clamp-1 text-sm ${APP_BODY_TEXT_CLASS}`}>
-                  Location: {selectedPost.location}
+                  Location:{" "}
+                  {getPublicLocationLabel(
+                    selectedPost.place_name,
+                    selectedPost.location
+                  )}
                 </div>
               )}
 

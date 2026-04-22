@@ -511,12 +511,6 @@ export default function WriteForm({ userId }: { userId: string }) {
               </p>
               <p className="mt-1 break-words">{confirmedAddress || location}</p>
 
-              {latitude !== null && longitude !== null && (
-                <p className={`mt-1 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                  Lat: {latitude.toFixed(6)}, Lng: {longitude.toFixed(6)}
-                </p>
-              )}
-
               <p className="mt-1 text-xs">
                 {locationConfirmed
                   ? "Exact location selected."

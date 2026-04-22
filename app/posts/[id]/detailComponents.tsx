@@ -588,6 +588,9 @@ export function MeetupOverviewCard({
   meetupTimeLabel,
   mapUrl,
   distanceNote,
+  placeDisplay,
+  locationDisplay,
+  locationHeading,
 }: {
   isPostMatched: boolean;
   purposeTheme: { bandClass: string };
@@ -600,6 +603,9 @@ export function MeetupOverviewCard({
   meetupTimeLabel: string;
   mapUrl: string;
   distanceNote?: ReactNode;
+  placeDisplay: string;
+  locationDisplay: string;
+  locationHeading: string;
 }) {
   return (
     <div className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-6 py-6`}>
@@ -660,7 +666,7 @@ export function MeetupOverviewCard({
             <StatCard label="Host" value={hostIdentityLabel} />
             <StatCard label="Guest" value={targetLabel} />
             <StatCard label="When" value={meetupTimeLabel} />
-            <StatCard label="Place" value={post.place_name || "Selected place"} />
+            <StatCard label="Place" value={placeDisplay} />
           </div>
         </div>
 
@@ -680,15 +686,15 @@ export function MeetupOverviewCard({
           </div>
           <div className="mt-3 text-[15px] text-[#52616a]">
             <div className="space-y-3">
-              {post.location && (
+              {locationDisplay && (
                 <div className="min-w-0">
                   <div className="flex min-w-0 items-center gap-2">
                     <MapPin className="h-4 w-4 shrink-0 text-[#71828c]" />
                     <div className="text-[11px] font-semibold uppercase leading-none tracking-[0.12em] text-[#849099]">
-                      Address
+                      {locationHeading}
                     </div>
                   </div>
-                  <div className="mt-1 pl-6 line-clamp-3">{post.location}</div>
+                  <div className="mt-1 pl-6 line-clamp-3">{locationDisplay}</div>
                 </div>
               )}
               {distanceNote}

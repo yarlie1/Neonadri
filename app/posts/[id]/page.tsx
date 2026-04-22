@@ -296,6 +296,9 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     viewerHasReview,
     benefitExplanation,
     purposeTheme,
+    placeDisplay,
+    locationDisplay,
+    locationHeading,
   } = buildDetailViewModel({
     post,
     userTimeZone,
@@ -376,6 +379,9 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           ownerName={ownerName}
           meetupTimeLabel={meetupTimeLabel}
           mapUrl={mapUrl}
+          placeDisplay={placeDisplay}
+          locationDisplay={locationDisplay}
+          locationHeading={locationHeading}
           distanceNote={
             <PostDistanceNote
               latitude={post.latitude}

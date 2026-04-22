@@ -19,6 +19,7 @@ import {
   parseBenefitAmount,
   formatDuration,
 } from "../homeFeedHelpers";
+import { getPublicLocationLabel } from "../../lib/locationPrivacy";
 
 type PostRow = {
   id: number;
@@ -217,7 +218,10 @@ export default function HomeTestClient({
                     Featured moment
                   </div>
                   <div className="mt-2 text-[28px] font-black tracking-[-0.05em] text-[#24323f]">
-                    {highlightedPost.place_name || highlightedPost.location || "Meetup"}
+                    {getPublicLocationLabel(
+                      highlightedPost.place_name,
+                      highlightedPost.location
+                    ) || "Meetup"}
                   </div>
                 </div>
 
@@ -253,9 +257,10 @@ export default function HomeTestClient({
                 <div className="flex min-w-0 items-start gap-2 text-sm">
                   <MapPin className="mt-0.5 h-4 w-4 text-[#7c8489]" />
                   <span className="block min-w-0 flex-1 break-words line-clamp-2">
-                    {highlightedPost.location ||
-                      highlightedPost.place_name ||
-                      "Location TBD"}
+                    {getPublicLocationLabel(
+                      highlightedPost.place_name,
+                      highlightedPost.location
+                    ) || "Location TBD"}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
@@ -391,7 +396,7 @@ export default function HomeTestClient({
                       <div className={`${metaRowClass} min-h-[56px] py-2`}>
                         <MapPin className="h-4 w-4 shrink-0 text-[#788b95]" />
                         <span className="min-w-0 flex-1 break-words">
-                          {post.place_name || post.location || "No place"}
+                          {getPublicLocationLabel(post.place_name, post.location) || "No place"}
                         </span>
                       </div>
 
