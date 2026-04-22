@@ -155,86 +155,97 @@ export default function AccountPage() {
 
   useEffect(() => {
     const loadProfile = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      try {
+        const {
+          data: { user },
+          error: authError,
+        } = await supabase.auth.getUser();
 
-      if (!user) {
-        router.push("/login");
-        return;
-      }
-
-      setUserId(user.id);
-      setEmail(user.email || "");
-
-      const { data, error } = await supabase
-        .from("profiles")
-        .select(
-          `
-            id,
-            display_name,
-            bio,
-            gender,
-            age_group,
-            is_public,
-            about_me,
-            preferred_area,
-            meeting_style,
-            languages,
-            interests,
-            response_time_note,
-            is_admin
-          `
-        )
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (error) {
-        setMessage(error.message);
-        setLoading(false);
-        return;
-      }
-
-      if (!data) {
-        const { error: insertError } = await supabase.from("profiles").insert({
-          id: user.id,
-          display_name: "",
-          bio: "",
-          gender: "",
-          age_group: "",
-          is_public: true,
-          about_me: "",
-          preferred_area: "",
-          meeting_style: "",
-          languages: [],
-          interests: [],
-          response_time_note: "",
-        });
-
-        if (insertError) {
-          setMessage(insertError.message);
-          setLoading(false);
+        if (authError) {
+          setMessage(authError.message || "Could not load account.");
           return;
         }
-      } else {
-        const profile = data as Profile;
 
-        setDisplayName(profile.display_name || "");
-        setGender(profile.gender || "");
-        setAgeGroup(profile.age_group || "");
-        setAboutMe(profile.about_me || "");
-        setPreferredArea(profile.preferred_area || "");
-        setMeetingStyle(profile.meeting_style || "");
-        setLanguages(profile.languages || []);
-        setInterests(profile.interests || []);
-        setResponseTimeNote(profile.response_time_note || "");
-        setIsAdmin(!!profile.is_admin);
+        if (!user) {
+          setLoading(false);
+          router.push("/login");
+          return;
+        }
+
+        setUserId(user.id);
+        setEmail(user.email || "");
+
+        const { data, error } = await supabase
+          .from("profiles")
+          .select(
+            `
+              id,
+              display_name,
+              bio,
+              gender,
+              age_group,
+              is_public,
+              about_me,
+              preferred_area,
+              meeting_style,
+              languages,
+              interests,
+              response_time_note,
+              is_admin
+            `
+          )
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (error) {
+          setMessage(error.message);
+          return;
+        }
+
+        if (!data) {
+          const { error: insertError } = await supabase.from("profiles").insert({
+            id: user.id,
+            display_name: "",
+            bio: "",
+            gender: "",
+            age_group: "",
+            is_public: true,
+            about_me: "",
+            preferred_area: "",
+            meeting_style: "",
+            languages: [],
+            interests: [],
+            response_time_note: "",
+            is_admin: false,
+          });
+
+          if (insertError) {
+            setMessage(insertError.message);
+            return;
+          }
+        } else {
+          const profile = data as Profile;
+
+          setDisplayName(profile.display_name || "");
+          setGender(profile.gender || "");
+          setAgeGroup(profile.age_group || "");
+          setAboutMe(profile.about_me || "");
+          setPreferredArea(profile.preferred_area || "");
+          setMeetingStyle(profile.meeting_style || "");
+          setLanguages(profile.languages || []);
+          setInterests(profile.interests || []);
+          setResponseTimeNote(profile.response_time_note || "");
+          setIsAdmin(!!profile.is_admin);
+        }
+      } catch (error) {
+        console.error("Account load failed", error);
+        setMessage("Could not load account.");
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
-    loadProfile();
+    void loadProfile();
   }, [router, supabase]);
 
   const handleSave = async () => {
