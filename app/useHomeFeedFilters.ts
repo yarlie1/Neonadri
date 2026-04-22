@@ -45,8 +45,8 @@ export const SORT_OPTIONS = [
   { value: "newest", label: "Newest" },
   { value: "soonest", label: "Soonest" },
   { value: "distance", label: "Closest" },
-  { value: "benefit_desc", label: "Highest Benefit" },
-  { value: "benefit_asc", label: "Lowest Benefit" },
+  { value: "benefit_desc", label: "Highest Cost Support" },
+  { value: "benefit_asc", label: "Lowest Cost Support" },
 ] as const;
 
 export type SortValue = (typeof SORT_OPTIONS)[number]["value"];

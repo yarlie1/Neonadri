@@ -109,7 +109,7 @@ export async function POST(req: Request) {
 
     if (revieweeIsHost && hostPaidBenefit === null) {
       return NextResponse.json(
-        { error: "Please confirm whether the host paid the promised benefit." },
+        { error: "Please confirm whether the host provided the promised cost support." },
         { status: 400 }
       );
     }

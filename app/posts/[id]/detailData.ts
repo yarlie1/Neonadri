@@ -270,8 +270,8 @@ export function buildDetailViewModel({
     meetupFinished &&
     !viewerHasReview;
   const benefitExplanation = post.benefit_amount
-    ? `After this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host will give ${post.benefit_amount} to the guest.`
-    : `After this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"}, the host has not listed a guest benefit yet.`;
+    ? `The host listed ${post.benefit_amount} in cost support for direct meetup expenses such as food, tickets, or transport.`
+    : `No direct meetup cost support has been listed for this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"} yet.`;
   const purposeTheme = getPurposeTheme(post.meeting_purpose);
 
   return {

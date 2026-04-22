@@ -484,7 +484,7 @@ export function MeetupFeedCard({
             {amountText ? (
               <span className="inline-flex shrink-0 items-center gap-2 rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-3 py-1.5 font-semibold text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)]">
                 <Coins className={`h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
-                {amountText.startsWith("+") ? `$${amountText.slice(1)}` : amountText}
+                {amountText}
               </span>
             ) : null}
           </div>

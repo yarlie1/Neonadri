@@ -60,7 +60,7 @@ export default function ReviewWriteForm({
     }
 
     if (initialRevieweeIsHost && hostPaidBenefit === null) {
-      setMessage("Please confirm whether the host paid the promised benefit.");
+      setMessage("Please confirm whether the host provided the promised cost support.");
       return;
     }
 
@@ -204,7 +204,7 @@ export default function ReviewWriteForm({
               {initialRevieweeIsHost && (
                 <div>
                   <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                    Did the host pay the promised benefit?
+                    Did the host provide the promised cost support?
                   </label>
                   <div className="flex gap-2">
                     {[

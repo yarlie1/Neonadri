@@ -183,8 +183,7 @@ export default function MatchRequestBox({
         !isUnavailableBecauseExpired &&
         !isRejectedRequest && (
         <p className={`mt-1 ${APP_BODY_TEXT_CLASS}`}>
-          Once the meetup is completed, the host will pay you{" "}
-          {benefitAmount || "the listed amount"} directly.
+          Any listed cost support should only cover direct meetup costs such as food, tickets, or transport, not attendance or companionship.
         </p>
       )}
 

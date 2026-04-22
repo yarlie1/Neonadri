@@ -543,7 +543,7 @@ export default function HomeFeedClient({
               purposeIcon={getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}
               purposeName={post.meeting_purpose || "Social meetup"}
               durationLabel={formatDuration(post.duration_minutes)}
-              amountText={amount !== null ? `+${amount.toLocaleString()}` : ""}
+              amountText={amount !== null ? `Cost support $${amount.toLocaleString()}` : ""}
               whenText={post.meeting_time ? formatTime(post.meeting_time) : ""}
               placeText={post.place_name || post.location || "No place"}
               lookingForText={`${post.target_gender || "Any"} / ${post.target_age_group || "Any"}`}

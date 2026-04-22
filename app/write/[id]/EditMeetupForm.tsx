@@ -319,7 +319,7 @@ export default function EditMeetupForm({
     }
 
     if (benefitAmount && !benefitConfirmed) {
-      setMessage("Please confirm the host payment note before saving the meetup.");
+      setMessage("Please confirm the cost support note before saving the meetup.");
       return;
     }
 
@@ -539,7 +539,7 @@ export default function EditMeetupForm({
         </div>
 
         <h2 className={`mt-6 text-sm font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
-          Target & Benefit
+          Target & Cost Support
         </h2>
 
         <div className="mt-3 space-y-3">
@@ -580,7 +580,7 @@ export default function EditMeetupForm({
               value={benefitAmount}
               onChange={(e) => setBenefitAmount(e.target.value)}
             >
-              <option value="">Select benefit</option>
+              <option value="">Select cost support</option>
               <option value="$0">$0</option>
               <option value="$10">$10</option>
               <option value="$20">$20</option>
@@ -589,6 +589,10 @@ export default function EditMeetupForm({
               <option value="$100">$100</option>
               <option value="$200+">$200+</option>
             </select>
+          </div>
+
+          <div className={`${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}>
+            Use cost support only for direct meetup costs such as food, tickets, or transport. Do not offer money for attendance, time, or companionship.
           </div>
 
           {benefitAmount && (
@@ -600,9 +604,9 @@ export default function EditMeetupForm({
                 className="!mt-0.5 !h-4 !w-4 !appearance-auto !rounded !border-[#c7d2d9] !p-0 !shadow-none !outline-none !ring-0 accent-[#8fa1ac]"
               />
               <span className="min-w-0 flex-1 leading-6">
-                I understand that I will pay{" "}
+                I understand that{" "}
                 <span className="font-semibold text-[#24323f]">{benefitAmount}</span>{" "}
-                directly to my guest after the meetup.
+                is only for direct meetup costs, not for attendance, time, or companionship.
               </span>
             </label>
           )}

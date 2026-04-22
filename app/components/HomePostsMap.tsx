@@ -380,7 +380,7 @@ export default function HomePostsMap({ posts }: Props) {
 
               {selectedPost.benefit_amount && (
                 <div className={`shrink-0 rounded-2xl px-4 py-2 text-sm font-semibold ${APP_PILL_ACTIVE_CLASS}`}>
-                  Benefit {selectedPost.benefit_amount}
+                  Cost support {selectedPost.benefit_amount}
                 </div>
               )}
             </div>
