@@ -151,6 +151,10 @@ export default function ProfileEditForm({
   );
 
   const [message, setMessage] = useState("");
+  const normalizedGender = sanitizeAllowedValue(
+    sanitizeSelectValue(gender, "select gender"),
+    GENDER_OPTIONS
+  );
   const normalizedAgeGroup = sanitizeAllowedValue(
     sanitizeSelectValue(ageGroup, "select age group"),
     AGE_GROUP_OPTIONS
@@ -189,6 +193,12 @@ export default function ProfileEditForm({
         return;
       }
 
+      if (!normalizedGender) {
+        setMessage("Please select a gender before saving.");
+        setSaving(false);
+        return;
+      }
+
       if (!normalizedAgeGroup) {
         setMessage("Please select an age group before saving.");
         setSaving(false);
@@ -200,11 +210,7 @@ export default function ProfileEditForm({
         display_name: displayName.trim() || null,
         bio: aboutMeSummary || null,
         about_me: aboutMe.trim() || null,
-        gender:
-          sanitizeAllowedValue(
-            sanitizeSelectValue(gender, "select gender"),
-            GENDER_OPTIONS
-          ) || null,
+        gender: normalizedGender || null,
         age_group:
           normalizedAgeGroup || null,
         languages: languages.length > 0 ? languages : null,
@@ -300,6 +306,11 @@ export default function ProfileEditForm({
                     <option value="Other">Other</option>
                     <option value="Prefer not to say">Prefer not to say</option>
                   </select>
+                  {!normalizedGender ? (
+                    <p className="mt-2 text-xs font-medium text-[#8a6458]">
+                      Choose a gender to save this profile.
+                    </p>
+                  ) : null}
                 </div>
 
                 <div>

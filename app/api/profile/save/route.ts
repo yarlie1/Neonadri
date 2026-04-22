@@ -58,7 +58,15 @@ export async function POST(req: Request) {
       );
     }
 
+    const genderValue = sanitizeAllowedValue(body.gender, VALID_GENDERS);
     const ageGroupValue = sanitizeAllowedValue(body.age_group, VALID_AGE_GROUPS);
+
+    if (!genderValue) {
+      return NextResponse.json(
+        { error: "Please select a gender." },
+        { status: 400 }
+      );
+    }
 
     if (!ageGroupValue) {
       return NextResponse.json(
@@ -73,7 +81,7 @@ export async function POST(req: Request) {
       bio:
         typeof body.bio === "string" && body.bio.trim() ? body.bio.trim() : null,
       about_me: aboutMeValue || null,
-      gender: sanitizeAllowedValue(body.gender, VALID_GENDERS),
+      gender: genderValue,
       age_group: ageGroupValue,
       preferred_area:
         typeof body.preferred_area === "string" && body.preferred_area.trim()
