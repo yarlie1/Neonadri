@@ -40,7 +40,54 @@ export async function GET() {
       return NextResponse.json({ error: "Failed to load reports." }, { status: 500 });
     }
 
-    return NextResponse.json({ items: reports || [] }, { status: 200 });
+    const reporterIds = Array.from(
+      new Set(
+        ((reports || []) as Array<{ reporter_user_id: string | null }>)
+          .map((item) => item.reporter_user_id)
+          .filter(Boolean)
+      )
+    ) as string[];
+
+    const reporterMap = new Map<string, string>();
+
+    if (reporterIds.length > 0) {
+      const { data: profileRows } = await supabase
+        .from("profiles")
+        .select("id, display_name")
+        .in("id", reporterIds);
+
+      ((profileRows || []) as Array<{ id: string; display_name: string | null }>).forEach(
+        (profile) => {
+          reporterMap.set(profile.id, profile.display_name || "Unknown");
+        }
+      );
+    }
+
+    const items = ((reports || []) as Array<{
+      id: number;
+      reporter_user_id: string;
+      target_type: string;
+      target_id: string;
+      reason: string;
+      detail: string | null;
+      status: string;
+      created_at: string;
+      updated_at: string;
+    }>).map((item) => ({
+      ...item,
+      reporter_display_name:
+        reporterMap.get(item.reporter_user_id) || "Unknown",
+      target_href:
+        item.target_type === "user"
+          ? `/profile/${item.target_id}`
+          : item.target_type === "post"
+          ? `/posts/${item.target_id}`
+          : item.target_type === "chat"
+          ? `/matches/${item.target_id}/chat`
+          : null,
+    }));
+
+    return NextResponse.json({ items }, { status: 200 });
   } catch (error) {
     console.error("Admin reports route unexpected error", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
