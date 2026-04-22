@@ -14,6 +14,7 @@ import {
   UserPlus,
   House,
   UserCircle2,
+  Settings2,
   Plus,
   MessageCircleMore,
 } from "lucide-react";
@@ -679,6 +680,20 @@ export default function TopNav() {
                         }`}
                       >
                         <NavLabel icon={<UserCircle2 className="h-4 w-4" />}>Profile</NavLabel>
+                      </Link>
+
+                      <Link
+                        href="/account"
+                        onClick={closeMenu}
+                        className={`${mobileItem} ${
+                          isActivePath(pathname, "/account")
+                            ? isSilverHome
+                              ? "bg-[#eef4f7] text-[#33434c]"
+                              : "bg-[#f4e6d8] text-[#3f3226]"
+                            : ""
+                        }`}
+                      >
+                        <NavLabel icon={<Settings2 className="h-4 w-4" />}>Account</NavLabel>
                       </Link>
 
                       <Link
