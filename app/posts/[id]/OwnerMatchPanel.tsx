@@ -91,6 +91,8 @@ export default function OwnerMatchPanel({
       return;
     }
 
+    setProcessingRequestId(null);
+    setProcessingAction(null);
     router.refresh();
   };
 
