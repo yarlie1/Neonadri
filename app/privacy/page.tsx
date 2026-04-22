@@ -5,7 +5,7 @@ export default function PrivacyPage() {
     <LegalPageShell
       eyebrow="Privacy"
       title="Privacy Policy"
-      intro="This page explains the kinds of information Neonadri uses to run the service, support meetup flows, reduce abuse, and manage account safety. This is a public-facing draft and should still receive legal review before final publication."
+      intro="This page explains the kinds of information Neonadri uses to run the service, support meetup flows, reduce abuse, and manage account safety."
       lastUpdated="2026-04-22"
       sections={[
         {
@@ -43,6 +43,7 @@ export default function PrivacyPage() {
           title: "5. Sharing",
           paragraphs: [
             "We may share information with service providers that help us operate the platform, with infrastructure and mapping vendors, where required by law, or where necessary to protect safety, rights, or platform integrity.",
+            "We do not need to publicly expose all information we process. Some information is used internally for safety, moderation, fraud prevention, and account operations.",
           ],
         },
         {

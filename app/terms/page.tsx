@@ -5,7 +5,7 @@ export default function TermsPage() {
     <LegalPageShell
       eyebrow="Terms"
       title="Terms of Service"
-      intro="These terms describe the basic rules for using Neonadri as an adults-only meetup platform. This is a public-facing product draft and should still receive legal review before final publication."
+      intro="These terms describe the basic rules for using Neonadri as an adults-only meetup platform for calm, in-person social discovery."
       lastUpdated="2026-04-22"
       sections={[
         {
@@ -45,7 +45,7 @@ export default function TermsPage() {
         {
           title: "5. Location and safety",
           paragraphs: [
-            "To reduce safety risk, Neonadri may limit how precisely location details are shown before a match is confirmed. More detailed location information may appear later in the meetup flow where product rules allow it.",
+            "To reduce safety risk, Neonadri may limit how precisely location details are shown before a match is confirmed. More detailed location information may appear later in the meetup flow when the product allows it.",
           ],
         },
         {
@@ -63,7 +63,7 @@ export default function TermsPage() {
         {
           title: "8. Disclaimers",
           paragraphs: [
-            "Neonadri is provided on an as-is and as-available basis. We do not guarantee uninterrupted availability, the accuracy of user-generated content, the safety or intentions of any user, or the outcome of any meetup, request, or conversation.",
+            "Neonadri is provided on an as-is and as-available basis. We do not guarantee uninterrupted availability, the accuracy of user-generated content, the safety or intentions of any user, or the outcome of any meetup, request, match, or conversation.",
           ],
         },
       ]}
