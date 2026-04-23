@@ -88,6 +88,9 @@ export type PostRow = {
   benefit_amount: string | null;
   latitude: number | null;
   longitude: number | null;
+  status: string | null;
+  cancelled_at: string | null;
+  cancelled_by_user_id: string | null;
 };
 
 const PURPOSE_ICON_CLASS = "h-[19px] w-[19px] shrink-0 text-[#71828c]";
@@ -506,6 +509,7 @@ export function UpcomingMeetupCard({
   isPostMatched,
   isViewerParticipant,
   meetupFinished,
+  isCancelled,
   purposeTheme,
   post,
   meetupTimeLabel,
@@ -514,12 +518,13 @@ export function UpcomingMeetupCard({
   isPostMatched: boolean;
   isViewerParticipant: boolean;
   meetupFinished: boolean;
+  isCancelled: boolean;
   purposeTheme: { bandClass: string };
   post: PostRow;
   meetupTimeLabel: string;
   meetupCountdown: string | null;
 }) {
-  if (!(isPostMatched && isViewerParticipant && !meetupFinished)) {
+  if (!(isPostMatched && isViewerParticipant && !meetupFinished && !isCancelled)) {
     return null;
   }
 
@@ -578,6 +583,7 @@ export function UpcomingMeetupCard({
 
 export function MeetupOverviewCard({
   isPostMatched,
+  isCancelled,
   purposeTheme,
   post,
   meetupDurationLabel,
@@ -594,6 +600,7 @@ export function MeetupOverviewCard({
   locationPrivacyNote,
 }: {
   isPostMatched: boolean;
+  isCancelled: boolean;
   purposeTheme: { bandClass: string };
   post: PostRow;
   meetupDurationLabel: string;
@@ -618,7 +625,7 @@ export function MeetupOverviewCard({
           <div className="flex flex-wrap items-center gap-2">
             <div className={APP_EYEBROW_CLASS}>Meetup overview</div>
             <span className="rounded-full border border-white/60 bg-white/55 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b7b84]">
-              {isPostMatched ? "Matched" : "Open"}
+              {isCancelled ? "Cancelled" : isPostMatched ? "Matched" : "Open"}
             </span>
           </div>
           <div className="mt-4 flex flex-wrap items-stretch gap-2.5">
@@ -805,6 +812,7 @@ export function MatchedChatPanel({
   hasNewChatMessage,
   meetupFinished,
   chatClosed,
+  isCancelled,
 }: {
   isPostMatched: boolean;
   isViewerParticipant: boolean;
@@ -812,23 +820,28 @@ export function MatchedChatPanel({
   hasNewChatMessage: boolean;
   meetupFinished: boolean;
   chatClosed: boolean;
+  isCancelled: boolean;
 }) {
   if (!(isPostMatched && isViewerParticipant && matchedRecordId)) {
     return null;
   }
 
-  const heading = chatClosed
+  const heading = isCancelled
+    ? "Meetup cancelled"
+    : chatClosed
     ? "Chat closed"
     : meetupFinished
     ? "Keep the conversation going"
     : "Stay in touch before the meetup";
-  const body = chatClosed
+  const body = isCancelled
+    ? "This meetup was cancelled by the host. You can still review previous messages here."
+    : chatClosed
     ? "This chat closed 72 hours after the meetup."
     : meetupFinished
     ? "You can still chat for 72 hours after the meetup."
     : "Use chat to confirm details and stay in sync before you meet.";
   const subBody =
-    !chatClosed && !meetupFinished
+    !isCancelled && !chatClosed && !meetupFinished
       ? "Chat stays open for 72 hours after the meetup."
       : null;
 
@@ -852,7 +865,7 @@ export function MatchedChatPanel({
           ) : null}
         </div>
 
-        {chatClosed ? (
+        {chatClosed && !isCancelled ? (
           <div className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-2 text-sm font-medium text-[#6b7981]">
             <MessageSquare className="h-4 w-4 text-[#738690]" />
             Closed
@@ -863,8 +876,8 @@ export function MatchedChatPanel({
             className={`inline-flex shrink-0 items-center gap-2 rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
           >
             <MessageSquare className="h-4 w-4 text-[#738690]" />
-            Open Chat
-            {hasNewChatMessage ? (
+            {isCancelled ? "Read Chat" : "Open Chat"}
+            {!isCancelled && hasNewChatMessage ? (
               <span className="rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#5f7480]">
                 New
               </span>

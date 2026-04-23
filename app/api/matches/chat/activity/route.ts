@@ -13,6 +13,8 @@ import {
 import { isAdultConfirmedUser } from "../../../../../lib/adultGate";
 
 type ActivityAction = "seen" | "message";
+const MATCH_CHAT_CANCELLED_MESSAGE =
+  "This meetup was cancelled by the host. This chat is read-only now.";
 
 export async function GET(request: Request) {
   const supabase = await createClient();
@@ -49,7 +51,7 @@ export async function GET(request: Request) {
     });
     const { data: postData } = await supabase
       .from("posts")
-      .select("meeting_time")
+      .select("meeting_time, status")
       .eq("id", matchChat.match.post_id)
       .maybeSingle();
     const { chatClosed } = getChatWindowState(
@@ -65,6 +67,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       ok: true,
       chatClosed,
+      chatCancelled: String(postData?.status || "open").toLowerCase() === "cancelled",
       otherUserLastSeenAt,
       lastChatActivityAt: matchChat.chat.last_chat_activity_at,
     });
@@ -122,7 +125,7 @@ export async function POST(request: Request) {
 
   const { data: postData } = await supabase
     .from("posts")
-    .select("meeting_time")
+    .select("meeting_time, status")
     .eq("id", matchChat.match.post_id)
     .maybeSingle();
 
@@ -130,6 +133,12 @@ export async function POST(request: Request) {
     postData?.meeting_time || null,
     userTimeZone
   );
+  const chatCancelled =
+    String(postData?.status || "open").toLowerCase() === "cancelled";
+
+  if (action === "message" && chatCancelled) {
+    return NextResponse.json({ error: MATCH_CHAT_CANCELLED_MESSAGE }, { status: 403 });
+  }
 
   if (action === "message" && chatClosed) {
     return NextResponse.json({ error: MATCH_CHAT_CLOSED_MESSAGE }, { status: 403 });

@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       await Promise.all([
         supabase
           .from("posts")
-          .select("user_id, target_gender, target_age_group, meeting_time")
+          .select("user_id, target_gender, target_age_group, meeting_time, status")
           .eq("id", postId)
           .maybeSingle(),
         supabase
@@ -77,6 +77,13 @@ export async function POST(req: Request) {
 
     if (String(postData.user_id || "") !== postOwnerUserId) {
       return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+    }
+
+    if (String(postData.status || "open").toLowerCase() === "cancelled") {
+      return NextResponse.json(
+        { error: "This meetup was cancelled by the host." },
+        { status: 409 }
+      );
     }
 
     const meetingTimeValue = String(postData.meeting_time || "").trim();

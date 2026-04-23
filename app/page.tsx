@@ -18,6 +18,7 @@ type PostRow = {
   created_at: string;
   latitude: number | null;
   longitude: number | null;
+  status: string | null;
 };
 
 type ProfileRow = {
@@ -66,7 +67,7 @@ export default async function HomePage() {
   const { data: postsData, error: postsError } = await supabase
     .from("posts")
     .select(
-      "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, latitude, longitude"
+      "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, latitude, longitude, status"
     )
     .order("created_at", { ascending: false });
 
@@ -84,7 +85,11 @@ export default async function HomePage() {
   }
 
   const posts = ((postsData as PostRow[]) || [])
-    .filter((post) => !blockedUserIds.has(post.user_id))
+    .filter(
+      (post) =>
+        !blockedUserIds.has(post.user_id) &&
+        String(post.status || "open").toLowerCase() !== "cancelled"
+    )
     .slice();
   const ownerIds = Array.from(new Set(posts.map((post) => post.user_id))).filter(
     Boolean

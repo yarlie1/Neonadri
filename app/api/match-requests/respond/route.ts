@@ -21,6 +21,10 @@ function normalizeMatchRequestError(message: string, action: string) {
     return "This request is no longer pending.";
   }
 
+  if (normalized.includes("cancel")) {
+    return "This meetup was cancelled by the host.";
+  }
+
   return action === "accepted"
     ? "We couldn't accept this request right now."
     : "We couldn't decline this request right now.";
@@ -52,6 +56,68 @@ export async function POST(req: Request) {
 
     if (!Number.isFinite(requestId) || !["accepted", "rejected"].includes(action)) {
       return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+    }
+
+    const { data: requestData, error: requestLookupError } = await supabase
+      .from("match_requests")
+      .select("id, post_id, post_owner_user_id")
+      .eq("id", requestId)
+      .maybeSingle();
+
+    if (requestLookupError) {
+      console.error("Match request respond lookup failed", {
+        message: requestLookupError.message,
+        details: requestLookupError.details,
+        hint: requestLookupError.hint,
+        code: requestLookupError.code,
+        requestId,
+      });
+      return NextResponse.json(
+        { error: "We couldn't find this request right now." },
+        { status: 500 }
+      );
+    }
+
+    if (!requestData) {
+      return NextResponse.json(
+        { error: "This request could not be found anymore." },
+        { status: 404 }
+      );
+    }
+
+    if (requestData.post_owner_user_id !== user.id) {
+      return NextResponse.json(
+        { error: "You can no longer update this request." },
+        { status: 403 }
+      );
+    }
+
+    const { data: postData, error: postLookupError } = await supabase
+      .from("posts")
+      .select("status")
+      .eq("id", requestData.post_id)
+      .maybeSingle();
+
+    if (postLookupError) {
+      console.error("Match request respond post lookup failed", {
+        message: postLookupError.message,
+        details: postLookupError.details,
+        hint: postLookupError.hint,
+        code: postLookupError.code,
+        requestId,
+        postId: requestData.post_id,
+      });
+      return NextResponse.json(
+        { error: "We couldn't confirm the meetup status right now." },
+        { status: 500 }
+      );
+    }
+
+    if (String(postData?.status || "open").toLowerCase() === "cancelled") {
+      return NextResponse.json(
+        { error: "This meetup was cancelled by the host." },
+        { status: 409 }
+      );
     }
 
     const rpcName =

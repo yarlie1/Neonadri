@@ -20,6 +20,7 @@ type PostRow = {
   longitude: number | null;
   target_gender: string | null;
   target_age_group: string | null;
+  status: string | null;
 };
 
 type ProfileRow = {
@@ -66,7 +67,7 @@ export default async function MapPage() {
   const { data: postsData } = await supabase
     .from("posts")
     .select(
-      "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, latitude, longitude, target_gender, target_age_group"
+      "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, latitude, longitude, target_gender, target_age_group, status"
     )
     .not("latitude", "is", null)
     .not("longitude", "is", null)
@@ -76,7 +77,8 @@ export default async function MapPage() {
     (post) =>
       post.latitude !== null &&
       post.longitude !== null &&
-      !blockedUserIds.has(post.user_id)
+      !blockedUserIds.has(post.user_id) &&
+      String(post.status || "open").toLowerCase() !== "cancelled"
   );
 
   const ownerIds = Array.from(new Set(posts.map((post) => post.user_id)));

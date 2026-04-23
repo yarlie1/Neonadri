@@ -19,6 +19,7 @@ import { getChatWindowState } from "../../../lib/chat/chatWindow";
 import MatchRequestBox from "./MatchRequestBox";
 import OwnerMatchPanel from "./OwnerMatchPanel";
 import DeletePostButton from "./DeletePostButton";
+import CancelMeetupButton from "./CancelMeetupButton";
 import PostDistanceNote from "./PostDistanceNote";
 import ScrollReveal from "./ScrollReveal";
 import {
@@ -64,7 +65,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const { data: postData, error: postError } = await supabase
     .from("posts")
     .select(
-      "id, user_id, created_at, place_name, location, meeting_time, duration_minutes, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude"
+      "id, user_id, created_at, place_name, location, meeting_time, duration_minutes, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude, status, cancelled_at, cancelled_by_user_id"
     )
     .eq("id", id)
     .maybeSingle();
@@ -74,6 +75,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }
 
   const post = postData as PostRow;
+  const isCancelled = String(post.status || "open").toLowerCase() === "cancelled";
 
   if (blockedUserIds.has(post.user_id)) {
     return (
@@ -363,6 +365,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           isPostMatched={isPostMatched}
           isViewerParticipant={isViewerParticipant}
           meetupFinished={meetupFinished}
+          isCancelled={isCancelled}
           purposeTheme={purposeTheme}
           post={post}
           meetupTimeLabel={meetupTimeLabel}
@@ -371,6 +374,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
         <MeetupOverviewCard
           isPostMatched={isPostMatched}
+          isCancelled={isCancelled}
           purposeTheme={purposeTheme}
           post={post}
           meetupDurationLabel={meetupDurationLabel}
@@ -425,6 +429,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 <OwnerMatchPanel
                   postId={post.id}
                   isMatched={isPostMatched}
+                  isCancelled={isCancelled}
                   pendingRequestCount={pendingRequestCount}
                   requests={ownerRequestItems}
                   matchedPartner={matchedPartner}
@@ -438,6 +443,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                   benefitAmount={post.benefit_amount}
                   requestCount={totalRequestCount}
                   isPostMatched={isPostMatched}
+                  isCancelled={isCancelled}
                   isViewerParticipant={isViewerParticipant}
                   myRequestId={myRequestId}
                   myRequestStatus={myRequestStatus}
@@ -454,6 +460,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 hasNewChatMessage={hasNewChatMessage}
                 meetupFinished={meetupFinished}
                 chatClosed={chatClosed}
+                isCancelled={isCancelled}
               />
             </ScrollReveal>
 
@@ -470,7 +477,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               />
             </ScrollReveal>
 
-            {user && user.id === post.user_id && !isPostMatched && !hasAnyRequests && (
+            {user && user.id === post.user_id && !isCancelled && !isPostMatched && !hasAnyRequests && (
               <ScrollReveal>
                 <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
                   <div className={APP_EYEBROW_CLASS}>
@@ -485,6 +492,43 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                       Edit Meetup
                     </Link>
                     <DeletePostButton postId={post.id} />
+                  </div>
+                </div>
+              </ScrollReveal>
+            )}
+
+            {user &&
+              user.id === post.user_id &&
+              !isCancelled &&
+              (isPostMatched || hasAnyRequests) && (
+                <ScrollReveal>
+                  <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
+                    <div className={APP_EYEBROW_CLASS}>
+                      Meetup actions
+                    </div>
+                    <div className="mt-2 text-sm leading-6 text-[#66727a]">
+                      Need to change the time or place instead? Cancel this meetup and create a new one.
+                    </div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <CancelMeetupButton postId={post.id} />
+                    </div>
+                  </div>
+                </ScrollReveal>
+              )}
+
+            {isCancelled && (
+              <ScrollReveal>
+                <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
+                  <div className={APP_EYEBROW_CLASS}>
+                    Meetup status
+                  </div>
+                  <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#24323f]">
+                    This meetup was cancelled.
+                  </div>
+                  <div className="mt-2 text-sm leading-6 text-[#66727a]">
+                    {user?.id === post.user_id
+                      ? "This meetup is no longer active. Create a new meetup if you want to share updated plans."
+                      : "The host cancelled this meetup. You can still review the details and previous chat messages here."}
                   </div>
                 </div>
               </ScrollReveal>

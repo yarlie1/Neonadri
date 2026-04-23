@@ -40,6 +40,7 @@ type MatchedPartner = {
 type Props = {
   postId: number;
   isMatched: boolean;
+  isCancelled: boolean;
   pendingRequestCount: number;
   requests: RequesterRow[];
   matchedPartner: MatchedPartner | null;
@@ -48,6 +49,7 @@ type Props = {
 export default function OwnerMatchPanel({
   postId,
   isMatched,
+  isCancelled,
   pendingRequestCount,
   requests,
   matchedPartner,
@@ -107,25 +109,34 @@ export default function OwnerMatchPanel({
               Host controls
             </div>
             <h2 className="mt-2 text-[1.7rem] font-black tracking-[-0.04em] text-[#25333d]">
-              {isMatched ? "This meetup is matched" : "Choose your guest"}
+              {isCancelled
+                ? "This meetup is cancelled"
+                : isMatched
+                ? "This meetup is matched"
+                : "Choose your guest"}
             </h2>
-            {!isMatched && (
+            {!isCancelled && !isMatched && (
               <p className={`mt-1 max-w-xl ${APP_BODY_TEXT_CLASS}`}>
                 {pendingRequestCount > 0
                   ? `${pendingRequestCount} pending request${pendingRequestCount === 1 ? "" : "s"} waiting for your decision.`
                   : "No requests yet. You can still edit the meetup while it is open."}
               </p>
             )}
+            {isCancelled && (
+              <p className={`mt-1 max-w-xl ${APP_BODY_TEXT_CLASS}`}>
+                This meetup is no longer active. Participants can still read previous chat messages, but new requests and messages are closed.
+              </p>
+            )}
           </div>
 
-          {!isMatched && (
+          {!isMatched && !isCancelled && (
             <div className={`rounded-full px-4 py-[0.45rem] text-sm font-medium leading-none backdrop-blur ${APP_PILL_ACTIVE_CLASS}`}>
               {`${pendingRequestCount} pending`}
             </div>
           )}
         </div>
 
-        {isMatched && matchedPartner ? (
+        {isMatched && matchedPartner && !isCancelled ? (
           <div className={`mt-5 ${APP_SOFT_CARD_CLASS} p-4 backdrop-blur`}>
             <div>
               <div className={APP_EYEBROW_CLASS}>
@@ -138,7 +149,7 @@ export default function OwnerMatchPanel({
           </div>
         ) : null}
 
-        {!isMatched && requests.length > 0 && (
+        {!isMatched && requests.length > 0 && !isCancelled && (
           <div className="mt-5 space-y-3">
             {requests.map((request) => {
               const isPending = request.status === "pending";
@@ -219,15 +230,21 @@ export default function OwnerMatchPanel({
           </div>
         )}
 
-        {!isMatched && requests.length === 0 && (
+        {!isMatched && requests.length === 0 && !isCancelled && (
           <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} backdrop-blur`}>
             No one has requested this meetup yet. You can keep it open or edit the details first.
           </div>
         )}
 
-        {isMatched && !matchedPartner && (
+        {isMatched && !matchedPartner && !isCancelled && (
           <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} backdrop-blur`}>
             A match has been recorded for this meetup.
+          </div>
+        )}
+
+        {isCancelled && (
+          <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} backdrop-blur`}>
+            This meetup was cancelled by you. Create a new meetup if you want to share updated plans.
           </div>
         )}
       </div>

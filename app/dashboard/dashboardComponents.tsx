@@ -129,6 +129,10 @@ export function formatDuration(minutes: number | null) {
 export function getStatusBadgeClass(status: string) {
   const normalized = status.toLowerCase();
 
+  if (normalized === "cancelled") {
+    return "bg-[linear-gradient(180deg,#ffffff_0%,#f0f3f5_100%)] text-[#6f7d86] border border-[#d7dde2]";
+  }
+
   if (normalized === "expired") {
     return "bg-[linear-gradient(180deg,#ffffff_0%,#eff3f5_100%)] text-[#75828a] border border-[#d7dde2]";
   }
@@ -157,9 +161,13 @@ export function getStatusBadgeClass(status: string) {
 }
 
 export function getPostMatchState(
-  postStatus: "Upcoming" | "Expired",
+  postStatus: "Upcoming" | "Expired" | "Cancelled",
   summary?: { isMatched: boolean }
 ) {
+  if (postStatus === "Cancelled") {
+    return "Cancelled";
+  }
+
   if (summary?.isMatched) {
     return "Matched";
   }
@@ -323,6 +331,7 @@ export function MiniPostPreview({
 
   const amount = parseBenefitAmount(post.benefit_amount);
   const durationLabel = formatDuration(post.duration_minutes);
+  const postStatus = String(post.status || "open").toLowerCase();
 
   return (
     <div className={`mt-3 ${APP_INNER_PANEL_CLASS} p-3`}>
@@ -336,6 +345,13 @@ export function MiniPostPreview({
         {hostLine ? (
           <div className="col-span-2 min-w-0 pl-[50px] pr-1 text-[12px] leading-[1.15] text-[#849099]">
             {hostLine}
+          </div>
+        ) : null}
+        {postStatus === "cancelled" ? (
+          <div className="col-span-2 mt-2 pl-[50px]">
+            <span className={`inline-flex rounded-full px-3 py-1 text-[11px] font-medium ${getStatusBadgeClass("cancelled")}`}>
+              Cancelled
+            </span>
           </div>
         ) : null}
       </div>

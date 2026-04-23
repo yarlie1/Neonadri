@@ -11,9 +11,9 @@ import type { MatchRow, MatchRequestRow, PostRow } from "./page";
 import { getPostMatchState } from "./dashboardComponents";
 
 export type DashboardTab = "posts" | "received" | "sent" | "matches";
-export type PostFilter = "all" | "open" | "expired";
+export type PostFilter = "all" | "open" | "expired" | "cancelled";
 export type ReceivedFilter = "all" | "pending";
-export type MatchFilter = "all" | "upcoming" | "expired" | "review_due";
+export type MatchFilter = "all" | "upcoming" | "expired" | "review_due" | "cancelled";
 export type SentFilter = "all" | "pending" | "accepted" | "rejected";
 
 export function useDashboardState({
@@ -55,6 +55,14 @@ export function useDashboardState({
 
   const getPostStatus = (meetingTime: string | null) =>
     getMeetingStatus(meetingTime, userTimeZone);
+
+  const getPostLifecycleStatus = (post?: PostRow | null) => {
+    if (String(post?.status || "open").toLowerCase() === "cancelled") {
+      return "Cancelled" as const;
+    }
+
+    return getPostStatus(post?.meeting_time || null);
+  };
 
   const [posts] = useState(initialPosts);
   const [receivedItems, setReceivedItems] = useState(requestsReceived);
@@ -114,7 +122,7 @@ export function useDashboardState({
     return posts.filter(
       (post) =>
         getPostMatchState(
-          getPostStatus(post.meeting_time) as "Upcoming" | "Expired",
+          getPostLifecycleStatus(post),
           matchSummaryMap[post.id]
         ).toLowerCase() === postFilter
     );
@@ -144,7 +152,7 @@ export function useDashboardState({
     if (matchFilter === "all") return matchItems;
     return matchItems.filter((match) => {
       const post = postMap[match.post_id];
-      const status = getPostStatus(post?.meeting_time || null).toLowerCase();
+      const status = getPostLifecycleStatus(post).toLowerCase();
       if (matchFilter === "review_due") {
         return status === "expired" && !reviewedMatchIds.includes(match.id);
       }
@@ -162,6 +170,7 @@ export function useDashboardState({
       .map((match) => {
         const post = postMap[match.post_id];
         if (!post?.meeting_time) return null;
+        if (String(post.status || "open").toLowerCase() === "cancelled") return null;
 
         const time =
           parseMeetingTime(post.meeting_time, userTimeZone)?.getTime() ?? NaN;
@@ -186,6 +195,7 @@ export function useDashboardState({
     formatTime,
     formatTimeUntil,
     getPostStatus,
+    getPostLifecycleStatus,
     posts,
     receivedItems,
     setReceivedItems,

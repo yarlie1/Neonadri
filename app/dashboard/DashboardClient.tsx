@@ -53,7 +53,7 @@ function PostsTabPanel({
   filteredPosts,
   matchSummaryMap,
   currentUserMeta,
-  getPostStatus,
+  getPostLifecycleStatus,
   formatTime,
   openPostDetail,
 }: {
@@ -63,7 +63,7 @@ function PostsTabPanel({
     { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
   >;
   currentUserMeta: string;
-  getPostStatus: (meetingTime: string | null) => "Upcoming" | "Expired";
+  getPostLifecycleStatus: (post: PostRow | null | undefined) => "Upcoming" | "Expired" | "Cancelled";
   formatTime: (meetingTime: string | null) => string;
   openPostDetail: (postId: number) => void;
 }) {
@@ -71,7 +71,7 @@ function PostsTabPanel({
     <div className="space-y-4">
       {filteredPosts.map((post) => {
         const postStatus = getPostMatchState(
-          getPostStatus(post.meeting_time),
+          getPostLifecycleStatus(post),
           matchSummaryMap[post.id]
         );
         const amount = parseBenefitAmount(post.benefit_amount);
@@ -289,8 +289,13 @@ function ReceivedTabPanel({
     <div className="space-y-4">
       {receivedItems.map((item) => {
         const requesterName = profileMap[item.requester_user_id] || "Unknown";
+        const relatedPost = postMap[item.post_id];
+        const isCancelled =
+          String(relatedPost?.status || "open").toLowerCase() === "cancelled";
         const statusLine =
-          item.status === "pending"
+          isCancelled
+            ? "This meetup was cancelled."
+            : item.status === "pending"
             ? `${requesterName} wants to join this meetup.`
             : item.status === "accepted"
             ? `You matched with ${requesterName}.`
@@ -316,10 +321,10 @@ function ReceivedTabPanel({
 
               <span
                 className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
-                  item.status
+                  isCancelled ? "cancelled" : item.status
                 )}`}
               >
-                {item.status}
+                {isCancelled ? "cancelled" : item.status}
               </span>
             </div>
 
@@ -362,10 +367,19 @@ function SentTabPanel({
       {requestsSent.map((item) => {
         const hostName = profileMap[item.post_owner_user_id] || "Unknown";
         const hostMeta = profileMetaMap[item.post_owner_user_id] || "";
+        const relatedPost = postMap[item.post_id];
+        const isCancelled =
+          String(relatedPost?.status || "open").toLowerCase() === "cancelled";
         const acceptedMessage =
-          item.status === "accepted" ? `${hostName} accepted your request.` : null;
+          !isCancelled && item.status === "accepted"
+            ? `${hostName} accepted your request.`
+            : null;
         const statusMessage =
-          item.status === "rejected" ? `${hostName} closed this request.` : `Sent to ${hostName}`;
+          isCancelled
+            ? `${hostName} cancelled this meetup.`
+            : item.status === "rejected"
+            ? `${hostName} closed this request.`
+            : `Sent to ${hostName}`;
 
         return (
           <div
@@ -395,10 +409,10 @@ function SentTabPanel({
 
               <span
                 className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
-                  item.status
+                  isCancelled ? "cancelled" : item.status
                 )}`}
               >
-                {item.status}
+                {isCancelled ? "cancelled" : item.status}
               </span>
             </div>
 
@@ -429,7 +443,7 @@ function MatchesTabPanel({
   reviewedMatchIds,
   matchChatMetaMap,
   userTimeZone,
-  getPostStatus,
+  getPostLifecycleStatus,
   openPostDetail,
   stopCardClick,
 }: {
@@ -441,7 +455,7 @@ function MatchesTabPanel({
   reviewedMatchIds: number[];
   matchChatMetaMap: Record<number, MatchChatMetaRow>;
   userTimeZone: string;
-  getPostStatus: (meetingTime: string | null) => "Upcoming" | "Expired";
+  getPostLifecycleStatus: (post: PostRow | null | undefined) => "Upcoming" | "Expired" | "Cancelled";
   openPostDetail: (postId: number) => void;
   stopCardClick: (event: React.MouseEvent<HTMLElement>) => void;
 }) {
@@ -453,7 +467,7 @@ function MatchesTabPanel({
         const hostName = post?.user_id ? profileMap[post.user_id] || "Unknown" : "Unknown";
         const hostMeta = post?.user_id ? profileMetaMap[post.user_id] || "" : "";
         const alreadyReviewed = reviewedMatchIds.includes(item.id);
-        const meetupStatus = getPostStatus(post?.meeting_time || null).toLowerCase();
+        const meetupStatus = getPostLifecycleStatus(post).toLowerCase();
         const canLeaveReview = meetupStatus === "expired" && !alreadyReviewed;
         const chatMeta = matchChatMetaMap[item.id];
         const viewerLastSeen =
@@ -480,10 +494,12 @@ function MatchesTabPanel({
                 </div>
                 <div className="mt-2 flex items-center gap-2 text-lg font-semibold text-[#24323f]">
                   <HeartHandshake className="h-5 w-5 text-[#738690]" />
-                  <span>Match confirmed</span>
+                  <span>{meetupStatus === "cancelled" ? "Match cancelled" : "Match confirmed"}</span>
                 </div>
                 <div className="mt-1 text-sm text-[#66727a]">
-                  You are matched with {profileMap[otherUserId] || "Unknown"}.
+                  {meetupStatus === "cancelled"
+                    ? `${hostName} cancelled this meetup.`
+                    : `You are matched with ${profileMap[otherUserId] || "Unknown"}.`}
                 </div>
                 <div className="mt-1 text-sm text-[#7f8a92]">
                   Matched on {new Date(item.created_at).toLocaleString()}
@@ -495,7 +511,11 @@ function MatchesTabPanel({
                   meetupStatus
                 )}`}
               >
-                {meetupStatus === "upcoming" ? "Matched" : "Expired"}
+                {meetupStatus === "upcoming"
+                  ? "Matched"
+                  : meetupStatus === "cancelled"
+                  ? "Cancelled"
+                  : "Expired"}
               </span>
             </div>
 
@@ -508,8 +528,8 @@ function MatchesTabPanel({
             <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
               <CompactActionButton href={`/matches/${item.id}/chat`}>
                 <HeartHandshake className="h-3.5 w-3.5" />
-                Open Chat
-                {hasNewMessage ? (
+                {meetupStatus === "cancelled" ? "Read Chat" : "Open Chat"}
+                {meetupStatus !== "cancelled" && hasNewMessage ? (
                   <span className="inline-flex h-2.5 w-2.5 rounded-full bg-[#b56c57]" />
                 ) : null}
               </CompactActionButton>
@@ -592,6 +612,7 @@ export default function DashboardClient({
     formatTime,
     formatTimeUntil,
     getPostStatus,
+    getPostLifecycleStatus,
     posts,
     receivedItems,
     setReceivedItems,
@@ -800,7 +821,7 @@ export default function DashboardClient({
           ? supabase
               .from("posts")
               .select(
-                "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at"
+                "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, status, cancelled_at"
               )
               .in("id", relatedPostIds)
           : Promise.resolve({ data: [], error: null }),
@@ -1238,6 +1259,12 @@ export default function DashboardClient({
                   >
                     Expired
                   </FilterPill>
+                  <FilterPill
+                    active={postFilter === "cancelled"}
+                    onClick={() => setPostFilter("cancelled")}
+                  >
+                    Cancelled
+                  </FilterPill>
                 </div>
 
               </div>
@@ -1339,6 +1366,12 @@ export default function DashboardClient({
                 >
                   Review Due
                 </FilterPill>
+                <FilterPill
+                  active={matchFilter === "cancelled"}
+                  onClick={() => setMatchFilter("cancelled")}
+                >
+                  Cancelled
+                </FilterPill>
               </div>
             </div>
           </div>
@@ -1349,7 +1382,7 @@ export default function DashboardClient({
             filteredPosts={filteredPosts}
             matchSummaryMap={liveMatchSummaryMap}
             currentUserMeta={currentUserMeta}
-            getPostStatus={getPostStatus}
+            getPostLifecycleStatus={getPostLifecycleStatus}
             formatTime={formatTime}
             openPostDetail={openPostDetail}
           />
@@ -1391,7 +1424,7 @@ export default function DashboardClient({
             reviewedMatchIds={reviewedMatchIds}
             matchChatMetaMap={liveMatchChatMetaMap}
             userTimeZone={userTimeZone}
-            getPostStatus={getPostStatus}
+            getPostLifecycleStatus={getPostLifecycleStatus}
             openPostDetail={openPostDetail}
             stopCardClick={stopCardClick}
           />

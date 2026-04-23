@@ -119,7 +119,7 @@ export default async function MatchChatPage({ params }: PageProps) {
 
   const { data: postData } = await supabase
     .from("posts")
-    .select("meeting_purpose, meeting_time, place_name, location")
+    .select("meeting_purpose, meeting_time, place_name, location, status")
     .eq("id", matchChat.match.post_id)
     .maybeSingle();
 
@@ -140,6 +140,7 @@ export default async function MatchChatPage({ params }: PageProps) {
     userTimeZone
   );
   const { chatClosed } = getChatWindowState(postData?.meeting_time || null, userTimeZone);
+  const chatCancelled = String(postData?.status || "open").toLowerCase() === "cancelled";
   const placeLabel = postData?.place_name || postData?.location || "Selected place";
   const otherUserName = otherProfileData?.display_name || "Participant";
   const currentUserName = currentProfileData?.display_name || "You";
@@ -161,8 +162,12 @@ export default async function MatchChatPage({ params }: PageProps) {
       placeLabel={placeLabel}
       roomId={matchChat.chat.external_room_id}
       isProviderConfigured={isProviderConfigured}
-      chatClosed={chatClosed}
-      chatClosedMessage={MATCH_CHAT_CLOSED_MESSAGE}
+      chatClosed={chatClosed || chatCancelled}
+      chatClosedMessage={
+        chatCancelled
+          ? "This meetup was cancelled by the host."
+          : MATCH_CHAT_CLOSED_MESSAGE
+      }
       currentUserId={user.id}
       currentUserName={currentUserName}
       otherUserId={matchChat.otherUserId}
