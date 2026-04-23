@@ -53,24 +53,6 @@ declare global {
         };
         storeInHistory?: boolean;
       }) => Promise<unknown>;
-      fetchMessages?: (payload: {
-        channels: string[];
-        count?: number;
-        includeUUID?: boolean;
-      }) => Promise<{
-        channels?: Record<
-          string,
-          Array<{
-            message?: {
-              text?: string;
-              senderId?: string;
-              senderName?: string;
-              createdAt?: string;
-            };
-            timetoken?: string;
-          }>
-        >;
-      }>;
     };
   }
 }
@@ -271,37 +253,36 @@ export default function ChatRoomClient({
     subscriptionRef.current = subscription;
 
     const loadHistory = async () => {
-      if (!pubnub.fetchMessages) {
-        return;
-      }
-
       try {
-        const history = await pubnub.fetchMessages({
-          channels: [roomLabel],
-          count: 50,
-          includeUUID: true,
-        });
+        const response = await fetch(
+          `/api/matches/chat/history?matchId=${matchId}&count=50`,
+          {
+            method: "GET",
+            cache: "no-store",
+          }
+        );
 
-        const channelHistory = history.channels?.[roomLabel] || [];
+        if (!response.ok) {
+          throw new Error("HISTORY_FETCH_FAILED");
+        }
 
-        const historyMessages =
-          channelHistory
-            ?.map((entry) => {
-              const payload = entry.message || {};
-              const text = (payload.text || "").trim();
-              if (!text) return null;
+        const history = (await response.json()) as {
+          messages?: ChatMessage[];
+        };
 
-              return {
-                id: entry.timetoken || `${payload.senderId}-${payload.createdAt}`,
-                text,
-                senderId: payload.senderId || "unknown",
-                senderName: payload.senderName || "Participant",
-                createdAt: payload.createdAt || new Date().toISOString(),
-              } satisfies ChatMessage;
-            })
-            .filter(Boolean) || [];
+        const historyMessages = Array.isArray(history.messages)
+          ? history.messages
+              .map((message) => ({
+                id: String(message.id || "").trim(),
+                text: String(message.text || "").trim(),
+                senderId: String(message.senderId || "unknown"),
+                senderName: String(message.senderName || "Participant"),
+                createdAt: String(message.createdAt || new Date().toISOString()),
+              }))
+              .filter((message) => message.id && message.text)
+          : [];
 
-        setMessages(historyMessages as ChatMessage[]);
+        setMessages(historyMessages);
         void markSeenIfVisible();
       } catch {
         setErrorMessage("Past messages could not be loaded. New chat still works.");
@@ -316,7 +297,15 @@ export default function ChatRoomClient({
       pubnubRef.current = null;
       setConnectionLabel("Disconnected");
     };
-  }, [currentUserId, isProviderConfigured, publishKey, roomLabel, sdkReady, subscribeKey]);
+  }, [
+    currentUserId,
+    isProviderConfigured,
+    matchId,
+    publishKey,
+    roomLabel,
+    sdkReady,
+    subscribeKey,
+  ]);
 
   useEffect(() => {
     if (!listRef.current) return;
