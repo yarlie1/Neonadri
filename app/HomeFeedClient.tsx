@@ -421,7 +421,7 @@ export default function HomeFeedClient({
                 All features are free during the beta.
               </div>
               <p className={`mt-2 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
-                You can use every feature at no charge while Neonadri is in beta. If a meetup is matched and you promised CS, you still need to pay it to the other person as agreed.
+                You can use every feature at no charge while Neonadri is in beta. If a meetup is matched and you offered CS, you are still expected to honor the agreed cost support.
               </p>
             </div>
           </div>
