@@ -302,61 +302,58 @@ export default async function ProfilePage({ params }: PageProps) {
                   </span>
                 </div>
               </div>
+
+              <div className="mt-4 grid gap-3">
+                {(profile.gender || profile.age_group) && (
+                  <InfoItem
+                    icon={<UserRound className="h-3.5 w-3.5 text-[#71828c]" />}
+                    label="Identity"
+                    value={[profile.gender, profile.age_group].filter(Boolean).join(" / ")}
+                  />
+                )}
+
+                {hasInterests && (
+                  <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
+                    <div className={`mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
+                      <Sparkles className="h-3.5 w-3.5 text-[#71828c]" />
+                      Interests
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.interests!.map((item) => (
+                        <span
+                          key={item}
+                          className="rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-3 py-1.5 text-xs font-medium text-[#52616a]"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
+                  <div className={`flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
+                    <MessageSquareText className="h-4 w-4 shrink-0 text-[#71828c]" />
+                    <span>About me</span>
+                  </div>
+                  <div className={`mt-2 text-sm leading-7 ${APP_MUTED_TEXT_CLASS}`}>
+                    {hasAboutMe ? profile.about_me : "No introduction yet."}
+                  </div>
+                </div>
+
+                {hasLanguages && (
+                  <InfoItem
+                    icon={<Languages className="h-3.5 w-3.5 text-[#71828c]" />}
+                    label="Languages"
+                    value={profile.languages!.join(", ")}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </section>
 
-        <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-          <section className={`${APP_SURFACE_CARD_CLASS} p-5`}>
-            <div className="grid gap-3">
-              {(profile.gender || profile.age_group) && (
-                <InfoItem
-                  icon={<UserRound className="h-3.5 w-3.5 text-[#71828c]" />}
-                  label="Identity"
-                  value={[profile.gender, profile.age_group].filter(Boolean).join(" / ")}
-                />
-              )}
-
-              {hasInterests && (
-                <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
-                  <div className={`mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                    <Sparkles className="h-3.5 w-3.5 text-[#71828c]" />
-                    Interests
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {profile.interests!.map((item) => (
-                      <span
-                        key={item}
-                        className="rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-3 py-1.5 text-xs font-medium text-[#52616a]"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
-                <div className={`flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                  <MessageSquareText className="h-4 w-4 shrink-0 text-[#71828c]" />
-                  <span>About me</span>
-                </div>
-                <div className={`mt-2 text-sm leading-7 ${APP_MUTED_TEXT_CLASS}`}>
-                  {hasAboutMe ? profile.about_me : "No introduction yet."}
-                </div>
-              </div>
-
-              {hasLanguages && (
-                <InfoItem
-                  icon={<Languages className="h-3.5 w-3.5 text-[#71828c]" />}
-                  label="Languages"
-                  value={profile.languages!.join(", ")}
-                />
-              )}
-
-            </div>
-          </section>
-
+        <div className="grid gap-5">
           <section className={`${APP_SURFACE_CARD_CLASS} p-5`}>
             <div className="flex items-center justify-between gap-3">
               <div>
