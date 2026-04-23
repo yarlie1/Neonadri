@@ -279,6 +279,18 @@ export default function TopNav() {
           {
             event: "*",
             schema: "public",
+            table: "posts",
+            filter: `user_id=eq.${userId}`,
+          },
+          () => {
+            void refreshIndicators(userId);
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
             table: "match_requests",
             filter: `post_owner_user_id=eq.${userId}`,
           },

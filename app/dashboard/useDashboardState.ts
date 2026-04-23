@@ -72,7 +72,7 @@ export function useDashboardState({
     return getPostStatus(post?.meeting_time || null);
   };
 
-  const [posts] = useState(initialPosts);
+  const [posts, setPosts] = useState(initialPosts);
   const [receivedItems, setReceivedItems] = useState(requestsReceived);
   const [sentItems, setSentItems] = useState(requestsSent);
   const [matchItems, setMatchItems] = useState(matches);
@@ -121,6 +121,10 @@ export function useDashboardState({
       return () => clearTimeout(timer);
     }
   }, []);
+
+  useEffect(() => {
+    setPosts(initialPosts);
+  }, [initialPosts]);
 
   useEffect(() => {
     setReceivedItems(requestsReceived);
@@ -262,5 +266,6 @@ export function useDashboardState({
     pendingSent,
     acceptedSent,
     upcomingMatchedMeetups,
+    setPosts,
   };
 }

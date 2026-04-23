@@ -669,6 +669,7 @@ export default function DashboardClient({
     pendingReceived,
     acceptedSent,
     upcomingMatchedMeetups,
+    setPosts,
   } = useDashboardState({
     initialPosts,
     requestsReceived: liveReceivedItems,
@@ -820,6 +821,14 @@ export default function DashboardClient({
       nextSent: MatchRequestRow[],
       nextMatches: MatchRow[]
     ) => {
+      const hostPostsPromise = supabase
+        .from("posts")
+        .select(
+          "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, status, cancelled_at, cancelled_by_user_id"
+        )
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+
       const relatedUserIds = Array.from(
         new Set([
           ...nextReceived.map((item) => item.requester_user_id),
@@ -836,7 +845,8 @@ export default function DashboardClient({
         ])
       );
 
-      const [profilesRes, postsRes, chatsRes, summaryRes] = await Promise.all([
+      const [hostPostsRes, profilesRes, postsRes, chatsRes, summaryRes] = await Promise.all([
+        hostPostsPromise,
         profileUserIds.length > 0
           ? supabase
               .from("profiles")
@@ -914,6 +924,7 @@ export default function DashboardClient({
         };
       });
 
+      setPosts((hostPostsRes.data || []) as PostRow[]);
       setLiveProfileMap(nextProfileMap);
       setLiveProfileMetaMap(nextProfileMetaMap);
       setLivePostMap(nextPostMap);
@@ -978,10 +989,20 @@ export default function DashboardClient({
 
     refreshChannel = supabase
       .channel(`dashboard-live-${userId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "posts",
+            filter: `user_id=eq.${userId}`,
+          },
+          () => void refreshDashboardData()
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
           schema: "public",
           table: "match_requests",
           filter: `post_owner_user_id=eq.${userId}`,
