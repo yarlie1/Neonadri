@@ -548,6 +548,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                         postId={post.id}
                         meetingTime={post.meeting_time}
                         userTimeZone={userTimeZone}
+                        hasMatchedParticipant={isPostMatched}
                       />
                     </div>
                   </div>

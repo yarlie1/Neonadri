@@ -474,7 +474,9 @@ function MatchesTabPanel({
         const meetupStatus = getPostLifecycleStatus(post).toLowerCase();
         const canLeaveReview = meetupStatus === "expired" && !alreadyReviewed;
         const canLeaveCancellationFeedback =
-          meetupStatus === "cancelled" && !alreadyLeftCancellationFeedback;
+          meetupStatus === "cancelled" &&
+          post?.cancelled_by_user_id !== userId &&
+          !alreadyLeftCancellationFeedback;
         const chatMeta = matchChatMetaMap[item.id];
         const viewerLastSeen =
           chatMeta?.host_user_id === userId

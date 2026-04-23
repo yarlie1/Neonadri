@@ -18,6 +18,7 @@ export type PostRow = {
   created_at: string;
   status: string | null;
   cancelled_at: string | null;
+  cancelled_by_user_id: string | null;
 };
 
 export type MatchRequestRow = {
@@ -98,7 +99,7 @@ export default async function DashboardPage() {
     supabase
       .from("posts")
       .select(
-        "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, status, cancelled_at"
+        "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, status, cancelled_at, cancelled_by_user_id"
       )
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
@@ -187,7 +188,7 @@ export default async function DashboardPage() {
     const { data: relatedPostsData } = await supabase
       .from("posts")
       .select(
-        "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, status, cancelled_at"
+        "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, status, cancelled_at, cancelled_by_user_id"
       )
       .in("id", relatedPostIds);
 

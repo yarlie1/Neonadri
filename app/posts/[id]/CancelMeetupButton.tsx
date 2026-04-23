@@ -10,10 +10,12 @@ export default function CancelMeetupButton({
   postId,
   meetingTime,
   userTimeZone,
+  hasMatchedParticipant,
 }: {
   postId: number;
   meetingTime: string | null;
   userTimeZone: string;
+  hasMatchedParticipant: boolean;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -32,7 +34,9 @@ export default function CancelMeetupButton({
 
     const confirmed = window.confirm(
       sameDay
-        ? "Cancel this meetup today?\n\nThis meetup starts today. Cancelling now can strongly affect trust, and your guest can leave cancellation feedback. Chat will become read-only for matched participants."
+        ? hasMatchedParticipant
+          ? "Cancel this meetup today?\n\nThis meetup starts today. Cancelling now can strongly affect trust, and your guest can leave cancellation feedback. Chat will become read-only for matched participants."
+          : "Cancel this meetup today?\n\nThis meetup starts today. Cancelling now can strongly affect trust. This meetup will stop accepting requests, and any existing plans around it may be disrupted."
         : "Cancel this meetup?\n\nThis meetup will stop accepting requests, and chat will become read-only for matched participants."
     );
 
