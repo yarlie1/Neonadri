@@ -83,15 +83,6 @@ type ChatMessage = {
   createdAt: string;
 };
 
-type DebugState = {
-  lastEvent: string;
-  historyCount: number | null;
-  fetchStatus: "idle" | "success" | "failed" | "unavailable";
-  publishStatus: "idle" | "success" | "failed";
-  serverHistoryStatus: "idle" | "success" | "failed";
-  serverHistoryCount: number | null;
-};
-
 function formatMessageTime(value: string) {
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) return "";
@@ -117,12 +108,6 @@ function formatPresenceLabel(value: string | null) {
   if (diffHours < 24) return `Last seen ${diffHours}h ago`;
 
   return `Last seen ${parsed.toLocaleDateString()}`;
-}
-
-function formatKeyDebug(value: string | undefined) {
-  if (!value) return "missing";
-  if (value.length <= 12) return value;
-  return `${value.slice(0, 8)}...${value.slice(-6)}`;
 }
 
 export default function ChatRoomClient({
@@ -161,14 +146,6 @@ export default function ChatRoomClient({
   const [otherUserLastSeenAt, setOtherUserLastSeenAt] = useState<string | null>(
     initialOtherUserLastSeenAt
   );
-  const [debugState, setDebugState] = useState<DebugState>({
-    lastEvent: "idle",
-    historyCount: null,
-    fetchStatus: "idle",
-    publishStatus: "idle",
-    serverHistoryStatus: "idle",
-    serverHistoryCount: null,
-  });
   const pubnubRef = useRef<InstanceType<NonNullable<typeof window.PubNub>> | null>(null);
   const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -177,8 +154,6 @@ export default function ChatRoomClient({
   const subscribeKey = process.env.NEXT_PUBLIC_PUBNUB_SUBSCRIBE_KEY;
 
   const roomLabel = useMemo(() => roomId, [roomId]);
-  const publishKeyDebug = useMemo(() => formatKeyDebug(publishKey), [publishKey]);
-  const subscribeKeyDebug = useMemo(() => formatKeyDebug(subscribeKey), [subscribeKey]);
   const presenceLabel = useMemo(
     () => formatPresenceLabel(otherUserLastSeenAt),
     [otherUserLastSeenAt]
@@ -186,22 +161,6 @@ export default function ChatRoomClient({
   const isOtherUserActiveNow = presenceLabel === "Active now";
   const canSend =
     !chatClosed && connectionLabel === "Connected" && draft.trim().length > 0 && !sending;
-
-  const logChatDebug = (
-    event: string,
-    details: Record<string, unknown> = {}
-  ) => {
-    setDebugState((current) => ({
-      ...current,
-      lastEvent: event,
-    }));
-    console.info("[match-chat-debug]", {
-      event,
-      matchId,
-      roomId: roomLabel,
-      ...details,
-    });
-  };
 
   const canMarkSeen = () => {
     if (typeof document === "undefined") return true;
@@ -276,7 +235,6 @@ export default function ChatRoomClient({
 
     pubnubRef.current = pubnub;
     setConnectionLabel("Connected");
-    logChatDebug("sdk-connected");
 
     const pushMessage = (incoming: ChatMessage) => {
       setMessages((current) => {
@@ -293,11 +251,6 @@ export default function ChatRoomClient({
         const payload = event.message || {};
         const text = (payload.text || "").trim();
         if (!text) return;
-
-        logChatDebug("live-message-received", {
-          timetoken: event.timetoken,
-          senderId: payload.senderId || "unknown",
-        });
 
         pushMessage({
           id: event.timetoken,
@@ -319,18 +272,10 @@ export default function ChatRoomClient({
 
     const loadHistory = async () => {
       if (!pubnub.fetchMessages) {
-        setDebugState((current) => ({
-          ...current,
-          fetchStatus: "unavailable",
-          historyCount: null,
-          lastEvent: "history-unavailable",
-        }));
-        logChatDebug("history-unavailable");
         return;
       }
 
       try {
-        logChatDebug("history-fetch-start");
         const history = await pubnub.fetchMessages({
           channels: [roomLabel],
           count: 50,
@@ -338,16 +283,6 @@ export default function ChatRoomClient({
         });
 
         const channelHistory = history.channels?.[roomLabel] || [];
-        setDebugState((current) => ({
-          ...current,
-          fetchStatus: "success",
-          historyCount: channelHistory.length,
-          lastEvent: "history-fetch-success",
-        }));
-        logChatDebug("history-fetch-success", {
-          channelCount: Object.keys(history.channels || {}).length,
-          messageCount: channelHistory.length,
-        });
 
         const historyMessages =
           channelHistory
@@ -368,19 +303,7 @@ export default function ChatRoomClient({
 
         setMessages(historyMessages as ChatMessage[]);
         void markSeenIfVisible();
-      } catch (error) {
-        setDebugState((current) => ({
-          ...current,
-          fetchStatus: "failed",
-          historyCount: null,
-          lastEvent: "history-fetch-failed",
-        }));
-        console.error("[match-chat-debug]", {
-          event: "history-fetch-failed",
-          matchId,
-          roomId: roomLabel,
-          error,
-        });
+      } catch {
         setErrorMessage("Past messages could not be loaded. New chat still works.");
       }
     };
@@ -394,56 +317,6 @@ export default function ChatRoomClient({
       setConnectionLabel("Disconnected");
     };
   }, [currentUserId, isProviderConfigured, publishKey, roomLabel, sdkReady, subscribeKey]);
-
-  useEffect(() => {
-    if (!isProviderConfigured) {
-      return;
-    }
-
-    let cancelled = false;
-
-    const loadServerHistoryDebug = async () => {
-      try {
-        const response = await fetch(`/api/matches/chat/history-debug?matchId=${matchId}`, {
-          method: "GET",
-          cache: "no-store",
-        });
-
-        const payload = (await response.json().catch(() => null)) as
-          | {
-              messageCount?: number;
-              error?: string;
-            }
-          | null;
-
-        if (cancelled) return;
-
-        setDebugState((current) => ({
-          ...current,
-          serverHistoryStatus: response.ok ? "success" : "failed",
-          serverHistoryCount:
-            typeof payload?.messageCount === "number" ? payload.messageCount : null,
-          lastEvent: response.ok
-            ? current.lastEvent
-            : "server-history-fetch-failed",
-        }));
-      } catch {
-        if (cancelled) return;
-        setDebugState((current) => ({
-          ...current,
-          serverHistoryStatus: "failed",
-          serverHistoryCount: null,
-          lastEvent: "server-history-fetch-failed",
-        }));
-      }
-    };
-
-    void loadServerHistoryDebug();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [isProviderConfigured, matchId]);
 
   useEffect(() => {
     if (!listRef.current) return;
@@ -541,27 +414,8 @@ export default function ChatRoomClient({
         },
         storeInHistory: true,
       });
-      setDebugState((current) => ({
-        ...current,
-        publishStatus: "success",
-        lastEvent: "publish-success",
-      }));
-      logChatDebug("publish-success", {
-        senderId: currentUserId,
-      });
       setDraft("");
-    } catch (error) {
-      setDebugState((current) => ({
-        ...current,
-        publishStatus: "failed",
-        lastEvent: "publish-failed",
-      }));
-      console.error("[match-chat-debug]", {
-        event: "publish-failed",
-        matchId,
-        roomId: roomLabel,
-        error,
-      });
+    } catch {
       setErrorMessage("Message could not be sent. Please try again.");
     } finally {
       setSending(false);
@@ -711,26 +565,6 @@ export default function ChatRoomClient({
 
               <div className="mt-4 text-center text-[11px] font-medium text-[#7f8b92]">
                 Live Chat Powered by PubNub
-              </div>
-              <div className="mt-3 rounded-[14px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-[11px] leading-5 text-[#66757e]">
-                <div className="font-semibold uppercase tracking-[0.16em] text-[#7c8a92]">
-                  Chat debug
-                </div>
-                <div className="mt-1">Room: {roomLabel}</div>
-                <div>Publish key: {publishKeyDebug}</div>
-                <div>Subscribe key: {subscribeKeyDebug}</div>
-                <div>History fetch: {debugState.fetchStatus}</div>
-                <div>
-                  Saved messages found:{" "}
-                  {debugState.historyCount === null ? "-" : debugState.historyCount}
-                </div>
-                <div>Server history: {debugState.serverHistoryStatus}</div>
-                <div>
-                  Server saved messages:{" "}
-                  {debugState.serverHistoryCount === null ? "-" : debugState.serverHistoryCount}
-                </div>
-                <div>Last publish: {debugState.publishStatus}</div>
-                <div>Last event: {debugState.lastEvent}</div>
               </div>
             </>
           ) : (
