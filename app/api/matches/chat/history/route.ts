@@ -3,7 +3,15 @@ import { createClient } from "../../../../../lib/supabase/server";
 import { getOrCreateAuthorizedMatchChat } from "../../../../../lib/chat/matchChats";
 import { isAdultConfirmedUser } from "../../../../../lib/adultGate";
 
-type PubNubHistoryEnvelope = {
+type PubNubHistoryEntry = {
+  message?:
+    | string
+    | {
+        text?: string;
+        senderId?: string;
+        senderName?: string;
+        createdAt?: string;
+      };
   entry?: {
     text?: string;
     senderId?: string;
@@ -21,16 +29,44 @@ type HistoryMessage = {
   createdAt: string;
 };
 
-function parsePubNubHistoryPayload(payload: unknown): HistoryMessage[] {
-  const entries = Array.isArray(payload) ? payload[0] : null;
-  if (!Array.isArray(entries)) {
+type PubNubHistoryResponse =
+  | {
+      channels?: Record<string, PubNubHistoryEntry[]>;
+    }
+  | [PubNubHistoryEntry[], unknown, unknown];
+
+function resolveHistoryEntries(
+  payload: unknown,
+  channel: string
+): PubNubHistoryEntry[] {
+  if (Array.isArray(payload)) {
+    return Array.isArray(payload[0]) ? payload[0] : [];
+  }
+
+  const response = payload as PubNubHistoryResponse;
+  const channels = "channels" in response ? response.channels : undefined;
+  if (!channels || typeof channels !== "object") {
     return [];
   }
 
+  return (
+    channels[channel] ||
+    channels[encodeURIComponent(channel)] ||
+    channels[decodeURIComponent(channel)] ||
+    []
+  );
+}
+
+function parsePubNubHistoryPayload(payload: unknown, channel: string): HistoryMessage[] {
+  const entries = resolveHistoryEntries(payload, channel);
+
   return entries
     .map((entry) => {
-      const historyEntry = entry as PubNubHistoryEnvelope;
-      const message = historyEntry.entry;
+      const historyEntry = entry as PubNubHistoryEntry;
+      const message =
+        typeof historyEntry.message === "string"
+          ? { text: historyEntry.message }
+          : historyEntry.message || historyEntry.entry;
       const text = String(message?.text || "").trim();
 
       if (!text) {
@@ -98,6 +134,8 @@ export async function GET(request: Request) {
     historyUrl.searchParams.set("count", String(count));
     historyUrl.searchParams.set("reverse", "false");
     historyUrl.searchParams.set("include_token", "true");
+    historyUrl.searchParams.set("include_uuid", "false");
+    historyUrl.searchParams.set("encode_channels", "false");
 
     const response = await fetch(historyUrl.toString(), {
       method: "GET",
@@ -118,7 +156,7 @@ export async function GET(request: Request) {
     }
 
     const payload = (await response.json()) as unknown;
-    const messages = parsePubNubHistoryPayload(payload);
+    const messages = parsePubNubHistoryPayload(payload, channel);
 
     return NextResponse.json({
       ok: true,
