@@ -7,6 +7,7 @@ import {
   Cake,
   Camera,
   Clock3,
+  Coins,
   Coffee,
   Dice5,
   Film,
