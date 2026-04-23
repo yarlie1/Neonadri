@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import {
+  Coins,
   Clock3,
   MapPin,
   MessageSquareMore,
