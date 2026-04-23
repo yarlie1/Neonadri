@@ -121,6 +121,7 @@ export default function ChatRoomClient({
 }) {
   const [sdkReady, setSdkReady] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -253,6 +254,7 @@ export default function ChatRoomClient({
     subscriptionRef.current = subscription;
 
     const loadHistory = async () => {
+      setHistoryLoading(true);
       try {
         const response = await fetch(
           `/api/matches/chat/history?matchId=${matchId}&count=50`,
@@ -286,6 +288,8 @@ export default function ChatRoomClient({
         void markSeenIfVisible();
       } catch {
         setErrorMessage("Past messages could not be loaded. New chat still works.");
+      } finally {
+        setHistoryLoading(false);
       }
     };
 
@@ -461,7 +465,17 @@ export default function ChatRoomClient({
                 ref={listRef}
                 className="mt-4 h-[315px] overflow-y-auto rounded-[18px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-3 py-3 sm:h-[345px] sm:px-4"
               >
-                {messages.length > 0 ? (
+                {historyLoading ? (
+                  <div className="flex h-full flex-col items-center justify-center px-6 text-center text-sm text-[#7a8790]">
+                    <LoaderCircle className="h-8 w-8 animate-spin text-[#9aa6ad]" />
+                    <div className="mt-3 font-medium text-[#52616a]">
+                      Loading conversation...
+                    </div>
+                    <div className="mt-1 max-w-xs leading-6">
+                      Pulling saved messages for this meetup chat.
+                    </div>
+                  </div>
+                ) : messages.length > 0 ? (
                   <div className="space-y-3">
                     {messages.map((message) => {
                       const isMine = message.senderId === currentUserId;
