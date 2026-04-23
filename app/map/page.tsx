@@ -1,5 +1,6 @@
 import { createClient } from "../../lib/supabase/server";
 import { getBlockedUserIdsForViewer } from "../../lib/safety";
+import { isConfirmedMatchStatus } from "../../lib/matches/status";
 import HomePostsMap from "../components/HomePostsMap";
 import {
   APP_BODY_TEXT_CLASS,
@@ -116,7 +117,9 @@ export default async function MapPage() {
     });
 
     ((matchesRes.data as MatchRow[]) || []).forEach((item) => {
-      requestStatusMap.set(item.post_id, "matched");
+      if (isConfirmedMatchStatus(item.status)) {
+        requestStatusMap.set(item.post_id, "matched");
+      }
     });
   }
 

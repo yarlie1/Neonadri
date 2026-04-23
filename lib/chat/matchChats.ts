@@ -1,4 +1,5 @@
 import { isBlockedBetween } from "../safety";
+import { isConfirmedMatchStatus } from "../matches/status";
 
 type SupabaseLikeClient = {
   from: (table: string) => {
@@ -74,7 +75,7 @@ export async function getOrCreateAuthorizedMatchChat(
     throw new Error("POST_NOT_FOUND");
   }
 
-  if (!["matched", "active"].includes(String(match.status || "").toLowerCase())) {
+  if (!isConfirmedMatchStatus(match.status)) {
     throw new Error("MATCH_NOT_READY");
   }
 

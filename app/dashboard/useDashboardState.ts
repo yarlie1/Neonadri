@@ -7,6 +7,7 @@ import {
   getMeetingStatus,
   parseMeetingTime,
 } from "../../lib/meetingTime";
+import { isConfirmedMatchStatus } from "../../lib/matches/status";
 import type { MatchRow, MatchRequestRow, PostRow } from "./page";
 import { getPostMatchState } from "./dashboardComponents";
 
@@ -168,6 +169,8 @@ export function useDashboardState({
   const upcomingMatchedMeetups = useMemo(() => {
     return matchItems
       .map((match) => {
+        if (!isConfirmedMatchStatus(match.status)) return null;
+
         const post = postMap[match.post_id];
         if (!post?.meeting_time) return null;
         if (String(post.status || "open").toLowerCase() === "cancelled") return null;

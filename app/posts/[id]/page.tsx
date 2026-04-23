@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { Sparkles } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import { getBlockedUserIdsForViewer } from "../../../lib/safety";
+import { isConfirmedMatchStatus } from "../../../lib/matches/status";
 import {
   APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
@@ -194,7 +195,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       myRequestId = request.id;
     }
 
-    if (match?.status) {
+    if (isConfirmedMatchStatus(match?.status)) {
       myRequestStatus = "matched";
       matchedRecord = match;
     }
@@ -219,7 +220,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       .eq("post_id", post.id)
       .maybeSingle();
 
-    matchedRecord = (matchRecordData as MatchRow | null) || null;
+    const nextMatchedRecord = (matchRecordData as MatchRow | null) || null;
+    matchedRecord = isConfirmedMatchStatus(nextMatchedRecord?.status)
+      ? nextMatchedRecord
+      : null;
   }
 
   const matchedGuestId = getMatchedGuestId(matchedRecord, post.user_id);
