@@ -74,7 +74,7 @@ export async function getOrCreateAuthorizedMatchChat(
     throw new Error("POST_NOT_FOUND");
   }
 
-  if (match.status !== "matched") {
+  if (!["matched", "active"].includes(String(match.status || "").toLowerCase())) {
     throw new Error("MATCH_NOT_READY");
   }
 
