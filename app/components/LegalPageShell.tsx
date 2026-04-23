@@ -84,6 +84,12 @@ export default function LegalPageShell({
               Back home
             </Link>
             <Link
+              href="/faq"
+              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+            >
+              FAQ
+            </Link>
+            <Link
               href="/community"
               className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
             >

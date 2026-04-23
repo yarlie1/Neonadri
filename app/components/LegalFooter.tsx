@@ -7,6 +7,9 @@ export default function LegalFooter() {
         <div className="flex flex-col gap-2 text-xs text-[#6f7d86] sm:flex-row sm:items-center sm:justify-between">
           <div>Neonadri is for adults 18+ only.</div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <Link href="/faq" className="transition hover:text-[#24323f]">
+              FAQ
+            </Link>
             <Link href="/terms" className="transition hover:text-[#24323f]">
               Terms
             </Link>
