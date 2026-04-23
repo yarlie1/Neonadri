@@ -205,10 +205,10 @@ function RecentChatsPanel({
           </div>
           <div>
             <div className={APP_EYEBROW_CLASS}>
-              Recent chats
+              Meetup chat
             </div>
             <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-              When you match with someone, your chat rooms will show up here.
+              Keep plans aligned before and after the meetup.
             </div>
           </div>
         </div>
@@ -221,10 +221,10 @@ function RecentChatsPanel({
       <div className="flex items-center justify-between gap-3">
         <div>
           <div className={APP_EYEBROW_CLASS}>
-            Recent chats
+            Meetup chat
           </div>
           <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#24323f]">
-            Open a chat right away
+            Stay connected around the meetup
           </div>
         </div>
       </div>
@@ -1056,7 +1056,7 @@ export default function DashboardClient({
                 My Meetups
               </h1>
               <p className={`mt-2 max-w-md ${APP_BODY_TEXT_CLASS}`}>
-                Manage posts, requests, matches, and reviews.
+                Keep your next meetup in view, stay connected in chat, and manage everything else in one place.
               </p>
             </div>
 
@@ -1079,10 +1079,10 @@ export default function DashboardClient({
                   Coming up next
                 </div>
                 <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#24323f]">
-                  Upcoming matched meetups
+                  Your next meetup
                 </div>
                 <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  {upcomingMatchedMeetups.length} meetup{upcomingMatchedMeetups.length > 1 ? "s" : ""} already matched and still ahead.
+                  {upcomingMatchedMeetups.length} matched meetup{upcomingMatchedMeetups.length > 1 ? "s" : ""} still ahead. Keep this one in view as the date gets closer.
                 </div>
               </div>
             </div>
@@ -1141,7 +1141,9 @@ export default function DashboardClient({
 
         <RecentChatsPanel recentChats={recentChats} userTimeZone={userTimeZone} />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div>
+          <div className={`${APP_EYEBROW_CLASS} mb-3 px-1`}>Manage your meetup activity</div>
+          <div className="grid grid-cols-2 gap-4">
           <DashboardTabCard
             active={activeTab === "posts"}
             label="My Posts"
@@ -1207,6 +1209,7 @@ export default function DashboardClient({
             icon={<Inbox className="h-4 w-4" />}
             onClick={() => setActiveTab("received")}
           />
+        </div>
         </div>
 
         {activeTab === "posts" && (
