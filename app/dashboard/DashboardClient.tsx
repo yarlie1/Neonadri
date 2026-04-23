@@ -1383,6 +1383,12 @@ export default function DashboardClient({
                 >
                   Rejected
                 </FilterPill>
+                <FilterPill
+                  active={sentFilter === "cancelled"}
+                  onClick={() => setSentFilter("cancelled")}
+                >
+                  Cancelled
+                </FilterPill>
               </div>
             </div>
           </div>
