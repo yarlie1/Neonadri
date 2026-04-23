@@ -365,7 +365,8 @@ export function MiniPostPreview({
             <span className="truncate">{post.target_gender || "Any"} / {post.target_age_group || "Any"}</span>
           </span>
           {amount !== null ? (
-            <span className="inline-flex shrink-0 items-center rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-3 py-1.5 text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)]">
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-3 py-1.5 text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)]">
+              <Coins className="h-3.5 w-3.5 text-[#7a8b95]" />
               CS ${amount.toLocaleString()}
             </span>
           ) : null}
