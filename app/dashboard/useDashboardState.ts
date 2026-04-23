@@ -181,7 +181,7 @@ export function useDashboardState({
 
       return item.status === sentFilter;
     });
-  }, [sentItems, sentFilter]);
+  }, [sentItems, sentFilter, postMap]);
 
   const pendingSent = useMemo(
     () =>
