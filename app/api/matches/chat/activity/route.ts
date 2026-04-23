@@ -10,6 +10,7 @@ import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
 } from "../../../../../lib/userTimeZone";
+import { isAdultConfirmedUser } from "../../../../../lib/adultGate";
 
 type ActivityAction = "seen" | "message";
 
@@ -25,6 +26,13 @@ export async function GET(request: Request) {
 
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  if (!isAdultConfirmedUser(user)) {
+    return NextResponse.json(
+      { error: "Please confirm that you are 18 or older before using match chat." },
+      { status: 403 }
+    );
   }
 
   const { searchParams } = new URL(request.url);
@@ -78,6 +86,13 @@ export async function POST(request: Request) {
 
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  if (!isAdultConfirmedUser(user)) {
+    return NextResponse.json(
+      { error: "Please confirm that you are 18 or older before using match chat." },
+      { status: 403 }
+    );
   }
 
   let body: { matchId?: number; action?: ActivityAction } = {};

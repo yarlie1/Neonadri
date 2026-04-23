@@ -156,7 +156,17 @@ export async function POST(req: Request) {
           ? "Your request was already accepted."
           : status === "rejected"
           ? "This request was previously declined."
-          : `Request already exists: ${existing.status}`;
+          : "A request for this meetup already exists.";
+
+      if (!["pending", "accepted", "rejected"].includes(status)) {
+        console.warn("Unexpected existing match request status", {
+          requestId: existing.id,
+          status: existing.status,
+          postId,
+          requesterUserId: user.id,
+          postOwnerUserId,
+        });
+      }
 
       return NextResponse.json({ error }, { status: 409 });
     }

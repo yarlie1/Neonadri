@@ -6,7 +6,13 @@ import {
 } from "./lib/userTimeZone";
 import { isAdultConfirmedUser } from "./lib/adultGate";
 
-const PROTECTED_PATHS = ["/dashboard", "/write", "/account", "/reviews/write"];
+const PROTECTED_PATHS = [
+  "/dashboard",
+  "/write",
+  "/account",
+  "/reviews/write",
+  "/matches",
+];
 const ADULT_CHECK_PATH = "/adult-check";
 
 function isProtectedPath(pathname: string) {
@@ -104,5 +110,12 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/write/:path*", "/account/:path*", "/reviews/write/:path*", "/adult-check"],
+  matcher: [
+    "/dashboard/:path*",
+    "/write/:path*",
+    "/account/:path*",
+    "/reviews/write/:path*",
+    "/matches/:path*",
+    "/adult-check",
+  ],
 };
