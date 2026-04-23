@@ -726,6 +726,7 @@ export function MatchReviewPanel({
   viewerHasReview,
   matchReviews,
   getMatchReviewAuthorLabel,
+  isCancelled = false,
 }: {
   isPostMatched: boolean;
   isViewerParticipant: boolean;
@@ -735,6 +736,7 @@ export function MatchReviewPanel({
   viewerHasReview: boolean;
   matchReviews: MatchReviewRow[];
   getMatchReviewAuthorLabel: (review: MatchReviewRow) => string;
+  isCancelled?: boolean;
 }) {
   if (!(isPostMatched && isViewerParticipant && matchedRecordId)) {
     return null;
@@ -765,7 +767,9 @@ export function MatchReviewPanel({
       <div
         className={`mt-4 ${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}
       >
-        {meetupFinished
+        {isCancelled
+          ? "This meetup was cancelled by the host, so standard meetup reviews are not available."
+          : meetupFinished
           ? viewerHasReview
             ? "You already submitted your review for this meetup."
             : matchReviews.length > 0
@@ -801,6 +805,54 @@ export function MatchReviewPanel({
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+export function CancellationFeedbackPanel({
+  isCancelled,
+  isViewerParticipant,
+  matchedRecordId,
+  canLeaveCancellationFeedback,
+  hasCancellationFeedback,
+}: {
+  isCancelled: boolean;
+  isViewerParticipant: boolean;
+  matchedRecordId?: number | null;
+  canLeaveCancellationFeedback: boolean;
+  hasCancellationFeedback: boolean;
+}) {
+  if (!(isCancelled && isViewerParticipant && matchedRecordId)) {
+    return null;
+  }
+
+  return (
+    <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className={APP_EYEBROW_CLASS}>Cancellation feedback</div>
+          <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#24323f]">
+            How was the cancellation handled?
+          </div>
+        </div>
+        {canLeaveCancellationFeedback ? (
+          <Link
+            href={`/cancellation-feedback/write/${matchedRecordId}`}
+            className={`inline-flex shrink-0 items-center gap-2 rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
+          >
+            <MessageSquareText className="h-4 w-4 text-[#71828c]" />
+            Leave Feedback
+          </Link>
+        ) : null}
+      </div>
+
+      <div className={`mt-4 ${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}>
+        {hasCancellationFeedback
+          ? "You already shared cancellation feedback for this meetup."
+          : canLeaveCancellationFeedback
+          ? "Share how this cancellation was handled. This feedback stays internal and is not shown on profiles."
+          : "Cancellation feedback is not available for the person who cancelled this meetup."}
+      </div>
     </div>
   );
 }

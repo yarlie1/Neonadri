@@ -33,6 +33,7 @@ import {
   type MatchSummaryRow,
 } from "./detailData";
 import {
+  CancellationFeedbackPanel,
   MatchedChatPanel,
   MatchReviewPanel,
   MeetupOverviewCard,
@@ -150,6 +151,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   let ownerRequests: MatchRequestRow[] = [];
   let matchReviews: MatchReviewRow[] = [];
   let matchedRecord: MatchRow | null = null;
+  let hasCancellationFeedback = false;
   let matchedPartner:
     | {
         userId: string;
@@ -246,6 +248,15 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     matchReviews = (matchReviewData || []) as MatchReviewRow[];
 
     if (user) {
+      const { data: cancellationFeedbackData } = await supabase
+        .from("meetup_cancellation_feedback")
+        .select("id")
+        .eq("match_id", matchedRecord.id)
+        .eq("feedback_user_id", user.id)
+        .maybeSingle();
+
+      hasCancellationFeedback = !!cancellationFeedbackData;
+
       const { data: matchChatData } = await supabase
         .from("match_chats")
         .select(
@@ -362,6 +373,14 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     const revieweeLabel = getParticipantDisplayLabel(review.reviewee_user_id);
     return `${reviewerLabel} reviewed ${revieweeLabel}`;
   };
+  const canLeaveCancellationFeedback =
+    isCancelled &&
+    isViewerParticipant &&
+    !!matchedRecord?.id &&
+    !!user &&
+    post.cancelled_by_user_id !== user.id &&
+    !hasCancellationFeedback;
+
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
       <div className="mx-auto max-w-3xl space-y-5">
@@ -478,6 +497,17 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 viewerHasReview={viewerHasReview}
                 matchReviews={matchReviews}
                 getMatchReviewAuthorLabel={getMatchReviewAuthorLabel}
+                isCancelled={isCancelled}
+              />
+            </ScrollReveal>
+
+            <ScrollReveal>
+              <CancellationFeedbackPanel
+                isCancelled={isCancelled}
+                isViewerParticipant={isViewerParticipant}
+                matchedRecordId={matchedRecord?.id}
+                canLeaveCancellationFeedback={canLeaveCancellationFeedback}
+                hasCancellationFeedback={hasCancellationFeedback}
               />
             </ScrollReveal>
 

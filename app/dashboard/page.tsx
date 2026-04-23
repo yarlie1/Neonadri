@@ -64,6 +64,13 @@ export type MatchReviewRow = {
   created_at: string;
 };
 
+export type CancellationFeedbackRow = {
+  id: number;
+  match_id: number;
+  feedback_user_id: string;
+  created_at: string;
+};
+
 export type MatchSummaryRow = {
   post_id: number;
   is_matched: boolean;
@@ -86,7 +93,8 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const [postsRes, receivedRes, sentRes, matchesRes, reviewsRes] = await Promise.all([
+  const [postsRes, receivedRes, sentRes, matchesRes, reviewsRes, cancellationFeedbackRes] =
+    await Promise.all([
     supabase
       .from("posts")
       .select(
@@ -117,6 +125,11 @@ export default async function DashboardPage() {
       .from("match_reviews")
       .select("id, match_id, reviewer_user_id, reviewee_user_id, rating, review_text, created_at")
       .eq("reviewer_user_id", user.id),
+
+    supabase
+      .from("meetup_cancellation_feedback")
+      .select("id, match_id, feedback_user_id, created_at")
+      .eq("feedback_user_id", user.id),
   ]);
 
   const posts = (postsRes.data || []) as PostRow[];
@@ -124,6 +137,8 @@ export default async function DashboardPage() {
   const requestsSent = (sentRes.data || []) as MatchRequestRow[];
   const matches = (matchesRes.data || []) as MatchRow[];
   const reviews = (reviewsRes.data || []) as MatchReviewRow[];
+  const cancellationFeedback =
+    (cancellationFeedbackRes.data || []) as CancellationFeedbackRow[];
   let matchChatMetaMap: Record<number, MatchChatMetaRow> = {};
   let matchSummaryMap: Record<
     number,
@@ -196,6 +211,7 @@ export default async function DashboardPage() {
   }
 
   const reviewedMatchIds = reviews.map((r) => r.match_id);
+  const cancellationFeedbackMatchIds = cancellationFeedback.map((item) => item.match_id);
 
   if (matches.length > 0) {
     const { data: matchChatMetaData } = await supabase
@@ -222,6 +238,7 @@ export default async function DashboardPage() {
       postMap={postMap}
       matchSummaryMap={matchSummaryMap}
       reviewedMatchIds={reviewedMatchIds}
+      cancellationFeedbackMatchIds={cancellationFeedbackMatchIds}
       matchChatMetaMap={matchChatMetaMap}
       initialUserTimeZone={initialUserTimeZone}
     />

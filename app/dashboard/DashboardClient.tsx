@@ -441,6 +441,7 @@ function MatchesTabPanel({
   profileMetaMap,
   postMap,
   reviewedMatchIds,
+  cancellationFeedbackMatchIds,
   matchChatMetaMap,
   userTimeZone,
   getPostLifecycleStatus,
@@ -453,6 +454,7 @@ function MatchesTabPanel({
   profileMetaMap: Record<string, string>;
   postMap: Record<number, PostRow>;
   reviewedMatchIds: number[];
+  cancellationFeedbackMatchIds: number[];
   matchChatMetaMap: Record<number, MatchChatMetaRow>;
   userTimeZone: string;
   getPostLifecycleStatus: (post: PostRow | null | undefined) => "Upcoming" | "Expired" | "Cancelled";
@@ -467,8 +469,12 @@ function MatchesTabPanel({
         const hostName = post?.user_id ? profileMap[post.user_id] || "Unknown" : "Unknown";
         const hostMeta = post?.user_id ? profileMetaMap[post.user_id] || "" : "";
         const alreadyReviewed = reviewedMatchIds.includes(item.id);
+        const alreadyLeftCancellationFeedback =
+          cancellationFeedbackMatchIds.includes(item.id);
         const meetupStatus = getPostLifecycleStatus(post).toLowerCase();
         const canLeaveReview = meetupStatus === "expired" && !alreadyReviewed;
+        const canLeaveCancellationFeedback =
+          meetupStatus === "cancelled" && !alreadyLeftCancellationFeedback;
         const chatMeta = matchChatMetaMap[item.id];
         const viewerLastSeen =
           chatMeta?.host_user_id === userId
@@ -539,6 +545,21 @@ function MatchesTabPanel({
                   <Star className="h-3.5 w-3.5" />
                   Leave Review
                 </CompactActionButton>
+              ) : canLeaveCancellationFeedback ? (
+                <CompactActionButton href={`/cancellation-feedback/write/${item.id}`}>
+                  <Star className="h-3.5 w-3.5" />
+                  Leave Feedback
+                </CompactActionButton>
+              ) : alreadyLeftCancellationFeedback ? (
+                <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                  <Star className="h-3.5 w-3.5" />
+                  Feedback submitted
+                </div>
+              ) : meetupStatus === "cancelled" ? (
+                <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                  <Star className="h-3.5 w-3.5" />
+                  Cancellation recorded
+                </div>
               ) : alreadyReviewed ? (
                 <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                   <Star className="h-3.5 w-3.5" />
@@ -575,6 +596,7 @@ export default function DashboardClient({
   postMap,
   matchSummaryMap,
   reviewedMatchIds,
+  cancellationFeedbackMatchIds,
   matchChatMetaMap,
   initialUserTimeZone,
 }: {
@@ -591,6 +613,7 @@ export default function DashboardClient({
     { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
   >;
   reviewedMatchIds: number[];
+  cancellationFeedbackMatchIds: number[];
   matchChatMetaMap: Record<number, MatchChatMetaRow>;
   initialUserTimeZone: string;
 }) {
@@ -636,6 +659,7 @@ export default function DashboardClient({
     setProcessingRequestAction,
     showMatchSuccess,
     showReviewSuccess,
+    showCancellationFeedbackSuccess,
     filteredPosts,
     filteredReceived,
     filteredSent,
@@ -1065,6 +1089,12 @@ export default function DashboardClient({
           </div>
         )}
 
+        {showCancellationFeedbackSuccess && (
+          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#52616a] shadow-sm`}>
+            Cancellation feedback submitted successfully.
+          </div>
+        )}
+
         <div className="relative overflow-hidden rounded-[32px] border border-[#dfe7ec] bg-[radial-gradient(circle_at_top_left,#ffffff_0%,#f4f7f9_44%,#dfe7ec_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(118,126,133,0.11)]">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/45 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#d8e1e7]/55 blur-2xl" />
@@ -1422,6 +1452,7 @@ export default function DashboardClient({
             profileMetaMap={liveProfileMetaMap}
             postMap={livePostMap}
             reviewedMatchIds={reviewedMatchIds}
+            cancellationFeedbackMatchIds={cancellationFeedbackMatchIds}
             matchChatMetaMap={liveMatchChatMetaMap}
             userTimeZone={userTimeZone}
             getPostLifecycleStatus={getPostLifecycleStatus}

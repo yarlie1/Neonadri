@@ -89,12 +89,15 @@ export function useDashboardState({
   >(null);
   const [showMatchSuccess, setShowMatchSuccess] = useState(false);
   const [showReviewSuccess, setShowReviewSuccess] = useState(false);
+  const [showCancellationFeedbackSuccess, setShowCancellationFeedbackSuccess] =
+    useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
     const success = params.get("success");
     const review = params.get("review");
+    const cancellationFeedback = params.get("cancellation_feedback");
 
     if (tab === "posts" || tab === "received" || tab === "sent" || tab === "matches") {
       setActiveTab(tab);
@@ -109,6 +112,12 @@ export function useDashboardState({
     if (review === "1") {
       setShowReviewSuccess(true);
       const timer = setTimeout(() => setShowReviewSuccess(false), 3000);
+      return () => clearTimeout(timer);
+    }
+
+    if (cancellationFeedback === "1") {
+      setShowCancellationFeedbackSuccess(true);
+      const timer = setTimeout(() => setShowCancellationFeedbackSuccess(false), 3000);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -244,6 +253,7 @@ export function useDashboardState({
     setProcessingRequestAction,
     showMatchSuccess,
     showReviewSuccess,
+    showCancellationFeedbackSuccess,
     filteredPosts,
     filteredReceived,
     filteredSent,
