@@ -415,47 +415,25 @@ export default function TopNav() {
 
   const navBtn = (active: boolean) =>
     `inline-flex items-center gap-2 rounded-[18px] border px-3 py-2.5 text-sm font-medium transition ${
-      isSilverHome
-        ? active
-          ? "border-[#e6edf1] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(240,244,246,0.995)_100%)] text-[#26343d] shadow-[0_12px_24px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,0.99)]"
-          : "border-[#e6edf1] bg-[linear-gradient(180deg,rgba(253,253,253,0.98)_0%,rgba(243,246,248,0.98)_100%)] text-[#4f5f68] shadow-[0_8px_18px_rgba(118,126,133,0.06)] hover:border-[#dbe3e8] hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(245,248,250,1)_100%)] hover:text-[#33434c]"
-        : active
-        ? "border-[#dfcaba] bg-[linear-gradient(180deg,#fffdf9_0%,#f3e7db_100%)] text-[#3f3226] shadow-[0_12px_28px_rgba(120,86,52,0.10)]"
-        : "border-[#e5d8cb] bg-[linear-gradient(180deg,#fffdfb_0%,#f8f0e7_100%)] text-[#5a5149] shadow-[0_8px_18px_rgba(93,68,48,0.04)] hover:bg-[#f6eee6]"
+      active
+        ? "border-[#e6edf1] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(240,244,246,0.995)_100%)] text-[#26343d] shadow-[0_12px_24px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,0.99)]"
+        : "border-[#e6edf1] bg-[linear-gradient(180deg,rgba(253,253,253,0.98)_0%,rgba(243,246,248,0.98)_100%)] text-[#4f5f68] shadow-[0_8px_18px_rgba(118,126,133,0.06)] hover:border-[#dbe3e8] hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(245,248,250,1)_100%)] hover:text-[#33434c]"
     }`;
 
-  const primary = isSilverHome
-    ? "inline-flex items-center gap-2 rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(135deg,#ffffff_0%,#eef3f6_100%)] px-3 py-2.5 text-sm font-medium text-[#2f3f48] shadow-[0_14px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#dbe3e8] hover:text-[#223039]"
-    : "inline-flex items-center gap-2 rounded-full border border-[#d8bcaa] bg-[linear-gradient(135deg,#3a2d28_0%,#9a6d5d_100%)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_14px_30px_rgba(108,77,48,0.18)] transition hover:brightness-[1.02]";
+  const primary =
+    "inline-flex items-center gap-2 rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(135deg,#ffffff_0%,#eef3f6_100%)] px-3 py-2.5 text-sm font-medium text-[#2f3f48] shadow-[0_14px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#dbe3e8] hover:text-[#223039]";
 
-  const mobileItem = isSilverHome
-    ? "inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium text-[#52616a] transition hover:bg-[#f4f7f9] hover:text-[#33434c]"
-    : "inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-medium text-[#5a5149] transition hover:bg-[#f4ece4]";
+  const mobileItem =
+    "inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium text-[#52616a] transition hover:bg-[#f4f7f9] hover:text-[#33434c]";
 
   return (
-    <header
-      className={`sticky top-0 z-50 backdrop-blur-xl ${
-        isSilverHome
-          ? "border-b border-[#eef3f6] bg-[rgba(248,250,251,0.84)]"
-          : "border-b border-[#ebdfd4] bg-[rgba(255,250,245,0.84)]"
-      }`}
-    >
-      <div
-        className={
-          isSilverHome
-            ? "border-b border-[#eef3f6] bg-[linear-gradient(180deg,rgba(253,253,253,0.97),rgba(244,247,249,0.92))]"
-            : "border-b border-[#f1e4d7] bg-[linear-gradient(180deg,rgba(255,252,248,0.95),rgba(249,240,232,0.88))]"
-        }
-      >
+    <header className="sticky top-0 z-50 border-b border-[#eef3f6] bg-[rgba(248,250,251,0.84)] backdrop-blur-xl">
+      <div className="border-b border-[#eef3f6] bg-[linear-gradient(180deg,rgba(253,253,253,0.97),rgba(244,247,249,0.92))]">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"
-              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base font-bold tracking-[-0.05em] text-white ${
-                isSilverHome
-                  ? "border-[#f7fbfd] bg-[radial-gradient(circle_at_top,_#ffffff,_#eef3f6_34%,_#9ea8b2_82%)] shadow-[0_18px_32px_rgba(146,154,162,0.16)]"
-                  : "border-[#e6cdbb] bg-[radial-gradient(circle_at_top,_#f6e5d6,_#c99679_80%)] shadow-[0_14px_30px_rgba(160,111,82,0.18)]"
-              }`}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#f7fbfd] bg-[radial-gradient(circle_at_top,_#ffffff,_#eef3f6_34%,_#9ea8b2_82%)] text-base font-bold tracking-[-0.05em] text-white shadow-[0_18px_32px_rgba(146,154,162,0.16)]"
               onClick={closeMenu}
               aria-label="Neonadri home"
             >
@@ -470,26 +448,18 @@ export default function TopNav() {
               >
                 <Link
                   href="/"
-                  className={`block ${isHomeTest ? "" : "w-full"} text-[20px] font-extrabold leading-none tracking-[-0.05em] sm:text-[24px] ${
-                  isSilverHome ? "" : "text-[#1f1b18]"
-                  }`}
-                  style={
-                    isSilverHome
-                      ? {
-                          color: "#303b44",
-                          textShadow:
-                            "0 1px 0 rgba(255,255,255,0.9), 0 0 16px rgba(255,255,255,0.22)",
-                        }
-                      : undefined
-                  }
+                  className={`block ${isHomeTest ? "" : "w-full"} text-[20px] font-extrabold leading-none tracking-[-0.05em] sm:text-[24px]`}
+                  style={{
+                    color: "#303b44",
+                    textShadow:
+                      "0 1px 0 rgba(255,255,255,0.9), 0 0 16px rgba(255,255,255,0.22)",
+                  }}
                   onClick={closeMenu}
                 >
                   Neonadri
                 </Link>
                 <div
-                  className={`block ${isSilverHome ? "" : "w-full truncate"} text-[9px] font-medium uppercase leading-none tracking-[0.16em] sm:text-[10px] sm:tracking-[0.16em] ${
-                    isSilverHome ? "text-[#80898f]" : "text-[#8d7d71]"
-                  }`}
+                  className="block text-[9px] font-medium uppercase leading-none tracking-[0.16em] text-[#80898f] sm:text-[10px] sm:tracking-[0.16em]"
                 >
                   AI-generated social space
                 </div>
@@ -564,42 +534,22 @@ export default function TopNav() {
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((prev) => !prev)}
-              className={`inline-flex h-10 w-10 items-center justify-center rounded-[18px] border transition ${
-                isSilverHome
-                  ? "border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] text-[#68767e] shadow-[0_10px_22px_rgba(118,126,133,0.09)] hover:bg-[#f6f9fb]"
-                  : "border-[#e3d5c8] bg-[linear-gradient(180deg,#fffdfb_0%,#f6ede5_100%)] text-[#5a5149] shadow-[0_10px_24px_rgba(90,70,48,0.10)] hover:bg-[#f4ece4]"
-              }`}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-[18px] border border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] text-[#68767e] shadow-[0_10px_22px_rgba(118,126,133,0.09)] transition hover:bg-[#f6f9fb]"
             >
               {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
             {menuOpen && (
-              <div
-                className={`absolute right-0 top-12 z-50 w-[15.25rem] overflow-hidden rounded-[22px] border ${
-                  isSilverHome
-                    ? "border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] shadow-[0_24px_46px_rgba(118,126,133,0.16)]"
-                    : "border-[#e7ddd2] bg-[linear-gradient(180deg,#fffdfb_0%,#f7efe7_100%)] shadow-[0_24px_50px_rgba(80,60,40,0.16)]"
-                }`}
-              >
-                <div
-                  className={`border-b px-3.5 py-2.5 ${
-                    isSilverHome
-                      ? "border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff,#f5f8fa)]"
-                      : "border-[#efe3d8] bg-[linear-gradient(180deg,#fff8f0,#fffdf8)]"
-                  }`}
-                >
-                  <div className={`text-[11px] font-semibold uppercase tracking-[0.28em] ${isSilverHome ? "text-[#78838b]" : "text-[#b27f61]"}`}>
+              <div className="absolute right-0 top-12 z-50 w-[15.25rem] overflow-hidden rounded-[22px] border border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] shadow-[0_24px_46px_rgba(118,126,133,0.16)]">
+                <div className="border-b border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff,#f5f8fa)] px-3.5 py-2.5">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#78838b]">
                     Neonadri
                   </div>
-                  <div className={`mt-1 text-[15px] font-semibold ${isSilverHome ? "text-[#26343d]" : "text-[#2d231d]"}`}>
-                    {isSilverHome
-                      ? "AI-softened social discovery."
-                      : "Meet someone new without the awkward start."}
+                  <div className="mt-1 text-[15px] font-semibold text-[#26343d]">
+                    AI-softened social discovery.
                   </div>
-                  <div className={`mt-1 text-[13px] leading-5 ${isSilverHome ? "text-[#6f7a82]" : "text-[#786b61]"}`}>
-                    {isSilverHome
-                      ? "Cyber-chill surfaces, same routes, same structure."
-                      : "Warm meetups, clear plans, and a softer way to begin."}
+                  <div className="mt-1 text-[13px] leading-5 text-[#6f7a82]">
+                    Cyber-chill surfaces, same routes, same structure.
                   </div>
                 </div>
 
@@ -609,9 +559,7 @@ export default function TopNav() {
                     onClick={closeMenu}
                     className={`${mobileItem} ${
                       isActivePath(pathname, "/")
-                          ? isSilverHome
-                            ? "bg-[#eef4f7] text-[#33434c]"
-                          : "bg-[#f4e6d8] text-[#3f3226]"
+                        ? "bg-[#eef4f7] text-[#33434c]"
                         : ""
                     }`}
                   >
@@ -625,9 +573,7 @@ export default function TopNav() {
                         onClick={closeMenu}
                         className={`${mobileItem} ${
                           isActivePath(pathname, "/dashboard")
-                            ? isSilverHome
-                              ? "bg-[#eef4f7] text-[#33434c]"
-                              : "bg-[#f4e6d8] text-[#3f3226]"
+                            ? "bg-[#eef4f7] text-[#33434c]"
                             : ""
                         }`}
                         >
@@ -646,9 +592,7 @@ export default function TopNav() {
                         onClick={closeMenu}
                         className={`${mobileItem} ${
                           pathname === "/profile" || pathname.startsWith("/profile/")
-                            ? isSilverHome
-                              ? "bg-[#eef4f7] text-[#33434c]"
-                              : "bg-[#f4e6d8] text-[#3f3226]"
+                            ? "bg-[#eef4f7] text-[#33434c]"
                             : ""
                         }`}
                       >
@@ -660,9 +604,7 @@ export default function TopNav() {
                         onClick={closeMenu}
                         className={`${mobileItem} ${
                           isActivePath(pathname, "/account")
-                            ? isSilverHome
-                              ? "bg-[#eef4f7] text-[#33434c]"
-                              : "bg-[#f4e6d8] text-[#3f3226]"
+                            ? "bg-[#eef4f7] text-[#33434c]"
                             : ""
                         }`}
                       >
@@ -672,31 +614,19 @@ export default function TopNav() {
                       <Link
                         href="/write"
                         onClick={closeMenu}
-                        className={`mt-1 inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium transition ${
-                          isSilverHome
-                            ? "border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] hover:bg-[#f7fafb]"
-                            : "bg-[#a48f7a] text-white hover:bg-[#927d69]"
-                        }`}
+                        className="mt-1 inline-flex items-center gap-2 rounded-[16px] border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] px-3 py-2.25 text-sm font-medium text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] transition hover:bg-[#f7fafb]"
                       >
                         <Plus className="h-4 w-4" />
                         Create Meetup
                       </Link>
 
-                      <div
-                        className={`my-1 border-t ${
-                          isSilverHome ? "border-[#eef3f6]" : "border-[#f0e8de]"
-                        }`}
-                      />
+                      <div className="my-1 border-t border-[#eef3f6]" />
 
                       <button
                         type="button"
                         onClick={handleLogout}
                         disabled={isLoggingOut}
-                        className={`inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-left text-sm font-medium transition ${
-                          isSilverHome
-                            ? "text-[#52616a] hover:bg-[#f3f6f8]"
-                            : "text-[#8b5e3c] hover:bg-[#f8efe7]"
-                        } ${
+                        className={`inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-left text-sm font-medium text-[#52616a] transition hover:bg-[#f3f6f8] ${
                           isLoggingOut ? "cursor-not-allowed opacity-60" : ""
                         }`}
                       >
@@ -711,9 +641,7 @@ export default function TopNav() {
                         onClick={closeMenu}
                         className={`${mobileItem} ${
                           isActivePath(pathname, "/login")
-                            ? isSilverHome
-                              ? "bg-[#eef4f7] text-[#33434c]"
-                              : "bg-[#f4e6d8] text-[#3f3226]"
+                            ? "bg-[#eef4f7] text-[#33434c]"
                             : ""
                         }`}
                       >
@@ -724,11 +652,7 @@ export default function TopNav() {
                       <Link
                         href="/signup"
                         onClick={closeMenu}
-                        className={`mt-1 inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium transition ${
-                          isSilverHome
-                            ? "border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] hover:bg-[#f7fafb]"
-                            : "bg-[#a48f7a] text-white hover:bg-[#927d69]"
-                        }`}
+                        className="mt-1 inline-flex items-center gap-2 rounded-[16px] border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] px-3 py-2.25 text-sm font-medium text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] transition hover:bg-[#f7fafb]"
                       >
                         <UserPlus className="h-4 w-4" />
                         Sign Up
