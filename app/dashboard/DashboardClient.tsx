@@ -227,6 +227,12 @@ function RecentChatsPanel({
             Stay connected around the meetup
           </div>
         </div>
+        <Link
+          href="/chats"
+          className="shrink-0 rounded-full border border-[#d6dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] px-3 py-2 text-xs font-medium text-[#52616a] transition hover:bg-[#f5f8fa]"
+        >
+          View all chats
+        </Link>
       </div>
 
       <div className="mt-4 overflow-hidden rounded-[20px] border border-[#d8e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)]">
