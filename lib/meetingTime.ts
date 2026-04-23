@@ -77,6 +77,32 @@ export function isMeetingFinished(
   return date.getTime() < Date.now();
 }
 
+export function hasMeetingStarted(
+  meetingTime: string | null,
+  timeZone = MEETING_TIME_ZONE
+) {
+  const date = parseMeetingTime(meetingTime, timeZone);
+  if (!date) return false;
+  return date.getTime() <= Date.now();
+}
+
+export function isMeetingToday(
+  meetingTime: string | null,
+  timeZone = MEETING_TIME_ZONE
+) {
+  const date = parseMeetingTime(meetingTime, timeZone);
+  if (!date) return false;
+
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+  return formatter.format(date) === formatter.format(new Date());
+}
+
 export function formatMeetingTime(
   meetingTime: string | null,
   timeZone = MEETING_TIME_ZONE

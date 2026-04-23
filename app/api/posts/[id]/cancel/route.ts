@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../../lib/supabase/server";
+import { cookies } from "next/headers";
+import { hasMeetingStarted } from "../../../../../lib/meetingTime";
+import {
+  normalizeUserTimeZone,
+  USER_TIME_ZONE_COOKIE,
+} from "../../../../../lib/userTimeZone";
 
 type RouteContext = {
   params: {
@@ -15,6 +21,10 @@ export async function POST(_req: Request, { params }: RouteContext) {
     }
 
     const supabase = await createClient();
+    const cookieStore = await cookies();
+    const userTimeZone = normalizeUserTimeZone(
+      cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
+    );
     const {
       data: { user },
       error: authError,
@@ -26,7 +36,7 @@ export async function POST(_req: Request, { params }: RouteContext) {
 
     const { data: postData, error: postError } = await supabase
       .from("posts")
-      .select("id, user_id, status")
+      .select("id, user_id, status, meeting_time")
       .eq("id", postId)
       .maybeSingle();
 
@@ -43,6 +53,16 @@ export async function POST(_req: Request, { params }: RouteContext) {
 
     if (String(postData.status || "open").toLowerCase() === "cancelled") {
       return NextResponse.json({ ok: true }, { status: 200 });
+    }
+
+    if (hasMeetingStarted(postData.meeting_time, userTimeZone)) {
+      return NextResponse.json(
+        {
+          error:
+            "This meetup has already started, so it can no longer be cancelled here.",
+        },
+        { status: 403 }
+      );
     }
 
     const now = new Date().toISOString();

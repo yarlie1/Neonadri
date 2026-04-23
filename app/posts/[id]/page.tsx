@@ -544,7 +544,11 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                       Need to change the time or place instead? Cancel this meetup and create a new one.
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2">
-                      <CancelMeetupButton postId={post.id} />
+                      <CancelMeetupButton
+                        postId={post.id}
+                        meetingTime={post.meeting_time}
+                        userTimeZone={userTimeZone}
+                      />
                     </div>
                   </div>
                 </ScrollReveal>

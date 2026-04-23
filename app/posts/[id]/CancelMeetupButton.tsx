@@ -3,17 +3,37 @@
 import { Ban } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { hasMeetingStarted, isMeetingToday } from "../../../lib/meetingTime";
 import { APP_BUTTON_SECONDARY_CLASS } from "../../designSystem";
 
-export default function CancelMeetupButton({ postId }: { postId: number }) {
+export default function CancelMeetupButton({
+  postId,
+  meetingTime,
+  userTimeZone,
+}: {
+  postId: number;
+  meetingTime: string | null;
+  userTimeZone: string;
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const started = hasMeetingStarted(meetingTime, userTimeZone);
+  const sameDay = !started && isMeetingToday(meetingTime, userTimeZone);
 
   const handleCancel = async () => {
     if (loading) return;
 
+    if (started) {
+      window.alert(
+        "This meetup has already started, so it can no longer be cancelled here."
+      );
+      return;
+    }
+
     const confirmed = window.confirm(
-      "Cancel this meetup?\n\nThis meetup will stop accepting requests, and chat will become read-only for matched participants."
+      sameDay
+        ? "Cancel this meetup today?\n\nThis meetup starts today. Cancelling now can strongly affect trust, and your guest can leave cancellation feedback. Chat will become read-only for matched participants."
+        : "Cancel this meetup?\n\nThis meetup will stop accepting requests, and chat will become read-only for matched participants."
     );
 
     if (!confirmed) return;
@@ -42,11 +62,11 @@ export default function CancelMeetupButton({ postId }: { postId: number }) {
     <button
       type="button"
       onClick={handleCancel}
-      disabled={loading}
+      disabled={loading || started}
       className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition disabled:opacity-60 ${APP_BUTTON_SECONDARY_CLASS}`}
     >
       <Ban className="h-4 w-4" />
-      {loading ? "Cancelling..." : "Cancel Meetup"}
+      {loading ? "Cancelling..." : started ? "Meetup Started" : "Cancel Meetup"}
     </button>
   );
 }
