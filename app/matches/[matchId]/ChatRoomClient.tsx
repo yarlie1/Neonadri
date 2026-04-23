@@ -117,6 +117,12 @@ function formatPresenceLabel(value: string | null) {
   return `Last seen ${parsed.toLocaleDateString()}`;
 }
 
+function formatKeyDebug(value: string | undefined) {
+  if (!value) return "missing";
+  if (value.length <= 12) return value;
+  return `${value.slice(0, 8)}...${value.slice(-6)}`;
+}
+
 export default function ChatRoomClient({
   matchId,
   otherUserName,
@@ -167,6 +173,8 @@ export default function ChatRoomClient({
   const subscribeKey = process.env.NEXT_PUBLIC_PUBNUB_SUBSCRIBE_KEY;
 
   const roomLabel = useMemo(() => roomId, [roomId]);
+  const publishKeyDebug = useMemo(() => formatKeyDebug(publishKey), [publishKey]);
+  const subscribeKeyDebug = useMemo(() => formatKeyDebug(subscribeKey), [subscribeKey]);
   const presenceLabel = useMemo(
     () => formatPresenceLabel(otherUserLastSeenAt),
     [otherUserLastSeenAt]
@@ -655,6 +663,8 @@ export default function ChatRoomClient({
                   Chat debug
                 </div>
                 <div className="mt-1">Room: {roomLabel}</div>
+                <div>Publish key: {publishKeyDebug}</div>
+                <div>Subscribe key: {subscribeKeyDebug}</div>
                 <div>History fetch: {debugState.fetchStatus}</div>
                 <div>
                   Saved messages found:{" "}
