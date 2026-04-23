@@ -22,6 +22,7 @@ type PostRow = {
   place_name: string | null;
   location: string | null;
   meeting_purpose: string | null;
+  status: string | null;
 };
 
 type ProfileRow = {
@@ -114,12 +115,27 @@ export default async function WriteReviewPage({ params }: PageProps) {
 
   const { data: postData } = await supabase
     .from("posts")
-    .select("id, user_id, meeting_time, place_name, location, meeting_purpose")
+    .select("id, user_id, meeting_time, place_name, location, meeting_purpose, status")
     .eq("id", match.post_id)
     .maybeSingle();
 
   const postInfo = (postData as PostRow | null) || null;
   const revieweeIsHost = !!postInfo && postInfo.user_id === revieweeUserId;
+
+  if (String(postInfo?.status || "open").toLowerCase() === "cancelled") {
+    return (
+      <ReviewWriteForm
+        matchId={params.matchId}
+        initialCanReview={false}
+        initialMessage="This meetup was cancelled by the host, so standard reviews are not available."
+        initialPostInfo={postInfo}
+        initialRevieweeUserId={revieweeUserId}
+        initialRevieweeName={revieweeName}
+        initialRevieweeIsHost={revieweeIsHost}
+        initialUserTimeZone={userTimeZone}
+      />
+    );
+  }
 
   if (!postInfo || !isMeetingFinished(postInfo.meeting_time, userTimeZone)) {
     return (

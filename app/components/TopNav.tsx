@@ -164,25 +164,67 @@ export default function TopNav() {
       loggingOutRef.current = false;
     };
 
-    const loadPendingCount = async (userId: string) => {
-      const { count } = await supabase
+    const countRequestsOnLiveMeetups = async ({
+      userId,
+      requestColumn,
+      status,
+    }: {
+      userId: string;
+      requestColumn: "post_owner_user_id" | "requester_user_id";
+      status: "pending" | "accepted";
+    }) => {
+      const { data, error } = await supabase
         .from("match_requests")
-        .select("*", { count: "exact", head: true })
-        .eq("post_owner_user_id", userId)
-        .eq("status", "pending");
+        .select("id, post_id")
+        .eq(requestColumn, userId)
+        .eq("status", status);
 
-      return count || 0;
+      if (error) {
+        console.error("TopNav request count lookup error:", error);
+        return 0;
+      }
+
+      const requestRows = data || [];
+      const postIds = Array.from(
+        new Set(requestRows.map((row) => row.post_id).filter(Boolean))
+      );
+
+      if (postIds.length === 0) {
+        return 0;
+      }
+
+      const { data: postsData, error: postsError } = await supabase
+        .from("posts")
+        .select("id, status")
+        .in("id", postIds);
+
+      if (postsError) {
+        console.error("TopNav request count post lookup error:", postsError);
+        return 0;
+      }
+
+      const livePostIds = new Set(
+        (postsData || [])
+          .filter((post) => String(post.status || "open").toLowerCase() !== "cancelled")
+          .map((post) => post.id)
+      );
+
+      return requestRows.filter((row) => livePostIds.has(row.post_id)).length;
     };
 
-    const loadAcceptedSentCount = async (userId: string) => {
-      const { count } = await supabase
-        .from("match_requests")
-        .select("*", { count: "exact", head: true })
-        .eq("requester_user_id", userId)
-        .eq("status", "accepted");
+    const loadPendingCount = async (userId: string) =>
+      countRequestsOnLiveMeetups({
+        userId,
+        requestColumn: "post_owner_user_id",
+        status: "pending",
+      });
 
-      return count || 0;
-    };
+    const loadAcceptedSentCount = async (userId: string) =>
+      countRequestsOnLiveMeetups({
+        userId,
+        requestColumn: "requester_user_id",
+        status: "accepted",
+      });
 
     const loadHasNewChatActivity = async (userId: string) => {
       const { data, error } = await supabase

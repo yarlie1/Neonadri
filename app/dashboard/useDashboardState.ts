@@ -17,6 +17,13 @@ export type ReceivedFilter = "all" | "pending";
 export type MatchFilter = "all" | "upcoming" | "expired" | "review_due" | "cancelled";
 export type SentFilter = "all" | "pending" | "accepted" | "rejected";
 
+function isRequestOnCancelledMeetup(
+  item: Pick<MatchRequestRow, "post_id">,
+  postMap: Record<number, PostRow>
+) {
+  return String(postMap[item.post_id]?.status || "open").toLowerCase() === "cancelled";
+}
+
 export function useDashboardState({
   initialPosts,
   requestsReceived,
@@ -140,13 +147,23 @@ export function useDashboardState({
   }, [sentItems, sentFilter]);
 
   const pendingSent = useMemo(
-    () => sentItems.filter((item) => item.status === "pending").length,
-    [sentItems]
+    () =>
+      sentItems.filter(
+        (item) =>
+          item.status === "pending" &&
+          !isRequestOnCancelledMeetup(item, postMap)
+      ).length,
+    [sentItems, postMap]
   );
 
   const acceptedSent = useMemo(
-    () => sentItems.filter((item) => item.status === "accepted").length,
-    [sentItems]
+    () =>
+      sentItems.filter(
+        (item) =>
+          item.status === "accepted" &&
+          !isRequestOnCancelledMeetup(item, postMap)
+      ).length,
+    [sentItems, postMap]
   );
 
   const filteredMatches = useMemo(() => {
@@ -162,8 +179,13 @@ export function useDashboardState({
   }, [matchItems, matchFilter, postMap, reviewedMatchIds]);
 
   const pendingReceived = useMemo(
-    () => receivedItems.filter((item) => item.status === "pending").length,
-    [receivedItems]
+    () =>
+      receivedItems.filter(
+        (item) =>
+          item.status === "pending" &&
+          !isRequestOnCancelledMeetup(item, postMap)
+      ).length,
+    [receivedItems, postMap]
   );
 
   const upcomingMatchedMeetups = useMemo(() => {

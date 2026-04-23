@@ -17,6 +17,7 @@ type MatchRow = {
 type PostRow = {
   meeting_time: string | null;
   user_id: string;
+  status: string | null;
 };
 
 export async function POST(req: Request) {
@@ -75,7 +76,7 @@ export async function POST(req: Request) {
 
     const { data: postData, error: postError } = await supabase
       .from("posts")
-      .select("meeting_time, user_id")
+      .select("meeting_time, user_id, status")
       .eq("id", match.post_id)
       .single();
 
@@ -85,6 +86,13 @@ export async function POST(req: Request) {
 
     const post = postData as PostRow;
     const revieweeIsHost = post.user_id === revieweeUserId;
+
+    if (String(post.status || "open").toLowerCase() === "cancelled") {
+      return NextResponse.json(
+        { error: "This meetup was cancelled by the host, so standard reviews are not available." },
+        { status: 403 }
+      );
+    }
 
     if (!isMeetingFinished(post.meeting_time, userTimeZone)) {
       return NextResponse.json(
