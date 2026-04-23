@@ -162,6 +162,18 @@ export default function ChatRoomClient({
   const canSend =
     !chatClosed && connectionLabel === "Connected" && draft.trim().length > 0 && !sending;
 
+  const logChatDebug = (
+    event: string,
+    details: Record<string, unknown> = {}
+  ) => {
+    console.info("[match-chat-debug]", {
+      event,
+      matchId,
+      roomId: roomLabel,
+      ...details,
+    });
+  };
+
   const canMarkSeen = () => {
     if (typeof document === "undefined") return true;
     const isVisible = document.visibilityState === "visible";
@@ -235,6 +247,7 @@ export default function ChatRoomClient({
 
     pubnubRef.current = pubnub;
     setConnectionLabel("Connected");
+    logChatDebug("sdk-connected");
 
     const pushMessage = (incoming: ChatMessage) => {
       setMessages((current) => {
@@ -251,6 +264,11 @@ export default function ChatRoomClient({
         const payload = event.message || {};
         const text = (payload.text || "").trim();
         if (!text) return;
+
+        logChatDebug("live-message-received", {
+          timetoken: event.timetoken,
+          senderId: payload.senderId || "unknown",
+        });
 
         pushMessage({
           id: event.timetoken,
@@ -272,18 +290,26 @@ export default function ChatRoomClient({
 
     const loadHistory = async () => {
       if (!pubnub.fetchMessages) {
+        logChatDebug("history-unavailable");
         return;
       }
 
       try {
+        logChatDebug("history-fetch-start");
         const history = await pubnub.fetchMessages({
           channels: [roomLabel],
           count: 50,
           includeUUID: true,
         });
 
+        const channelHistory = history.channels?.[roomLabel] || [];
+        logChatDebug("history-fetch-success", {
+          channelCount: Object.keys(history.channels || {}).length,
+          messageCount: channelHistory.length,
+        });
+
         const historyMessages =
-          history.channels?.[roomLabel]
+          channelHistory
             ?.map((entry) => {
               const payload = entry.message || {};
               const text = (payload.text || "").trim();
@@ -301,7 +327,13 @@ export default function ChatRoomClient({
 
         setMessages(historyMessages as ChatMessage[]);
         void markSeenIfVisible();
-      } catch {
+      } catch (error) {
+        console.error("[match-chat-debug]", {
+          event: "history-fetch-failed",
+          matchId,
+          roomId: roomLabel,
+          error,
+        });
         setErrorMessage("Past messages could not be loaded. New chat still works.");
       }
     };
@@ -412,8 +444,17 @@ export default function ChatRoomClient({
         },
         storeInHistory: true,
       });
+      logChatDebug("publish-success", {
+        senderId: currentUserId,
+      });
       setDraft("");
-    } catch {
+    } catch (error) {
+      console.error("[match-chat-debug]", {
+        event: "publish-failed",
+        matchId,
+        roomId: roomLabel,
+        error,
+      });
       setErrorMessage("Message could not be sent. Please try again.");
     } finally {
       setSending(false);
