@@ -17,7 +17,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-[#dfe6eb] text-[#2f3a42]">
         {mapsKey ? (
           <Script
-            src={`https://maps.googleapis.com/maps/api/js?key=${mapsKey}&libraries=places`}
+            src={`https://maps.googleapis.com/maps/api/js?key=${mapsKey}&libraries=places&language=en&region=US`}
             strategy="beforeInteractive"
           />
         ) : null}
