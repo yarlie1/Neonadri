@@ -104,12 +104,6 @@ export default function ChatsPageClient({
                 Review active conversations, read-only threads, and cancelled meetup chats in one place.
               </p>
             </div>
-            <Link
-              href="/dashboard?tab=matches"
-              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-            >
-              Back to Dashboard
-            </Link>
           </div>
 
           <div className="mt-5 flex flex-wrap gap-2">
@@ -190,6 +184,19 @@ export default function ChatsPageClient({
                 </div>
               </div>
             )}
+          </div>
+
+          <div className="mt-5 rounded-[18px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-xs leading-6 text-[#6b7780]">
+            Chat is powered by PubNub. Conversation content is not stored by Neonadri and is kept in PubNub history for up to 7 days only.
+          </div>
+
+          <div className="mt-5 flex justify-start">
+            <Link
+              href="/dashboard?tab=matches"
+              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+            >
+              Back to Dashboard
+            </Link>
           </div>
         </div>
       </div>
