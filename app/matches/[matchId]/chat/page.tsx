@@ -55,6 +55,11 @@ function MatchChatErrorState({ code }: { code: string }) {
       ? "This chat is unavailable because one participant has blocked the other."
       : "We could not open this match chat yet.";
 
+  const supportNote =
+    code === "MATCH_BLOCKED"
+      ? "If this looks unexpected, you can return to Matches and check the meetup status there."
+      : "Please head back to Matches and try again in a moment.";
+
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
       <div className={`mx-auto max-w-2xl rounded-[24px] p-5 backdrop-blur ${APP_SURFACE_CARD_CLASS}`}>
@@ -65,7 +70,7 @@ function MatchChatErrorState({ code }: { code: string }) {
           {body}
         </div>
         <p className={`mt-3 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
-          Debug code: <span className="font-semibold text-[#34424b]">{code}</span>
+          {supportNote}
         </p>
         <div className="mt-5">
           <Link
