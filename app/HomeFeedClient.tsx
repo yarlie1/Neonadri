@@ -410,6 +410,23 @@ export default function HomeFeedClient({
           </div>
         </section>
 
+        <section className={`px-4 py-4 sm:px-5 ${SOFT_CARD_CLASS}`}>
+          <div className="flex items-start gap-3">
+            <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#6c7b84] shadow-[0_10px_18px_rgba(118,126,133,0.08)]">
+              <Sparkles className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <div className={APP_EYEBROW_CLASS}>Beta Notice</div>
+              <div className="mt-1 text-base font-semibold tracking-[-0.03em] text-[#24323f]">
+                All features are free during the beta.
+              </div>
+              <p className={`mt-2 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
+                You can use every feature at no charge while Neonadri is in beta. If a meetup is matched and you promised CS, you still need to pay it to the other person as agreed.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {highlightedPost && (
           <FeaturedMeetupCard
             postId={highlightedPost.id}

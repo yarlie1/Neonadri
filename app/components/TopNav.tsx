@@ -502,15 +502,21 @@ export default function TopNav() {
               >
                 <Link
                   href="/"
-                  className={`block ${isHomeTest ? "" : "w-full"} text-[20px] font-extrabold leading-none tracking-[-0.05em] sm:text-[24px]`}
+                  className={`block ${isHomeTest ? "" : "w-full"}`}
                   style={{
-                    color: "#303b44",
                     textShadow:
                       "0 1px 0 rgba(255,255,255,0.9), 0 0 16px rgba(255,255,255,0.22)",
                   }}
                   onClick={closeMenu}
                 >
-                  Neonadri
+                  <span className="inline-flex items-start gap-1.5">
+                    <span className="text-[20px] font-extrabold leading-none tracking-[-0.05em] text-[#303b44] sm:text-[24px]">
+                      Neonadri
+                    </span>
+                    <span className="mt-0.5 rounded-full border border-[#d4dfe6] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-1.5 py-[0.14rem] text-[8px] font-extrabold uppercase leading-none tracking-[0.18em] text-[#61717a] shadow-[0_8px_16px_rgba(118,126,133,0.08)] sm:text-[9px]">
+                      Beta
+                    </span>
+                  </span>
                 </Link>
                 <div
                   className="block text-[9px] font-medium uppercase leading-none tracking-[0.16em] text-[#80898f] sm:text-[10px] sm:tracking-[0.16em]"
