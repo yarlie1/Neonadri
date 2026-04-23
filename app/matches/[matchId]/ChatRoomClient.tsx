@@ -83,6 +83,13 @@ type ChatMessage = {
   createdAt: string;
 };
 
+type DebugState = {
+  lastEvent: string;
+  historyCount: number | null;
+  fetchStatus: "idle" | "success" | "failed" | "unavailable";
+  publishStatus: "idle" | "success" | "failed";
+};
+
 function formatMessageTime(value: string) {
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) return "";
@@ -146,6 +153,12 @@ export default function ChatRoomClient({
   const [otherUserLastSeenAt, setOtherUserLastSeenAt] = useState<string | null>(
     initialOtherUserLastSeenAt
   );
+  const [debugState, setDebugState] = useState<DebugState>({
+    lastEvent: "idle",
+    historyCount: null,
+    fetchStatus: "idle",
+    publishStatus: "idle",
+  });
   const pubnubRef = useRef<InstanceType<NonNullable<typeof window.PubNub>> | null>(null);
   const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -166,6 +179,10 @@ export default function ChatRoomClient({
     event: string,
     details: Record<string, unknown> = {}
   ) => {
+    setDebugState((current) => ({
+      ...current,
+      lastEvent: event,
+    }));
     console.info("[match-chat-debug]", {
       event,
       matchId,
@@ -290,6 +307,12 @@ export default function ChatRoomClient({
 
     const loadHistory = async () => {
       if (!pubnub.fetchMessages) {
+        setDebugState((current) => ({
+          ...current,
+          fetchStatus: "unavailable",
+          historyCount: null,
+          lastEvent: "history-unavailable",
+        }));
         logChatDebug("history-unavailable");
         return;
       }
@@ -303,6 +326,12 @@ export default function ChatRoomClient({
         });
 
         const channelHistory = history.channels?.[roomLabel] || [];
+        setDebugState((current) => ({
+          ...current,
+          fetchStatus: "success",
+          historyCount: channelHistory.length,
+          lastEvent: "history-fetch-success",
+        }));
         logChatDebug("history-fetch-success", {
           channelCount: Object.keys(history.channels || {}).length,
           messageCount: channelHistory.length,
@@ -328,6 +357,12 @@ export default function ChatRoomClient({
         setMessages(historyMessages as ChatMessage[]);
         void markSeenIfVisible();
       } catch (error) {
+        setDebugState((current) => ({
+          ...current,
+          fetchStatus: "failed",
+          historyCount: null,
+          lastEvent: "history-fetch-failed",
+        }));
         console.error("[match-chat-debug]", {
           event: "history-fetch-failed",
           matchId,
@@ -444,11 +479,21 @@ export default function ChatRoomClient({
         },
         storeInHistory: true,
       });
+      setDebugState((current) => ({
+        ...current,
+        publishStatus: "success",
+        lastEvent: "publish-success",
+      }));
       logChatDebug("publish-success", {
         senderId: currentUserId,
       });
       setDraft("");
     } catch (error) {
+      setDebugState((current) => ({
+        ...current,
+        publishStatus: "failed",
+        lastEvent: "publish-failed",
+      }));
       console.error("[match-chat-debug]", {
         event: "publish-failed",
         matchId,
@@ -604,6 +649,19 @@ export default function ChatRoomClient({
 
               <div className="mt-4 text-center text-[11px] font-medium text-[#7f8b92]">
                 Live Chat Powered by PubNub
+              </div>
+              <div className="mt-3 rounded-[14px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-[11px] leading-5 text-[#66757e]">
+                <div className="font-semibold uppercase tracking-[0.16em] text-[#7c8a92]">
+                  Chat debug
+                </div>
+                <div className="mt-1">Room: {roomLabel}</div>
+                <div>History fetch: {debugState.fetchStatus}</div>
+                <div>
+                  Saved messages found:{" "}
+                  {debugState.historyCount === null ? "-" : debugState.historyCount}
+                </div>
+                <div>Last publish: {debugState.publishStatus}</div>
+                <div>Last event: {debugState.lastEvent}</div>
               </div>
             </>
           ) : (
