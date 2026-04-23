@@ -1347,6 +1347,12 @@ export default function DashboardClient({
                 >
                   Pending
                 </FilterPill>
+                <FilterPill
+                  active={receivedFilter === "cancelled"}
+                  onClick={() => setReceivedFilter("cancelled")}
+                >
+                  Cancelled
+                </FilterPill>
               </div>
             </div>
           </div>
