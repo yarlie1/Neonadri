@@ -88,6 +88,8 @@ type DebugState = {
   historyCount: number | null;
   fetchStatus: "idle" | "success" | "failed" | "unavailable";
   publishStatus: "idle" | "success" | "failed";
+  serverHistoryStatus: "idle" | "success" | "failed";
+  serverHistoryCount: number | null;
 };
 
 function formatMessageTime(value: string) {
@@ -164,6 +166,8 @@ export default function ChatRoomClient({
     historyCount: null,
     fetchStatus: "idle",
     publishStatus: "idle",
+    serverHistoryStatus: "idle",
+    serverHistoryCount: null,
   });
   const pubnubRef = useRef<InstanceType<NonNullable<typeof window.PubNub>> | null>(null);
   const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
@@ -390,6 +394,56 @@ export default function ChatRoomClient({
       setConnectionLabel("Disconnected");
     };
   }, [currentUserId, isProviderConfigured, publishKey, roomLabel, sdkReady, subscribeKey]);
+
+  useEffect(() => {
+    if (!isProviderConfigured) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadServerHistoryDebug = async () => {
+      try {
+        const response = await fetch(`/api/matches/chat/history-debug?matchId=${matchId}`, {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        const payload = (await response.json().catch(() => null)) as
+          | {
+              messageCount?: number;
+              error?: string;
+            }
+          | null;
+
+        if (cancelled) return;
+
+        setDebugState((current) => ({
+          ...current,
+          serverHistoryStatus: response.ok ? "success" : "failed",
+          serverHistoryCount:
+            typeof payload?.messageCount === "number" ? payload.messageCount : null,
+          lastEvent: response.ok
+            ? current.lastEvent
+            : "server-history-fetch-failed",
+        }));
+      } catch {
+        if (cancelled) return;
+        setDebugState((current) => ({
+          ...current,
+          serverHistoryStatus: "failed",
+          serverHistoryCount: null,
+          lastEvent: "server-history-fetch-failed",
+        }));
+      }
+    };
+
+    void loadServerHistoryDebug();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isProviderConfigured, matchId]);
 
   useEffect(() => {
     if (!listRef.current) return;
@@ -669,6 +723,11 @@ export default function ChatRoomClient({
                 <div>
                   Saved messages found:{" "}
                   {debugState.historyCount === null ? "-" : debugState.historyCount}
+                </div>
+                <div>Server history: {debugState.serverHistoryStatus}</div>
+                <div>
+                  Server saved messages:{" "}
+                  {debugState.serverHistoryCount === null ? "-" : debugState.serverHistoryCount}
                 </div>
                 <div>Last publish: {debugState.publishStatus}</div>
                 <div>Last event: {debugState.lastEvent}</div>
