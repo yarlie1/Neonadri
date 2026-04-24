@@ -19,6 +19,7 @@ import {
   MessageCircleMore,
 } from "lucide-react";
 import { getMeetingStatus } from "../../lib/meetingTime";
+import { isConfirmedMatchStatus } from "../../lib/matches/status";
 import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
@@ -86,6 +87,7 @@ export default function TopNav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
   const [acceptedSentCount, setAcceptedSentCount] = useState(0);
+  const [upcomingMatchCount, setUpcomingMatchCount] = useState(0);
   const [hasNewChatActivity, setHasNewChatActivity] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [currentSearch, setCurrentSearch] = useState("");
@@ -162,6 +164,7 @@ export default function TopNav() {
       setUser(null);
       setPendingCount(0);
       setAcceptedSentCount(0);
+      setUpcomingMatchCount(0);
       setHasNewChatActivity(false);
       setMenuOpen(false);
       setIsLoggingOut(false);
@@ -246,6 +249,57 @@ export default function TopNav() {
         upcomingOnly: true,
       });
 
+    const loadUpcomingMatchCount = async (userId: string) => {
+      const { data, error } = await supabase
+        .from("matches")
+        .select("id, post_id, status")
+        .or(`user_a.eq.${userId},user_b.eq.${userId}`);
+
+      if (error) {
+        console.error("TopNav upcoming match lookup error:", error);
+        return 0;
+      }
+
+      const confirmedMatches = (data || []).filter((row) =>
+        isConfirmedMatchStatus(String(row.status || ""))
+      );
+
+      const postIds = Array.from(
+        new Set(confirmedMatches.map((row) => row.post_id).filter(Boolean))
+      );
+
+      if (postIds.length === 0) {
+        return 0;
+      }
+
+      const { data: postsData, error: postsError } = await supabase
+        .from("posts")
+        .select("id, status, meeting_time")
+        .in("id", postIds);
+
+      if (postsError) {
+        console.error("TopNav upcoming match post lookup error:", postsError);
+        return 0;
+      }
+
+      const upcomingPostIds = new Set(
+        (postsData || [])
+          .filter((post) => {
+            if (String(post.status || "open").toLowerCase() === "cancelled") {
+              return false;
+            }
+
+            return (
+              getMeetingStatus(post.meeting_time || null, browserTimeZone) ===
+              "Upcoming"
+            );
+          })
+          .map((post) => post.id)
+      );
+
+      return confirmedMatches.filter((row) => upcomingPostIds.has(row.post_id)).length;
+    };
+
     const loadHasNewChatActivity = async (userId: string) => {
       const { data, error } = await supabase
         .from("match_chats")
@@ -278,15 +332,17 @@ export default function TopNav() {
     };
 
     const refreshIndicators = async (userId: string) => {
-      const [count, acceptedCount, hasNewChat] = await Promise.all([
+      const [count, acceptedCount, upcomingCount, hasNewChat] = await Promise.all([
         loadPendingCount(userId),
         loadAcceptedSentCount(userId),
+        loadUpcomingMatchCount(userId),
         loadHasNewChatActivity(userId),
       ]);
 
       if (!mounted || loggingOutRef.current) return;
       setPendingCount(count);
       setAcceptedSentCount(acceptedCount);
+      setUpcomingMatchCount(upcomingCount);
       setHasNewChatActivity(hasNewChat);
     };
 
@@ -377,6 +433,7 @@ export default function TopNav() {
           refreshChannel = null;
           setPendingCount(0);
           setAcceptedSentCount(0);
+          setUpcomingMatchCount(0);
           setHasNewChatActivity(false);
         }
       } catch (error) {
@@ -424,6 +481,7 @@ export default function TopNav() {
           refreshChannel = null;
           setPendingCount(0);
           setAcceptedSentCount(0);
+          setUpcomingMatchCount(0);
           setHasNewChatActivity(false);
         }
       } catch (error) {
@@ -471,6 +529,7 @@ export default function TopNav() {
     setUser(null);
     setPendingCount(0);
     setAcceptedSentCount(0);
+    setUpcomingMatchCount(0);
     setHasNewChatActivity(false);
 
     try {
@@ -562,6 +621,7 @@ export default function TopNav() {
                     Dashboard
                   </NavLabel>
                   <span className="absolute right-3 top-1/2 inline-flex -translate-y-1/2 items-center gap-1.5">
+                    <CountBadge count={upcomingMatchCount} />
                     <NewChatBadge visible={hasNewChatActivity} />
                     <CountBadge count={acceptedSentCount} />
                     <CountBadge count={pendingCount} />
@@ -661,6 +721,7 @@ export default function TopNav() {
                           Dashboard
                         </NavLabel>
                         <span className="ml-auto inline-flex items-center gap-2">
+                          <CountBadge count={upcomingMatchCount} />
                           <NewChatBadge visible={hasNewChatActivity} />
                           <CountBadge count={acceptedSentCount} />
                           <CountBadge count={pendingCount} />
