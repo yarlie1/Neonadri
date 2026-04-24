@@ -425,7 +425,7 @@ function SentTabPanel({
                 {isCancelled
                   ? "cancelled"
                   : isUpcomingAccepted
-                  ? "accepted (upcoming)"
+                  ? "upcoming accepted"
                   : item.status}
               </span>
             </div>
@@ -1273,7 +1273,7 @@ export default function DashboardClient({
                   <span className="inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#a9b7c1] bg-[linear-gradient(180deg,#ffffff_0%,#d0dce4_100%)] px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-[#263844] shadow-[0_10px_18px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.95)]">
                     {upcomingAcceptedSent > 99 ? "99+" : upcomingAcceptedSent}
                   </span>
-                  <span>accepted (upcoming)</span>
+                  <span>Upcoming accepted</span>
                 </span>
               ) : activeTab === "sent" ? (
                 "Currently selected"
