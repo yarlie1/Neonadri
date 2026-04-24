@@ -18,7 +18,7 @@ import {
   Star,
 } from "lucide-react";
 import type { MatchChatMetaRow, MatchRow, MatchRequestRow, PostRow } from "./page";
-import { parseMeetingTime } from "../../lib/meetingTime";
+import { getMeetingStatus, parseMeetingTime } from "../../lib/meetingTime";
 import {
   getPublicLocationLabel,
   getVisibleLocationLabel,
