@@ -200,13 +200,13 @@ export default function BetaPage() {
           </div>
 
           <div className="mt-5">
-            <label className={APP_EYEBROW_CLASS}>Why do you want in? (Optional)</label>
+            <label className={APP_EYEBROW_CLASS}>Why do you want in?</label>
             <textarea
               value={motivation}
               onChange={(event) => setMotivation(event.target.value)}
               rows={5}
               className={`${INPUT_CLASS} mt-2`}
-              placeholder="If you want, tell us why you want to try Neonadri."
+              placeholder="Tell us why you want to try Neonadri."
             />
           </div>
 
