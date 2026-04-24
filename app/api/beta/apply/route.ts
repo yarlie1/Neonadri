@@ -38,13 +38,6 @@ export async function POST(req: Request) {
       );
     }
 
-    if (motivation.length < 12) {
-      return NextResponse.json(
-        { error: "Please share a short reason for joining the beta." },
-        { status: 400 }
-      );
-    }
-
     const { data, error } = await supabase.rpc("submit_beta_application", {
       p_email: email,
       p_full_name: sanitizeOptionalText(body.fullName),
