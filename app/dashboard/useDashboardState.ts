@@ -29,6 +29,16 @@ function isRequestOnCancelledMeetup(
   return String(postMap[item.post_id]?.status || "open").toLowerCase() === "cancelled";
 }
 
+function isUpcomingAcceptedRequest(
+  item: Pick<MatchRequestRow, "post_id" | "status">,
+  postMap: Record<number, PostRow>,
+  userTimeZone: string
+) {
+  if (item.status !== "accepted") return false;
+  if (isRequestOnCancelledMeetup(item, postMap)) return false;
+  return getMeetingStatus(postMap[item.post_id]?.meeting_time || null, userTimeZone) === "Upcoming";
+}
+
 export function useDashboardState({
   initialPosts,
   requestsReceived,
@@ -172,21 +182,38 @@ export function useDashboardState({
   }, [receivedItems, receivedFilter, postMap]);
 
   const filteredSent = useMemo(() => {
-    if (sentFilter === "all") return sentItems;
-    return sentItems.filter((item) => {
-      const isCancelled = isRequestOnCancelledMeetup(item, postMap);
+    const nextItems =
+      sentFilter === "all"
+        ? sentItems
+        : sentItems.filter((item) => {
+            const isCancelled = isRequestOnCancelledMeetup(item, postMap);
 
-      if (sentFilter === "cancelled") {
-        return isCancelled;
+            if (sentFilter === "cancelled") {
+              return isCancelled;
+            }
+
+            if (isCancelled) {
+              return false;
+            }
+
+            return item.status === sentFilter;
+          });
+
+    if (sentFilter !== "accepted") {
+      return nextItems;
+    }
+
+    return [...nextItems].sort((left, right) => {
+      const leftUpcoming = isUpcomingAcceptedRequest(left, postMap, userTimeZone) ? 1 : 0;
+      const rightUpcoming = isUpcomingAcceptedRequest(right, postMap, userTimeZone) ? 1 : 0;
+
+      if (leftUpcoming !== rightUpcoming) {
+        return rightUpcoming - leftUpcoming;
       }
 
-      if (isCancelled) {
-        return false;
-      }
-
-      return item.status === sentFilter;
+      return new Date(right.created_at).getTime() - new Date(left.created_at).getTime();
     });
-  }, [sentItems, sentFilter, postMap]);
+  }, [sentItems, sentFilter, postMap, userTimeZone]);
 
   const pendingSent = useMemo(
     () =>
@@ -206,6 +233,14 @@ export function useDashboardState({
           !isRequestOnCancelledMeetup(item, postMap)
       ).length,
     [sentItems, postMap]
+  );
+
+  const upcomingAcceptedSent = useMemo(
+    () =>
+      sentItems.filter((item) =>
+        isUpcomingAcceptedRequest(item, postMap, userTimeZone)
+      ).length,
+    [sentItems, postMap, userTimeZone]
   );
 
   const filteredMatches = useMemo(() => {
@@ -316,6 +351,7 @@ export function useDashboardState({
     rejectedReceived,
     pendingSent,
     acceptedSent,
+    upcomingAcceptedSent,
     upcomingMatchedMeetups,
     setPosts,
   };

@@ -168,10 +168,12 @@ export default function TopNav() {
       userId,
       requestColumn,
       status,
+      upcomingOnly = false,
     }: {
       userId: string;
       requestColumn: "post_owner_user_id" | "requester_user_id";
       status: "pending" | "accepted";
+      upcomingOnly?: boolean;
     }) => {
       const { data, error } = await supabase
         .from("match_requests")
@@ -195,7 +197,7 @@ export default function TopNav() {
 
       const { data: postsData, error: postsError } = await supabase
         .from("posts")
-        .select("id, status")
+        .select("id, status, meeting_time")
         .in("id", postIds);
 
       if (postsError) {
@@ -203,9 +205,21 @@ export default function TopNav() {
         return 0;
       }
 
+      const now = Date.now();
       const livePostIds = new Set(
         (postsData || [])
-          .filter((post) => String(post.status || "open").toLowerCase() !== "cancelled")
+          .filter((post) => {
+            if (String(post.status || "open").toLowerCase() === "cancelled") {
+              return false;
+            }
+
+            if (!upcomingOnly) {
+              return true;
+            }
+
+            const meetingTime = post.meeting_time ? new Date(post.meeting_time).getTime() : NaN;
+            return Number.isFinite(meetingTime) && meetingTime >= now;
+          })
           .map((post) => post.id)
       );
 
@@ -224,6 +238,7 @@ export default function TopNav() {
         userId,
         requestColumn: "requester_user_id",
         status: "accepted",
+        upcomingOnly: true,
       });
 
     const loadHasNewChatActivity = async (userId: string) => {

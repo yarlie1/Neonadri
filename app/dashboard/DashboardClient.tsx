@@ -376,6 +376,10 @@ function SentTabPanel({
         const relatedPost = postMap[item.post_id];
         const isCancelled =
           String(relatedPost?.status || "open").toLowerCase() === "cancelled";
+        const isUpcomingAccepted =
+          !isCancelled &&
+          item.status === "accepted" &&
+          getMeetingStatus(relatedPost?.meeting_time || null, userTimeZone) === "Upcoming";
         const acceptedMessage =
           !isCancelled && item.status === "accepted"
             ? `${hostName} accepted your request.`
@@ -418,7 +422,11 @@ function SentTabPanel({
                   isCancelled ? "cancelled" : item.status
                 )}`}
               >
-                {isCancelled ? "cancelled" : item.status}
+                {isCancelled
+                  ? "cancelled"
+                  : isUpcomingAccepted
+                  ? "accepted (upcoming)"
+                  : item.status}
               </span>
             </div>
 
@@ -676,6 +684,7 @@ export default function DashboardClient({
     acceptedReceived,
     rejectedReceived,
     acceptedSent,
+    upcomingAcceptedSent,
     upcomingMatchedMeetups,
     setPosts,
   } = useDashboardState({
@@ -702,7 +711,7 @@ export default function DashboardClient({
     }
 
     if (activeTab === "sent") {
-      setSentFilter(acceptedSent > 0 ? "accepted" : "all");
+      setSentFilter(upcomingAcceptedSent > 0 ? "accepted" : "all");
       return;
     }
 
@@ -711,6 +720,7 @@ export default function DashboardClient({
     }
   }, [
     acceptedSent,
+    upcomingAcceptedSent,
     activeTab,
     pendingReceived,
     setMatchFilter,
@@ -1258,12 +1268,12 @@ export default function DashboardClient({
             label="Requests Sent"
             value={sentItems.length}
             subtext={
-              acceptedSent > 0 ? (
+              upcomingAcceptedSent > 0 ? (
                 <span className="inline-flex items-center gap-1.5">
                   <span className="inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#a9b7c1] bg-[linear-gradient(180deg,#ffffff_0%,#d0dce4_100%)] px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-[#263844] shadow-[0_10px_18px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.95)]">
-                    {acceptedSent > 99 ? "99+" : acceptedSent}
+                    {upcomingAcceptedSent > 99 ? "99+" : upcomingAcceptedSent}
                   </span>
-                  <span>accepted</span>
+                  <span>accepted (upcoming)</span>
                 </span>
               ) : activeTab === "sent" ? (
                 "Currently selected"
