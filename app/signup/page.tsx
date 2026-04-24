@@ -538,16 +538,17 @@ export default function SignupPage() {
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link
                     href="/beta"
-                    className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                    className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-semibold transition shadow-[0_14px_30px_rgba(118,126,133,0.16)] ${APP_BUTTON_PRIMARY_CLASS}`}
                   >
                     Apply for beta access
+                    <ArrowRight className="h-4 w-4" />
                   </Link>
 
                   <button
                     type="button"
                     onClick={handleBetaAccessCheck}
                     disabled={checkingBetaAccess}
-                    className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
+                    className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_SECONDARY_CLASS}`}
                   >
                     {checkingBetaAccess ? "Checking access..." : "Continue with this email"}
                     <ArrowRight className="h-4 w-4" />
