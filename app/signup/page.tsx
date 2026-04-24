@@ -111,6 +111,8 @@ export default function SignupPage() {
 
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [checkingBetaAccess, setCheckingBetaAccess] = useState(false);
+  const [betaAccessAllowed, setBetaAccessAllowed] = useState(false);
   const [message, setMessage] = useState("");
 
   const [email, setEmail] = useState("");
@@ -221,6 +223,56 @@ export default function SignupPage() {
     if (step <= 1) return;
     setMessage("");
     setStep((current) => current - 1);
+  };
+
+  const handleBetaAccessCheck = async () => {
+    if (checkingBetaAccess) return;
+
+    try {
+      setCheckingBetaAccess(true);
+      setMessage("");
+
+      const betaCheckResponse = await fetch("/api/beta/check-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+
+      const betaCheckPayload = await betaCheckResponse.json().catch(() => ({}));
+
+      if (!betaCheckResponse.ok) {
+        setMessage(
+          betaCheckPayload.error || "Could not verify beta access right now."
+        );
+        setCheckingBetaAccess(false);
+        return;
+      }
+
+      if (!betaCheckPayload.allowed) {
+        setBetaAccessAllowed(false);
+        setMessage(
+          "This email is not approved for beta access yet. Please apply for beta access first."
+        );
+        setCheckingBetaAccess(false);
+        return;
+      }
+
+      setBetaAccessAllowed(true);
+      setStep(1);
+      setMessage("Beta access confirmed. Let's finish your profile.");
+    } catch (error) {
+      console.error("Beta access check error:", error);
+      setMessage("Could not verify beta access right now.");
+    } finally {
+      setCheckingBetaAccess(false);
+    }
+  };
+
+  const handleResetBetaAccess = () => {
+    setBetaAccessAllowed(false);
+    setMessage("");
   };
 
   const handleSignup = async () => {
@@ -444,188 +496,28 @@ export default function SignupPage() {
           </section>
 
           <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className={APP_EYEBROW_CLASS}>
-                  Sign Up
+            {!betaAccessAllowed ? (
+              <>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className={APP_EYEBROW_CLASS}>Beta Access</div>
+                    <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
+                      Approved beta email required
+                    </h2>
+                  </div>
+                  <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                    Access first
+                  </div>
                 </div>
-                <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-                  Step {step} of {STEPS.length}
-                </h2>
-              </div>
-              <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                {STEPS[step - 1].label}
-              </div>
-            </div>
 
-            <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-              {step === 1 &&
-                "Add the basics people usually want to know first."}
-              {step === 2 &&
-                "Show your personality so meetup requests feel more natural."}
-              {step === 3 &&
-                "Finish with the email and password you will use to sign in."}
-            </p>
+                <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
+                  Check your beta access first. Once we confirm your email, we will open the signup steps right away.
+                </p>
 
-            <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#e8eef2]">
-              <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#d9e2e8,#aab8c1)] transition-all"
-                style={{ width: `${(step / STEPS.length) * 100}%` }}
-              />
-            </div>
-
-            <div className="mt-6 space-y-4">
-              {step === 1 && (
-                <>
+                <div className="mt-6 space-y-4">
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      Display Name
-                    </label>
-                    <input
-                      value={displayName}
-                      onChange={(e) =>
-                        setDisplayName(e.target.value.slice(0, DISPLAY_NAME_MAX_LENGTH))
-                      }
-                      maxLength={DISPLAY_NAME_MAX_LENGTH}
-                      className={INPUT_CLASS}
-                      placeholder="How people will see you"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                        Gender
-                      </label>
-                      <select
-                        value={gender}
-                        onChange={(e) => setGender(e.target.value)}
-                        className={INPUT_CLASS}
-                      >
-                        <option value="">Select gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                        <option value="Prefer not to say">Prefer not to say</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                        Age Group
-                      </label>
-                      <select
-                        value={ageGroup}
-                        onChange={(e) => setAgeGroup(e.target.value)}
-                        className={INPUT_CLASS}
-                      >
-                        <option value="">Select age group</option>
-                        <option value="20s">20s</option>
-                        <option value="30s">30s</option>
-                        <option value="40s">40s</option>
-                        <option value="50s+">50s+</option>
-                      </select>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {step === 2 && (
-                <>
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      Languages
-                    </label>
-                    <div className={`${APP_SOFT_CARD_CLASS} flex flex-wrap gap-2 p-3`}>
-                      {LANGUAGE_OPTIONS.map((item) => (
-                        <ToggleChip
-                          key={item}
-                          label={item}
-                          selected={languages.includes(item)}
-                          onClick={() =>
-                            toggleArrayValue(item, languages, setLanguages)
-                          }
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      Meeting Style
-                    </label>
-                    <select
-                      value={meetingStyle}
-                      onChange={(e) => setMeetingStyle(e.target.value)}
-                      className={INPUT_CLASS}
-                    >
-                      <option value="">Select meeting style</option>
-                      {MEETING_STYLE_OPTIONS.map((item) => (
-                        <option key={item} value={item}>
-                          {item}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      Interests
-                    </label>
-                    <div className={`${APP_SOFT_CARD_CLASS} flex flex-wrap gap-2 p-3`}>
-                      {INTEREST_OPTIONS.map((item) => (
-                        <ToggleChip
-                          key={item}
-                          label={item}
-                          selected={interests.includes(item)}
-                          onClick={() =>
-                            toggleArrayValue(item, interests, setInterests)
-                          }
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      Response Note
-                    </label>
-                    <select
-                      value={responseTimeNote}
-                      onChange={(e) => setResponseTimeNote(e.target.value)}
-                      className={INPUT_CLASS}
-                    >
-                      <option value="">Select response note</option>
-                      {RESPONSE_NOTE_OPTIONS.map((item) => (
-                        <option key={item} value={item}>
-                          {item}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      About Me
-                    </label>
-                    <textarea
-                      value={aboutMe}
-                      onChange={(e) => setAboutMe(e.target.value)}
-                      rows={4}
-                      className={INPUT_CLASS}
-                    />
-                    <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                      Avoid prostitution, solicitation, or other unsafe sexual content.
-                    </p>
-                  </div>
-                </>
-              )}
-
-              {step === 3 && (
-                <>
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      Email
+                      Approved beta email
                     </label>
                     <input
                       type="email"
@@ -636,112 +528,340 @@ export default function SignupPage() {
                     />
                   </div>
 
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      placeholder={`At least ${PASSWORD_MIN_LENGTH} characters`}
-                      className={INPUT_CLASS}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    {password.trim().length > 0 && password.trim().length < PASSWORD_MIN_LENGTH ? (
-                      <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                        Password must be at least {PASSWORD_MIN_LENGTH} characters.
-                      </p>
-                    ) : null}
-                  </div>
-
-                  <label className={`${APP_SOFT_CARD_CLASS} grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 p-4 text-sm ${APP_BODY_TEXT_CLASS}`}>
-                    <input
-                      type="checkbox"
-                      checked={isAdultConfirmed}
-                      onChange={(e) => setIsAdultConfirmed(e.target.checked)}
-                      className="!mt-0.5 !h-4 !w-4 !appearance-auto !rounded !border-[#c7d2d9] !p-0 !shadow-none !outline-none !ring-0 accent-[#8fa1ac]"
-                    />
-                    <span className="min-w-0 leading-6">
-                      I confirm that I am 18 or older and understand that Neonadri is for adults only.
-                    </span>
-                  </label>
-                  {!isAdultConfirmed ? (
-                    <p className={`text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                      You need to confirm you are 18 or older to create an account.
+                  <div className={`${APP_SOFT_CARD_CLASS} p-4`}>
+                    <p className={`text-sm ${APP_BODY_TEXT_CLASS}`}>
+                      If this email is not approved yet, you can apply for access first and come back once your spot opens.
                     </p>
-                  ) : null}
-                </>
-              )}
-            </div>
+                  </div>
+                </div>
 
-            <div className="mt-6 flex flex-wrap gap-3">
-              {step === 2 && !canMoveNext && (
-                <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                  Select a meeting style and at least one interest to continue.
-                </p>
-              )}
-              {step === 3 && !isAdultConfirmed && (
-                <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                  Confirm that you are 18 or older to continue.
-                </p>
-              )}
-              {step === 3 && (
-                <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                  By creating an account, you agree to Neonadri's{" "}
-                  <Link href="/terms" className="underline underline-offset-2 transition hover:text-[#24323c]">
-                    Terms
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Link
+                    href="/beta"
+                    className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                  >
+                    Apply for beta access
                   </Link>
-                  ,{" "}
-                  <Link href="/privacy" className="underline underline-offset-2 transition hover:text-[#24323c]">
-                    Privacy Policy
-                  </Link>
-                  , and{" "}
-                  <Link href="/community" className="underline underline-offset-2 transition hover:text-[#24323c]">
-                    Community Guidelines
-                  </Link>
-                  .
-                </p>
-              )}
 
-              {step > 1 ? (
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  Back
-                </button>
-              ) : (
-                <Link
-                  href="/login"
-                  className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-                >
-                  I already have one
-                </Link>
-              )}
+                  <button
+                    type="button"
+                    onClick={handleBetaAccessCheck}
+                    disabled={checkingBetaAccess}
+                    className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
+                  >
+                    {checkingBetaAccess ? "Checking access..." : "Continue with this email"}
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className={APP_EYEBROW_CLASS}>
+                      Sign Up
+                    </div>
+                    <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
+                      Step {step} of {STEPS.length}
+                    </h2>
+                  </div>
+                  <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                    {STEPS[step - 1].label}
+                  </div>
+                </div>
 
-              {step < STEPS.length ? (
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  disabled={!canMoveNext}
-                  className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
-                >
-                  Next
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleSignup}
-                  disabled={submitting}
-                  className={`rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
-                >
-                  {submitting ? "Creating account..." : "Create account"}
-                </button>
-              )}
-            </div>
+                <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
+                  {step === 1 &&
+                    "Add the basics people usually want to know first."}
+                  {step === 2 &&
+                    "Show your personality so meetup requests feel more natural."}
+                  {step === 3 &&
+                    "Finish with the password you will use to sign in."}
+                </p>
+
+                <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#e8eef2]">
+                  <div
+                    className="h-full rounded-full bg-[linear-gradient(90deg,#d9e2e8,#aab8c1)] transition-all"
+                    style={{ width: `${(step / STEPS.length) * 100}%` }}
+                  />
+                </div>
+
+                <div className="mt-6 space-y-4">
+                  {step === 1 && (
+                    <>
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                          Display Name
+                        </label>
+                        <input
+                          value={displayName}
+                          onChange={(e) =>
+                            setDisplayName(e.target.value.slice(0, DISPLAY_NAME_MAX_LENGTH))
+                          }
+                          maxLength={DISPLAY_NAME_MAX_LENGTH}
+                          className={INPUT_CLASS}
+                          placeholder="How people will see you"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                            Gender
+                          </label>
+                          <select
+                            value={gender}
+                            onChange={(e) => setGender(e.target.value)}
+                            className={INPUT_CLASS}
+                          >
+                            <option value="">Select gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                            <option value="Prefer not to say">Prefer not to say</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                            Age Group
+                          </label>
+                          <select
+                            value={ageGroup}
+                            onChange={(e) => setAgeGroup(e.target.value)}
+                            className={INPUT_CLASS}
+                          >
+                            <option value="">Select age group</option>
+                            <option value="20s">20s</option>
+                            <option value="30s">30s</option>
+                            <option value="40s">40s</option>
+                            <option value="50s+">50s+</option>
+                          </select>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {step === 2 && (
+                    <>
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                          Languages
+                        </label>
+                        <div className={`${APP_SOFT_CARD_CLASS} flex flex-wrap gap-2 p-3`}>
+                          {LANGUAGE_OPTIONS.map((item) => (
+                            <ToggleChip
+                              key={item}
+                              label={item}
+                              selected={languages.includes(item)}
+                              onClick={() =>
+                                toggleArrayValue(item, languages, setLanguages)
+                              }
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                          Meeting Style
+                        </label>
+                        <select
+                          value={meetingStyle}
+                          onChange={(e) => setMeetingStyle(e.target.value)}
+                          className={INPUT_CLASS}
+                        >
+                          <option value="">Select meeting style</option>
+                          {MEETING_STYLE_OPTIONS.map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                          Interests
+                        </label>
+                        <div className={`${APP_SOFT_CARD_CLASS} flex flex-wrap gap-2 p-3`}>
+                          {INTEREST_OPTIONS.map((item) => (
+                            <ToggleChip
+                              key={item}
+                              label={item}
+                              selected={interests.includes(item)}
+                              onClick={() =>
+                                toggleArrayValue(item, interests, setInterests)
+                              }
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                          Response Note
+                        </label>
+                        <select
+                          value={responseTimeNote}
+                          onChange={(e) => setResponseTimeNote(e.target.value)}
+                          className={INPUT_CLASS}
+                        >
+                          <option value="">Select response note</option>
+                          {RESPONSE_NOTE_OPTIONS.map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                          About Me
+                        </label>
+                        <textarea
+                          value={aboutMe}
+                          onChange={(e) => setAboutMe(e.target.value)}
+                          rows={4}
+                          className={INPUT_CLASS}
+                        />
+                        <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+                          Avoid prostitution, solicitation, or other unsafe sexual content.
+                        </p>
+                      </div>
+                    </>
+                  )}
+
+                  {step === 3 && (
+                    <>
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                          Approved Email
+                        </label>
+                        <input
+                          type="email"
+                          className={`${INPUT_CLASS} bg-[#f4f7f9] text-[#64727a]`}
+                          value={email}
+                          readOnly
+                        />
+                        <button
+                          type="button"
+                          onClick={handleResetBetaAccess}
+                          className="mt-2 text-xs font-medium text-[#55656e] underline underline-offset-2 transition hover:text-[#24323c]"
+                        >
+                          Use a different email
+                        </button>
+                      </div>
+
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                          Password
+                        </label>
+                        <input
+                          type="password"
+                          placeholder={`At least ${PASSWORD_MIN_LENGTH} characters`}
+                          className={INPUT_CLASS}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
+                        {password.trim().length > 0 && password.trim().length < PASSWORD_MIN_LENGTH ? (
+                          <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+                            Password must be at least {PASSWORD_MIN_LENGTH} characters.
+                          </p>
+                        ) : null}
+                      </div>
+
+                      <label className={`${APP_SOFT_CARD_CLASS} grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 p-4 text-sm ${APP_BODY_TEXT_CLASS}`}>
+                        <input
+                          type="checkbox"
+                          checked={isAdultConfirmed}
+                          onChange={(e) => setIsAdultConfirmed(e.target.checked)}
+                          className="!mt-0.5 !h-4 !w-4 !appearance-auto !rounded !border-[#c7d2d9] !p-0 !shadow-none !outline-none !ring-0 accent-[#8fa1ac]"
+                        />
+                        <span className="min-w-0 leading-6">
+                          I confirm that I am 18 or older and understand that Neonadri is for adults only.
+                        </span>
+                      </label>
+                      {!isAdultConfirmed ? (
+                        <p className={`text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+                          You need to confirm you are 18 or older to create an account.
+                        </p>
+                      ) : null}
+                    </>
+                  )}
+                </div>
+
+                <div className="mt-6 flex flex-wrap gap-3">
+                  {step === 2 && !canMoveNext && (
+                    <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+                      Select a meeting style and at least one interest to continue.
+                    </p>
+                  )}
+                  {step === 3 && !isAdultConfirmed && (
+                    <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+                      Confirm that you are 18 or older to continue.
+                    </p>
+                  )}
+                  {step === 3 && (
+                    <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+                      By creating an account, you agree to Neonadri's{" "}
+                      <Link href="/terms" className="underline underline-offset-2 transition hover:text-[#24323c]">
+                        Terms
+                      </Link>
+                      ,{" "}
+                      <Link href="/privacy" className="underline underline-offset-2 transition hover:text-[#24323c]">
+                        Privacy Policy
+                      </Link>
+                      , and{" "}
+                      <Link href="/community" className="underline underline-offset-2 transition hover:text-[#24323c]">
+                        Community Guidelines
+                      </Link>
+                      .
+                    </p>
+                  )}
+
+                  {step > 1 ? (
+                    <button
+                      type="button"
+                      onClick={handleBack}
+                      className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      Back
+                    </button>
+                  ) : (
+                    <Link
+                      href="/login"
+                      className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                    >
+                      I already have one
+                    </Link>
+                  )}
+
+                  {step < STEPS.length ? (
+                    <button
+                      type="button"
+                      onClick={handleNext}
+                      disabled={!canMoveNext}
+                      className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
+                    >
+                      Next
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleSignup}
+                      disabled={submitting}
+                      className={`rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
+                    >
+                      {submitting ? "Creating account..." : "Create account"}
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
 
             {message && (
               <p className="mt-4 rounded-[20px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
