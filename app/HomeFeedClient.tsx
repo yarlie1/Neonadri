@@ -432,12 +432,12 @@ export default function HomeFeedClient({
               className={`inline-flex min-h-[76px] w-full items-center justify-between gap-4 rounded-[24px] border px-5 py-3.5 text-left shadow-[0_18px_34px_rgba(118,126,133,0.16)] transition ${APP_BUTTON_PRIMARY_CLASS}`}
             >
               <div className="flex min-w-0 items-center gap-4">
-                <div className="shrink-0 text-[12px] font-bold uppercase tracking-[0.24em] leading-[1.08] opacity-78">
+                <div className="shrink-0 text-[20px] font-black uppercase tracking-[0.04em] leading-[0.98]">
                   BETA
                   <br />
                   TESTER
                 </div>
-                <div className="min-w-0 text-[20px] font-semibold tracking-[-0.03em] leading-[1.05]">
+                <div className="min-w-0 text-[11px] font-bold uppercase tracking-[0.22em] leading-[1.15] opacity-78">
                   Apply for beta access
                 </div>
               </div>
