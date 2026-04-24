@@ -537,7 +537,9 @@ export default function SignupPage() {
                       disabled={checkingBetaAccess}
                       className={BETA_ACTION_CLASS}
                     >
-                      {checkingBetaAccess ? "Checking access..." : "Continue with this email"}
+                      <span className="text-sm font-medium text-[#52616a]">
+                        {checkingBetaAccess ? "Checking access..." : "Continue with this email"}
+                      </span>
                       <ArrowRight className="h-4 w-4" />
                     </button>
                   </div>
@@ -554,7 +556,9 @@ export default function SignupPage() {
                     href="/beta"
                     className={BETA_ACTION_CLASS}
                   >
-                    Apply for beta access
+                    <span className="text-sm font-medium text-[#52616a]">
+                      Apply for beta access
+                    </span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
