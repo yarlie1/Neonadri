@@ -87,12 +87,6 @@ export default async function AccountPage() {
             >
               Change password
             </Link>
-            <Link
-              href="/faq"
-              className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-            >
-              Open FAQ
-            </Link>
           </div>
         </section>
 
