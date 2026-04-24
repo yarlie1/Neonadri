@@ -8,6 +8,7 @@ import { createClient } from "../../lib/supabase/client";
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_PRIMARY_CLASS,
+  APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
   APP_PAGE_BG_CLASS,
   APP_PILL_ACTIVE_CLASS,
