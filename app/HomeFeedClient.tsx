@@ -261,13 +261,6 @@ export default function HomeFeedClient({
         );
       }
 
-      if (sort === "benefit_asc") {
-        return (
-          (parseBenefitAmount(a.benefit_amount) ?? Number.MAX_SAFE_INTEGER) -
-          (parseBenefitAmount(b.benefit_amount) ?? Number.MAX_SAFE_INTEGER)
-        );
-      }
-
       if (sort === "distance") {
         const aHasCoords = a.latitude !== null && a.longitude !== null;
         const bHasCoords = b.latitude !== null && b.longitude !== null;
