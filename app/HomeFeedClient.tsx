@@ -423,13 +423,16 @@ export default function HomeFeedClient({
               <p className={`mt-2 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
                 You can use every feature at no charge while Neonadri is in beta. If a meetup is matched and you offered CS, you are still expected to honor the agreed cost support.
               </p>
-              <div className="mt-3">
+              <div className="mt-4">
                 <Link
                   href="/beta"
-                  className={`inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-semibold ${APP_BUTTON_SECONDARY_CLASS}`}
+                  className={`inline-flex min-h-[96px] w-full items-center justify-center gap-3 rounded-[26px] border px-5 py-5 text-center text-base font-semibold tracking-[0.01em] shadow-[0_18px_34px_rgba(118,126,133,0.16)] ${APP_BUTTON_PRIMARY_CLASS}`}
                 >
+                  <span className="text-[11px] font-bold uppercase tracking-[0.24em] opacity-75">
+                    BETA TESTER
+                  </span>
                   Apply for beta access
-                  <ArrowRight className="h-3.5 w-3.5" />
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>

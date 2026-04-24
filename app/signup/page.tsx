@@ -538,11 +538,8 @@ export default function SignupPage() {
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link
                     href="/beta"
-                    className={`inline-flex min-h-[112px] w-full items-center justify-center gap-3 rounded-[28px] border px-6 py-6 text-base font-semibold tracking-[0.01em] text-center transition shadow-[0_18px_38px_rgba(118,126,133,0.18)] ${APP_BUTTON_PRIMARY_CLASS}`}
+                    className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                   >
-                    <span className="text-[11px] font-bold uppercase tracking-[0.24em] opacity-75">
-                      BETA TESTER
-                    </span>
                     Apply for beta access
                     <ArrowRight className="h-4 w-4" />
                   </Link>
