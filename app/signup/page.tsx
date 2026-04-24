@@ -242,6 +242,32 @@ export default function SignupPage() {
         return;
       }
 
+      const betaCheckResponse = await fetch("/api/beta/check-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+
+      const betaCheckPayload = await betaCheckResponse.json().catch(() => ({}));
+
+      if (!betaCheckResponse.ok) {
+        setMessage(
+          betaCheckPayload.error || "Could not verify beta access right now."
+        );
+        setSubmitting(false);
+        return;
+      }
+
+      if (!betaCheckPayload.allowed) {
+        setMessage(
+          "Neonadri is currently available to approved beta testers only. Please apply for beta access first."
+        );
+        setSubmitting(false);
+        return;
+      }
+
       const aboutMeValidation = validateAboutMeContent(aboutMe);
 
       if (!aboutMeValidation.ok) {
@@ -354,6 +380,13 @@ export default function SignupPage() {
               </p>
               <div className={`mt-4 inline-flex rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                 Neonadri is for adults 18+ only.
+              </div>
+              <div className="mt-3 text-sm text-[#5f6d76]">
+                Signup is currently limited to approved beta testers.{" "}
+                <Link href="/beta" className="font-semibold text-[#31424d] underline underline-offset-4">
+                  Apply for beta access
+                </Link>
+                .
               </div>
 
               <div className="mt-7 space-y-3">

@@ -8,7 +8,7 @@ import {
   getMeetingStatus,
   parseMeetingTime,
 } from "../lib/meetingTime";
-import { Plus, Sparkles } from "lucide-react";
+import { ArrowRight, Plus, Sparkles } from "lucide-react";
 import {
   FeaturedMeetupCard,
   HomeFilterCard,
@@ -28,6 +28,7 @@ import {
 } from "./homeFeedHelpers";
 import {
   APP_BODY_TEXT_CLASS,
+  APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
   APP_INNER_PANEL_CLASS,
   APP_PAGE_BG_CLASS,
@@ -422,6 +423,15 @@ export default function HomeFeedClient({
               <p className={`mt-2 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
                 You can use every feature at no charge while Neonadri is in beta. If a meetup is matched and you offered CS, you are still expected to honor the agreed cost support.
               </p>
+              <div className="mt-3">
+                <Link
+                  href="/beta"
+                  className={`inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-semibold ${APP_BUTTON_SECONDARY_CLASS}`}
+                >
+                  Apply for beta access
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </div>
           </div>
         </section>
