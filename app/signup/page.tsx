@@ -533,7 +533,7 @@ export default function SignupPage() {
                       type="button"
                       onClick={handleBetaAccessCheck}
                       disabled={checkingBetaAccess}
-                      className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_SECONDARY_CLASS}`}
+                      className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_SECONDARY_CLASS}`}
                     >
                       {checkingBetaAccess ? "Checking access..." : "Continue with this email"}
                       <ArrowRight className="h-4 w-4" />
