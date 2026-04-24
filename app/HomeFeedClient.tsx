@@ -126,7 +126,7 @@ function getFeaturedPost(
     const orderBoost = Math.max(0, 6 - index);
     if (sort === "distance") {
       score += orderBoost * 7;
-    } else if (sort === "benefit_desc" || sort === "benefit_asc") {
+    } else if (sort === "benefit_desc") {
       score += orderBoost * 6;
     } else if (sort === "soonest") {
       score += orderBoost * 5;
