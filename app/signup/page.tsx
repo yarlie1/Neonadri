@@ -519,7 +519,7 @@ export default function SignupPage() {
                 <div className="mt-6 space-y-3">
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      Approved beta email
+                      Email approved for beta testing
                     </label>
                     <input
                       type="email"
