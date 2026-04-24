@@ -204,8 +204,6 @@ export function getSortSummaryLabel(sort: SortValue) {
       return "Soonest";
     case "benefit_desc":
       return "High $";
-    case "benefit_asc":
-      return "Low $";
     case "distance":
       return "Closest";
     default:
