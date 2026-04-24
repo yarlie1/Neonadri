@@ -673,6 +673,8 @@ export default function DashboardClient({
     filteredSent,
     filteredMatches,
     pendingReceived,
+    acceptedReceived,
+    rejectedReceived,
     acceptedSent,
     upcomingMatchedMeetups,
     setPosts,
@@ -1352,6 +1354,18 @@ export default function DashboardClient({
                   onClick={() => setReceivedFilter("pending")}
                 >
                   Pending
+                </FilterPill>
+                <FilterPill
+                  active={receivedFilter === "accepted"}
+                  onClick={() => setReceivedFilter("accepted")}
+                >
+                  Accepted
+                </FilterPill>
+                <FilterPill
+                  active={receivedFilter === "rejected"}
+                  onClick={() => setReceivedFilter("rejected")}
+                >
+                  Rejected
                 </FilterPill>
                 <FilterPill
                   active={receivedFilter === "cancelled"}
