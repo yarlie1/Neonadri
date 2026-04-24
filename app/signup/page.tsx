@@ -528,6 +528,18 @@ export default function SignupPage() {
                     />
                   </div>
 
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={handleBetaAccessCheck}
+                      disabled={checkingBetaAccess}
+                      className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_SECONDARY_CLASS}`}
+                    >
+                      {checkingBetaAccess ? "Checking access..." : "Continue with this email"}
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </div>
+
                   <div className={`${APP_SOFT_CARD_CLASS} p-4`}>
                     <p className={`text-sm ${APP_BODY_TEXT_CLASS}`}>
                       If this email is not approved yet, you can apply for access first and come back once your spot opens.
@@ -543,16 +555,6 @@ export default function SignupPage() {
                     Apply for beta access
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-
-                  <button
-                    type="button"
-                    onClick={handleBetaAccessCheck}
-                    disabled={checkingBetaAccess}
-                    className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_SECONDARY_CLASS}`}
-                  >
-                    {checkingBetaAccess ? "Checking access..." : "Continue with this email"}
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
                 </div>
               </>
             ) : (
