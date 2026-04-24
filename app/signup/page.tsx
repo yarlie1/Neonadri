@@ -516,7 +516,7 @@ export default function SignupPage() {
                   Check your beta access first. Once we confirm your email, we will open the signup steps right away.
                 </p>
 
-                <div className="mt-6 space-y-4">
+                <div className="mt-6 space-y-3">
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#52616a]">
                       Approved beta email
@@ -551,7 +551,7 @@ export default function SignupPage() {
                   </div>
                 </div>
 
-                <div className="mt-4 flex flex-wrap gap-3">
+                <div className="mt-3 flex flex-wrap gap-3">
                   <Link
                     href="/beta"
                     className={BETA_ACTION_CLASS}
