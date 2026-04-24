@@ -12,6 +12,7 @@ const PROTECTED_PATHS = [
   "/account",
   "/reviews/write",
   "/matches",
+  "/chats",
 ];
 const ADULT_CHECK_PATH = "/adult-check";
 
@@ -116,6 +117,7 @@ export const config = {
     "/account/:path*",
     "/reviews/write/:path*",
     "/matches/:path*",
+    "/chats/:path*",
     "/adult-check",
   ],
 };

@@ -4,6 +4,7 @@ import { createClient } from "../../lib/supabase/server";
 import { normalizeUserTimeZone, USER_TIME_ZONE_COOKIE } from "../../lib/userTimeZone";
 import { isConfirmedMatchStatus } from "../../lib/matches/status";
 import { getPublicLocationLabel } from "../../lib/locationPrivacy";
+import { getBlockedUserIdsForViewer } from "../../lib/safety";
 import ChatsPageClient, { type ChatListItem } from "./ChatsPageClient";
 
 export default async function ChatsPage() {
@@ -30,13 +31,14 @@ export default async function ChatsPage() {
   const matches = (matchesData || []).filter((item) =>
     isConfirmedMatchStatus(String(item.status || ""))
   );
+  const blockedUserIds = await getBlockedUserIdsForViewer(supabase, user.id);
 
   const relatedPostIds = Array.from(new Set(matches.map((item) => item.post_id)));
   const relatedUserIds = Array.from(
     new Set(
       matches
         .map((item) => (item.user_a === user.id ? item.user_b : item.user_a))
-        .filter(Boolean)
+        .filter((id) => Boolean(id) && !blockedUserIds.has(id))
     )
   );
 
@@ -77,6 +79,7 @@ export default async function ChatsPage() {
       if (!post) return null;
 
       const otherUserId = item.user_a === user.id ? item.user_b : item.user_a;
+      if (blockedUserIds.has(otherUserId)) return null;
       const chatMeta = chatMetaMap[item.id];
       const viewerLastSeen =
         chatMeta?.host_user_id === user.id
