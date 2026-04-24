@@ -8,7 +8,6 @@ import { createClient } from "../../lib/supabase/client";
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_PRIMARY_CLASS,
-  APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
   APP_PAGE_BG_CLASS,
   APP_PILL_ACTIVE_CLASS,
@@ -82,6 +81,8 @@ const INPUT_CLASS =
   "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30";
 const HERO_SURFACE_CLASS =
   "relative overflow-hidden rounded-[32px] border border-[#dde5eb] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.99)_0%,rgba(241,246,249,0.96)_44%,rgba(225,232,237,0.95)_100%)] px-6 py-7 text-[#25313a] shadow-[0_24px_52px_rgba(118,126,133,0.12)] sm:px-8 sm:py-9";
+const BETA_ACTION_CLASS =
+  "inline-flex items-center gap-2 rounded-full border border-[#d6dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] px-5 py-3 text-sm font-medium text-[#52616a] transition hover:bg-[#f5f8fa] disabled:cursor-not-allowed disabled:opacity-50";
 
 function ToggleChip({
   label,
@@ -533,7 +534,7 @@ export default function SignupPage() {
                       type="button"
                       onClick={handleBetaAccessCheck}
                       disabled={checkingBetaAccess}
-                      className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_SECONDARY_CLASS}`}
+                      className={BETA_ACTION_CLASS}
                     >
                       {checkingBetaAccess ? "Checking access..." : "Continue with this email"}
                       <ArrowRight className="h-4 w-4" />
@@ -550,7 +551,7 @@ export default function SignupPage() {
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link
                     href="/beta"
-                    className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                    className={BETA_ACTION_CLASS}
                   >
                     Apply for beta access
                     <ArrowRight className="h-4 w-4" />
