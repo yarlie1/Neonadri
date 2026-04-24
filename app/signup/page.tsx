@@ -535,7 +535,7 @@ export default function SignupPage() {
                       type="button"
                       onClick={handleBetaAccessCheck}
                       disabled={checkingBetaAccess}
-                      className={BETA_ACTION_CLASS}
+                      className={`${BETA_ACTION_CLASS} shadow-[inset_0_0_0_1px_rgba(214,223,229,0.95)]`}
                     >
                       <span className="text-sm font-medium text-[#52616a]">
                         {checkingBetaAccess ? "Checking access..." : "Continue with this email"}
