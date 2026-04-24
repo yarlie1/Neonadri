@@ -97,14 +97,20 @@ export default async function AccountPage() {
               Review safety reports
             </h2>
             <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
-              Open the admin reports queue to review new reports and update status.
+              Open the admin tools to review reports and beta access requests.
             </p>
-            <div className="mt-4">
+            <div className="mt-4 flex flex-wrap gap-3">
               <Link
                 href="/admin/reports"
                 className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
               >
                 Open admin reports
+              </Link>
+              <Link
+                href="/admin/beta"
+                className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+              >
+                Open beta applications
               </Link>
             </div>
           </section>
