@@ -156,12 +156,14 @@ export default function HomeFeedClient({
   matchSummaryMap,
   viewerPreference,
   initialUserTimeZone,
+  isLoggedIn,
 }: {
   initialPosts: PostRow[];
   hostProfileMap: HostProfileMap;
   matchSummaryMap: MatchSummaryMap;
   viewerPreference: { gender: string; ageGroup: string } | null;
   initialUserTimeZone: string;
+  isLoggedIn: boolean;
 }) {
   const userTimeZone = useMemo(() => initialUserTimeZone, [initialUserTimeZone]);
 
@@ -426,24 +428,26 @@ export default function HomeFeedClient({
               </p>
             </div>
           </div>
-          <div className="mt-4">
-            <Link
-              href="/beta"
-              className={`inline-flex min-h-[76px] w-full items-center justify-between gap-4 rounded-[24px] border px-5 py-3.5 text-left shadow-[0_18px_34px_rgba(118,126,133,0.16)] transition ${APP_BUTTON_PRIMARY_CLASS}`}
-            >
-              <div className="flex min-w-0 items-center gap-4">
-                <div className="shrink-0 text-[18px] font-black uppercase tracking-[0.03em] leading-[0.98]">
-                  BETA
-                  <br />
-                  TESTER
+          {!isLoggedIn ? (
+            <div className="mt-4">
+              <Link
+                href="/beta"
+                className={`inline-flex min-h-[76px] w-full items-center justify-between gap-4 rounded-[24px] border px-5 py-3.5 text-left shadow-[0_18px_34px_rgba(118,126,133,0.16)] transition ${APP_BUTTON_PRIMARY_CLASS}`}
+              >
+                <div className="flex min-w-0 items-center gap-4">
+                  <div className="shrink-0 text-[18px] font-black uppercase tracking-[0.03em] leading-[0.98]">
+                    BETA
+                    <br />
+                    TESTER
+                  </div>
+                  <div className="min-w-0 text-[13px] font-bold uppercase tracking-[0.18em] leading-[1.12] opacity-80">
+                    Apply for beta access
+                  </div>
                 </div>
-                <div className="min-w-0 text-[13px] font-bold uppercase tracking-[0.18em] leading-[1.12] opacity-80">
-                  Apply for beta access
-                </div>
-              </div>
-              <ArrowRight className="h-5 w-5 shrink-0" />
-            </Link>
-          </div>
+                <ArrowRight className="h-5 w-5 shrink-0" />
+              </Link>
+            </div>
+          ) : null}
         </section>
 
         {highlightedPost && (

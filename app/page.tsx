@@ -153,6 +153,7 @@ export default async function HomePage() {
       matchSummaryMap={matchSummaryMap}
       viewerPreference={viewerPreference}
       initialUserTimeZone={initialUserTimeZone}
+      isLoggedIn={!!user?.id}
     />
   );
 }
