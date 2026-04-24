@@ -302,10 +302,10 @@ function ReceivedTabPanel({
           isCancelled
             ? "This meetup was cancelled."
             : item.status === "pending"
-            ? `${requesterName} wants to join this meetup.`
+            ? `${requesterName} asked to join this meetup.`
             : item.status === "accepted"
-            ? `You matched with ${requesterName}.`
-            : `${requesterName}'s request is closed.`;
+            ? `You accepted ${requesterName}'s request.`
+            : `You declined ${requesterName}'s request.`;
 
         return (
           <div
