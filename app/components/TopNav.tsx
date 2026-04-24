@@ -437,7 +437,7 @@ export default function TopNav() {
       refreshChannel?.unsubscribe();
       subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, [supabase, pathname, currentSearch]);
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
