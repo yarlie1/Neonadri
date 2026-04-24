@@ -135,8 +135,9 @@ export default function AdminBetaClient() {
             Beta Applications
           </h1>
           <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
-            Review incoming beta requests, approve the right people, and keep the
-            active allowlist tight while the product is still in closed beta.
+            Review incoming requests, approve the strongest early testers, and
+            keep the active allowlist intentionally small while Neonadri is in
+            closed beta.
           </p>
 
           <div className="mt-4 flex flex-wrap gap-2">

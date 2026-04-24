@@ -104,7 +104,7 @@ export default function BetaPage() {
 
     setMessage(
       payload.message ||
-        "Your beta application has been received. We'll reach out by email if a spot opens."
+        "Your beta application is in. We'll email you if a spot opens for this round."
     );
   };
 
@@ -128,6 +128,10 @@ export default function BetaPage() {
             We&apos;re keeping the beta intentionally small while we tune safety,
             meetup quality, and feedback loops. All features are free during the
             beta, but any CS you offer for a matched meetup still applies.
+          </p>
+          <p className="mt-3 text-sm text-[#5f6d76]">
+            If you&apos;re approved, you&apos;ll be able to sign up with the same email
+            address you use here.
           </p>
         </section>
 
