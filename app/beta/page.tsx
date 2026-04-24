@@ -59,10 +59,8 @@ export default function BetaPage() {
   const [message, setMessage] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [city, setCity] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
-  const [availability, setAvailability] = useState("");
   const [motivation, setMotivation] = useState("");
   const [meetupInterests, setMeetupInterests] = useState<string[]>([]);
 
@@ -85,10 +83,8 @@ export default function BetaPage() {
       body: JSON.stringify({
         fullName,
         email,
-        city,
         gender,
         ageGroup,
-        availability,
         motivation,
         meetupInterests,
       }),
@@ -154,24 +150,6 @@ export default function BetaPage() {
                 className={`${INPUT_CLASS} mt-2`}
                 placeholder="name@email.com"
                 type="email"
-              />
-            </div>
-            <div>
-              <label className={APP_EYEBROW_CLASS}>City</label>
-              <input
-                value={city}
-                onChange={(event) => setCity(event.target.value)}
-                className={`${INPUT_CLASS} mt-2`}
-                placeholder="Los Angeles, San Francisco, Seoul..."
-              />
-            </div>
-            <div>
-              <label className={APP_EYEBROW_CLASS}>Availability</label>
-              <input
-                value={availability}
-                onChange={(event) => setAvailability(event.target.value)}
-                className={`${INPUT_CLASS} mt-2`}
-                placeholder="For example: evenings, weekends, once a week"
               />
             </div>
           </div>

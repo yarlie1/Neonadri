@@ -48,12 +48,12 @@ export async function POST(req: Request) {
     const { data, error } = await supabase.rpc("submit_beta_application", {
       p_email: email,
       p_full_name: sanitizeOptionalText(body.fullName),
-      p_city: sanitizeOptionalText(body.city),
+      p_city: null,
       p_age_group: sanitizeOptionalChoice(body.ageGroup, VALID_AGE_GROUPS),
       p_gender: sanitizeOptionalChoice(body.gender, VALID_GENDERS),
       p_motivation: motivation,
       p_meetup_interests: meetupInterests,
-      p_availability: sanitizeOptionalText(body.availability),
+      p_availability: null,
     });
 
     if (error) {
