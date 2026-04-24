@@ -18,6 +18,7 @@ import {
   Plus,
   MessageCircleMore,
 } from "lucide-react";
+import { getMeetingStatus } from "../../lib/meetingTime";
 import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
@@ -153,6 +154,9 @@ export default function TopNav() {
   useEffect(() => {
     let mounted = true;
     let refreshChannel: ReturnType<typeof supabase.channel> | null = null;
+    const browserTimeZone = normalizeUserTimeZone(
+      Intl.DateTimeFormat().resolvedOptions().timeZone
+    );
 
     const resetSignedOutState = () => {
       setUser(null);
@@ -205,7 +209,6 @@ export default function TopNav() {
         return 0;
       }
 
-      const now = Date.now();
       const livePostIds = new Set(
         (postsData || [])
           .filter((post) => {
@@ -217,8 +220,10 @@ export default function TopNav() {
               return true;
             }
 
-            const meetingTime = post.meeting_time ? new Date(post.meeting_time).getTime() : NaN;
-            return Number.isFinite(meetingTime) && meetingTime >= now;
+            return (
+              getMeetingStatus(post.meeting_time || null, browserTimeZone) ===
+              "Upcoming"
+            );
           })
           .map((post) => post.id)
       );

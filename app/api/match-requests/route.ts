@@ -1,11 +1,21 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createClient } from "../../../lib/supabase/server";
 import { isBlockedBetween } from "../../../lib/safety";
 import { isAdultConfirmedUser } from "../../../lib/adultGate";
+import { isMeetingFinished } from "../../../lib/meetingTime";
+import {
+  normalizeUserTimeZone,
+  USER_TIME_ZONE_COOKIE,
+} from "../../../lib/userTimeZone";
 
 export async function POST(req: Request) {
   try {
     const supabase = await createClient();
+    const cookieStore = await cookies();
+    const userTimeZone = normalizeUserTimeZone(
+      cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
+    );
     const body = await req.json();
     const targetMismatchMessage =
       "You cannot send a request because this meetup is set for a different gender or age group.";
@@ -86,15 +96,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const meetingTimeValue = String(postData.meeting_time || "").trim();
-    if (meetingTimeValue) {
-      const meetingTime = new Date(meetingTimeValue).getTime();
-      if (!Number.isNaN(meetingTime) && meetingTime < Date.now()) {
-        return NextResponse.json(
-          { error: "This meetup has already expired." },
-          { status: 409 }
-        );
-      }
+    if (isMeetingFinished(postData.meeting_time || null, userTimeZone)) {
+      return NextResponse.json(
+        { error: "This meetup has already expired." },
+        { status: 409 }
+      );
     }
 
     if (profileError) {
