@@ -1096,6 +1096,7 @@ export default function DashboardClient({
     window.addEventListener("focus", handleWindowFocus);
     document.addEventListener("visibilitychange", handleVisibilityChange);
     window.addEventListener("pageshow", handlePageShow);
+    void refreshDashboardData();
 
     return () => {
       mounted = false;
