@@ -167,6 +167,12 @@ export default function HomeFeedClient({
     formatMeetingTime(meetingTime, userTimeZone) || "";
   const { distanceUnit, setDistanceUnit } = useDistanceUnit();
 
+  useEffect(() => {
+    if (distanceUnit !== "mi") {
+      setDistanceUnit("mi");
+    }
+  }, [distanceUnit, setDistanceUnit]);
+
   const getPostStatus = (meetingTime: string | null) =>
     getMeetingStatus(meetingTime, userTimeZone);
 
@@ -490,7 +496,7 @@ export default function HomeFeedClient({
               genderOptions={GENDER_OPTIONS}
               ageGroupOptions={AGE_GROUP_OPTIONS}
               distanceOptions={DISTANCE_OPTIONS}
-              distanceUnitOptions={["mi", "km"]}
+              distanceUnitOptions={["mi"]}
               sortOptions={SORT_OPTIONS}
               onMatchState={(option) => applyAndClose(() => setMatchState(option))}
               onAudience={(option) => applyAndClose(() => applyAudience(option as (typeof AUDIENCE_OPTIONS)[number]))}

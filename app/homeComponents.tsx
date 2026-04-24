@@ -248,16 +248,18 @@ export function HomeFilterCard({
               ))}
             </div>
 
-            <div className="mt-3 flex flex-wrap gap-2">
-              {distanceUnitOptions.map((option) => (
-                <FilterPill
-                  key={option}
-                  active={distanceUnit === option}
-                  label={option.toUpperCase()}
-                  onClick={() => onDistanceUnit(option)}
-                />
-              ))}
-            </div>
+            {distanceUnitOptions.length > 1 ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {distanceUnitOptions.map((option) => (
+                  <FilterPill
+                    key={option}
+                    active={distanceUnit === option}
+                    label={option.toUpperCase()}
+                    onClick={() => onDistanceUnit(option)}
+                  />
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="mt-4">
@@ -288,14 +290,14 @@ export function HomeFilterCard({
             )}
           </div>
 
-          <div className="mt-4">
+          <div className="mt-5 border-t border-[#e2e8ec] pt-4">
             <button
               type="button"
               onClick={onReset}
-              className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-xs font-medium transition ${APP_PILL_INACTIVE_CLASS}`}
+              className={`inline-flex items-center gap-2 rounded-[14px] px-3.5 py-2.5 text-xs font-semibold transition ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               <RotateCcw className="h-3.5 w-3.5" />
-              Reset
+              Reset filters
             </button>
           </div>
         </div>
