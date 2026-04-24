@@ -424,19 +424,23 @@ export default function HomeFeedClient({
               <p className={`mt-2 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
                 You can use every feature at no charge while Neonadri is in beta. If a meetup is matched and you offered CS, you are still expected to honor the agreed cost support.
               </p>
-              <div className="mt-4">
-                <Link
-                  href="/beta"
-                  className={`inline-flex min-h-[96px] w-full items-center justify-center gap-3 rounded-[26px] border px-5 py-5 text-center text-base font-semibold tracking-[0.01em] shadow-[0_18px_34px_rgba(118,126,133,0.16)] ${APP_BUTTON_PRIMARY_CLASS}`}
-                >
-                  <span className="text-[11px] font-bold uppercase tracking-[0.24em] opacity-75">
-                    BETA TESTER
-                  </span>
-                  Apply for beta access
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
             </div>
+          </div>
+          <div className="mt-4">
+            <Link
+              href="/beta"
+              className={`inline-flex min-h-[84px] w-full items-center justify-between gap-4 rounded-[24px] border px-5 py-4 text-left shadow-[0_18px_34px_rgba(118,126,133,0.16)] transition ${APP_BUTTON_PRIMARY_CLASS}`}
+            >
+              <div className="min-w-0">
+                <div className="text-[11px] font-bold uppercase tracking-[0.24em] opacity-75">
+                  Apply for beta access
+                </div>
+                <div className="mt-1 text-[28px] font-black tracking-[-0.04em] leading-none">
+                  BETA TESTER
+                </div>
+              </div>
+              <ArrowRight className="h-5 w-5 shrink-0" />
+            </Link>
           </div>
         </section>
 
