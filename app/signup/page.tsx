@@ -543,24 +543,6 @@ export default function SignupPage() {
                       <ArrowRight className="h-4 w-4" />
                     </button>
                   </div>
-
-                  <div className={`${APP_SOFT_CARD_CLASS} p-4`}>
-                    <p className={`text-sm ${APP_BODY_TEXT_CLASS}`}>
-                      If this email is not approved yet, you can apply for access first and come back once your spot opens.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-3 flex flex-wrap gap-3">
-                  <Link
-                    href="/beta"
-                    className={BETA_ACTION_CLASS}
-                  >
-                    <span className="text-sm font-medium text-[#52616a]">
-                      Apply for beta access
-                    </span>
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
                 </div>
               </>
             ) : (
@@ -879,6 +861,30 @@ export default function SignupPage() {
             )}
           </section>
         </div>
+
+        {!betaAccessAllowed ? (
+          <section className={`mt-4 ${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
+            <div className="flex items-start gap-3">
+              <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                Beta apply
+              </div>
+            </div>
+            <p className={`mt-3 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
+              If this email is not approved yet, you can apply for access first and come back once your spot opens.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <Link
+                href="/beta"
+                className={BETA_ACTION_CLASS}
+              >
+                <span className="text-sm font-medium text-[#52616a]">
+                  Apply for beta access
+                </span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </section>
+        ) : null}
       </div>
     </main>
   );
