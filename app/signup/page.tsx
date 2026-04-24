@@ -513,7 +513,7 @@ export default function SignupPage() {
                 </div>
 
                 <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  Check your beta access first. Once we confirm your email, we will open the signup steps right away.
+                  Use your approved email to continue signup now.
                 </p>
 
                 <div className="mt-6 space-y-3">
