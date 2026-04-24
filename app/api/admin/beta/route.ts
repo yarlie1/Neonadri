@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
+import { sendBetaApprovalEmail } from "../../../../lib/betaApprovalEmail";
 
 async function assertAdmin() {
   const supabase = await createClient();
@@ -104,7 +105,7 @@ export async function PATCH(req: Request) {
 
     const { data: application, error: applicationError } = await supabase
       .from("beta_applications")
-      .select("id, email")
+      .select("id, email, full_name")
       .eq("id", applicationId)
       .maybeSingle();
 
@@ -159,6 +160,24 @@ export async function PATCH(req: Request) {
           { status: 500 }
         );
       }
+
+      const emailResult = await sendBetaApprovalEmail({
+        to: application.email.toLowerCase(),
+        fullName: application.full_name,
+      });
+
+      if (!emailResult.ok && !emailResult.skipped) {
+        console.error("Admin beta approval email failed", emailResult.details);
+      }
+
+      return NextResponse.json(
+        {
+          ok: true,
+          emailSent: emailResult.ok,
+          emailSkipped: emailResult.skipped,
+        },
+        { status: 200 }
+      );
     } else {
       const { error: allowlistDeactivateError } = await supabase
         .from("beta_allowlist")
