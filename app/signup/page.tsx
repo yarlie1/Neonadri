@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
 import { createClient } from "../../lib/supabase/client";
@@ -85,6 +85,56 @@ const HERO_SURFACE_CLASS =
 const BETA_ACTION_CLASS =
   "inline-flex appearance-none items-center justify-center gap-2 rounded-full border border-[#d6dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] px-5 py-3 text-sm font-medium text-[#52616a] no-underline transition hover:bg-[#f5f8fa] disabled:cursor-not-allowed disabled:opacity-50";
 
+function formatNaturalList(values: string[]) {
+  if (values.length === 0) return "";
+  if (values.length === 1) return values[0];
+  if (values.length === 2) return `${values[0]} and ${values[1]}`;
+  return `${values.slice(0, -1).join(", ")}, and ${values[values.length - 1]}`;
+}
+
+function toInterestPhrase(interests: string[]) {
+  const topInterests = interests.slice(0, 2).map((item) => item.toLowerCase());
+
+  if (topInterests.length === 0) {
+    return "easy plans that feel comfortable to settle into";
+  }
+
+  return formatNaturalList(topInterests);
+}
+
+function toLanguagePhrase(languages: string[]) {
+  const topLanguages = languages.slice(0, 2);
+
+  if (topLanguages.length === 0) return "English";
+
+  return formatNaturalList(topLanguages);
+}
+
+function buildAboutMeOptions({
+  meetingStyle,
+  interests,
+  languages,
+  responseTimeNote,
+}: {
+  meetingStyle: string;
+  interests: string[];
+  languages: string[];
+  responseTimeNote: string;
+}) {
+  const styleText = meetingStyle || "Friendly and relaxed";
+  const interestText = toInterestPhrase(interests);
+  const languageText = toLanguagePhrase(languages);
+  const responseText = responseTimeNote
+    ? `${responseTimeNote.charAt(0).toLowerCase()}${responseTimeNote.slice(1)}`
+    : "I usually appreciate clear communication";
+
+  return [
+    `I usually enjoy ${interestText}, and I tend to bring a ${styleText.toLowerCase()} energy to meetups. I am comfortable chatting in ${languageText}, and ${responseText}.`,
+    `I am usually happiest meeting through ${interestText} when the vibe feels ${styleText.toLowerCase()}. I can connect in ${languageText}, and ${responseText}.`,
+    `My ideal meetup is built around ${interestText} with a ${styleText.toLowerCase()} feel. I usually communicate in ${languageText}, and ${responseText}.`,
+  ];
+}
+
 function ToggleChip({
   label,
   selected,
@@ -123,6 +173,7 @@ export default function SignupPage() {
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
   const [aboutMe, setAboutMe] = useState(DEFAULT_ABOUT_ME);
+  const [aboutMeTouched, setAboutMeTouched] = useState(false);
   const [languages, setLanguages] = useState<string[]>(["English"]);
   const [meetingStyle, setMeetingStyle] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
@@ -168,6 +219,27 @@ export default function SignupPage() {
 
     return `${normalized.slice(0, 107).trimEnd()}...`;
   }, [aboutMe]);
+
+  const aboutMeOptions = useMemo(
+    () =>
+      buildAboutMeOptions({
+        meetingStyle,
+        interests,
+        languages,
+        responseTimeNote,
+      }),
+    [interests, languages, meetingStyle, responseTimeNote]
+  );
+
+  useEffect(() => {
+    if (aboutMeTouched) return;
+
+    const nextDefault =
+      aboutMeOptions[Math.floor(Math.random() * aboutMeOptions.length)] ||
+      DEFAULT_ABOUT_ME;
+
+    setAboutMe(nextDefault);
+  }, [aboutMeOptions, aboutMeTouched]);
 
   const toggleArrayValue = (
     value: string,
@@ -713,7 +785,10 @@ export default function SignupPage() {
                         </label>
                         <textarea
                           value={aboutMe}
-                          onChange={(e) => setAboutMe(e.target.value)}
+                          onChange={(e) => {
+                            setAboutMeTouched(true);
+                            setAboutMe(e.target.value);
+                          }}
                           rows={4}
                           className={INPUT_CLASS}
                         />
