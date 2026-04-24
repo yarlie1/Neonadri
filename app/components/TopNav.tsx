@@ -592,7 +592,7 @@ export default function TopNav() {
                     <span className="text-[20px] font-extrabold leading-none tracking-[-0.05em] text-[#303b44] sm:text-[24px]">
                       Neonadri
                     </span>
-                    <span className="mt-0.5 rounded-full border border-[#d4dfe6] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-1.5 py-[0.14rem] text-[8px] font-extrabold uppercase leading-none tracking-[0.18em] text-[#61717a] shadow-[0_8px_16px_rgba(118,126,133,0.08)] sm:text-[9px]">
+                    <span className="-mt-0.5 rounded-full border border-[#d4dfe6] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-1.5 py-[0.08rem] text-[7px] font-extrabold uppercase leading-none tracking-[0.16em] text-[#61717a] shadow-[0_8px_16px_rgba(118,126,133,0.08)] sm:-mt-1 sm:text-[8px]">
                       Beta
                     </span>
                   </span>
