@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
 import { createClient } from "../../lib/supabase/client";
 import {
@@ -160,6 +160,7 @@ function ToggleChip({
 export default function SignupPage() {
   const supabase = createClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
@@ -240,6 +241,14 @@ export default function SignupPage() {
 
     setAboutMe(nextDefault);
   }, [aboutMeOptions, aboutMeTouched]);
+
+  useEffect(() => {
+    const emailFromLink = searchParams.get("email")?.trim().toLowerCase() || "";
+
+    if (!emailFromLink || email.trim().length > 0) return;
+
+    setEmail(emailFromLink);
+  }, [email, searchParams]);
 
   const toggleArrayValue = (
     value: string,

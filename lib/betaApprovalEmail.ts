@@ -26,7 +26,9 @@ export async function sendBetaApprovalEmail({
   }
 
   const firstName = fullName?.trim() || "there";
-  const signupUrl = `${appUrl.replace(/\/+$/, "")}/signup`;
+  const signupUrl = `${appUrl.replace(/\/+$/, "")}/signup?email=${encodeURIComponent(
+    to
+  )}`;
 
   const response = await fetch(RESEND_API_URL, {
     method: "POST",
