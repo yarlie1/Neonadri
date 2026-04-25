@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
+import { sendBetaApprovalEmail } from "../../../../lib/betaApprovalEmail";
 
 const VALID_AGE_GROUPS = ["20s", "30s", "40s", "50s+"] as const;
 const VALID_GENDERS = ["Male", "Female", "Other", "Prefer not to say"] as const;
@@ -58,15 +59,61 @@ export async function POST(req: Request) {
     }
 
     const row = Array.isArray(data) ? data[0] : null;
+    const applicationStatus = row?.application_status || "pending";
+
+    if (applicationStatus === "daily_full") {
+      return NextResponse.json(
+        {
+          ok: false,
+          status: "daily_full",
+          error: "Today’s beta tester spots are full. Please try again tomorrow.",
+        },
+        { status: 429 }
+      );
+    }
+
+    if (applicationStatus === "approved") {
+      const shouldSendApprovalEmail = !!row?.send_approval_email;
+
+      if (shouldSendApprovalEmail) {
+        const emailResult = await sendBetaApprovalEmail({
+          to: email,
+          fullName: sanitizeOptionalText(body.fullName),
+        });
+
+        if (!emailResult.ok && !emailResult.skipped) {
+          console.error("Beta auto-approval email failed", emailResult.details);
+        }
+
+        return NextResponse.json(
+          {
+            ok: true,
+            status: "approved",
+            emailSent: emailResult.ok,
+            emailSkipped: emailResult.skipped,
+            message:
+              "You’re approved for beta access. Check your email for the signup link.",
+          },
+          { status: 200 }
+        );
+      }
+
+      return NextResponse.json(
+        {
+          ok: true,
+          status: "approved",
+          message:
+            "This email is already approved for beta access. You can continue to signup now.",
+        },
+        { status: 200 }
+      );
+    }
 
     return NextResponse.json(
       {
         ok: true,
-        status: row?.application_status || "pending",
-        message:
-          row?.application_status === "approved"
-            ? "Your email is already approved for beta access."
-            : "Your beta application has been received.",
+        status: applicationStatus,
+        message: "Your beta application has been received.",
       },
       { status: 200 }
     );

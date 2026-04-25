@@ -126,6 +126,9 @@ export default function BetaPage() {
             beta, but any CS you offer for a matched meetup still applies.
           </p>
           <p className="mt-3 text-sm text-[#5f6d76]">
+            We&apos;re currently opening up to 10 beta tester spots per day.
+          </p>
+          <p className="mt-3 text-sm text-[#5f6d76]">
             If you&apos;re approved, you&apos;ll be able to sign up with the same email
             address you use here.
           </p>
