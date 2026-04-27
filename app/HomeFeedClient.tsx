@@ -48,6 +48,7 @@ import {
   useHomeFeedFilters,
 } from "./useHomeFeedFilters";
 import { useDistanceUnit } from "./useDistanceUnit";
+import { useCreateMeetupHref } from "./useCreateMeetupHref";
 
 type PostRow = {
   id: number;
@@ -166,6 +167,7 @@ export default function HomeFeedClient({
   isLoggedIn: boolean;
 }) {
   const userTimeZone = useMemo(() => initialUserTimeZone, [initialUserTimeZone]);
+  const createHref = useCreateMeetupHref(isLoggedIn);
 
   const formatTime = (meetingTime: string | null) =>
     formatMeetingTime(meetingTime, userTimeZone) || "";
@@ -630,7 +632,7 @@ export default function HomeFeedClient({
       </div>
 
       <Link
-        href="/write"
+        href={createHref}
         className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-[24px] border border-[#d6e0e6] bg-[linear-gradient(135deg,#ffffff_0%,#e1eaef_100%)] text-[#5f7f8f] shadow-[0_24px_46px_rgba(118,126,133,0.18)] transition hover:scale-[1.02]"
         aria-label="Create meetup"
       >

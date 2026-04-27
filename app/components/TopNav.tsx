@@ -28,6 +28,7 @@ import {
   APP_PILL_ACTIVE_CLASS,
   APP_PILL_INACTIVE_CLASS,
 } from "../designSystem";
+import { useCreateMeetupHref } from "../useCreateMeetupHref";
 
 type SimpleUser = {
   id: string;
@@ -111,6 +112,7 @@ export default function TopNav() {
       : user && pendingCount > 0
       ? "/dashboard?tab=received"
       : "/dashboard";
+  const createHref = useCreateMeetupHref(true);
 
   useEffect(() => {
     const browserTimeZone = normalizeUserTimeZone(
@@ -635,7 +637,7 @@ export default function TopNav() {
                   <NavLabel icon={<UserCircle2 className="h-4 w-4" />}>Profile</NavLabel>
                 </Link>
 
-                <Link href="/write" className={primary}>
+                <Link href={createHref} className={primary}>
                   <Plus className="h-4 w-4" />
                   Create
                 </Link>
@@ -753,7 +755,7 @@ export default function TopNav() {
                       </Link>
 
                       <Link
-                        href="/write"
+                        href={createHref}
                         onClick={closeMenu}
                         className="mt-1 inline-flex items-center gap-2 rounded-[16px] border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] px-3 py-2.25 text-sm font-medium text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] transition hover:bg-[#f7fafb]"
                       >

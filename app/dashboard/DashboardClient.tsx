@@ -48,6 +48,7 @@ import {
   APP_ROW_SURFACE_CLASS,
 } from "../designSystem";
 import { useDashboardState } from "./useDashboardState";
+import { useCreateMeetupHref } from "../useCreateMeetupHref";
 
 function PostsTabPanel({
   filteredPosts,
@@ -633,6 +634,7 @@ export default function DashboardClient({
   matchChatMetaMap: Record<number, MatchChatMetaRow>;
   initialUserTimeZone: string;
 }) {
+  const createHref = useCreateMeetupHref(true);
   const supabase = createClient();
   const router = useRouter();
   const previousActiveTabRef = useRef<string | null>(null);
@@ -1154,7 +1156,7 @@ export default function DashboardClient({
             </div>
 
             <Link
-              href="/write"
+              href={createHref}
               className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
             >
               <Plus className="h-4 w-4" />
