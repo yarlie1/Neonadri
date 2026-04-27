@@ -1130,6 +1130,9 @@ function SignupPageContent() {
                 Posting beta
               </div>
             </div>
+            <h3 className="mt-3 text-xl font-black tracking-[-0.04em] text-[#24323c]">
+              No approved posting email yet? Apply first.
+            </h3>
             <p className={`mt-3 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
               If this email is not approved yet, you can apply for posting access
               first and come back once your hosting spot opens.
