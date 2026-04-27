@@ -159,6 +159,7 @@ export default function HomeFeedClient({
   initialUserTimeZone,
   isLoggedIn,
   postingBetaRequired,
+  initialCreateHref,
 }: {
   initialPosts: PostRow[];
   hostProfileMap: HostProfileMap;
@@ -167,9 +168,10 @@ export default function HomeFeedClient({
   initialUserTimeZone: string;
   isLoggedIn: boolean;
   postingBetaRequired: boolean;
+  initialCreateHref: string;
 }) {
   const userTimeZone = useMemo(() => initialUserTimeZone, [initialUserTimeZone]);
-  const createHref = useCreateMeetupHref(isLoggedIn);
+  const createHref = useCreateMeetupHref(isLoggedIn, initialCreateHref);
 
   const formatTime = (meetingTime: string | null) =>
     formatMeetingTime(meetingTime, userTimeZone) || "";

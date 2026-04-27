@@ -29,11 +29,15 @@ async function checkPostingAccess(email: string) {
   return !!payload.allowed;
 }
 
-export function useCreateMeetupHref(initialIsLoggedIn = false) {
+export function useCreateMeetupHref(
+  initialIsLoggedIn = false,
+  initialHref?: string
+) {
   const supabase = useMemo(() => createClient(), []);
-  const [createHref, setCreateHref] = useState(
-    initialIsLoggedIn ? LOGGED_IN_FALLBACK_HREF : LOGIN_TO_WRITE_HREF
-  );
+  const defaultHref =
+    initialHref ||
+    (initialIsLoggedIn ? LOGGED_IN_FALLBACK_HREF : LOGIN_TO_WRITE_HREF);
+  const [createHref, setCreateHref] = useState(defaultHref);
 
   useEffect(() => {
     let cancelled = false;
@@ -85,9 +89,7 @@ export function useCreateMeetupHref(initialIsLoggedIn = false) {
       } catch (error) {
         console.error("Create meetup session lookup failed", error);
         if (!cancelled) {
-          setCreateHref(
-            initialIsLoggedIn ? LOGGED_IN_FALLBACK_HREF : LOGIN_TO_WRITE_HREF
-          );
+          setCreateHref(defaultHref);
         }
       }
     };
@@ -128,7 +130,7 @@ export function useCreateMeetupHref(initialIsLoggedIn = false) {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       subscription.unsubscribe();
     };
-  }, [initialIsLoggedIn, supabase]);
+  }, [defaultHref, supabase]);
 
   return createHref;
 }

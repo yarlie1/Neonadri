@@ -2,7 +2,10 @@ import { createClient } from "../lib/supabase/server";
 import { getBlockedUserIdsForViewer } from "../lib/safety";
 import { cookies } from "next/headers";
 import { normalizeUserTimeZone, USER_TIME_ZONE_COOKIE } from "../lib/userTimeZone";
-import { isPostingBetaRequired } from "../lib/postingAccess";
+import {
+  isPostingAccessAllowedForEmail,
+  isPostingBetaRequired,
+} from "../lib/postingAccess";
 import HomeFeedClient from "./HomeFeedClient";
 
 type PostRow = {
@@ -56,6 +59,8 @@ type MatchSummaryMap = Record<
 
 export default async function HomePage() {
   const supabase = await createClient();
+  const loginToWriteHref = `/login?next=${encodeURIComponent("/write")}`;
+  let initialCreateHref = loginToWriteHref;
   const cookieStore = await cookies();
   const initialUserTimeZone = normalizeUserTimeZone(
     cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
@@ -69,6 +74,28 @@ export default async function HomePage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (user?.id) {
+    const fallbackHref = user.email
+      ? `/beta?email=${encodeURIComponent(user.email)}&next=/write`
+      : "/beta?next=/write";
+
+    if (!postingBetaRequired) {
+      initialCreateHref = "/write";
+    } else {
+      try {
+        const postingAccessAllowed = await isPostingAccessAllowedForEmail(
+          supabase,
+          user.email
+        );
+        initialCreateHref = postingAccessAllowed ? "/write" : fallbackHref;
+      } catch (error) {
+        console.error("Home posting access lookup failed", error);
+        initialCreateHref = fallbackHref;
+      }
+    }
+  }
+
   const blockedUserIds = await getBlockedUserIdsForViewer(supabase, user?.id);
 
   const { data: postsData, error: postsError } = await supabase
@@ -162,6 +189,7 @@ export default async function HomePage() {
       initialUserTimeZone={initialUserTimeZone}
       isLoggedIn={!!user?.id}
       postingBetaRequired={postingBetaRequired}
+      initialCreateHref={initialCreateHref}
     />
   );
 }
