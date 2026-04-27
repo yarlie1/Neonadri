@@ -6,6 +6,7 @@ import { Sparkles } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import { getBlockedUserIdsForViewer } from "../../../lib/safety";
 import { isConfirmedMatchStatus } from "../../../lib/matches/status";
+import { OG_IMAGE_VERSION } from "../../../lib/socialPreview";
 import {
   APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
@@ -53,7 +54,6 @@ type PageProps = {
 };
 
 const APP_URL = process.env.APP_BASE_URL?.trim() || "https://neonadri.net";
-const OG_IMAGE_VERSION = "v=2";
 
 async function getPostMetadataRecord(id: string) {
   const supabase = await createClient();

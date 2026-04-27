@@ -3,9 +3,9 @@ import Script from "next/script";
 import type { Metadata } from "next";
 import TopNav from "./components/TopNav";
 import LegalFooter from "./components/LegalFooter";
+import { OG_IMAGE_VERSION } from "../lib/socialPreview";
 
 const APP_URL = process.env.APP_BASE_URL?.trim() || "https://neonadri.net";
-const OG_IMAGE_VERSION = "v=2";
 
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
