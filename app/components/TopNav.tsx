@@ -112,6 +112,8 @@ export default function TopNav() {
       : user && pendingCount > 0
       ? "/dashboard?tab=received"
       : "/dashboard";
+  const mobileDashboardCount =
+    pendingCount + acceptedSentCount + upcomingMatchCount;
   const createHref = useCreateMeetupHref(true);
 
   useEffect(() => {
@@ -713,7 +715,7 @@ export default function TopNav() {
                       <Link
                         href={dashboardHref}
                         onClick={closeMenu}
-                        className={`${mobileItem} ${
+                        className={`w-full justify-between ${mobileItem} ${
                           isActivePath(pathname, "/dashboard")
                             ? "bg-[#eef4f7] text-[#33434c]"
                             : ""
@@ -723,10 +725,8 @@ export default function TopNav() {
                           Dashboard
                         </NavLabel>
                         <span className="ml-auto inline-flex items-center gap-2">
-                          <CountBadge count={upcomingMatchCount} />
+                          <CountBadge count={mobileDashboardCount} />
                           <NewChatBadge visible={hasNewChatActivity} />
-                          <CountBadge count={acceptedSentCount} />
-                          <CountBadge count={pendingCount} />
                         </span>
                       </Link>
 
