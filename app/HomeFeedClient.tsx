@@ -424,27 +424,33 @@ export default function HomeFeedClient({
                 All features are free during the beta.
               </div>
               <p className={`mt-2 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
-                You can use every feature at no charge while Neonadri is in beta. If a meetup is matched and you offered CS, you are still expected to honor the agreed cost support.
+                You can browse, join, and use Neonadri at no charge while it is in beta. If a meetup is matched and you offered CS, you are still expected to honor the agreed cost support.
               </p>
             </div>
           </div>
           {!isLoggedIn ? (
             <div className="mt-4">
               <Link
-                href="/beta"
+                href="/signup"
                 className={`inline-flex min-h-[76px] w-full items-center justify-between gap-4 rounded-[24px] border px-5 py-3.5 text-left shadow-[0_18px_34px_rgba(118,126,133,0.16)] transition ${APP_BUTTON_PRIMARY_CLASS}`}
               >
                 <div className="flex min-w-0 items-center gap-4">
                   <div className="shrink-0 text-[18px] font-black uppercase tracking-[0.03em] leading-[0.98]">
-                    BETA
+                    JOIN
                     <br />
-                    TESTER
+                    NOW
                   </div>
                   <div className="min-w-0 text-[13px] font-bold uppercase tracking-[0.18em] leading-[1.12] opacity-80">
-                    Apply for beta access
+                    Sign up to browse and join meetups
                   </div>
                 </div>
                 <ArrowRight className="h-5 w-5 shrink-0" />
+              </Link>
+              <Link
+                href="/beta"
+                className="mt-3 inline-flex w-full items-center justify-center rounded-[20px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-4 py-3 text-sm font-medium text-[#52616a] shadow-[0_10px_20px_rgba(118,126,133,0.08)] transition hover:bg-[#f5f8fa]"
+              >
+                Want to post during beta? Apply for posting access
               </Link>
             </div>
           ) : null}

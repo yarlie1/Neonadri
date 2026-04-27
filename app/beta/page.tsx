@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ArrowRight, Sparkles } from "lucide-react";
 import {
   APP_BODY_TEXT_CLASS,
@@ -55,14 +56,34 @@ function ToggleChip({
 }
 
 export default function BetaPage() {
+  const searchParams = useSearchParams();
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<"" | "approved" | "pending" | "waitlisted">("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
   const [motivation, setMotivation] = useState("");
   const [meetupInterests, setMeetupInterests] = useState<string[]>([]);
+
+  const continueHref = useMemo(() => {
+    const next = searchParams.get("next")?.trim();
+
+    if (next && next.startsWith("/") && !next.startsWith("//")) {
+      return next;
+    }
+
+    return `/signup?intent=host${email ? `&email=${encodeURIComponent(email)}` : ""}`;
+  }, [email, searchParams]);
+
+  useEffect(() => {
+    const emailFromLink = searchParams.get("email")?.trim().toLowerCase() || "";
+
+    if (!emailFromLink || email.trim().length > 0) return;
+
+    setEmail(emailFromLink);
+  }, [email, searchParams]);
 
   const toggleInterest = (interest: string) => {
     setMeetupInterests((current) =>
@@ -76,6 +97,7 @@ export default function BetaPage() {
     if (submitting) return;
     setSubmitting(true);
     setMessage("");
+    setStatus("");
 
     const response = await fetch("/api/beta/apply", {
       method: "POST",
@@ -94,13 +116,14 @@ export default function BetaPage() {
     setSubmitting(false);
 
     if (!response.ok) {
-      setMessage(payload.error || "Could not submit your beta application.");
+      setMessage(payload.error || "Could not submit your posting access application.");
       return;
     }
 
+    setStatus(payload.status || "pending");
     setMessage(
       payload.message ||
-        "Your beta application is in. We'll email you if a spot opens for this round."
+        "Your posting access application is in. We'll email you if a spot opens for this round."
     );
   };
 
@@ -118,19 +141,19 @@ export default function BetaPage() {
           </div>
           <div className={APP_EYEBROW_CLASS + " mt-5"}>Apply for access</div>
           <h1 className="mt-2 max-w-2xl text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
-            Join Neonadri&apos;s application-based beta.
+            Apply for posting access during beta.
           </h1>
           <p className={`mt-3 max-w-2xl ${APP_BODY_TEXT_CLASS}`}>
-            We&apos;re keeping the beta intentionally small while we tune safety,
-            meetup quality, and feedback loops. All features are free during the
-            beta, but any CS you offer for a matched meetup still applies.
+            Browsing and joining meetups can happen with a regular account now.
+            We&apos;re only limiting posting access while we tune safety, meetup
+            quality, and feedback loops.
           </p>
           <p className="mt-3 text-sm text-[#5f6d76]">
-            We&apos;re currently opening up to 10 beta tester spots per day.
+            We&apos;re currently opening up to 10 posting beta tester spots per day.
           </p>
           <p className="mt-3 text-sm text-[#5f6d76]">
-            If you&apos;re approved, you&apos;ll be able to sign up with the same email
-            address you use here.
+            If you&apos;re approved, you&apos;ll be able to create meetup posts with the
+            same email address you use here.
           </p>
         </section>
 
@@ -209,7 +232,7 @@ export default function BetaPage() {
               onChange={(event) => setMotivation(event.target.value)}
               rows={5}
               className={`${INPUT_CLASS} mt-2`}
-              placeholder="Tell us why you want to try Neonadri."
+              placeholder="Tell us what kinds of meetups you want to post and why you want hosting access."
             />
           </div>
 
@@ -220,15 +243,23 @@ export default function BetaPage() {
               disabled={submitting}
               className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${APP_BUTTON_PRIMARY_CLASS} disabled:cursor-not-allowed disabled:opacity-60`}
             >
-              {submitting ? "Submitting..." : "Apply for beta"}
+              {submitting ? "Submitting..." : "Apply for posting access"}
               <ArrowRight className="h-4 w-4" />
             </button>
             <Link
-              href="/signup"
+              href="/signup?intent=guest"
               className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
             >
-              Already approved? Go to signup
+              Join meetups without posting
             </Link>
+            {status === "approved" ? (
+              <Link
+                href={continueHref}
+                className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+              >
+                Continue
+              </Link>
+            ) : null}
           </div>
         </section>
 

@@ -26,7 +26,7 @@ export async function sendBetaApprovalEmail({
   }
 
   const firstName = fullName?.trim() || "there";
-  const signupUrl = `${appUrl.replace(/\/+$/, "")}/signup?email=${encodeURIComponent(
+  const signupUrl = `${appUrl.replace(/\/+$/, "")}/signup?intent=host&email=${encodeURIComponent(
     to
   )}`;
 
@@ -39,12 +39,12 @@ export async function sendBetaApprovalEmail({
     body: JSON.stringify({
       from,
       to: [to],
-      subject: "Your Neonadri beta access is approved",
+      subject: "Your Neonadri posting beta access is approved",
       html: `
         <div style="font-family: Arial, sans-serif; color: #24323c; line-height: 1.6;">
           <p>Hi ${firstName},</p>
-          <p>Your Neonadri beta access has been approved.</p>
-          <p>You can now sign up with the same email address you used for your beta application.</p>
+          <p>Your Neonadri posting beta access has been approved.</p>
+          <p>You can now sign up with the same email address you used for your posting application.</p>
           <p>
             <a href="${signupUrl}" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#eef3f6;border:1px solid #d6dee4;color:#24323c;text-decoration:none;font-weight:600;">
               Continue to signup

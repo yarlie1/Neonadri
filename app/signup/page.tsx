@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
 import { createClient } from "../../lib/supabase/client";
@@ -161,8 +161,11 @@ function SignupPageContent() {
   const supabase = createClient();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const intentPrefillAppliedRef = useRef(false);
+  const emailPrefillAppliedRef = useRef(false);
 
   const [step, setStep] = useState(1);
+  const [signupIntent, setSignupIntent] = useState<"guest" | "host" | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [checkingBetaAccess, setCheckingBetaAccess] = useState(false);
   const [betaAccessAllowed, setBetaAccessAllowed] = useState(false);
@@ -180,6 +183,11 @@ function SignupPageContent() {
   const [interests, setInterests] = useState<string[]>([]);
   const [responseTimeNote, setResponseTimeNote] = useState("");
   const [isAdultConfirmed, setIsAdultConfirmed] = useState(false);
+
+  const requiresPostingBeta = signupIntent === "host";
+  const showIntentPicker = signupIntent === null;
+  const showBetaGate = requiresPostingBeta && !betaAccessAllowed;
+  const showSignupForm = signupIntent === "guest" || betaAccessAllowed;
 
   const canMoveNext = useMemo(() => {
     if (step === 1) {
@@ -207,7 +215,18 @@ function SignupPageContent() {
     }
 
     return false;
-  }, [aboutMe, ageGroup, displayName, email, gender, interests.length, isAdultConfirmed, meetingStyle, password, step]);
+  }, [
+    aboutMe,
+    ageGroup,
+    displayName,
+    email,
+    gender,
+    interests.length,
+    isAdultConfirmed,
+    meetingStyle,
+    password,
+    step,
+  ]);
 
   const profileSummary = useMemo(() => {
     const normalized = aboutMe.replace(/\s+/g, " ").trim();
@@ -243,12 +262,28 @@ function SignupPageContent() {
   }, [aboutMeOptions, aboutMeTouched]);
 
   useEffect(() => {
+    if (intentPrefillAppliedRef.current) return;
+
+    const intentFromLink = searchParams.get("intent");
+
+    if (intentFromLink === "guest" || intentFromLink === "host") {
+      setSignupIntent(intentFromLink);
+    }
+
+    intentPrefillAppliedRef.current = true;
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (emailPrefillAppliedRef.current) return;
+
     const emailFromLink = searchParams.get("email")?.trim().toLowerCase() || "";
 
-    if (!emailFromLink || email.trim().length > 0) return;
+    if (emailFromLink) {
+      setEmail(emailFromLink);
+    }
 
-    setEmail(emailFromLink);
-  }, [email, searchParams]);
+    emailPrefillAppliedRef.current = true;
+  }, [searchParams]);
 
   const toggleArrayValue = (
     value: string,
@@ -261,6 +296,20 @@ function SignupPageContent() {
     }
 
     setter([...current, value]);
+  };
+
+  const handleSelectIntent = (nextIntent: "guest" | "host") => {
+    setSignupIntent(nextIntent);
+    setStep(1);
+    setBetaAccessAllowed(false);
+    setMessage("");
+  };
+
+  const handleResetIntent = () => {
+    setSignupIntent(null);
+    setStep(1);
+    setBetaAccessAllowed(false);
+    setMessage("");
   };
 
   const handleNext = async () => {
@@ -327,7 +376,7 @@ function SignupPageContent() {
 
       if (!betaCheckResponse.ok) {
         setMessage(
-          betaCheckPayload.error || "Could not verify beta access right now."
+          betaCheckPayload.error || "Could not verify posting access right now."
         );
         setCheckingBetaAccess(false);
         return;
@@ -336,7 +385,7 @@ function SignupPageContent() {
       if (!betaCheckPayload.allowed) {
         setBetaAccessAllowed(false);
         setMessage(
-          "This email is not approved for beta access yet. Please apply for beta access first."
+          "This email is not approved for posting access yet. Please apply for posting access first."
         );
         setCheckingBetaAccess(false);
         return;
@@ -344,10 +393,10 @@ function SignupPageContent() {
 
       setBetaAccessAllowed(true);
       setStep(1);
-      setMessage("Beta access confirmed. Let's finish your profile.");
+      setMessage("Posting access confirmed. Let's finish your profile.");
     } catch (error) {
       console.error("Beta access check error:", error);
-      setMessage("Could not verify beta access right now.");
+      setMessage("Could not verify posting access right now.");
     } finally {
       setCheckingBetaAccess(false);
     }
@@ -377,30 +426,38 @@ function SignupPageContent() {
         return;
       }
 
-      const betaCheckResponse = await fetch("/api/beta/check-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email.trim() }),
-      });
-
-      const betaCheckPayload = await betaCheckResponse.json().catch(() => ({}));
-
-      if (!betaCheckResponse.ok) {
-        setMessage(
-          betaCheckPayload.error || "Could not verify beta access right now."
-        );
+      if (!signupIntent) {
+        setMessage("Choose how you plan to use Neonadri first.");
         setSubmitting(false);
         return;
       }
 
-      if (!betaCheckPayload.allowed) {
-        setMessage(
-          "Neonadri is currently available to approved beta testers only. Please apply for beta access first."
-        );
-        setSubmitting(false);
-        return;
+      if (requiresPostingBeta) {
+        const betaCheckResponse = await fetch("/api/beta/check-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email.trim() }),
+        });
+
+        const betaCheckPayload = await betaCheckResponse.json().catch(() => ({}));
+
+        if (!betaCheckResponse.ok) {
+          setMessage(
+            betaCheckPayload.error || "Could not verify posting access right now."
+          );
+          setSubmitting(false);
+          return;
+        }
+
+        if (!betaCheckPayload.allowed) {
+          setMessage(
+            "Posting during beta is limited to approved beta testers. Please apply for posting access first."
+          );
+          setSubmitting(false);
+          return;
+        }
       }
 
       const aboutMeValidation = validateAboutMeContent(aboutMe);
@@ -420,6 +477,7 @@ function SignupPageContent() {
             display_name: displayName.trim(),
             is_adult_confirmed: true,
             age_gate_confirmed_at: new Date().toISOString(),
+            signup_intent: signupIntent,
           },
         },
       });
@@ -459,6 +517,7 @@ function SignupPageContent() {
           meeting_style: meetingStyle || null,
           interests: interests.length > 0 ? interests : null,
           response_time_note: responseTimeNote.trim() || null,
+          signup_intent: signupIntent,
         };
 
         const response = await fetch("/api/profile/save", {
@@ -505,64 +564,99 @@ function SignupPageContent() {
             <div className="relative">
               <div className={`inline-flex items-center gap-2 rounded-full px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}>
                 <Sparkles className="h-3.5 w-3.5" />
-                Join the vibe
+                {showIntentPicker
+                  ? "Choose your path"
+                  : requiresPostingBeta
+                  ? "Posting during beta"
+                  : "Join meetups now"}
               </div>
               <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
-                Build your profile before the first hello.
+                {showIntentPicker
+                  ? "Tell us how you want to use Neonadri first."
+                  : requiresPostingBeta
+                  ? "Posters need beta approval before signup."
+                  : "Start joining meetups without the beta wait."}
               </h1>
               <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-                We guide people through account setup one step at a time, so you can finish your profile and join the app without friction.
+                {showIntentPicker
+                  ? "People who want to browse and join can sign up right away. People who want to post meetups during beta need creator approval first."
+                  : requiresPostingBeta
+                  ? "We only gate meetup posting during beta. Once your email is approved, you can finish signup and start hosting."
+                  : "You can finish account setup now, browse available posts, and apply for posting access later if you decide to host."}
               </p>
               <div className={`mt-4 inline-flex rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                 Neonadri is for adults 18+ only.
               </div>
-              <div className="mt-3 text-sm text-[#5f6d76]">
-                Signup is currently limited to approved beta testers.{" "}
-                <Link href="/beta" className="font-semibold text-[#31424d] underline underline-offset-4">
-                  Apply for beta access
-                </Link>
-                .
-              </div>
 
-              <div className="mt-7 space-y-3">
-                {STEPS.map((item) => {
-                  const active = step === item.number;
-                  const complete = step > item.number;
+              {showIntentPicker ? (
+                <div className="mt-7 space-y-3">
+                  <div className="rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
+                    <div className="text-sm font-semibold text-[#24323c]">
+                      Join-first path
+                    </div>
+                    <div className="mt-1 text-xs leading-6 text-[#67747c]">
+                      Browse posts, apply to join meetups, and use the app immediately.
+                    </div>
+                  </div>
+                  <div className="rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
+                    <div className="text-sm font-semibold text-[#24323c]">
+                      Host-first path
+                    </div>
+                    <div className="mt-1 text-xs leading-6 text-[#67747c]">
+                      Create meetup posts during beta after your email is approved for posting access.
+                    </div>
+                  </div>
+                </div>
+              ) : showSignupForm ? (
+                <div className="mt-7 space-y-3">
+                  {STEPS.map((item) => {
+                    const active = step === item.number;
+                    const complete = step > item.number;
 
-                  return (
-                    <div
-                      key={item.number}
-                      className={`flex items-center gap-3 rounded-[22px] border px-4 py-3 transition ${
-                        active
-                          ? "border-[#cbd6dd] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(232,238,242,0.94)_100%)] shadow-[0_12px_24px_rgba(118,126,133,0.12)]"
-                          : "border-[#e0e7ec] bg-white/60"
-                      }`}
-                    >
+                    return (
                       <div
-                        className={`inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${
-                          complete
-                            ? "bg-[#273640] text-white"
-                            : active
-                              ? "bg-[#2f3c46] text-white"
-                              : "bg-white/80 text-[#6e7d86]"
+                        key={item.number}
+                        className={`flex items-center gap-3 rounded-[22px] border px-4 py-3 transition ${
+                          active
+                            ? "border-[#cbd6dd] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(232,238,242,0.94)_100%)] shadow-[0_12px_24px_rgba(118,126,133,0.12)]"
+                            : "border-[#e0e7ec] bg-white/60"
                         }`}
                       >
-                        {complete ? <Check className="h-4 w-4" /> : item.number}
-                      </div>
-                      <div>
-                        <div className="text-sm font-semibold text-[#24323c]">
-                          {item.label}
+                        <div
+                          className={`inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${
+                            complete
+                              ? "bg-[#273640] text-white"
+                              : active
+                              ? "bg-[#2f3c46] text-white"
+                              : "bg-white/80 text-[#6e7d86]"
+                          }`}
+                        >
+                          {complete ? <Check className="h-4 w-4" /> : item.number}
                         </div>
-                        <div className="text-xs text-[#67747c]">
-                          {item.number === 1 && "Name, gender, and age group"}
-                          {item.number === 2 && "About you, style, and interests"}
-                          {item.number === 3 && "Email and password"}
+                        <div>
+                          <div className="text-sm font-semibold text-[#24323c]">
+                            {item.label}
+                          </div>
+                          <div className="text-xs text-[#67747c]">
+                            {item.number === 1 && "Name, gender, and age group"}
+                            {item.number === 2 && "About you, style, and interests"}
+                            {item.number === 3 && "Email and password"}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="mt-7 rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
+                  <div className="text-sm font-semibold text-[#24323c]">
+                    Posting access comes first
+                  </div>
+                  <div className="mt-1 text-xs leading-6 text-[#67747c]">
+                    Use the email approved for hosting. After that, the rest of signup works the same as everyone else.
+                  </div>
+                </div>
+              )}
 
               <div className="mt-6 flex flex-wrap gap-2">
                 <span className={`rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
@@ -579,13 +673,72 @@ function SignupPageContent() {
           </section>
 
           <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
-            {!betaAccessAllowed ? (
+            {showIntentPicker ? (
               <>
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <div className={APP_EYEBROW_CLASS}>Beta Access</div>
+                    <div className={APP_EYEBROW_CLASS}>Sign Up</div>
                     <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-                      Approved beta email required
+                      Pick your starting path
+                    </h2>
+                  </div>
+                  <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                    Start here
+                  </div>
+                </div>
+
+                <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
+                  You can join meetups right away, or choose the posting path if
+                  you want to host meetups during beta.
+                </p>
+
+                <div className="mt-6 grid gap-3">
+                  <button
+                    type="button"
+                    onClick={() => handleSelectIntent("guest")}
+                    className="rounded-[24px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-5 py-5 text-left transition hover:border-[#b9c7d0] hover:shadow-[0_14px_24px_rgba(118,126,133,0.12)]"
+                  >
+                    <div className="text-base font-semibold text-[#24323c]">
+                      I want to join meetups
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-[#5b6871]">
+                      Sign up now, browse posts, and request to join other people&apos;s
+                      meetups without waiting for beta approval.
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSelectIntent("host")}
+                    className="rounded-[24px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-5 py-5 text-left transition hover:border-[#b9c7d0] hover:shadow-[0_14px_24px_rgba(118,126,133,0.12)]"
+                  >
+                    <div className="text-base font-semibold text-[#24323c]">
+                      I want to post meetups
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-[#5b6871]">
+                      Creating meetup posts is limited to approved beta testers
+                      during this period, so we&apos;ll verify your email first.
+                    </p>
+                  </button>
+                </div>
+
+                <div className="mt-6 text-sm text-[#5f6d76]">
+                  Already have an account?{" "}
+                  <Link
+                    href="/login"
+                    className="font-semibold text-[#31424d] underline underline-offset-4"
+                  >
+                    Log in
+                  </Link>
+                </div>
+              </>
+            ) : showBetaGate ? (
+              <>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className={APP_EYEBROW_CLASS}>Posting Access</div>
+                    <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
+                      Approved posting beta email required
                     </h2>
                   </div>
                   <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
@@ -594,13 +747,13 @@ function SignupPageContent() {
                 </div>
 
                 <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  Use your approved email to continue signup now.
+                  Use the email approved for posting to continue this signup path.
                 </p>
 
                 <div className="mt-6 space-y-3">
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      Email approved for beta testing
+                      Email approved for posting beta
                     </label>
                     <input
                       type="email"
@@ -623,6 +776,13 @@ function SignupPageContent() {
                       </span>
                       <ArrowRight className="h-4 w-4" />
                     </button>
+                    <button
+                      type="button"
+                      onClick={handleResetIntent}
+                      className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                    >
+                      Choose another path
+                    </button>
                   </div>
                 </div>
               </>
@@ -630,9 +790,7 @@ function SignupPageContent() {
               <>
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <div className={APP_EYEBROW_CLASS}>
-                      Sign Up
-                    </div>
+                    <div className={APP_EYEBROW_CLASS}>Sign Up</div>
                     <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
                       Step {step} of {STEPS.length}
                     </h2>
@@ -812,21 +970,28 @@ function SignupPageContent() {
                     <>
                       <div>
                         <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                          Approved Email
+                          {requiresPostingBeta ? "Approved Email" : "Email"}
                         </label>
                         <input
                           type="email"
-                          className={`${INPUT_CLASS} bg-[#f4f7f9] text-[#64727a]`}
+                          className={
+                            requiresPostingBeta
+                              ? `${INPUT_CLASS} bg-[#f4f7f9] text-[#64727a]`
+                              : INPUT_CLASS
+                          }
                           value={email}
-                          readOnly
+                          readOnly={requiresPostingBeta}
+                          onChange={(e) => setEmail(e.target.value)}
                         />
-                        <button
-                          type="button"
-                          onClick={handleResetBetaAccess}
-                          className="mt-2 text-xs font-medium text-[#55656e] underline underline-offset-2 transition hover:text-[#24323c]"
-                        >
-                          Use a different email
-                        </button>
+                        {requiresPostingBeta ? (
+                          <button
+                            type="button"
+                            onClick={handleResetBetaAccess}
+                            className="mt-2 text-xs font-medium text-[#55656e] underline underline-offset-2 transition hover:text-[#24323c]"
+                          >
+                            Use a different email
+                          </button>
+                        ) : null}
                       </div>
 
                       <div>
@@ -840,7 +1005,8 @@ function SignupPageContent() {
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                         />
-                        {password.trim().length > 0 && password.trim().length < PASSWORD_MIN_LENGTH ? (
+                        {password.trim().length > 0 &&
+                        password.trim().length < PASSWORD_MIN_LENGTH ? (
                           <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
                             Password must be at least {PASSWORD_MIN_LENGTH} characters.
                           </p>
@@ -855,7 +1021,8 @@ function SignupPageContent() {
                           className="!mt-0.5 !h-4 !w-4 !appearance-auto !rounded !border-[#c7d2d9] !p-0 !shadow-none !outline-none !ring-0 accent-[#8fa1ac]"
                         />
                         <span className="min-w-0 leading-6">
-                          I confirm that I am 18 or older and understand that Neonadri is for adults only.
+                          I confirm that I am 18 or older and understand that
+                          Neonadri is for adults only.
                         </span>
                       </label>
                       {!isAdultConfirmed ? (
@@ -880,7 +1047,7 @@ function SignupPageContent() {
                   )}
                   {step === 3 && (
                     <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                      By creating an account, you agree to Neonadri's{" "}
+                      By creating an account, you agree to Neonadri&apos;s{" "}
                       <Link href="/terms" className="underline underline-offset-2 transition hover:text-[#24323c]">
                         Terms
                       </Link>
@@ -906,12 +1073,22 @@ function SignupPageContent() {
                       Back
                     </button>
                   ) : (
-                    <Link
-                      href="/login"
-                      className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-                    >
-                      I already have one
-                    </Link>
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleResetIntent}
+                        className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                      >
+                        <ArrowLeft className="h-4 w-4" />
+                        Choose path
+                      </button>
+                      <Link
+                        href="/login"
+                        className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                      >
+                        I already have one
+                      </Link>
+                    </>
                   )}
 
                   {step < STEPS.length ? (
@@ -946,23 +1123,24 @@ function SignupPageContent() {
           </section>
         </div>
 
-        {!betaAccessAllowed ? (
+        {showBetaGate ? (
           <section className={`mt-4 ${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
             <div className="flex items-start gap-3">
               <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                Beta apply
+                Posting beta
               </div>
             </div>
             <p className={`mt-3 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
-              If this email is not approved yet, you can apply for access first and come back once your spot opens.
+              If this email is not approved yet, you can apply for posting access
+              first and come back once your hosting spot opens.
             </p>
             <div className="mt-3 flex flex-wrap gap-3">
               <Link
-                href="/beta"
+                href={email ? `/beta?email=${encodeURIComponent(email)}` : "/beta"}
                 className={BETA_ACTION_CLASS}
               >
                 <span className="text-sm font-medium text-[#52616a]">
-                  Apply for beta access
+                  Apply for posting access
                 </span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
@@ -982,7 +1160,7 @@ export default function SignupPage() {
           <div className="mx-auto max-w-6xl">
             <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
               <div className={APP_EYEBROW_CLASS}>Sign Up</div>
-              <div className="mt-3 text-sm text-[#55626a]">Loading signup…</div>
+              <div className="mt-3 text-sm text-[#55626a]">Loading signup...</div>
             </section>
           </div>
         </main>
@@ -992,4 +1170,3 @@ export default function SignupPage() {
     </Suspense>
   );
 }
-

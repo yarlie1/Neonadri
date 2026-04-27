@@ -104,6 +104,10 @@ export async function POST(req: Request) {
         body.response_time_note.trim()
           ? body.response_time_note.trim()
           : null,
+      signup_intent:
+        body.signup_intent === "host" || body.signup_intent === "guest"
+          ? body.signup_intent
+          : "guest",
       updated_at: new Date().toISOString(),
     };
 

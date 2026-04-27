@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "../../lib/supabase/server";
+import { isPostingAccessAllowedForEmail } from "../../lib/postingAccess";
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_SECONDARY_CLASS,
@@ -14,6 +15,7 @@ import BlockedUsersCard from "../components/BlockedUsersCard";
 type Profile = {
   id: string;
   is_admin: boolean | null;
+  signup_intent: "guest" | "host" | null;
 };
 
 const HERO_SURFACE_CLASS =
@@ -31,7 +33,7 @@ export default async function AccountPage() {
 
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, is_admin")
+    .select("id, is_admin, signup_intent")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -42,7 +44,21 @@ export default async function AccountPage() {
   const profile = (data as Profile | null) ?? {
     id: user.id,
     is_admin: false,
+    signup_intent: "guest" as const,
   };
+  let postingAccessAllowed = false;
+
+  try {
+    postingAccessAllowed = await isPostingAccessAllowedForEmail(
+      supabase,
+      user.email
+    );
+  } catch (error) {
+    console.error("Account posting access check failed", error);
+  }
+  const postingAccessHref = user.email
+    ? `/beta?email=${encodeURIComponent(user.email)}&next=/write`
+    : "/beta?next=/write";
 
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
@@ -90,6 +106,44 @@ export default async function AccountPage() {
           </div>
         </section>
 
+        <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
+          <div className={APP_EYEBROW_CLASS}>Posting access</div>
+          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
+            {postingAccessAllowed
+              ? "Beta tester posting is active"
+              : "This account is in join-only mode"}
+          </h2>
+          <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
+            {postingAccessAllowed
+              ? "You can create meetup posts during the beta period."
+              : profile.signup_intent === "host"
+              ? "Your account was set up for posting, but posting approval is not active on this email yet."
+              : "You can browse and join meetups now, then apply for posting access later whenever you want to host."}
+          </p>
+
+          <div className="mt-4 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#849099]">
+              Signup path
+            </div>
+            <div className="mt-2 text-sm font-medium text-[#52616a]">
+              {profile.signup_intent === "host"
+                ? "Started as a posting account"
+                : "Started as a participation account"}
+            </div>
+          </div>
+
+          {!postingAccessAllowed ? (
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link
+                href={postingAccessHref}
+                className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+              >
+                Apply for posting access
+              </Link>
+            </div>
+          ) : null}
+        </section>
+
         {!!profile.is_admin ? (
           <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
             <div className={APP_EYEBROW_CLASS}>Admin tools</div>
@@ -97,7 +151,7 @@ export default async function AccountPage() {
               Review safety reports
             </h2>
             <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
-              Open the admin tools to review reports and beta access requests.
+              Open the admin tools to review reports and posting access requests.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               <Link

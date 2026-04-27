@@ -132,12 +132,12 @@ export default function AdminBetaClient() {
         <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
           <div className={APP_EYEBROW_CLASS}>Admin</div>
           <h1 className="mt-2 text-2xl font-black tracking-[-0.04em] text-[#24323c]">
-            Beta Applications
+            Posting Access Applications
           </h1>
           <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
-            Review incoming requests, approve the strongest early testers, and
-            keep the active allowlist intentionally small while Neonadri is in
-            closed beta.
+            Review incoming posting requests, approve the strongest early hosts,
+            and keep the active creator allowlist intentionally small while
+            Neonadri is in beta.
           </p>
 
           <div className="mt-4 flex flex-wrap gap-2">
@@ -235,7 +235,7 @@ export default function AdminBetaClient() {
 
                   <div className={`${APP_SOFT_CARD_CLASS} mt-3 px-4 py-3`}>
                     <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#849099]">
-                      Why they want in
+                      Why they want posting access
                     </div>
                     <div className="mt-2 text-sm leading-6 text-[#4f5c65]">
                       {item.motivation}

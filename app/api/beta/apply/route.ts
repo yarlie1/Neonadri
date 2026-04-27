@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     if (error) {
       console.error("Beta application submit failed", error);
       return NextResponse.json(
-        { error: "Could not submit your beta application right now." },
+        { error: "Could not submit your posting access application right now." },
         { status: 500 }
       );
     }
@@ -66,7 +66,8 @@ export async function POST(req: Request) {
         {
           ok: false,
           status: "daily_full",
-          error: "Today’s beta tester spots are full. Please try again tomorrow.",
+          error:
+            "Today's posting beta tester spots are full. Please try again tomorrow.",
         },
         { status: 429 }
       );
@@ -92,7 +93,7 @@ export async function POST(req: Request) {
             emailSent: emailResult.ok,
             emailSkipped: emailResult.skipped,
             message:
-              "You’re approved for beta access. Check your email for the signup link.",
+              "You're approved for posting access. Check your email for the signup link.",
           },
           { status: 200 }
         );
@@ -103,7 +104,7 @@ export async function POST(req: Request) {
           ok: true,
           status: "approved",
           message:
-            "This email is already approved for beta access. You can continue to signup now.",
+            "This email is already approved for posting access. You can continue with signup now.",
         },
         { status: 200 }
       );
@@ -113,7 +114,7 @@ export async function POST(req: Request) {
       {
         ok: true,
         status: applicationStatus,
-        message: "Your beta application has been received.",
+        message: "Your posting access application has been received.",
       },
       { status: 200 }
     );

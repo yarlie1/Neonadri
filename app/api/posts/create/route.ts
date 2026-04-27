@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
+import {
+  isPostingAccessAllowedForEmail,
+  POSTING_ACCESS_ERROR_MESSAGE,
+} from "../../../../lib/postingAccess";
 
 export async function POST(req: Request) {
   try {
@@ -13,6 +17,18 @@ export async function POST(req: Request) {
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const postingAccessAllowed = await isPostingAccessAllowedForEmail(
+      supabase,
+      user.email
+    );
+
+    if (!postingAccessAllowed) {
+      return NextResponse.json(
+        { error: POSTING_ACCESS_ERROR_MESSAGE },
+        { status: 403 }
+      );
     }
 
     const payload = {
