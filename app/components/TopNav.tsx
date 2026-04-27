@@ -35,6 +35,10 @@ type SimpleUser = {
   email?: string | null;
 } | null;
 
+type TopNavProps = {
+  initialUser?: SimpleUser;
+};
+
 function CountBadge({ count }: { count: number }) {
   if (count <= 0) return null;
 
@@ -82,9 +86,9 @@ function NavLabel({
   );
 }
 
-export default function TopNav() {
+export default function TopNav({ initialUser = null }: TopNavProps) {
   const supabase = useMemo(() => createClient(), []);
-  const [user, setUser] = useState<SimpleUser>(null);
+  const [user, setUser] = useState<SimpleUser>(initialUser);
   const [menuOpen, setMenuOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
   const [acceptedSentCount, setAcceptedSentCount] = useState(0);
@@ -114,7 +118,7 @@ export default function TopNav() {
       : "/dashboard";
   const mobileDashboardCount =
     pendingCount + acceptedSentCount + upcomingMatchCount;
-  const createHref = useCreateMeetupHref(true);
+  const createHref = useCreateMeetupHref(!!user);
 
   useEffect(() => {
     const browserTimeZone = normalizeUserTimeZone(

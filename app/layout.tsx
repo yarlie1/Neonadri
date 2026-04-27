@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import TopNav from "./components/TopNav";
 import LegalFooter from "./components/LegalFooter";
 import { OG_IMAGE_VERSION } from "../lib/socialPreview";
+import { createClient } from "../lib/supabase/server";
 
 const APP_URL = process.env.APP_BASE_URL?.trim() || "https://neonadri.net";
 
@@ -40,12 +41,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createClient();
   const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const initialUser = user
+    ? {
+        id: user.id,
+        email: user.email,
+      }
+    : null;
 
   return (
     <html lang="en">
@@ -57,7 +68,7 @@ export default function RootLayout({
           />
         ) : null}
 
-        <TopNav />
+        <TopNav initialUser={initialUser} />
         {children}
         <LegalFooter />
       </body>
