@@ -3,29 +3,37 @@
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { createClient } from "../../../lib/supabase/client";
 import { APP_BUTTON_SECONDARY_CLASS } from "../../designSystem";
 
 export default function DeletePostButton({ postId }: { postId: number }) {
   const router = useRouter();
-  const supabase = createClient();
   const [deleting, setDeleting] = useState(false);
 
   const handleDelete = async () => {
     const confirmed = window.confirm("Delete this meetup?");
     if (!confirmed || deleting) return;
 
-    setDeleting(true);
-    const { error } = await supabase.from("posts").delete().eq("id", postId);
+    try {
+      setDeleting(true);
+      const response = await fetch(`/api/posts/${postId}`, {
+        method: "DELETE",
+      });
 
-    if (error) {
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        window.alert(payload.error || "Could not delete this meetup.");
+        return;
+      }
+
+      router.push("/dashboard?tab=posts");
+      router.refresh();
+    } catch (error) {
+      console.error("Delete meetup request failed", error);
+      window.alert("Could not delete this meetup right now.");
+    } finally {
       setDeleting(false);
-      window.alert(error.message);
-      return;
     }
-
-    router.push("/dashboard?tab=posts");
-    router.refresh();
   };
 
   return (
