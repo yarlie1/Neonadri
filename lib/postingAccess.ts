@@ -2,7 +2,7 @@ type RpcCapableClient = {
   rpc: (
     fn: string,
     args: Record<string, unknown>
-  ) => Promise<{ data: unknown; error: any }>;
+  ) => PromiseLike<{ data: unknown; error: any }>;
 };
 
 export const POSTING_ACCESS_ERROR_MESSAGE =
