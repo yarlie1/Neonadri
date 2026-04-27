@@ -64,6 +64,7 @@ function BetaPageContent() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"" | "approved" | "pending" | "waitlisted">("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [postingBetaRequired, setPostingBetaRequired] = useState(true);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
@@ -97,6 +98,24 @@ function BetaPageContent() {
   const secondaryLabel = shouldTreatAsExistingUser
     ? "Keep browsing meetups"
     : "Join meetups without posting";
+
+  useEffect(() => {
+    let mounted = true;
+
+    void fetch("/api/beta/config", { cache: "no-store" })
+      .then((response) => response.json().catch(() => ({})))
+      .then((payload) => {
+        if (!mounted) return;
+        setPostingBetaRequired(payload.postingBetaRequired !== false);
+      })
+      .catch((error) => {
+        console.error("Beta page config lookup failed", error);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -213,6 +232,43 @@ function BetaPageContent() {
       className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}
     >
       <div className="mx-auto max-w-5xl space-y-4">
+        {!postingBetaRequired ? (
+          <>
+            <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
+              <div
+                className={`inline-flex items-center gap-2 rounded-full px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Hosting open
+              </div>
+              <div className={APP_EYEBROW_CLASS + " mt-5"}>Posting access</div>
+              <h1 className="mt-2 max-w-2xl text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
+                Posting beta apply is off right now.
+              </h1>
+              <p className={`mt-3 max-w-2xl ${APP_BODY_TEXT_CLASS}`}>
+                You do not need a separate approval email right now. You can
+                continue straight into hosting signup, or go back to creating a
+                meetup if you are already logged in.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href={continueHref}
+                  className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
+                >
+                  {shouldTreatAsExistingUser
+                    ? "Continue to create meetup"
+                    : "Continue to hosting signup"}
+                </Link>
+                <Link
+                  href={secondaryHref}
+                  className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+                >
+                  {secondaryLabel}
+                </Link>
+              </div>
+            </section>
+          </>
+        ) : (
         <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
           <div
             className={`inline-flex items-center gap-2 rounded-full px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}
@@ -343,6 +399,7 @@ function BetaPageContent() {
             ) : null}
           </div>
         </section>
+        )}
 
         {message ? (
           <section

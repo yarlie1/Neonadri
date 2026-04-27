@@ -169,6 +169,7 @@ function SignupPageContent() {
   const [submitting, setSubmitting] = useState(false);
   const [checkingBetaAccess, setCheckingBetaAccess] = useState(false);
   const [betaAccessAllowed, setBetaAccessAllowed] = useState(false);
+  const [postingBetaRequired, setPostingBetaRequired] = useState(true);
   const [message, setMessage] = useState("");
 
   const [email, setEmail] = useState("");
@@ -184,10 +185,12 @@ function SignupPageContent() {
   const [responseTimeNote, setResponseTimeNote] = useState("");
   const [isAdultConfirmed, setIsAdultConfirmed] = useState(false);
 
-  const requiresPostingBeta = signupIntent === "host";
+  const hostSignupOpen = signupIntent === "host" && !postingBetaRequired;
+  const requiresPostingBeta = signupIntent === "host" && postingBetaRequired;
   const showIntentPicker = signupIntent === null;
   const showBetaGate = requiresPostingBeta && !betaAccessAllowed;
-  const showSignupForm = signupIntent === "guest" || betaAccessAllowed;
+  const showSignupForm =
+    signupIntent === "guest" || hostSignupOpen || betaAccessAllowed;
 
   const canMoveNext = useMemo(() => {
     if (step === 1) {
@@ -284,6 +287,24 @@ function SignupPageContent() {
 
     emailPrefillAppliedRef.current = true;
   }, [searchParams]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    void fetch("/api/beta/config", { cache: "no-store" })
+      .then((response) => response.json().catch(() => ({})))
+      .then((payload) => {
+        if (!mounted) return;
+        setPostingBetaRequired(payload.postingBetaRequired !== false);
+      })
+      .catch((error) => {
+        console.error("Signup beta config lookup failed", error);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const toggleArrayValue = (
     value: string,
@@ -393,7 +414,12 @@ function SignupPageContent() {
 
       setBetaAccessAllowed(true);
       setStep(1);
-      setMessage("Posting access confirmed. Let's finish your profile.");
+      setPostingBetaRequired(betaCheckPayload.postingBetaRequired !== false);
+      setMessage(
+        betaCheckPayload.postingBetaRequired === false
+          ? "Posting signup is open right now. Let's finish your profile."
+          : "Posting access confirmed. Let's finish your profile."
+      );
     } catch (error) {
       console.error("Beta access check error:", error);
       setMessage("Could not verify posting access right now.");
@@ -568,6 +594,8 @@ function SignupPageContent() {
                   ? "Choose your path"
                   : requiresPostingBeta
                   ? "Posting during beta"
+                  : hostSignupOpen
+                  ? "Hosting is open"
                   : "Join meetups now"}
               </div>
               <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
@@ -575,13 +603,19 @@ function SignupPageContent() {
                   ? "Tell us how you want to use Neonadri first."
                   : requiresPostingBeta
                   ? "Posters need beta approval before signup."
+                  : hostSignupOpen
+                  ? "Start hosting without beta approval."
                   : "Start joining meetups without the beta wait."}
               </h1>
               <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
                 {showIntentPicker
-                  ? "People who want to browse and join can sign up right away. People who want to post meetups during beta need creator approval first."
+                  ? postingBetaRequired
+                    ? "People who want to browse and join can sign up right away. People who want to post meetups during beta need creator approval first."
+                    : "People who want to browse and join can sign up right away. Hosting signup is also open right now."
                   : requiresPostingBeta
                   ? "We only gate meetup posting during beta. Once your email is approved, you can finish signup and start hosting."
+                  : hostSignupOpen
+                  ? "Posting beta apply is off right now, so you can go straight through the hosting signup flow."
                   : "You can finish account setup now, browse available posts, and apply for posting access later if you decide to host."}
               </p>
               <div className={`mt-4 inline-flex rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
@@ -600,10 +634,12 @@ function SignupPageContent() {
                   </div>
                   <div className="rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
                     <div className="text-sm font-semibold text-[#24323c]">
-                      Host-first path
+                      {postingBetaRequired ? "Host-first path" : "Host path"}
                     </div>
                     <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                      Create meetup posts during beta after your email is approved for posting access.
+                      {postingBetaRequired
+                        ? "Create meetup posts during beta after your email is approved for posting access."
+                        : "Create meetup posts right away without waiting for posting approval."}
                     </div>
                   </div>
                 </div>

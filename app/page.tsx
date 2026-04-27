@@ -2,6 +2,7 @@ import { createClient } from "../lib/supabase/server";
 import { getBlockedUserIdsForViewer } from "../lib/safety";
 import { cookies } from "next/headers";
 import { normalizeUserTimeZone, USER_TIME_ZONE_COOKIE } from "../lib/userTimeZone";
+import { isPostingBetaRequired } from "../lib/postingAccess";
 import HomeFeedClient from "./HomeFeedClient";
 
 type PostRow = {
@@ -59,6 +60,12 @@ export default async function HomePage() {
   const initialUserTimeZone = normalizeUserTimeZone(
     cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
   );
+  let postingBetaRequired = true;
+  try {
+    postingBetaRequired = await isPostingBetaRequired(supabase);
+  } catch (error) {
+    console.error("Home posting beta config lookup failed", error);
+  }
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -154,6 +161,7 @@ export default async function HomePage() {
       viewerPreference={viewerPreference}
       initialUserTimeZone={initialUserTimeZone}
       isLoggedIn={!!user?.id}
+      postingBetaRequired={postingBetaRequired}
     />
   );
 }

@@ -39,6 +39,20 @@ export async function GET() {
     const { supabase, error } = await assertAdmin();
     if (error) return error;
 
+    const { data: settingsRow, error: settingsError } = await supabase
+      .from("app_settings")
+      .select("bool_value")
+      .eq("setting_key", "posting_beta_required")
+      .maybeSingle();
+
+    if (settingsError) {
+      console.error("Admin beta settings load failed", settingsError);
+      return NextResponse.json(
+        { error: "Failed to load beta settings." },
+        { status: 500 }
+      );
+    }
+
     const { data: applications, error: applicationsError } = await supabase
       .from("beta_applications")
       .select(
@@ -71,6 +85,7 @@ export async function GET() {
       {
         items: applications || [],
         allowlist: allowlistRows || [],
+        postingBetaRequired: settingsRow?.bool_value ?? true,
       },
       { status: 200 }
     );
@@ -86,6 +101,33 @@ export async function PATCH(req: Request) {
     if (error || !user) return error!;
 
     const body = await req.json();
+
+    if (typeof body.postingBetaRequired === "boolean") {
+      const updatedAt = new Date().toISOString();
+
+      const { error: settingsUpdateError } = await supabase
+        .from("app_settings")
+        .upsert(
+          {
+            setting_key: "posting_beta_required",
+            bool_value: body.postingBetaRequired,
+            updated_at: updatedAt,
+            updated_by_user_id: user.id,
+          },
+          { onConflict: "setting_key" }
+        );
+
+      if (settingsUpdateError) {
+        console.error("Admin beta settings update failed", settingsUpdateError);
+        return NextResponse.json(
+          { error: "Failed to update beta setting." },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json({ ok: true }, { status: 200 });
+    }
+
     const applicationId = Number(body.applicationId);
     const status = String(body.status || "");
     const notes =

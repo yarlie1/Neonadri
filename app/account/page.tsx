@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "../../lib/supabase/server";
-import { isPostingAccessAllowedForEmail } from "../../lib/postingAccess";
+import { getPostingAccessStateForEmail } from "../../lib/postingAccess";
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_SECONDARY_CLASS,
@@ -47,12 +47,15 @@ export default async function AccountPage() {
     signup_intent: "guest" as const,
   };
   let postingAccessAllowed = false;
+  let postingBetaRequired = true;
 
   try {
-    postingAccessAllowed = await isPostingAccessAllowedForEmail(
+    const accessState = await getPostingAccessStateForEmail(
       supabase,
       user.email
     );
+    postingAccessAllowed = accessState.postingAccessAllowed;
+    postingBetaRequired = accessState.postingBetaRequired;
   } catch (error) {
     console.error("Account posting access check failed", error);
   }
@@ -109,12 +112,16 @@ export default async function AccountPage() {
         <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
           <div className={APP_EYEBROW_CLASS}>Posting access</div>
           <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
-            {postingAccessAllowed
+            {!postingBetaRequired
+              ? "Posting is open for all accounts"
+              : postingAccessAllowed
               ? "Beta tester posting is active"
               : "This account is in join-only mode"}
           </h2>
           <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
-            {postingAccessAllowed
+            {!postingBetaRequired
+              ? "Posting beta apply is turned off right now, so this account can create meetup posts without separate approval."
+              : postingAccessAllowed
               ? "You can create meetup posts during the beta period."
               : profile.signup_intent === "host"
               ? "Your account was set up for posting, but posting approval is not active on this email yet."
@@ -132,7 +139,7 @@ export default async function AccountPage() {
             </div>
           </div>
 
-          {!postingAccessAllowed ? (
+          {!postingAccessAllowed && postingBetaRequired ? (
             <div className="mt-4 flex flex-wrap gap-3">
               <Link
                 href={postingAccessHref}

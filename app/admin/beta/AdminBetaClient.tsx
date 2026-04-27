@@ -49,6 +49,8 @@ export default function AdminBetaClient() {
   const [allowlist, setAllowlist] = useState<BetaAllowlistRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [postingBetaRequired, setPostingBetaRequired] = useState(true);
+  const [updatingPostingBeta, setUpdatingPostingBeta] = useState(false);
   const [statusFilter, setStatusFilter] =
     useState<(typeof STATUS_FILTERS)[number]>("all");
   const [notesById, setNotesById] = useState<Record<number, string>>({});
@@ -67,6 +69,7 @@ export default function AdminBetaClient() {
 
     setItems(payload.items || []);
     setAllowlist(payload.allowlist || []);
+    setPostingBetaRequired(payload.postingBetaRequired !== false);
     setNotesById(
       Object.fromEntries(
         (payload.items || []).map((item: BetaApplicationItem) => [
@@ -126,6 +129,36 @@ export default function AdminBetaClient() {
     await loadData();
   };
 
+  const togglePostingBeta = async () => {
+    if (updatingPostingBeta) return;
+
+    setUpdatingPostingBeta(true);
+    setMessage("");
+
+    const response = await fetch("/api/admin/beta", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        postingBetaRequired: !postingBetaRequired,
+      }),
+    });
+    const payload = await response.json().catch(() => ({}));
+
+    setUpdatingPostingBeta(false);
+
+    if (!response.ok) {
+      setMessage(payload.error || "Could not update posting beta gate.");
+      return;
+    }
+
+    setPostingBetaRequired((current) => !current);
+    setMessage(
+      !postingBetaRequired
+        ? "Posting beta gate is back on. Hosting now needs approval again."
+        : "Posting beta gate is off. People can sign up and post right away."
+    );
+  };
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7fafc_20%,#e8edf1_56%,#d7dfe5_100%)] px-4 py-6 sm:px-6 sm:py-8">
       <div className="mx-auto max-w-5xl space-y-4">
@@ -165,6 +198,41 @@ export default function AdminBetaClient() {
                 </button>
               );
             })}
+          </div>
+        </section>
+
+        <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <div className={APP_EYEBROW_CLASS}>Posting gate</div>
+              <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
+                {postingBetaRequired
+                  ? "Posting beta apply is on"
+                  : "Posting beta apply is off"}
+              </h2>
+              <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
+                {postingBetaRequired
+                  ? "Signup and create flows still require approved posting access."
+                  : "People can sign up for hosting and create meetups without beta approval."}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => void togglePostingBeta()}
+              disabled={updatingPostingBeta}
+              className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                postingBetaRequired
+                  ? APP_BUTTON_SECONDARY_CLASS
+                  : APP_PILL_ACTIVE_CLASS
+              }`}
+            >
+              {updatingPostingBeta
+                ? "Saving..."
+                : postingBetaRequired
+                ? "Turn off gate"
+                : "Turn on gate"}
+            </button>
           </div>
         </section>
 

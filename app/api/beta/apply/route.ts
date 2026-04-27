@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
 import { sendBetaApprovalEmail } from "../../../../lib/betaApprovalEmail";
+import { isPostingBetaRequired } from "../../../../lib/postingAccess";
 
 const VALID_AGE_GROUPS = ["20s", "30s", "40s", "50s+"] as const;
 const VALID_GENDERS = ["Male", "Female", "Other", "Prefer not to say"] as const;
@@ -36,6 +37,20 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: "Please enter a valid email." },
         { status: 400 }
+      );
+    }
+
+    const postingBetaRequired = await isPostingBetaRequired(supabase);
+
+    if (!postingBetaRequired) {
+      return NextResponse.json(
+        {
+          ok: true,
+          status: "approved",
+          message:
+            "Posting beta applications are currently off. You can sign up and post right away.",
+        },
+        { status: 200 }
       );
     }
 
