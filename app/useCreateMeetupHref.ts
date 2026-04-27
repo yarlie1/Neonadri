@@ -6,6 +6,7 @@ import { createClient } from "../lib/supabase/client";
 const WRITE_PATH = "/write";
 const LOGIN_TO_WRITE_HREF = `/login?next=${encodeURIComponent(WRITE_PATH)}`;
 const LOGGED_IN_FALLBACK_HREF = "/beta?next=/write";
+export const POSTING_ACCESS_UPDATED_EVENT = "posting-access-updated";
 
 function getPostingAccessHref(email?: string | null) {
   if (!email) return LOGGED_IN_FALLBACK_HREF;
@@ -77,15 +78,21 @@ export function useCreateMeetupHref(initialIsLoggedIn = false) {
       }
     };
 
-    void supabase.auth
-      .getSession()
-      .then(({ data }) => resolveCreateHref(data.session?.user ?? null))
-      .catch((error) => {
+    const refreshFromCurrentSession = async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        await resolveCreateHref(data.session?.user ?? null);
+      } catch (error) {
         console.error("Create meetup session lookup failed", error);
         if (!cancelled) {
-          setCreateHref(initialIsLoggedIn ? LOGGED_IN_FALLBACK_HREF : LOGIN_TO_WRITE_HREF);
+          setCreateHref(
+            initialIsLoggedIn ? LOGGED_IN_FALLBACK_HREF : LOGIN_TO_WRITE_HREF
+          );
         }
-      });
+      }
+    };
+
+    void refreshFromCurrentSession();
 
     const {
       data: { subscription },
@@ -93,8 +100,32 @@ export function useCreateMeetupHref(initialIsLoggedIn = false) {
       void resolveCreateHref(session?.user ?? null);
     });
 
+    const handlePostingAccessUpdated = () => {
+      void refreshFromCurrentSession();
+    };
+
+    const handleWindowFocus = () => {
+      void refreshFromCurrentSession();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        void refreshFromCurrentSession();
+      }
+    };
+
+    window.addEventListener(POSTING_ACCESS_UPDATED_EVENT, handlePostingAccessUpdated);
+    window.addEventListener("focus", handleWindowFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     return () => {
       cancelled = true;
+      window.removeEventListener(
+        POSTING_ACCESS_UPDATED_EVENT,
+        handlePostingAccessUpdated
+      );
+      window.removeEventListener("focus", handleWindowFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       subscription.unsubscribe();
     };
   }, [initialIsLoggedIn, supabase]);

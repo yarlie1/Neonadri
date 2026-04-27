@@ -5,6 +5,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { createClient } from "../../lib/supabase/client";
+import { POSTING_ACCESS_UPDATED_EVENT } from "../useCreateMeetupHref";
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_PRIMARY_CLASS,
@@ -195,6 +196,16 @@ function BetaPageContent() {
       payload.message ||
         "Your posting access application is in. We'll email you if a spot opens for this round."
     );
+
+    if (payload.status === "approved") {
+      window.dispatchEvent(new Event(POSTING_ACCESS_UPDATED_EVENT));
+
+      if (shouldTreatAsExistingUser) {
+        window.setTimeout(() => {
+          window.location.assign(continueHref);
+        }, 600);
+      }
+    }
   };
 
   return (
