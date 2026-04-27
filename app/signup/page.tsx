@@ -170,6 +170,7 @@ function SignupPageContent() {
   const [checkingBetaAccess, setCheckingBetaAccess] = useState(false);
   const [betaAccessAllowed, setBetaAccessAllowed] = useState(false);
   const [postingBetaRequired, setPostingBetaRequired] = useState(true);
+  const [betaConfigResolved, setBetaConfigResolved] = useState(false);
   const [message, setMessage] = useState("");
 
   const [email, setEmail] = useState("");
@@ -185,12 +186,16 @@ function SignupPageContent() {
   const [responseTimeNote, setResponseTimeNote] = useState("");
   const [isAdultConfirmed, setIsAdultConfirmed] = useState(false);
 
-  const hostSignupOpen = signupIntent === "host" && !postingBetaRequired;
-  const requiresPostingBeta = signupIntent === "host" && postingBetaRequired;
-  const showIntentPicker = signupIntent === null;
+  const resolvedSignupIntent =
+    betaConfigResolved && !postingBetaRequired ? signupIntent ?? "host" : signupIntent;
+  const awaitingSignupMode = !betaConfigResolved && signupIntent === null;
+  const hostSignupOpen = resolvedSignupIntent === "host" && !postingBetaRequired;
+  const requiresPostingBeta =
+    resolvedSignupIntent === "host" && postingBetaRequired;
+  const showIntentPicker = betaConfigResolved && resolvedSignupIntent === null;
   const showBetaGate = requiresPostingBeta && !betaAccessAllowed;
   const showSignupForm =
-    signupIntent === "guest" || hostSignupOpen || betaAccessAllowed;
+    resolvedSignupIntent === "guest" || hostSignupOpen || betaAccessAllowed;
 
   const canMoveNext = useMemo(() => {
     if (step === 1) {
@@ -296,9 +301,12 @@ function SignupPageContent() {
       .then((payload) => {
         if (!mounted) return;
         setPostingBetaRequired(payload.postingBetaRequired !== false);
+        setBetaConfigResolved(true);
       })
       .catch((error) => {
         console.error("Signup beta config lookup failed", error);
+        if (!mounted) return;
+        setBetaConfigResolved(true);
       });
 
     return () => {
@@ -452,7 +460,7 @@ function SignupPageContent() {
         return;
       }
 
-      if (!signupIntent) {
+      if (!resolvedSignupIntent) {
         setMessage("Choose how you plan to use Neonadri first.");
         setSubmitting(false);
         return;
@@ -503,7 +511,7 @@ function SignupPageContent() {
             display_name: displayName.trim(),
             is_adult_confirmed: true,
             age_gate_confirmed_at: new Date().toISOString(),
-            signup_intent: signupIntent,
+            signup_intent: resolvedSignupIntent,
           },
         },
       });
@@ -543,7 +551,7 @@ function SignupPageContent() {
           meeting_style: meetingStyle || null,
           interests: interests.length > 0 ? interests : null,
           response_time_note: responseTimeNote.trim() || null,
-          signup_intent: signupIntent,
+          signup_intent: resolvedSignupIntent,
         };
 
         const response = await fetch("/api/profile/save", {
@@ -590,7 +598,9 @@ function SignupPageContent() {
             <div className="relative">
               <div className={`inline-flex items-center gap-2 rounded-full px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}>
                 <Sparkles className="h-3.5 w-3.5" />
-                {showIntentPicker
+                {awaitingSignupMode
+                  ? "Preparing signup"
+                  : showIntentPicker
                   ? "Choose your path"
                   : requiresPostingBeta
                   ? "Posting during beta"
@@ -599,7 +609,9 @@ function SignupPageContent() {
                   : "Join meetups now"}
               </div>
               <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
-                {showIntentPicker
+                {awaitingSignupMode
+                  ? "Setting up the right signup flow for you."
+                  : showIntentPicker
                   ? "Tell us how you want to use Neonadri first."
                   : requiresPostingBeta
                   ? "Posters need beta approval before signup."
@@ -608,7 +620,9 @@ function SignupPageContent() {
                   : "Start joining meetups without the beta wait."}
               </h1>
               <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-                {showIntentPicker
+                {awaitingSignupMode
+                  ? "We're checking whether posting signup is open right now."
+                  : showIntentPicker
                   ? postingBetaRequired
                     ? "People who want to browse and join can sign up right away. People who want to post meetups during beta need creator approval first."
                     : "People who want to browse and join can sign up right away. Hosting signup is also open right now."
@@ -622,7 +636,16 @@ function SignupPageContent() {
                 Neonadri is for adults 18+ only.
               </div>
 
-              {showIntentPicker ? (
+              {awaitingSignupMode ? (
+                <div className="mt-7 rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
+                  <div className="text-sm font-semibold text-[#24323c]">
+                    Checking signup mode
+                  </div>
+                  <div className="mt-1 text-xs leading-6 text-[#67747c]">
+                    If posting beta apply is off, you&apos;ll go straight into the host signup flow.
+                  </div>
+                </div>
+              ) : showIntentPicker ? (
                 <div className="mt-7 space-y-3">
                   <div className="rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
                     <div className="text-sm font-semibold text-[#24323c]">
@@ -709,7 +732,34 @@ function SignupPageContent() {
           </section>
 
           <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
-            {showIntentPicker ? (
+            {awaitingSignupMode ? (
+              <>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className={APP_EYEBROW_CLASS}>Sign Up</div>
+                    <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
+                      Checking signup mode
+                    </h2>
+                  </div>
+                  <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                    One moment
+                  </div>
+                </div>
+
+                <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
+                  We&apos;re loading the current posting beta setting before we show the next step.
+                </p>
+
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Link
+                    href="/login"
+                    className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                  >
+                    I already have one
+                  </Link>
+                </div>
+              </>
+            ) : showIntentPicker ? (
               <>
                 <div className="flex items-center justify-between gap-3">
                   <div>
@@ -1108,7 +1158,7 @@ function SignupPageContent() {
                       <ArrowLeft className="h-4 w-4" />
                       Back
                     </button>
-                  ) : (
+                  ) : postingBetaRequired ? (
                     <>
                       <button
                         type="button"
@@ -1125,6 +1175,13 @@ function SignupPageContent() {
                         I already have one
                       </Link>
                     </>
+                  ) : (
+                    <Link
+                      href="/login"
+                      className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                    >
+                      I already have one
+                    </Link>
                   )}
 
                   {step < STEPS.length ? (
