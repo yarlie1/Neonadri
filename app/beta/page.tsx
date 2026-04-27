@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { createClient } from "../../lib/supabase/client";
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_PRIMARY_CLASS,
@@ -57,9 +58,11 @@ function ToggleChip({
 
 function BetaPageContent() {
   const searchParams = useSearchParams();
+  const supabase = useMemo(() => createClient(), []);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"" | "approved" | "pending" | "waitlisted">("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
@@ -74,8 +77,67 @@ function BetaPageContent() {
       return next;
     }
 
+    if (isLoggedIn) {
+      return "/write";
+    }
+
     return `/signup?intent=host${email ? `&email=${encodeURIComponent(email)}` : ""}`;
-  }, [email, searchParams]);
+  }, [email, isLoggedIn, searchParams]);
+
+  const secondaryHref = isLoggedIn ? "/" : "/signup?intent=guest";
+  const secondaryLabel = isLoggedIn
+    ? "Keep browsing meetups"
+    : "Join meetups without posting";
+
+  useEffect(() => {
+    let mounted = true;
+
+    void supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        if (!mounted) return;
+
+        const sessionUser = data.session?.user ?? null;
+        setIsLoggedIn(Boolean(sessionUser));
+
+        if (!sessionUser?.email) {
+          return;
+        }
+
+        setEmail((current) =>
+          current.trim().length > 0
+            ? current
+            : sessionUser.email!.trim().toLowerCase()
+        );
+      })
+      .catch((error) => {
+        console.error("Beta page session lookup failed", error);
+      });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+
+      const sessionUser = session?.user ?? null;
+      setIsLoggedIn(Boolean(sessionUser));
+
+      if (!sessionUser?.email) {
+        return;
+      }
+
+      setEmail((current) =>
+        current.trim().length > 0
+          ? current
+          : sessionUser.email!.trim().toLowerCase()
+      );
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
 
   useEffect(() => {
     const emailFromLink = searchParams.get("email")?.trim().toLowerCase() || "";
@@ -247,10 +309,10 @@ function BetaPageContent() {
               <ArrowRight className="h-4 w-4" />
             </button>
             <Link
-              href="/signup?intent=guest"
+              href={secondaryHref}
               className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
             >
-              Join meetups without posting
+              {secondaryLabel}
             </Link>
             {status === "approved" ? (
               <Link
