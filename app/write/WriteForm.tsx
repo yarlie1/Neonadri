@@ -159,27 +159,29 @@ export default function WriteForm({ userId }: { userId: string }) {
     ]
   );
 
-  const { markReturnFromMap, clearDraft } = useCreateMeetupDraft({
+  const { draftReady, markReturnFromMap, clearDraft } = useCreateMeetupDraft({
     draft: draftState,
     applyDraft,
     applyMapSelection,
   });
 
   useEffect(() => {
+    if (!draftReady) return;
     if (!meetingTime) {
       setMeetingTime(getDefaultMeetingTime());
     }
-  }, [meetingTime]);
+  }, [draftReady, meetingTime]);
 
   useEffect(() => {
     setBenefitConfirmed(false);
   }, [benefitAmount]);
 
   useEffect(() => {
+    if (!draftReady) return;
     if (!meetingTime) return;
     setMeetingDate(getDatePart(meetingTime));
     setMeetingTimeSlot(getTimePart(meetingTime));
-  }, [meetingTime]);
+  }, [draftReady, meetingTime]);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
