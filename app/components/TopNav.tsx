@@ -18,12 +18,11 @@ import {
   Plus,
   MessageCircleMore,
 } from "lucide-react";
-import { getMeetingStatus } from "../../lib/meetingTime";
-import { isConfirmedMatchStatus } from "../../lib/matches/status";
 import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
 } from "../../lib/userTimeZone";
+import { loadNavIndicatorState, type NavIndicatorState } from "../../lib/navIndicators";
 import {
   APP_PILL_ACTIVE_CLASS,
   APP_PILL_INACTIVE_CLASS,
@@ -37,6 +36,7 @@ type SimpleUser = {
 
 type TopNavProps = {
   initialUser?: SimpleUser;
+  initialIndicators?: NavIndicatorState;
 };
 
 function CountBadge({ count }: { count: number }) {
@@ -86,14 +86,23 @@ function NavLabel({
   );
 }
 
-export default function TopNav({ initialUser = null }: TopNavProps) {
+export default function TopNav({
+  initialUser = null,
+  initialIndicators,
+}: TopNavProps) {
   const supabase = useMemo(() => createClient(), []);
   const [user, setUser] = useState<SimpleUser>(initialUser);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [pendingCount, setPendingCount] = useState(0);
-  const [acceptedSentCount, setAcceptedSentCount] = useState(0);
-  const [upcomingMatchCount, setUpcomingMatchCount] = useState(0);
-  const [hasNewChatActivity, setHasNewChatActivity] = useState(false);
+  const [pendingCount, setPendingCount] = useState(initialIndicators?.pendingCount || 0);
+  const [acceptedSentCount, setAcceptedSentCount] = useState(
+    initialIndicators?.acceptedSentCount || 0
+  );
+  const [upcomingMatchCount, setUpcomingMatchCount] = useState(
+    initialIndicators?.upcomingMatchCount || 0
+  );
+  const [hasNewChatActivity, setHasNewChatActivity] = useState(
+    initialIndicators?.hasNewChatActivity || false
+  );
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [currentSearch, setCurrentSearch] = useState("");
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -179,187 +188,22 @@ export default function TopNav({ initialUser = null }: TopNavProps) {
       loggingOutRef.current = false;
     };
 
-    const countRequestsOnLiveMeetups = async ({
-      userId,
-      requestColumn,
-      status,
-      upcomingOnly = false,
-    }: {
-      userId: string;
-      requestColumn: "post_owner_user_id" | "requester_user_id";
-      status: "pending" | "accepted";
-      upcomingOnly?: boolean;
-    }) => {
-      const { data, error } = await supabase
-        .from("match_requests")
-        .select("id, post_id")
-        .eq(requestColumn, userId)
-        .eq("status", status);
-
-      if (error) {
-        console.error("TopNav request count lookup error:", error);
-        return 0;
-      }
-
-      const requestRows = data || [];
-      const postIds = Array.from(
-        new Set(requestRows.map((row) => row.post_id).filter(Boolean))
-      );
-
-      if (postIds.length === 0) {
-        return 0;
-      }
-
-      const { data: postsData, error: postsError } = await supabase
-        .from("posts")
-        .select("id, status, meeting_time")
-        .in("id", postIds);
-
-      if (postsError) {
-        console.error("TopNav request count post lookup error:", postsError);
-        return 0;
-      }
-
-      const livePostIds = new Set(
-        (postsData || [])
-          .filter((post) => {
-            if (String(post.status || "open").toLowerCase() === "cancelled") {
-              return false;
-            }
-
-            if (!upcomingOnly) {
-              return true;
-            }
-
-            return (
-              getMeetingStatus(post.meeting_time || null, browserTimeZone) ===
-              "Upcoming"
-            );
-          })
-          .map((post) => post.id)
-      );
-
-      return requestRows.filter((row) => livePostIds.has(row.post_id)).length;
-    };
-
-    const loadPendingCount = async (userId: string) => {
-      const { count, error } = await supabase
-        .from("match_requests")
-        .select("id", { count: "exact", head: true })
-        .eq("post_owner_user_id", userId)
-        .eq("status", "pending");
-
-      if (error) {
-        console.error("TopNav pending request count lookup error:", error);
-        return 0;
-      }
-
-      return count || 0;
-    };
-
-    const loadAcceptedSentCount = async (userId: string) =>
-      countRequestsOnLiveMeetups({
-        userId,
-        requestColumn: "requester_user_id",
-        status: "accepted",
-        upcomingOnly: true,
-      });
-
-    const loadUpcomingMatchCount = async (userId: string) => {
-      const { data, error } = await supabase
-        .from("matches")
-        .select("id, post_id, status")
-        .or(`user_a.eq.${userId},user_b.eq.${userId}`);
-
-      if (error) {
-        console.error("TopNav upcoming match lookup error:", error);
-        return 0;
-      }
-
-      const confirmedMatches = (data || []).filter((row) =>
-        isConfirmedMatchStatus(String(row.status || ""))
-      );
-
-      const postIds = Array.from(
-        new Set(confirmedMatches.map((row) => row.post_id).filter(Boolean))
-      );
-
-      if (postIds.length === 0) {
-        return 0;
-      }
-
-      const { data: postsData, error: postsError } = await supabase
-        .from("posts")
-        .select("id, status, meeting_time")
-        .in("id", postIds);
-
-      if (postsError) {
-        console.error("TopNav upcoming match post lookup error:", postsError);
-        return 0;
-      }
-
-      const upcomingPostIds = new Set(
-        (postsData || [])
-          .filter((post) => {
-            if (String(post.status || "open").toLowerCase() === "cancelled") {
-              return false;
-            }
-
-            return (
-              getMeetingStatus(post.meeting_time || null, browserTimeZone) ===
-              "Upcoming"
-            );
-          })
-          .map((post) => post.id)
-      );
-
-      return confirmedMatches.filter((row) => upcomingPostIds.has(row.post_id)).length;
-    };
-
-    const loadHasNewChatActivity = async (userId: string) => {
-      const { data, error } = await supabase
-        .from("match_chats")
-        .select(
-          "host_user_id,guest_user_id,last_chat_activity_at,last_seen_by_host_at,last_seen_by_guest_at"
-        )
-        .or(`host_user_id.eq.${userId},guest_user_id.eq.${userId}`);
-
-      if (error) {
-        console.error("TopNav loadHasNewChatActivity error:", error);
-        return false;
-      }
-
-      return (data || []).some((row) => {
-        if (!row.last_chat_activity_at) return false;
-
-        const lastActivity = new Date(row.last_chat_activity_at).getTime();
-        if (Number.isNaN(lastActivity)) return false;
-
-        const lastSeen =
-          row.host_user_id === userId ? row.last_seen_by_host_at : row.last_seen_by_guest_at;
-
-        if (!lastSeen) return true;
-
-        const lastSeenTime = new Date(lastSeen).getTime();
-        if (Number.isNaN(lastSeenTime)) return true;
-
-        return lastActivity > lastSeenTime;
-      });
-    };
-
     const refreshIndicators = async (userId: string) => {
-      const [count, acceptedCount, upcomingCount, hasNewChat] = await Promise.all([
-        loadPendingCount(userId),
-        loadAcceptedSentCount(userId),
-        loadUpcomingMatchCount(userId),
-        loadHasNewChatActivity(userId),
-      ]);
+      try {
+        const nextIndicators = await loadNavIndicatorState(
+          supabase,
+          userId,
+          browserTimeZone
+        );
 
-      if (!mounted || loggingOutRef.current) return;
-      setPendingCount(count);
-      setAcceptedSentCount(acceptedCount);
-      setUpcomingMatchCount(upcomingCount);
-      setHasNewChatActivity(hasNewChat);
+        if (!mounted || loggingOutRef.current) return;
+        setPendingCount(nextIndicators.pendingCount);
+        setAcceptedSentCount(nextIndicators.acceptedSentCount);
+        setUpcomingMatchCount(nextIndicators.upcomingMatchCount);
+        setHasNewChatActivity(nextIndicators.hasNewChatActivity);
+      } catch (error) {
+        console.error("TopNav refreshIndicators error:", error);
+      }
     };
 
     const attachRefreshChannel = (userId: string) => {

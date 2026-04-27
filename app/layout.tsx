@@ -1,10 +1,13 @@
 import "./globals.css";
 import Script from "next/script";
+import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import TopNav from "./components/TopNav";
 import LegalFooter from "./components/LegalFooter";
 import { OG_IMAGE_VERSION } from "../lib/socialPreview";
 import { createClient } from "../lib/supabase/server";
+import { loadNavIndicatorState } from "../lib/navIndicators";
+import { normalizeUserTimeZone, USER_TIME_ZONE_COOKIE } from "../lib/userTimeZone";
 
 const APP_URL = process.env.APP_BASE_URL?.trim() || "https://neonadri.net";
 
@@ -47,16 +50,31 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const supabase = await createClient();
+  const cookieStore = await cookies();
   const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const userTimeZone = normalizeUserTimeZone(
+    cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
+  );
   const initialUser = user
     ? {
         id: user.id,
         email: user.email,
       }
     : null;
+  const initialIndicators = user
+    ? await loadNavIndicatorState(supabase, user.id, userTimeZone).catch((error) => {
+        console.error("Root layout nav indicator preload failed", error);
+        return {
+          pendingCount: 0,
+          acceptedSentCount: 0,
+          upcomingMatchCount: 0,
+          hasNewChatActivity: false,
+        };
+      })
+    : undefined;
 
   return (
     <html lang="en">
@@ -68,7 +86,7 @@ export default async function RootLayout({
           />
         ) : null}
 
-        <TopNav initialUser={initialUser} />
+        <TopNav initialUser={initialUser} initialIndicators={initialIndicators} />
         {children}
         <LegalFooter />
       </body>
