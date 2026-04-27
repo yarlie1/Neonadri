@@ -29,7 +29,7 @@ export async function POST() {
     if (error) {
       console.error("Delete account failed", error);
       return NextResponse.json(
-        { error: "Could not delete account." },
+        { error: error.message || "Could not delete account." },
         { status: 500 }
       );
     }
