@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
+import { createAdminClient } from "../../../../lib/supabase/admin";
 
 export async function POST() {
   try {
@@ -13,7 +14,17 @@ export async function POST() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { error } = await supabase.rpc("delete_my_account");
+    let error: { message?: string } | null = null;
+
+    try {
+      const adminSupabase = createAdminClient();
+      const deleteResult = await adminSupabase.auth.admin.deleteUser(user.id, false);
+      error = deleteResult.error;
+    } catch (adminError) {
+      console.warn("Delete account admin fallback engaged", adminError);
+      const fallbackResult = await supabase.rpc("delete_my_account");
+      error = fallbackResult.error;
+    }
 
     if (error) {
       console.error("Delete account failed", error);
