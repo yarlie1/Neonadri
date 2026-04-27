@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   APP_BUTTON_PRIMARY_CLASS,
@@ -24,8 +24,31 @@ type LatLng = {
   lng: number;
 };
 
+const SEARCH_THIS_AREA_DISTANCE_KM = 0.35;
+const DEFAULT_CENTER: LatLng = { lat: 34.0522, lng: -118.2437 };
+
 function isAddressLikeName(name: string) {
   return /^\d/.test(name.trim());
+}
+
+function toRadians(value: number) {
+  return (value * Math.PI) / 180;
+}
+
+function getDistanceKm(a: LatLng, b: LatLng) {
+  const earthRadiusKm = 6371;
+  const latDelta = toRadians(b.lat - a.lat);
+  const lngDelta = toRadians(b.lng - a.lng);
+  const startLat = toRadians(a.lat);
+  const endLat = toRadians(b.lat);
+
+  const sinLat = Math.sin(latDelta / 2);
+  const sinLng = Math.sin(lngDelta / 2);
+  const haversine =
+    sinLat * sinLat +
+    Math.cos(startLat) * Math.cos(endLat) * sinLng * sinLng;
+
+  return 2 * earthRadiusKm * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
 }
 
 const PLACE_TYPE_PRIORITY = [
@@ -74,11 +97,43 @@ export default function WriteLocationPage() {
   const [message, setMessage] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [selectedResultKey, setSelectedResultKey] = useState<string | null>(null);
+  const [currentMapCenter, setCurrentMapCenter] = useState<LatLng | null>(DEFAULT_CENTER);
+  const [lastSearchCenter, setLastSearchCenter] = useState<LatLng | null>(null);
 
-  const defaultCenter = useMemo<LatLng>(
-    () => ({ lat: 34.0522, lng: -118.2437 }),
-    []
+  const getMapCenter = () => {
+    const center = mapRef.current?.getCenter?.();
+
+    if (!center) return null;
+
+    return {
+      lat: center.lat(),
+      lng: center.lng(),
+    };
+  };
+
+  const syncSearchCenterToCurrentViewport = () => {
+    if (!mapRef.current || !window.google?.maps?.event) return;
+
+    window.google.maps.event.addListenerOnce(mapRef.current, "idle", () => {
+      const center = getMapCenter();
+      if (!center) return;
+      setCurrentMapCenter(center);
+      setLastSearchCenter(center);
+    });
+  };
+
+  const movedAwayFromLastSearch = Boolean(
+    currentMapCenter &&
+      lastSearchCenter &&
+      getDistanceKm(currentMapCenter, lastSearchCenter) >=
+        SEARCH_THIS_AREA_DISTANCE_KM
   );
+
+  const showSearchThisAreaButton =
+    query.trim().length > 0 &&
+    !searching &&
+    Boolean(lastSearchCenter) &&
+    movedAwayFromLastSearch;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -96,7 +151,7 @@ export default function WriteLocationPage() {
 
       if (!mapRef.current) {
         mapRef.current = new window.google.maps.Map(mapContainerRef.current, {
-          center: defaultCenter,
+          center: DEFAULT_CENTER,
           zoom: 12,
           clickableIcons: false,
           gestureHandling: "greedy",
@@ -106,6 +161,13 @@ export default function WriteLocationPage() {
         placesServiceRef.current = new window.google.maps.places.PlacesService(
           mapRef.current
         );
+
+        mapRef.current.addListener("idle", () => {
+          const center = getMapCenter();
+          if (center) {
+            setCurrentMapCenter(center);
+          }
+        });
 
         mapRef.current.addListener("click", (e: any) => {
           const lat = e.latLng.lat();
@@ -133,7 +195,7 @@ export default function WriteLocationPage() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [defaultCenter]);
+  }, []);
 
   const getResultMarkerIcon = (active: boolean) => {
     if (!window.google?.maps) return undefined;
@@ -312,6 +374,15 @@ export default function WriteLocationPage() {
     const request = {
       query,
       fields: ["name", "formatted_address", "geometry"],
+      ...(currentMapCenter
+        ? {
+            location: new window.google.maps.LatLng(
+              currentMapCenter.lat,
+              currentMapCenter.lng
+            ),
+            radius: 6000,
+          }
+        : {}),
     };
 
     const service = placesServiceRef.current;
@@ -360,6 +431,8 @@ export default function WriteLocationPage() {
       if (!bounds.isEmpty()) {
         mapRef.current.fitBounds(bounds);
       }
+
+      syncSearchCenterToCurrentViewport();
     });
   };
 
@@ -380,6 +453,8 @@ export default function WriteLocationPage() {
     setQuery(item.formatted_address || item.name || "");
     setSelectedResultKey(resultKey);
     updateResultMarkerStyles(resultKey);
+    setCurrentMapCenter({ lat, lng });
+    setLastSearchCenter({ lat, lng });
     setMessage("");
   };
 
@@ -461,6 +536,18 @@ export default function WriteLocationPage() {
           <div className={`overflow-hidden rounded-[28px] ${APP_SOFT_CARD_CLASS}`}>
             <div ref={mapContainerRef} className="h-[22rem] w-full sm:h-[24rem]" />
           </div>
+
+          {showSearchThisAreaButton && (
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={handleSearch}
+                className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
+              >
+                Search this area
+              </button>
+            </div>
+          )}
 
           {loadingMap && (
             <p className={`text-sm ${APP_BODY_TEXT_CLASS}`}>Loading map...</p>
