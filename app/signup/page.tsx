@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
 import { createClient } from "../../lib/supabase/client";
@@ -157,7 +157,7 @@ function ToggleChip({
   );
 }
 
-export default function SignupPage() {
+function SignupPageContent() {
   const supabase = createClient();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -971,6 +971,25 @@ export default function SignupPage() {
         ) : null}
       </div>
     </main>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
+          <div className="mx-auto max-w-6xl">
+            <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
+              <div className={APP_EYEBROW_CLASS}>Sign Up</div>
+              <div className="mt-3 text-sm text-[#55626a]">Loading signup…</div>
+            </section>
+          </div>
+        </main>
+      }
+    >
+      <SignupPageContent />
+    </Suspense>
   );
 }
 
