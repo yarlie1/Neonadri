@@ -69,23 +69,31 @@ function BetaPageContent() {
   const [ageGroup, setAgeGroup] = useState("");
   const [motivation, setMotivation] = useState("");
   const [meetupInterests, setMeetupInterests] = useState<string[]>([]);
+  const requestedNext = searchParams.get("next")?.trim() || "";
+  const requestedEmail = searchParams.get("email")?.trim().toLowerCase() || "";
+  const isCreateFlow =
+    requestedNext === "/write" || requestedNext.startsWith("/write?");
+  const shouldTreatAsExistingUser =
+    isLoggedIn || Boolean(requestedEmail) || isCreateFlow;
 
   const continueHref = useMemo(() => {
-    const next = searchParams.get("next")?.trim();
-
-    if (next && next.startsWith("/") && !next.startsWith("//")) {
-      return next;
+    if (
+      requestedNext &&
+      requestedNext.startsWith("/") &&
+      !requestedNext.startsWith("//")
+    ) {
+      return requestedNext;
     }
 
-    if (isLoggedIn) {
+    if (shouldTreatAsExistingUser) {
       return "/write";
     }
 
     return `/signup?intent=host${email ? `&email=${encodeURIComponent(email)}` : ""}`;
-  }, [email, isLoggedIn, searchParams]);
+  }, [email, requestedNext, shouldTreatAsExistingUser]);
 
-  const secondaryHref = isLoggedIn ? "/" : "/signup?intent=guest";
-  const secondaryLabel = isLoggedIn
+  const secondaryHref = shouldTreatAsExistingUser ? "/" : "/signup?intent=guest";
+  const secondaryLabel = shouldTreatAsExistingUser
     ? "Keep browsing meetups"
     : "Join meetups without posting";
 
@@ -140,12 +148,12 @@ function BetaPageContent() {
   }, [supabase]);
 
   useEffect(() => {
-    const emailFromLink = searchParams.get("email")?.trim().toLowerCase() || "";
+    const emailFromLink = requestedEmail;
 
     if (!emailFromLink || email.trim().length > 0) return;
 
     setEmail(emailFromLink);
-  }, [email, searchParams]);
+  }, [email, requestedEmail]);
 
   const toggleInterest = (interest: string) => {
     setMeetupInterests((current) =>
