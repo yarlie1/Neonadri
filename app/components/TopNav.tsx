@@ -238,12 +238,20 @@ export default function TopNav() {
       return requestRows.filter((row) => livePostIds.has(row.post_id)).length;
     };
 
-    const loadPendingCount = async (userId: string) =>
-      countRequestsOnLiveMeetups({
-        userId,
-        requestColumn: "post_owner_user_id",
-        status: "pending",
-      });
+    const loadPendingCount = async (userId: string) => {
+      const { count, error } = await supabase
+        .from("match_requests")
+        .select("id", { count: "exact", head: true })
+        .eq("post_owner_user_id", userId)
+        .eq("status", "pending");
+
+      if (error) {
+        console.error("TopNav pending request count lookup error:", error);
+        return 0;
+      }
+
+      return count || 0;
+    };
 
     const loadAcceptedSentCount = async (userId: string) =>
       countRequestsOnLiveMeetups({
