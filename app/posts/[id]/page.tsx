@@ -53,6 +53,7 @@ type PageProps = {
 };
 
 const APP_URL = process.env.APP_BASE_URL?.trim() || "https://neonadri.net";
+const OG_IMAGE_VERSION = "v=2";
 
 async function getPostMetadataRecord(id: string) {
   const supabase = await createClient();
@@ -114,7 +115,7 @@ export async function generateMetadata({
       type: "article",
       images: [
         {
-          url: `/posts/${post.id}/opengraph-image`,
+          url: `/posts/${post.id}/opengraph-image?${OG_IMAGE_VERSION}`,
           width: 1200,
           height: 630,
           alt: title,
@@ -125,7 +126,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [`/posts/${post.id}/opengraph-image`],
+      images: [`/posts/${post.id}/opengraph-image?${OG_IMAGE_VERSION}`],
     },
   };
 }

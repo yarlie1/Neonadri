@@ -5,6 +5,7 @@ import TopNav from "./components/TopNav";
 import LegalFooter from "./components/LegalFooter";
 
 const APP_URL = process.env.APP_BASE_URL?.trim() || "https://neonadri.net";
+const OG_IMAGE_VERSION = "v=2";
 
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/opengraph-image",
+        url: `/opengraph-image?${OG_IMAGE_VERSION}`,
         width: 1200,
         height: 630,
         alt: "Neonadri",
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
     title: "A calmer way to meet someone new.",
     description:
       "Discover nearby meetups, see who is hosting, and browse at a calmer pace.",
-    images: ["/opengraph-image"],
+    images: [`/opengraph-image?${OG_IMAGE_VERSION}`],
   },
 };
 
