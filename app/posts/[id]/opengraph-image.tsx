@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { createClient } from "../../../../lib/supabase/server";
+import { createClient } from "../../../lib/supabase/server";
 
 export const size = {
   width: 1200,
