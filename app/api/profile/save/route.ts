@@ -58,6 +58,36 @@ export async function POST(req: Request) {
       );
     }
 
+    if (displayNameValue) {
+      const { data: existingProfile, error: existingProfileError } = await supabase
+        .from("profiles")
+        .select("id")
+        .ilike("display_name", displayNameValue)
+        .neq("id", user.id)
+        .limit(1)
+        .maybeSingle();
+
+      if (existingProfileError) {
+        console.error("Profile save display name lookup failed", {
+          message: existingProfileError.message,
+          details: existingProfileError.details,
+          hint: existingProfileError.hint,
+          code: existingProfileError.code,
+        });
+        return NextResponse.json(
+          { error: "We couldn't check that display name right now." },
+          { status: 500 }
+        );
+      }
+
+      if (existingProfile) {
+        return NextResponse.json(
+          { error: "This display name is already in use." },
+          { status: 409 }
+        );
+      }
+    }
+
     const genderValue = sanitizeAllowedValue(body.gender, VALID_GENDERS);
     const ageGroupValue = sanitizeAllowedValue(body.age_group, VALID_AGE_GROUPS);
 
@@ -114,6 +144,13 @@ export async function POST(req: Request) {
     const { error } = await supabase.from("profiles").upsert(payload);
 
     if (error) {
+      if (error.code === "23505") {
+        return NextResponse.json(
+          { error: "This display name is already in use." },
+          { status: 409 }
+        );
+      }
+
       console.error("Profile save failed", {
         message: error.message,
         details: error.details,

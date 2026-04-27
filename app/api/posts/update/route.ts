@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
+import {
+  ADULT_MEETUP_MUTATION_REQUIRED_MESSAGE,
+  isAdultConfirmedUser,
+} from "../../../../lib/adultGate";
+import { getOwnedPostEditLockState } from "../../../../lib/postEditAccess";
 
 export async function POST(req: Request) {
   try {
@@ -15,10 +20,60 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    if (!isAdultConfirmedUser(user)) {
+      return NextResponse.json(
+        { error: ADULT_MEETUP_MUTATION_REQUIRED_MESSAGE },
+        { status: 403 }
+      );
+    }
+
     if (typeof body.post_id !== "string" || !body.post_id.trim()) {
       return NextResponse.json(
         { error: "Missing post id" },
         { status: 400 }
+      );
+    }
+
+    const postId = Number(body.post_id);
+
+    if (!Number.isFinite(postId)) {
+      return NextResponse.json(
+        { error: "Invalid meetup." },
+        { status: 400 }
+      );
+    }
+
+    const editAccessState = await getOwnedPostEditLockState(
+      supabase,
+      postId,
+      user.id
+    );
+
+    if (!editAccessState.found) {
+      return NextResponse.json(
+        { error: "Meetup not found." },
+        { status: 404 }
+      );
+    }
+
+    if (!editAccessState.owned) {
+      return NextResponse.json(
+        { error: "Only the host can edit this meetup." },
+        { status: 403 }
+      );
+    }
+
+    if (editAccessState.verificationFailed) {
+      return NextResponse.json(
+        { error: editAccessState.errorMessage || "We couldn't verify this meetup right now." },
+        { status: 500 }
+      );
+    }
+
+    if (editAccessState.locked) {
+      return NextResponse.json(
+        { error: editAccessState.errorMessage },
+        { status: 409 }
       );
     }
 
@@ -68,7 +123,7 @@ export async function POST(req: Request) {
     const { error } = await supabase
       .from("posts")
       .update(payload)
-      .eq("id", body.post_id)
+      .eq("id", postId)
       .eq("user_id", user.id);
 
     if (error) {

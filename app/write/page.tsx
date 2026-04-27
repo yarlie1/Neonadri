@@ -2,6 +2,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "../../lib/supabase/server";
 import {
+  getAdultGateRedirectPath,
+  isAdultConfirmedUser,
+} from "../../lib/adultGate";
+import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_PRIMARY_CLASS,
   APP_BUTTON_SECONDARY_CLASS,
@@ -25,6 +29,10 @@ export default async function WritePage() {
 
   if (!user) {
     redirect("/login");
+  }
+
+  if (!isAdultConfirmedUser(user)) {
+    redirect(getAdultGateRedirectPath("/write"));
   }
 
   let postingAccessAllowed = false;

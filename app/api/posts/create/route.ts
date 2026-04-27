@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
 import {
+  ADULT_MEETUP_MUTATION_REQUIRED_MESSAGE,
+  isAdultConfirmedUser,
+} from "../../../../lib/adultGate";
+import {
   isPostingAccessAllowedForEmail,
   POSTING_ACCESS_ERROR_MESSAGE,
 } from "../../../../lib/postingAccess";
@@ -17,6 +21,13 @@ export async function POST(req: Request) {
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (!isAdultConfirmedUser(user)) {
+      return NextResponse.json(
+        { error: ADULT_MEETUP_MUTATION_REQUIRED_MESSAGE },
+        { status: 403 }
+      );
     }
 
     const postingAccessAllowed = await isPostingAccessAllowedForEmail(
