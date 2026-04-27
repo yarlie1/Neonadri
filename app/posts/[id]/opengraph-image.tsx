@@ -42,7 +42,7 @@ export default async function PostOpenGraphImage({ params }: ImageProps) {
   const location = post?.location?.trim() || "Discover nearby plans";
   const audience = [post?.target_gender?.trim(), post?.target_age_group?.trim()]
     .filter(Boolean)
-    .join(" • ");
+    .join(" / ");
   const statusLabel =
     String(post?.status || "open").toLowerCase() === "cancelled"
       ? "Cancelled"
