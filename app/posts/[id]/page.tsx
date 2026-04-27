@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
+import type { Metadata } from "next";
 import { Sparkles } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import { getBlockedUserIdsForViewer } from "../../../lib/safety";
@@ -50,6 +51,84 @@ type PageProps = {
     id: string;
   };
 };
+
+const APP_URL = process.env.APP_BASE_URL?.trim() || "https://neonadri.net";
+
+async function getPostMetadataRecord(id: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("posts")
+    .select(
+      "id, place_name, location, meeting_purpose, target_gender, target_age_group, status"
+    )
+    .eq("id", id)
+    .maybeSingle();
+
+  return data as
+    | {
+        id: number;
+        place_name: string | null;
+        location: string | null;
+        meeting_purpose: string | null;
+        target_gender: string | null;
+        target_age_group: string | null;
+        status: string | null;
+      }
+    | null;
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const post = await getPostMetadataRecord(params.id);
+
+  if (!post) {
+    return {
+      title: "Meetup not found",
+    };
+  }
+
+  const titleParts = [
+    post.meeting_purpose?.trim() || "Meetup",
+    post.place_name?.trim() || post.location?.trim() || "Neonadri",
+  ].filter(Boolean);
+  const title = titleParts.join(" at ");
+  const descriptionParts = [
+    post.location?.trim(),
+    post.target_gender?.trim(),
+    post.target_age_group?.trim(),
+    String(post.status || "open").toLowerCase() === "cancelled"
+      ? "Cancelled meetup"
+      : "View details and request to join on Neonadri.",
+  ].filter(Boolean);
+  const description = descriptionParts.join(" • ");
+  const url = `${APP_URL.replace(/\/+$/, "")}/posts/${post.id}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "article",
+      images: [
+        {
+          url: `/posts/${post.id}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`/posts/${post.id}/opengraph-image`],
+    },
+  };
+}
 
 export default async function MeetupDetailPage({ params }: PageProps) {
   const supabase = await createClient();
