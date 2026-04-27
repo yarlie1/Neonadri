@@ -269,136 +269,138 @@ function BetaPageContent() {
             </section>
           </>
         ) : (
-        <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
-          <div
-            className={`inline-flex items-center gap-2 rounded-full px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            Closed beta
-          </div>
-          <div className={APP_EYEBROW_CLASS + " mt-5"}>Apply for access</div>
-          <h1 className="mt-2 max-w-2xl text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
-            Apply for posting access during beta.
-          </h1>
-          <p className={`mt-3 max-w-2xl ${APP_BODY_TEXT_CLASS}`}>
-            Browsing and joining meetups can happen with a regular account now.
-            We&apos;re only limiting posting access while we tune safety, meetup
-            quality, and feedback loops.
-          </p>
-          <p className="mt-3 text-sm text-[#5f6d76]">
-            We&apos;re currently opening up to 10 posting beta tester spots per day.
-          </p>
-          <p className="mt-3 text-sm text-[#5f6d76]">
-            If you&apos;re approved, you&apos;ll be able to create meetup posts with the
-            same email address you use here.
-          </p>
-        </section>
-
-        <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className={APP_EYEBROW_CLASS}>Name</label>
-              <input
-                value={fullName}
-                onChange={(event) => setFullName(event.target.value)}
-                className={`${INPUT_CLASS} mt-2`}
-                placeholder="What should we call you?"
-              />
-            </div>
-            <div>
-              <label className={APP_EYEBROW_CLASS}>Email</label>
-              <input
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className={`${INPUT_CLASS} mt-2`}
-                placeholder="name@email.com"
-                type="email"
-              />
-            </div>
-          </div>
-
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className={APP_EYEBROW_CLASS}>Gender</label>
-              <select
-                value={gender}
-                onChange={(event) => setGender(event.target.value)}
-                className={`${INPUT_CLASS} mt-2`}
+          <>
+            <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
+              <div
+                className={`inline-flex items-center gap-2 rounded-full px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}
               >
-                <option value="">Select</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-                <option value="Prefer not to say">Prefer not to say</option>
-              </select>
-            </div>
-            <div>
-              <label className={APP_EYEBROW_CLASS}>Age group</label>
-              <select
-                value={ageGroup}
-                onChange={(event) => setAgeGroup(event.target.value)}
-                className={`${INPUT_CLASS} mt-2`}
-              >
-                <option value="">Select</option>
-                <option value="20s">20s</option>
-                <option value="30s">30s</option>
-                <option value="40s">40s</option>
-                <option value="50s+">50s+</option>
-              </select>
-            </div>
-          </div>
+                <Sparkles className="h-3.5 w-3.5" />
+                Closed beta
+              </div>
+              <div className={APP_EYEBROW_CLASS + " mt-5"}>Apply for access</div>
+              <h1 className="mt-2 max-w-2xl text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
+                Apply for posting access during beta.
+              </h1>
+              <p className={`mt-3 max-w-2xl ${APP_BODY_TEXT_CLASS}`}>
+                Browsing and joining meetups can happen with a regular account now.
+                We&apos;re only limiting posting access while we tune safety, meetup
+                quality, and feedback loops.
+              </p>
+              <p className="mt-3 text-sm text-[#5f6d76]">
+                We&apos;re currently opening up to 10 posting beta tester spots per day.
+              </p>
+              <p className="mt-3 text-sm text-[#5f6d76]">
+                If you&apos;re approved, you&apos;ll be able to create meetup posts with the
+                same email address you use here.
+              </p>
+            </section>
 
-          <div className="mt-5">
-            <label className={APP_EYEBROW_CLASS}>Meetup interests</label>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {INTEREST_OPTIONS.map((interest) => (
-                <ToggleChip
-                  key={interest}
-                  label={interest}
-                  selected={meetupInterests.includes(interest)}
-                  onClick={() => toggleInterest(interest)}
+            <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className={APP_EYEBROW_CLASS}>Name</label>
+                  <input
+                    value={fullName}
+                    onChange={(event) => setFullName(event.target.value)}
+                    className={`${INPUT_CLASS} mt-2`}
+                    placeholder="What should we call you?"
+                  />
+                </div>
+                <div>
+                  <label className={APP_EYEBROW_CLASS}>Email</label>
+                  <input
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    className={`${INPUT_CLASS} mt-2`}
+                    placeholder="name@email.com"
+                    type="email"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className={APP_EYEBROW_CLASS}>Gender</label>
+                  <select
+                    value={gender}
+                    onChange={(event) => setGender(event.target.value)}
+                    className={`${INPUT_CLASS} mt-2`}
+                  >
+                    <option value="">Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                  </select>
+                </div>
+                <div>
+                  <label className={APP_EYEBROW_CLASS}>Age group</label>
+                  <select
+                    value={ageGroup}
+                    onChange={(event) => setAgeGroup(event.target.value)}
+                    className={`${INPUT_CLASS} mt-2`}
+                  >
+                    <option value="">Select</option>
+                    <option value="20s">20s</option>
+                    <option value="30s">30s</option>
+                    <option value="40s">40s</option>
+                    <option value="50s+">50s+</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="mt-5">
+                <label className={APP_EYEBROW_CLASS}>Meetup interests</label>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {INTEREST_OPTIONS.map((interest) => (
+                    <ToggleChip
+                      key={interest}
+                      label={interest}
+                      selected={meetupInterests.includes(interest)}
+                      onClick={() => toggleInterest(interest)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-5">
+                <label className={APP_EYEBROW_CLASS}>Why do you want in?</label>
+                <textarea
+                  value={motivation}
+                  onChange={(event) => setMotivation(event.target.value)}
+                  rows={5}
+                  className={`${INPUT_CLASS} mt-2`}
+                  placeholder="Tell us what kinds of meetups you want to post and why you want hosting access."
                 />
-              ))}
-            </div>
-          </div>
+              </div>
 
-          <div className="mt-5">
-            <label className={APP_EYEBROW_CLASS}>Why do you want in?</label>
-            <textarea
-              value={motivation}
-              onChange={(event) => setMotivation(event.target.value)}
-              rows={5}
-              className={`${INPUT_CLASS} mt-2`}
-              placeholder="Tell us what kinds of meetups you want to post and why you want hosting access."
-            />
-          </div>
-
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => void handleSubmit()}
-              disabled={submitting}
-              className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${APP_BUTTON_PRIMARY_CLASS} disabled:cursor-not-allowed disabled:opacity-60`}
-            >
-              {submitting ? "Submitting..." : "Apply for posting access"}
-              <ArrowRight className="h-4 w-4" />
-            </button>
-            <Link
-              href={secondaryHref}
-              className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
-            >
-              {secondaryLabel}
-            </Link>
-            {status === "approved" ? (
-              <Link
-                href={continueHref}
-                className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
-              >
-                Continue
-              </Link>
-            ) : null}
-          </div>
-        </section>
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => void handleSubmit()}
+                  disabled={submitting}
+                  className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${APP_BUTTON_PRIMARY_CLASS} disabled:cursor-not-allowed disabled:opacity-60`}
+                >
+                  {submitting ? "Submitting..." : "Apply for posting access"}
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+                <Link
+                  href={secondaryHref}
+                  className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+                >
+                  {secondaryLabel}
+                </Link>
+                {status === "approved" ? (
+                  <Link
+                    href={continueHref}
+                    className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+                  >
+                    Continue
+                  </Link>
+                ) : null}
+              </div>
+            </section>
+          </>
         )}
 
         {message ? (
