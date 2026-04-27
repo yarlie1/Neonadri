@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, Sparkles } from "lucide-react";
 import {
@@ -55,7 +55,7 @@ function ToggleChip({
   );
 }
 
-export default function BetaPage() {
+function BetaPageContent() {
   const searchParams = useSearchParams();
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
@@ -272,5 +272,24 @@ export default function BetaPage() {
         ) : null}
       </div>
     </main>
+  );
+}
+
+export default function BetaPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
+          <div className="mx-auto max-w-5xl">
+            <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
+              <div className={APP_EYEBROW_CLASS}>Apply for access</div>
+              <div className="mt-3 text-sm text-[#55626a]">Loading beta access...</div>
+            </section>
+          </div>
+        </main>
+      }
+    >
+      <BetaPageContent />
+    </Suspense>
   );
 }
