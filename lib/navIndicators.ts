@@ -1,21 +1,8 @@
 import { getMeetingStatus } from "./meetingTime";
 import { isConfirmedMatchStatus } from "./matches/status";
 
-type QueryResult = {
-  data?: any;
-  error?: any;
-  count?: number | null;
-};
-
-type QueryBuilder = PromiseLike<QueryResult> & {
-  eq: (column: string, value: unknown) => QueryBuilder;
-  in: (column: string, values: unknown[]) => QueryBuilder;
-  or: (filters: string) => QueryBuilder;
-  select: (columns: string, options?: Record<string, unknown>) => QueryBuilder;
-};
-
 type SupabaseLikeClient = {
-  from: (table: string) => QueryBuilder;
+  from: (table: string) => any;
 };
 
 export type NavIndicatorState = {
