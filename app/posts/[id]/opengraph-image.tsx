@@ -14,6 +14,41 @@ type ImageProps = {
   };
 };
 
+function SparkleMark() {
+  return (
+    <div
+      style={{
+        height: "64px",
+        width: "64px",
+        borderRadius: "999px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background:
+          "radial-gradient(circle at top, #ffffff 0%, #dce6ec 42%, #9aa6b1 100%)",
+      }}
+    >
+      <svg
+        width="30"
+        height="30"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 2L13.8 8.2L20 10L13.8 11.8L12 18L10.2 11.8L4 10L10.2 8.2L12 2Z"
+          fill="white"
+        />
+        <path
+          d="M18.2 15.2L18.9 17.1L20.8 17.8L18.9 18.5L18.2 20.4L17.5 18.5L15.6 17.8L17.5 17.1L18.2 15.2Z"
+          fill="white"
+          opacity="0.9"
+        />
+      </svg>
+    </div>
+  );
+}
+
 export default async function PostOpenGraphImage({ params }: ImageProps) {
   const supabase = await createClient();
   const { data } = await supabase
@@ -86,23 +121,7 @@ export default async function PostOpenGraphImage({ params }: ImageProps) {
               gap: "14px",
             }}
           >
-            <div
-              style={{
-                height: "64px",
-                width: "64px",
-                borderRadius: "999px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background:
-                  "radial-gradient(circle at top, #ffffff 0%, #dce6ec 42%, #9aa6b1 100%)",
-                color: "#ffffff",
-                fontSize: "30px",
-                fontWeight: 800,
-              }}
-            >
-              N
-            </div>
+            <SparkleMark />
             <div
               style={{
                 display: "flex",
@@ -125,7 +144,7 @@ export default async function PostOpenGraphImage({ params }: ImageProps) {
                   color: "#66737c",
                 }}
               >
-                AI-softened social discovery
+                A calmer way to meet someone new.
               </div>
             </div>
           </div>

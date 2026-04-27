@@ -13,11 +13,11 @@ export const metadata: Metadata = {
     template: "%s | Neonadri",
   },
   description:
-    "Neonadri is an AI-softened social space for discovering, joining, and hosting low-pressure meetups.",
+    "Discover nearby meetups, see who is hosting, and browse at a calmer pace.",
   openGraph: {
-    title: "Neonadri",
+    title: "A calmer way to meet someone new.",
     description:
-      "Discover, join, and host low-pressure meetups on Neonadri.",
+      "Discover nearby meetups, see who is hosting, and browse at a calmer pace.",
     url: APP_URL,
     siteName: "Neonadri",
     type: "website",
@@ -32,9 +32,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Neonadri",
+    title: "A calmer way to meet someone new.",
     description:
-      "Discover, join, and host low-pressure meetups on Neonadri.",
+      "Discover nearby meetups, see who is hosting, and browse at a calmer pace.",
     images: ["/opengraph-image"],
   },
 };

@@ -7,6 +7,41 @@ export const size = {
 
 export const contentType = "image/png";
 
+function SparkleMark() {
+  return (
+    <div
+      style={{
+        height: "72px",
+        width: "72px",
+        borderRadius: "999px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background:
+          "radial-gradient(circle at top, #ffffff 0%, #dce6ec 42%, #9aa6b1 100%)",
+      }}
+    >
+      <svg
+        width="34"
+        height="34"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 2L13.8 8.2L20 10L13.8 11.8L12 18L10.2 11.8L4 10L10.2 8.2L12 2Z"
+          fill="white"
+        />
+        <path
+          d="M18.2 15.2L18.9 17.1L20.8 17.8L18.9 18.5L18.2 20.4L17.5 18.5L15.6 17.8L17.5 17.1L18.2 15.2Z"
+          fill="white"
+          opacity="0.9"
+        />
+      </svg>
+    </div>
+  );
+}
+
 export default function OpenGraphImage() {
   return new ImageResponse(
     (
@@ -31,23 +66,7 @@ export default function OpenGraphImage() {
             gap: "14px",
           }}
         >
-          <div
-            style={{
-              height: "72px",
-              width: "72px",
-              borderRadius: "999px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background:
-                "radial-gradient(circle at top, #ffffff 0%, #dce6ec 42%, #9aa6b1 100%)",
-              color: "#ffffff",
-              fontSize: "34px",
-              fontWeight: 800,
-            }}
-          >
-            N
-          </div>
+          <SparkleMark />
           <div
             style={{
               display: "flex",
@@ -70,7 +89,7 @@ export default function OpenGraphImage() {
                 color: "#62707a",
               }}
             >
-              AI-softened social discovery
+              Soft social layer
             </div>
           </div>
         </div>
@@ -91,7 +110,7 @@ export default function OpenGraphImage() {
               letterSpacing: "-0.05em",
             }}
           >
-            Discover low-pressure meetups nearby.
+            A calmer way to meet someone new.
           </div>
           <div
             style={{
@@ -100,8 +119,8 @@ export default function OpenGraphImage() {
               lineHeight: 1.4,
             }}
           >
-            Join existing plans or host your own with a calmer, safer social
-            flow.
+            Discover nearby meetups, see who is hosting, and browse at a calmer
+            pace.
           </div>
         </div>
       </div>
