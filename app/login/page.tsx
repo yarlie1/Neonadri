@@ -32,6 +32,9 @@ export default function LoginPage() {
 
     const params = new URLSearchParams(window.location.search);
     setNextPath(params.get("next"));
+    if (params.get("message") === "password-reset") {
+      setMessage("Password reset complete. Log in with your new password.");
+    }
   }, []);
 
   const redirectPath = useMemo(() => {
@@ -140,9 +143,17 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                  Password
-                </label>
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <label className="block text-sm font-medium text-[#52616a]">
+                    Password
+                  </label>
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs font-medium text-[#6a7a84] transition hover:text-[#24323c]"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <input
                   type="password"
                   placeholder="Enter your password"
