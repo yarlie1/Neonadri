@@ -30,7 +30,8 @@ function hasRecoveryMarker() {
   return (
     query.get("type") === "recovery" ||
     hash.get("type") === "recovery" ||
-    query.has("code")
+    query.has("code") ||
+    query.has("token_hash")
   );
 }
 
@@ -79,6 +80,8 @@ export default function ResetPasswordPage() {
 
       const currentUrl = new URL(window.location.href);
       const code = currentUrl.searchParams.get("code");
+      const tokenHash = currentUrl.searchParams.get("token_hash");
+      const typeValue = currentUrl.searchParams.get("type");
 
       if (code) {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -93,6 +96,31 @@ export default function ResetPasswordPage() {
         }
 
         currentUrl.searchParams.delete("code");
+        currentUrl.searchParams.delete("type");
+        currentUrl.searchParams.delete("next");
+        window.history.replaceState(
+          {},
+          "",
+          `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`
+        );
+      }
+
+      if (tokenHash && typeValue === "recovery") {
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: "recovery",
+        });
+
+        if (!active) return;
+
+        if (error) {
+          setIsReady(false);
+          setMessage(error.message || "This reset link is no longer valid.");
+          setMessageTone("danger");
+          return;
+        }
+
+        currentUrl.searchParams.delete("token_hash");
         currentUrl.searchParams.delete("type");
         currentUrl.searchParams.delete("next");
         window.history.replaceState(
