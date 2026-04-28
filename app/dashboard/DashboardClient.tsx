@@ -616,6 +616,7 @@ export default function DashboardClient({
   cancellationFeedbackMatchIds,
   matchChatMetaMap,
   initialUserTimeZone,
+  initialCreateHref,
 }: {
   userId: string;
   posts: PostRow[];
@@ -633,8 +634,9 @@ export default function DashboardClient({
   cancellationFeedbackMatchIds: number[];
   matchChatMetaMap: Record<number, MatchChatMetaRow>;
   initialUserTimeZone: string;
+  initialCreateHref: string;
 }) {
-  const createHref = useCreateMeetupHref(true);
+  const createHref = useCreateMeetupHref(true, initialCreateHref);
   const supabase = createClient();
   const router = useRouter();
   const previousActiveTabRef = useRef<string | null>(null);

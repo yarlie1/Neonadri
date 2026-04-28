@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { createClient } from "../../lib/supabase/server";
+import { isPostingAccessAllowedForEmail, isPostingBetaRequired } from "../../lib/postingAccess";
 import { normalizeUserTimeZone, USER_TIME_ZONE_COOKIE } from "../../lib/userTimeZone";
 import DashboardClient from "./DashboardClient";
 
@@ -81,6 +82,7 @@ export type MatchSummaryRow = {
 
 export default async function DashboardPage() {
   const supabase = await createClient();
+  const loginToWriteHref = `/login?next=${encodeURIComponent("/write")}`;
   const cookieStore = await cookies();
   const initialUserTimeZone = normalizeUserTimeZone(
     cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
@@ -92,6 +94,30 @@ export default async function DashboardPage() {
 
   if (!user) {
     redirect("/login");
+  }
+
+  let initialCreateHref = loginToWriteHref;
+
+  try {
+    const postingBetaRequired = await isPostingBetaRequired(supabase);
+    const fallbackHref = user.email
+      ? `/beta?email=${encodeURIComponent(user.email)}&next=/write`
+      : "/beta?next=/write";
+
+    if (!postingBetaRequired) {
+      initialCreateHref = "/write";
+    } else {
+      const postingAccessAllowed = await isPostingAccessAllowedForEmail(
+        supabase,
+        user.email
+      );
+      initialCreateHref = postingAccessAllowed ? "/write" : fallbackHref;
+    }
+  } catch (error) {
+    console.error("Dashboard posting access lookup failed", error);
+    initialCreateHref = user.email
+      ? `/beta?email=${encodeURIComponent(user.email)}&next=/write`
+      : "/beta?next=/write";
   }
 
   const [postsRes, receivedRes, sentRes, matchesRes, reviewsRes, cancellationFeedbackRes] =
@@ -242,6 +268,7 @@ export default async function DashboardPage() {
       cancellationFeedbackMatchIds={cancellationFeedbackMatchIds}
       matchChatMetaMap={matchChatMetaMap}
       initialUserTimeZone={initialUserTimeZone}
+      initialCreateHref={initialCreateHref}
     />
   );
 }
