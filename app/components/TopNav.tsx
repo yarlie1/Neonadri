@@ -17,6 +17,7 @@ import {
   Settings2,
   Plus,
   MessageCircleMore,
+  Play,
 } from "lucide-react";
 import {
   normalizeUserTimeZone,
@@ -128,6 +129,10 @@ export default function TopNav({
   const mobileDashboardCount =
     pendingCount + acceptedSentCount + upcomingMatchCount;
   const createHref = useCreateMeetupHref(!!user);
+  const openIntroVideo = () => {
+    window.dispatchEvent(new CustomEvent("neonadri:open-intro"));
+    setMenuOpen(false);
+  };
 
   useEffect(() => {
     const browserTimeZone = normalizeUserTimeZone(
@@ -415,6 +420,8 @@ export default function TopNav({
 
   const primary =
     "inline-flex items-center gap-2 rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(135deg,#ffffff_0%,#eef3f6_100%)] px-3 py-2.5 text-sm font-medium text-[#2f3f48] shadow-[0_14px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#dbe3e8] hover:text-[#223039]";
+  const subtleLink =
+    "inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-medium text-[#728089] transition hover:bg-[#eef4f7] hover:text-[#33434c]";
 
   const mobileItem =
     "inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium text-[#52616a] transition hover:bg-[#f4f7f9] hover:text-[#33434c]";
@@ -467,6 +474,11 @@ export default function TopNav({
           </div>
 
           <div className="hidden items-center gap-2 sm:flex">
+            <button type="button" onClick={openIntroVideo} className={subtleLink}>
+              <Play className="h-3.5 w-3.5" />
+              Watch intro
+            </button>
+
             <Link href="/" className={navBtn(isActivePath(pathname, "/"))}>
               <NavLabel icon={<House className="h-4 w-4" />}>Home</NavLabel>
             </Link>
@@ -554,6 +566,15 @@ export default function TopNav({
                 </div>
 
                 <div className="flex flex-col p-2">
+                  <button
+                    type="button"
+                    onClick={openIntroVideo}
+                    className={`${mobileItem} w-full`}
+                  >
+                    <Play className="h-4 w-4" />
+                    Watch intro
+                  </button>
+
                   <Link
                     href="/"
                     onClick={closeMenu}
