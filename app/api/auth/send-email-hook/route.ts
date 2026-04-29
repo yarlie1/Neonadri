@@ -179,7 +179,6 @@ function buildEmailJobs(payload: HookPayload): EmailJob[] {
             body: "Use the secure link below to choose a new password for your Neonadri account.",
             buttonLabel: "Reset password",
             buttonHref: href,
-            fallbackCode: payload.email_data.token,
           }),
         },
       ];
@@ -202,7 +201,6 @@ function buildEmailJobs(payload: HookPayload): EmailJob[] {
             body: "Use this secure link to sign in and continue where you left off.",
             buttonLabel: "Log in",
             buttonHref: href,
-            fallbackCode: payload.email_data.token,
           }),
         },
       ];
@@ -225,7 +223,6 @@ function buildEmailJobs(payload: HookPayload): EmailJob[] {
             body: "Use the link below to accept your invitation and continue into Neonadri.",
             buttonLabel: "Accept invite",
             buttonHref: href,
-            fallbackCode: payload.email_data.token,
           }),
         },
       ];
@@ -247,7 +244,6 @@ function buildEmailJobs(payload: HookPayload): EmailJob[] {
               type: "email_change",
               nextPath: "/account",
             }),
-            fallbackCode: payload.email_data.token,
           }),
         });
       }
@@ -265,7 +261,6 @@ function buildEmailJobs(payload: HookPayload): EmailJob[] {
               type: "email_change",
               nextPath: "/account",
             }),
-            fallbackCode: payload.email_data.token_new || payload.email_data.token,
           }),
         });
       }
@@ -345,7 +340,6 @@ function buildEmailJobs(payload: HookPayload): EmailJob[] {
                 ? "Confirm email"
                 : "Continue",
             buttonHref: href,
-            fallbackCode: payload.email_data.token,
           }),
         },
       ];

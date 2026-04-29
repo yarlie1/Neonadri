@@ -69,6 +69,22 @@ export default function ResetPasswordPage() {
     let active = true;
 
     const resolveRecoverySession = async () => {
+      let sessionResult = await supabase.auth.getSession();
+
+      if (!sessionResult.data.session) {
+        await wait(350);
+        sessionResult = await supabase.auth.getSession();
+      }
+
+      if (!active) return;
+
+      if (sessionResult.data.session) {
+        setIsReady(true);
+        setMessage("Choose your new password.");
+        setMessageTone("default");
+        return;
+      }
+
       const recoveryLink = hasRecoveryMarker();
       if (!recoveryLink) {
         if (!active) return;
@@ -129,15 +145,6 @@ export default function ResetPasswordPage() {
           `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`
         );
       }
-
-      let sessionResult = await supabase.auth.getSession();
-
-      if (!sessionResult.data.session) {
-        await wait(350);
-        sessionResult = await supabase.auth.getSession();
-      }
-
-      if (!active) return;
 
       if (sessionResult.error || !sessionResult.data.session) {
         setIsReady(false);
