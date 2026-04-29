@@ -8,6 +8,10 @@ const VALID_GENDERS = ["Male", "Female", "Other", "Prefer not to say"] as const;
 const VALID_REGIONS = ["la_nearby", "other_region"] as const;
 
 type BetaRegion = (typeof VALID_REGIONS)[number];
+type ExistingBetaApplication = {
+  id: number;
+  status: string | null;
+} | null;
 
 function sanitizeOptionalText(value: unknown) {
   if (typeof value !== "string") return null;
@@ -44,11 +48,12 @@ async function saveBetaApplication({
 }) {
   const admin = createAdminClient();
 
-  const { data: existingApplication, error: existingApplicationError } = await admin
+  const { data, error: existingApplicationError } = await admin
     .from("beta_applications")
     .select("id, status")
     .eq("email_normalized", email)
     .maybeSingle();
+  const existingApplication = data as ExistingBetaApplication;
 
   if (existingApplicationError) {
     throw existingApplicationError;
