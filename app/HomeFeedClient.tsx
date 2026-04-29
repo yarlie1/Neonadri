@@ -452,14 +452,6 @@ export default function HomeFeedClient({
                 </div>
                 <ArrowRight className="h-5 w-5 shrink-0" />
               </Link>
-              <Link
-                href={postingBetaRequired ? "/beta" : "/signup?intent=host"}
-                className="mt-3 inline-flex w-full items-center justify-center rounded-[20px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-4 py-3 text-sm font-medium text-[#52616a] shadow-[0_10px_20px_rgba(118,126,133,0.08)] transition hover:bg-[#f5f8fa]"
-              >
-                {postingBetaRequired
-                  ? "Want to post during beta? Apply for posting access"
-                  : "Want to post? Start hosting signup"}
-              </Link>
             </div>
           ) : null}
         </section>
