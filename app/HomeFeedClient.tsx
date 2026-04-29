@@ -172,6 +172,9 @@ export default function HomeFeedClient({
 }) {
   const userTimeZone = useMemo(() => initialUserTimeZone, [initialUserTimeZone]);
   const createHref = useCreateMeetupHref(isLoggedIn, initialCreateHref);
+  const signupHref = postingBetaRequired
+    ? "/signup?postingBetaRequired=1"
+    : "/signup?postingBetaRequired=0";
 
   const formatTime = (meetingTime: string | null) =>
     formatMeetingTime(meetingTime, userTimeZone) || "";
@@ -437,7 +440,7 @@ export default function HomeFeedClient({
           {!isLoggedIn ? (
             <div className="mt-4">
               <Link
-                href="/signup"
+                href={signupHref}
                 className={`inline-flex min-h-[76px] w-full items-center justify-between gap-4 rounded-[24px] border px-5 py-3.5 text-left shadow-[0_18px_34px_rgba(118,126,133,0.16)] transition ${APP_BUTTON_PRIMARY_CLASS}`}
               >
                 <div className="flex min-w-0 items-center gap-4">

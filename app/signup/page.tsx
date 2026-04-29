@@ -165,6 +165,12 @@ function SignupPageContent() {
   const searchParams = useSearchParams();
   const initialIntentFromLink = searchParams.get("intent");
   const initialEmailFromLink = searchParams.get("email")?.trim().toLowerCase() || "";
+  const initialPostingBetaRequiredParam = searchParams.get("postingBetaRequired");
+  const hasInitialPostingBetaRequired =
+    initialPostingBetaRequiredParam === "0" ||
+    initialPostingBetaRequiredParam === "1";
+  const initialPostingBetaRequired =
+    initialPostingBetaRequiredParam === "0" ? false : true;
 
   const [step, setStep] = useState(1);
   const [signupIntent, setSignupIntent] = useState<"guest" | "host" | null>(
@@ -175,8 +181,12 @@ function SignupPageContent() {
   const [submitting, setSubmitting] = useState(false);
   const [checkingBetaAccess, setCheckingBetaAccess] = useState(false);
   const [betaAccessAllowed, setBetaAccessAllowed] = useState(false);
-  const [postingBetaRequired, setPostingBetaRequired] = useState(true);
-  const [betaConfigResolved, setBetaConfigResolved] = useState(false);
+  const [postingBetaRequired, setPostingBetaRequired] = useState(
+    initialPostingBetaRequired
+  );
+  const [betaConfigResolved, setBetaConfigResolved] = useState(
+    hasInitialPostingBetaRequired
+  );
   const [message, setMessage] = useState("");
 
   const [email, setEmail] = useState(initialEmailFromLink);
@@ -276,6 +286,8 @@ function SignupPageContent() {
   }, [aboutMeOptions, aboutMeTouched]);
 
   useEffect(() => {
+    if (hasInitialPostingBetaRequired) return;
+
     let mounted = true;
 
     void fetch("/api/beta/config", { cache: "no-store" })
@@ -294,7 +306,7 @@ function SignupPageContent() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [hasInitialPostingBetaRequired]);
 
   const toggleArrayValue = (
     value: string,
