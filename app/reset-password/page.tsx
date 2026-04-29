@@ -39,6 +39,35 @@ function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+async function updatePasswordWithRecoverySession(
+  accessToken: string,
+  password: string
+) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/user`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ password }),
+    }
+  );
+
+  const payload = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      payload?.msg ||
+        payload?.message ||
+        payload?.error_description ||
+        "Could not reset password."
+    );
+  }
+}
+
 export default function ResetPasswordPage() {
   const supabase = useMemo(() => createClient(), []);
   const [password, setPassword] = useState("");
@@ -195,19 +224,45 @@ export default function ResetPasswordPage() {
     setMessage("");
     setMessageTone("default");
 
-    const { error } = await supabase.auth.updateUser({
-      password: trimmedPassword,
-    });
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
 
-    if (error) {
+    if (sessionError || !session?.access_token) {
       setIsSaving(false);
-      setMessage(error.message || "Could not reset password.");
+      setMessage(
+        sessionError?.message ||
+          "This reset session expired. Request a new password reset link."
+      );
       setMessageTone("danger");
       return;
     }
 
-    const redirectTarget = encodeURIComponent("/login?message=password-reset");
-    window.location.replace(`/api/auth/logout?redirect=${redirectTarget}`);
+    try {
+      await updatePasswordWithRecoverySession(
+        session.access_token,
+        trimmedPassword
+      );
+    } catch (error) {
+      setIsSaving(false);
+      setMessage(
+        error instanceof Error ? error.message : "Could not reset password."
+      );
+      setMessageTone("danger");
+      return;
+    }
+
+    setIsSaving(false);
+    setMessage("Password updated. Moving you to login...");
+    setMessageTone("default");
+
+    void fetch("/api/auth/logout?redirect=/login?message=password-reset", {
+      method: "POST",
+      keepalive: true,
+    }).catch(() => undefined);
+
+    window.location.assign("/login?message=password-reset");
   };
 
   return (
