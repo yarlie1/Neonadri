@@ -563,18 +563,17 @@ export default function TopNav({
                   <div className="mt-1 text-[13px] leading-5 text-[#6f7a82]">
                     Cyber-chill surfaces, same routes, same structure.
                   </div>
-                </div>
-
-                <div className="flex flex-col p-2">
                   <button
                     type="button"
                     onClick={openIntroVideo}
-                    className={`${mobileItem} w-full`}
+                    className="mt-2 inline-flex items-center gap-1.5 text-[13px] leading-5 text-[#6f7a82] transition hover:text-[#33434c]"
                   >
-                    <Play className="h-4 w-4" />
+                    <Play className="h-3.5 w-3.5" />
                     Watch intro
                   </button>
+                </div>
 
+                <div className="flex flex-col p-2">
                   <Link
                     href="/"
                     onClick={closeMenu}
