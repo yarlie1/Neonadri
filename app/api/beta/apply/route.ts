@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
-import { createAdminClient } from "../../../../lib/supabase/admin";
 import { isPostingBetaRequired } from "../../../../lib/postingAccess";
 
 const VALID_AGE_GROUPS = ["20s", "30s", "40s", "50s+"] as const;
@@ -8,24 +7,6 @@ const VALID_GENDERS = ["Male", "Female", "Other", "Prefer not to say"] as const;
 const VALID_REGIONS = ["la_nearby", "other_region"] as const;
 
 type BetaRegion = (typeof VALID_REGIONS)[number];
-type ExistingBetaApplication = {
-  id: number;
-  status: string | null;
-} | null;
-type BetaApplicationUpsertRow = {
-  email: string;
-  full_name: string | null;
-  city: string;
-  age_group: string | null;
-  gender: string | null;
-  motivation: string;
-  meetup_interests: string[];
-  availability: null;
-  status: "pending";
-  reviewed_at: null;
-  reviewed_by_user_id: null;
-  updated_at: string;
-};
 
 function sanitizeOptionalText(value: unknown) {
   if (typeof value !== "string") return null;
@@ -41,67 +22,6 @@ function sanitizeOptionalChoice(value: unknown, allowed: readonly string[]) {
 
 function toApplicationCity(region: BetaRegion) {
   return region === "la_nearby" ? "LA or nearby" : "Other region";
-}
-
-async function saveBetaApplication({
-  email,
-  region,
-  fullName,
-  ageGroup,
-  gender,
-  motivation,
-  meetupInterests,
-}: {
-  email: string;
-  region: BetaRegion;
-  fullName: string | null;
-  ageGroup: string | null;
-  gender: string | null;
-  motivation: string;
-  meetupInterests: string[];
-}) {
-  const admin = createAdminClient();
-
-  const { data, error: existingApplicationError } = await admin
-    .from("beta_applications")
-    .select("id, status")
-    .eq("email_normalized", email)
-    .maybeSingle();
-  const existingApplication = data as ExistingBetaApplication;
-
-  if (existingApplicationError) {
-    throw existingApplicationError;
-  }
-
-  if (existingApplication && existingApplication.status === "approved") {
-    return { status: "approved" as const };
-  }
-
-  const row: BetaApplicationUpsertRow = {
-    email,
-    full_name: fullName,
-    city: toApplicationCity(region),
-    age_group: ageGroup,
-    gender,
-    motivation,
-    meetup_interests: meetupInterests,
-    availability: null,
-    status: "pending",
-    reviewed_at: null,
-    reviewed_by_user_id: null,
-    updated_at: new Date().toISOString(),
-  };
-
-  const betaApplicationsTable = admin.from("beta_applications") as any;
-  const { error: upsertError } = await betaApplicationsTable.upsert(row, {
-    onConflict: "email_normalized",
-  });
-
-  if (upsertError) {
-    throw upsertError;
-  }
-
-  return { status: "pending" as const };
 }
 
 export async function POST(req: Request) {
@@ -148,17 +68,29 @@ export async function POST(req: Request) {
       );
     }
 
-    const result = await saveBetaApplication({
-      email,
-      region,
-      fullName: sanitizeOptionalText(body.fullName),
-      ageGroup: sanitizeOptionalChoice(body.ageGroup, VALID_AGE_GROUPS),
-      gender: sanitizeOptionalChoice(body.gender, VALID_GENDERS),
-      motivation,
-      meetupInterests,
+    const { data, error } = await supabase.rpc("submit_beta_application", {
+      p_email: email,
+      p_full_name: sanitizeOptionalText(body.fullName),
+      p_city: toApplicationCity(region),
+      p_age_group: sanitizeOptionalChoice(body.ageGroup, VALID_AGE_GROUPS),
+      p_gender: sanitizeOptionalChoice(body.gender, VALID_GENDERS),
+      p_motivation: motivation,
+      p_meetup_interests: meetupInterests,
+      p_availability: null,
     });
 
-    if (result.status === "approved") {
+    if (error) {
+      console.error("Beta application submit failed", error);
+      return NextResponse.json(
+        { error: "Could not submit your posting access application right now." },
+        { status: 500 }
+      );
+    }
+
+    const row = Array.isArray(data) ? data[0] : null;
+    const applicationStatus = row?.application_status || "pending";
+
+    if (applicationStatus === "approved") {
       return NextResponse.json(
         {
           ok: true,
