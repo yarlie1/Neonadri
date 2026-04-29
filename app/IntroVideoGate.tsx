@@ -15,10 +15,33 @@ function getTodayKey() {
 }
 
 export default function IntroVideoGate() {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement | null>(null);
+  const desktopVideoRef = useRef<HTMLVideoElement | null>(null);
+  const mobileBackgroundVideoRef = useRef<HTMLVideoElement | null>(null);
+  const desktopBackgroundVideoRef = useRef<HTMLVideoElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [hasEnded, setHasEnded] = useState(false);
   const [isReady, setIsReady] = useState(false);
+
+  const resetAndPlayVideos = async () => {
+    const videos = [
+      mobileVideoRef.current,
+      desktopVideoRef.current,
+      mobileBackgroundVideoRef.current,
+      desktopBackgroundVideoRef.current,
+    ].filter(Boolean) as HTMLVideoElement[];
+
+    setHasEnded(false);
+
+    await Promise.all(
+      videos.map(async (video) => {
+        video.currentTime = 0;
+        try {
+          await video.play();
+        } catch {}
+      })
+    );
+  };
 
   useEffect(() => {
     const todayKey = getTodayKey();
@@ -37,13 +60,9 @@ export default function IntroVideoGate() {
 
   useEffect(() => {
     const openIntro = () => {
-      const video = videoRef.current;
-      setHasEnded(false);
       setIsVisible(true);
       window.setTimeout(() => {
-        if (!video) return;
-        video.currentTime = 0;
-        void video.play().catch(() => {});
+        void resetAndPlayVideos();
       }, 50);
     };
 
@@ -71,15 +90,7 @@ export default function IntroVideoGate() {
   };
 
   const handleReplay = async () => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.currentTime = 0;
-    setHasEnded(false);
-
-    try {
-      await video.play();
-    } catch {}
+    await resetAndPlayVideos();
   };
 
   if (!isReady || !isVisible) {
@@ -90,8 +101,9 @@ export default function IntroVideoGate() {
     <div className="fixed inset-0 z-[120] overflow-hidden bg-[#091117] text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_32%),linear-gradient(180deg,rgba(8,14,18,0.18)_0%,rgba(8,14,18,0.72)_100%)]" />
 
-      <div className="absolute inset-0 pt-16 sm:pt-0">
+      <div className="absolute inset-0 hidden sm:block">
         <video
+          ref={desktopBackgroundVideoRef}
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover blur-2xl brightness-[0.42] sm:hidden"
           autoPlay
@@ -103,13 +115,27 @@ export default function IntroVideoGate() {
         </video>
 
         <video
-          ref={videoRef}
-          className="absolute inset-0 h-full w-full object-contain object-top sm:object-cover sm:object-center"
+          ref={desktopVideoRef}
+          className="absolute inset-0 h-full w-full object-cover object-center"
           autoPlay
           muted
           playsInline
           preload="auto"
           onEnded={() => setHasEnded(true)}
+        >
+          <source src="/neonadri-intro.webm" type="video/webm" />
+        </video>
+      </div>
+
+      <div className="absolute inset-0 sm:hidden">
+        <video
+          ref={mobileBackgroundVideoRef}
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover blur-2xl brightness-[0.42]"
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
         >
           <source src="/neonadri-intro.webm" type="video/webm" />
         </video>
@@ -125,6 +151,20 @@ export default function IntroVideoGate() {
         <X className="h-4 w-4" />
         Skip
       </button>
+
+      <div className="absolute inset-x-0 top-16 bottom-[17.5rem] z-[9] flex items-center justify-center px-4 sm:hidden">
+        <video
+          ref={mobileVideoRef}
+          className="max-h-full w-full object-contain"
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          onEnded={() => setHasEnded(true)}
+        >
+          <source src="/neonadri-intro.webm" type="video/webm" />
+        </video>
+      </div>
 
       <div className="absolute inset-x-0 bottom-0 z-10 px-3 pb-4 sm:px-6 sm:pb-8">
         <div className="mx-auto max-w-5xl rounded-[28px] border border-white/14 bg-[rgba(10,18,24,0.58)] px-4 py-4 shadow-[0_28px_64px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:rounded-[32px] sm:px-7 sm:py-6">
