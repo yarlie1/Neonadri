@@ -1141,14 +1141,6 @@ function SignupPageContent() {
                       <ArrowLeft className="h-4 w-4" />
                       Back
                     </button>
-                  ) : postingBetaRequired ? (
-                    <button
-                      type="button"
-                      onClick={handleResetIntent}
-                      className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-                    >
-                      Choose path
-                    </button>
                   ) : null}
 
                   {step < STEPS.length ? (
