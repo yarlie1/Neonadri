@@ -121,23 +121,11 @@ export default function IntroVideoGate() {
         <video
           ref={desktopBackgroundVideoRef}
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover blur-2xl brightness-[0.42] sm:hidden"
+          className="absolute inset-0 h-full w-full object-cover blur-2xl brightness-[0.42]"
           autoPlay
           muted
           playsInline
           preload="auto"
-        >
-          <source src="/neonadri-intro.webm" type="video/webm" />
-        </video>
-
-        <video
-          ref={desktopVideoRef}
-          className="absolute inset-0 h-full w-full object-cover object-center"
-          autoPlay
-          muted
-          playsInline
-          preload="auto"
-          onEnded={() => setHasEnded(true)}
         >
           <source src="/neonadri-intro.webm" type="video/webm" />
         </video>
@@ -167,6 +155,20 @@ export default function IntroVideoGate() {
         <X className="h-4 w-4" />
         Skip
       </button>
+
+      <div className="absolute inset-x-0 top-20 bottom-[16.5rem] z-[9] hidden items-center justify-center px-8 sm:flex lg:top-24 lg:bottom-[17.5rem] lg:px-12">
+        <video
+          ref={desktopVideoRef}
+          className="max-h-full max-w-full object-contain"
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          onEnded={() => setHasEnded(true)}
+        >
+          <source src="/neonadri-intro.webm" type="video/webm" />
+        </video>
+      </div>
 
       <div className="absolute inset-x-0 top-16 bottom-[17.5rem] z-[9] flex items-center justify-center px-4 sm:hidden">
         <video
