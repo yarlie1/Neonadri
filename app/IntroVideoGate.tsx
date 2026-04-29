@@ -90,28 +90,30 @@ export default function IntroVideoGate() {
     <div className="fixed inset-0 z-[120] overflow-hidden bg-[#091117] text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_32%),linear-gradient(180deg,rgba(8,14,18,0.18)_0%,rgba(8,14,18,0.72)_100%)]" />
 
-      <video
-        aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover blur-2xl brightness-[0.42] sm:hidden"
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-      >
-        <source src="/neonadri-intro.webm" type="video/webm" />
-      </video>
+      <div className="absolute inset-0 pt-16 sm:pt-0">
+        <video
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover blur-2xl brightness-[0.42] sm:hidden"
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+        >
+          <source src="/neonadri-intro.webm" type="video/webm" />
+        </video>
 
-      <video
-        ref={videoRef}
-        className="absolute inset-0 h-full w-full object-contain sm:object-cover"
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-        onEnded={() => setHasEnded(true)}
-      >
-        <source src="/neonadri-intro.webm" type="video/webm" />
-      </video>
+        <video
+          ref={videoRef}
+          className="absolute inset-0 h-full w-full object-contain object-top sm:object-cover sm:object-center"
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          onEnded={() => setHasEnded(true)}
+        >
+          <source src="/neonadri-intro.webm" type="video/webm" />
+        </video>
+      </div>
 
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,10,14,0.18)_0%,rgba(5,10,14,0.28)_22%,rgba(5,10,14,0.64)_100%)]" />
 
