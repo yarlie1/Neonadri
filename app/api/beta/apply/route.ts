@@ -12,6 +12,20 @@ type ExistingBetaApplication = {
   id: number;
   status: string | null;
 } | null;
+type BetaApplicationUpsertRow = {
+  email: string;
+  full_name: string | null;
+  city: string;
+  age_group: string | null;
+  gender: string | null;
+  motivation: string;
+  meetup_interests: string[];
+  availability: null;
+  status: "pending";
+  reviewed_at: null;
+  reviewed_by_user_id: null;
+  updated_at: string;
+};
 
 function sanitizeOptionalText(value: unknown) {
   if (typeof value !== "string") return null;
@@ -63,23 +77,25 @@ async function saveBetaApplication({
     return { status: "approved" as const };
   }
 
-  const { error: upsertError } = await admin.from("beta_applications").upsert(
-    {
-      email,
-      full_name: fullName,
-      city: toApplicationCity(region),
-      age_group: ageGroup,
-      gender,
-      motivation,
-      meetup_interests: meetupInterests,
-      availability: null,
-      status: "pending",
-      reviewed_at: null,
-      reviewed_by_user_id: null,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "email_normalized" }
-  );
+  const row: BetaApplicationUpsertRow = {
+    email,
+    full_name: fullName,
+    city: toApplicationCity(region),
+    age_group: ageGroup,
+    gender,
+    motivation,
+    meetup_interests: meetupInterests,
+    availability: null,
+    status: "pending",
+    reviewed_at: null,
+    reviewed_by_user_id: null,
+    updated_at: new Date().toISOString(),
+  };
+
+  const betaApplicationsTable = admin.from("beta_applications") as any;
+  const { error: upsertError } = await betaApplicationsTable.upsert(row, {
+    onConflict: "email_normalized",
+  });
 
   if (upsertError) {
     throw upsertError;
