@@ -2,6 +2,7 @@
 
 import { Play, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 const STORAGE_KEY = "neonadri-intro-dismissed-date-v1";
 const OPEN_EVENT = "neonadri:open-intro";
@@ -15,6 +16,7 @@ function getTodayKey() {
 }
 
 export default function IntroVideoGate() {
+  const searchParams = useSearchParams();
   const mobileVideoRef = useRef<HTMLVideoElement | null>(null);
   const desktopVideoRef = useRef<HTMLVideoElement | null>(null);
   const mobileBackgroundVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -57,6 +59,20 @@ export default function IntroVideoGate() {
       setIsReady(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!isReady) return;
+    if (searchParams.get("intro") !== "1") return;
+
+    setIsVisible(true);
+    window.setTimeout(() => {
+      void resetAndPlayVideos();
+    }, 50);
+
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.delete("intro");
+    window.history.replaceState({}, "", nextUrl.pathname + nextUrl.search + nextUrl.hash);
+  }, [isReady, searchParams]);
 
   useEffect(() => {
     const openIntro = () => {
