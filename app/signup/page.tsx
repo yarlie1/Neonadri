@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
 import { createClient } from "../../lib/supabase/client";
@@ -163,11 +163,15 @@ function SignupPageContent() {
   const supabase = createClient();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const intentPrefillAppliedRef = useRef(false);
-  const emailPrefillAppliedRef = useRef(false);
+  const initialIntentFromLink = searchParams.get("intent");
+  const initialEmailFromLink = searchParams.get("email")?.trim().toLowerCase() || "";
 
   const [step, setStep] = useState(1);
-  const [signupIntent, setSignupIntent] = useState<"guest" | "host" | null>(null);
+  const [signupIntent, setSignupIntent] = useState<"guest" | "host" | null>(
+    initialIntentFromLink === "guest" || initialIntentFromLink === "host"
+      ? initialIntentFromLink
+      : null
+  );
   const [submitting, setSubmitting] = useState(false);
   const [checkingBetaAccess, setCheckingBetaAccess] = useState(false);
   const [betaAccessAllowed, setBetaAccessAllowed] = useState(false);
@@ -175,7 +179,7 @@ function SignupPageContent() {
   const [betaConfigResolved, setBetaConfigResolved] = useState(false);
   const [message, setMessage] = useState("");
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(initialEmailFromLink);
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [gender, setGender] = useState("");
@@ -270,30 +274,6 @@ function SignupPageContent() {
 
     setAboutMe(nextDefault);
   }, [aboutMeOptions, aboutMeTouched]);
-
-  useEffect(() => {
-    if (intentPrefillAppliedRef.current) return;
-
-    const intentFromLink = searchParams.get("intent");
-
-    if (intentFromLink === "guest" || intentFromLink === "host") {
-      setSignupIntent(intentFromLink);
-    }
-
-    intentPrefillAppliedRef.current = true;
-  }, [searchParams]);
-
-  useEffect(() => {
-    if (emailPrefillAppliedRef.current) return;
-
-    const emailFromLink = searchParams.get("email")?.trim().toLowerCase() || "";
-
-    if (emailFromLink) {
-      setEmail(emailFromLink);
-    }
-
-    emailPrefillAppliedRef.current = true;
-  }, [searchParams]);
 
   useEffect(() => {
     let mounted = true;
@@ -616,7 +596,7 @@ function SignupPageContent() {
                   : showIntentPicker
                   ? "Tell us how you want to use Neonadri first."
                   : requiresPostingBeta
-                  ? "Posters need beta approval before signup."
+                  ? "Continue with your hosting email."
                   : hostSignupOpen
                   ? "Start hosting without beta approval."
                   : "Start joining meetups without the beta wait."}
@@ -629,7 +609,7 @@ function SignupPageContent() {
                     ? "People who want to browse and join can sign up right away. People who want to post meetups during beta need creator approval first."
                     : "People who want to browse and join can sign up right away. Hosting signup is also open right now."
                   : requiresPostingBeta
-                  ? "We only gate meetup posting during beta. Once your email is approved, you can finish signup and start hosting."
+                  ? "Use the email already approved for hosting, then we&apos;ll take you straight into the rest of signup."
                   : hostSignupOpen
                   ? "Posting beta apply is off right now, so you can go straight through the hosting signup flow."
                   : "You can finish account setup now, browse available posts, and apply for posting access later if you decide to host."}
@@ -652,27 +632,47 @@ function SignupPageContent() {
                   <button
                     type="button"
                     onClick={() => handleSelectIntent("guest")}
-                    className="w-full rounded-[22px] border border-[#d6dee4] bg-white/70 px-4 py-4 text-left transition hover:border-[#b9c7d0] hover:shadow-[0_14px_24px_rgba(118,126,133,0.12)]"
+                    className="w-full rounded-[24px] border border-[#cbd6dd] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(234,240,244,0.95)_100%)] px-5 py-5 text-left shadow-[0_16px_28px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,0.96)] transition hover:-translate-y-0.5 hover:border-[#aebec8] hover:shadow-[0_20px_32px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.98)]"
                   >
-                    <div className="text-sm font-semibold text-[#24323c]">
-                      Join-first path
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="text-base font-semibold text-[#24323c]">
+                          Join-first path
+                        </div>
+                        <div className="mt-1 text-xs leading-6 text-[#67747c]">
+                          Browse posts, apply to join meetups, and use the app immediately.
+                        </div>
+                      </div>
+                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c3d0d8] bg-white/90 text-[#31424d] shadow-sm">
+                        <ArrowRight className="h-4 w-4" />
+                      </div>
                     </div>
-                    <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                      Browse posts, apply to join meetups, and use the app immediately.
+                    <div className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#60707a]">
+                      Tap to continue
                     </div>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleSelectIntent("host")}
-                    className="w-full rounded-[22px] border border-[#d6dee4] bg-white/70 px-4 py-4 text-left transition hover:border-[#b9c7d0] hover:shadow-[0_14px_24px_rgba(118,126,133,0.12)]"
+                    className="w-full rounded-[24px] border border-[#cbd6dd] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(234,240,244,0.95)_100%)] px-5 py-5 text-left shadow-[0_16px_28px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,0.96)] transition hover:-translate-y-0.5 hover:border-[#aebec8] hover:shadow-[0_20px_32px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.98)]"
                   >
-                    <div className="text-sm font-semibold text-[#24323c]">
-                      {postingBetaRequired ? "Host-first path" : "Host path"}
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="text-base font-semibold text-[#24323c]">
+                          {postingBetaRequired ? "Host-first path" : "Host path"}
+                        </div>
+                        <div className="mt-1 text-xs leading-6 text-[#67747c]">
+                          {postingBetaRequired
+                            ? "Create meetup posts during beta after your email is approved for posting access."
+                            : "Create meetup posts right away without waiting for posting approval."}
+                        </div>
+                      </div>
+                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c3d0d8] bg-white/90 text-[#31424d] shadow-sm">
+                        <ArrowRight className="h-4 w-4" />
+                      </div>
                     </div>
-                    <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                      {postingBetaRequired
-                        ? "Create meetup posts during beta after your email is approved for posting access."
-                        : "Create meetup posts right away without waiting for posting approval."}
+                    <div className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#60707a]">
+                      Tap to continue
                     </div>
                   </button>
                 </div>
@@ -716,7 +716,7 @@ function SignupPageContent() {
                     );
                   })}
                 </div>
-              ) : (
+              ) : showBetaGate ? null : (
                 <div className="mt-7 rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
                   <div className="text-sm font-semibold text-[#24323c]">
                     Posting access comes first
