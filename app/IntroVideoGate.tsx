@@ -3,7 +3,16 @@
 import { Play, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-const STORAGE_KEY = "neonadri-intro-dismissed-v1";
+const STORAGE_KEY = "neonadri-intro-dismissed-date-v1";
+const OPEN_EVENT = "neonadri:open-intro";
+
+function getTodayKey() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 export default function IntroVideoGate() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -12,9 +21,11 @@ export default function IntroVideoGate() {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    const todayKey = getTodayKey();
+
     try {
       const dismissed = window.localStorage.getItem(STORAGE_KEY);
-      if (dismissed !== "true") {
+      if (dismissed !== todayKey) {
         setIsVisible(true);
       }
     } catch {
@@ -22,6 +33,22 @@ export default function IntroVideoGate() {
     } finally {
       setIsReady(true);
     }
+  }, []);
+
+  useEffect(() => {
+    const openIntro = () => {
+      const video = videoRef.current;
+      setHasEnded(false);
+      setIsVisible(true);
+      window.setTimeout(() => {
+        if (!video) return;
+        video.currentTime = 0;
+        void video.play().catch(() => {});
+      }, 50);
+    };
+
+    window.addEventListener(OPEN_EVENT, openIntro);
+    return () => window.removeEventListener(OPEN_EVENT, openIntro);
   }, []);
 
   useEffect(() => {
@@ -37,7 +64,7 @@ export default function IntroVideoGate() {
 
   const handleClose = () => {
     try {
-      window.localStorage.setItem(STORAGE_KEY, "true");
+      window.localStorage.setItem(STORAGE_KEY, getTodayKey());
     } catch {}
 
     setIsVisible(false);
@@ -86,30 +113,30 @@ export default function IntroVideoGate() {
         Skip
       </button>
 
-      <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-6 sm:px-6 sm:pb-8">
-        <div className="mx-auto max-w-5xl rounded-[32px] border border-white/14 bg-[rgba(10,18,24,0.58)] px-5 py-5 shadow-[0_28px_64px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:px-7 sm:py-6">
+      <div className="absolute inset-x-0 bottom-0 z-10 px-3 pb-4 sm:px-6 sm:pb-8">
+        <div className="mx-auto max-w-5xl rounded-[28px] border border-white/14 bg-[rgba(10,18,24,0.58)] px-4 py-4 shadow-[0_28px_64px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:rounded-[32px] sm:px-7 sm:py-6">
           <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/70">
             Neonadri Intro
           </div>
-          <h2 className="mt-2 max-w-3xl text-[30px] font-black leading-[0.95] tracking-[-0.05em] text-white sm:text-[42px]">
+          <h2 className="mt-2 max-w-3xl text-[26px] font-black leading-[0.95] tracking-[-0.05em] text-white sm:text-[42px]">
             A calmer way to meet someone new.
           </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-white/78 sm:text-[15px]">
+          <p className="mt-3 max-w-3xl text-[13px] leading-5 text-white/78 sm:text-[15px] sm:leading-6">
             Watch the quick intro, then enter the full Neonadri experience.
           </p>
 
-          <div className="mt-5 flex flex-wrap gap-3">
+          <div className="mt-5 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-3">
             <button
               type="button"
               onClick={handleClose}
-              className="inline-flex items-center justify-center rounded-full border border-white/22 bg-white px-5 py-3 text-sm font-semibold text-[#1c2a33] transition hover:bg-[#f3f7fa]"
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/22 bg-white px-5 py-3 text-sm font-semibold text-[#1c2a33] transition hover:bg-[#f3f7fa] sm:min-h-0"
             >
               Enter Neonadri
             </button>
             <button
               type="button"
               onClick={handleReplay}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/18 bg-white/10 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/16"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/18 bg-white/10 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/16 sm:min-h-0"
             >
               <Play className="h-4 w-4" />
               Replay intro

@@ -8,7 +8,7 @@ import {
   getMeetingStatus,
   parseMeetingTime,
 } from "../lib/meetingTime";
-import { ArrowRight, Plus, Sparkles } from "lucide-react";
+import { ArrowRight, Play, Plus, Sparkles } from "lucide-react";
 import {
   FeaturedMeetupCard,
   HomeFilterCard,
@@ -171,6 +171,10 @@ export default function HomeFeedClient({
   postingBetaRequired: boolean;
   initialCreateHref: string;
 }) {
+  const openIntroVideo = () => {
+    window.dispatchEvent(new CustomEvent("neonadri:open-intro"));
+  };
+
   const userTimeZone = useMemo(() => initialUserTimeZone, [initialUserTimeZone]);
   const createHref = useCreateMeetupHref(isLoggedIn, initialCreateHref);
   const signupHref = postingBetaRequired
@@ -421,6 +425,17 @@ export default function HomeFeedClient({
               <span className={heroChipClass}>
                 Quiet co-work
               </span>
+            </div>
+
+            <div className="mt-4 sm:mt-5">
+              <button
+                type="button"
+                onClick={openIntroVideo}
+                className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+              >
+                <Play className="h-4 w-4" />
+                Watch intro again
+              </button>
             </div>
           </div>
         </section>
