@@ -206,8 +206,8 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    await supabase.auth.signOut();
-    window.location.replace("/login?message=password-reset");
+    const redirectTarget = encodeURIComponent("/login?message=password-reset");
+    window.location.replace(`/api/auth/logout?redirect=${redirectTarget}`);
   };
 
   return (
