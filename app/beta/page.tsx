@@ -312,10 +312,10 @@ function BetaPageContent() {
                 quality, and feedback loops.
               </p>
               <p className="mt-3 text-sm text-[#5f6d76]">
-                We&apos;re currently opening up to 10 posting beta tester spots per day.
+                New posting applications go into review first during this beta period.
               </p>
               <p className="mt-3 text-sm text-[#5f6d76]">
-                If you&apos;re approved, you&apos;ll be able to create meetup posts with the
+                If you&apos;re approved later, you&apos;ll be able to create meetup posts with the
                 same email address you use here.
               </p>
             </section>
