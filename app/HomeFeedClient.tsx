@@ -14,6 +14,7 @@ import {
   HomeFilterCard,
   MeetupFeedCard,
 } from "./homeComponents";
+import IntroVideoGate from "./IntroVideoGate";
 import {
   FilterSummaryText,
   formatDistanceKm,
@@ -350,11 +351,13 @@ export default function HomeFeedClient({
   const heroChipClass = `${APP_PILL_INACTIVE_CLASS} rounded-[15px] px-3 py-1.5 text-[11px] font-medium shadow-[0_8px_16px_rgba(118,126,133,0.06)]`;
 
   return (
-    <main className={`relative isolate min-h-[100dvh] px-4 py-5 ${APP_PAGE_BG_CLASS}`}>
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7fafc_20%,#e8edf1_56%,#d7dfe5_100%)]" />
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.62),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.28),transparent_20%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.16),transparent_32%)]" />
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.09)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.09)_1px,transparent_1px)] bg-[size:22px_22px] opacity-10" />
-      <div className="relative z-10 mx-auto max-w-2xl space-y-4 pb-16 sm:space-y-5 sm:pb-24">
+    <>
+      <IntroVideoGate />
+      <main className={`relative isolate min-h-[100dvh] px-4 py-5 ${APP_PAGE_BG_CLASS}`}>
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7fafc_20%,#e8edf1_56%,#d7dfe5_100%)]" />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.62),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.28),transparent_20%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.16),transparent_32%)]" />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.09)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.09)_1px,transparent_1px)] bg-[size:22px_22px] opacity-10" />
+        <div className="relative z-10 mx-auto max-w-2xl space-y-4 pb-16 sm:space-y-5 sm:pb-24">
         <section className={`relative overflow-hidden px-5 py-5 text-[#24323f] sm:px-7 sm:py-7 ${SURFACE_CARD_CLASS}`}>
           <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
           <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#f5f9fcc7] blur-3xl" />
@@ -630,16 +633,17 @@ export default function HomeFeedClient({
               : "No meetups match this view right now."}
           </div>
         )}
-      </div>
+        </div>
 
-      <Link
-        href={createHref}
-        className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-[24px] border border-[#d6e0e6] bg-[linear-gradient(135deg,#ffffff_0%,#e1eaef_100%)] text-[#5f7f8f] shadow-[0_24px_46px_rgba(118,126,133,0.18)] transition hover:scale-[1.02]"
-        aria-label="Create meetup"
-      >
-        <Plus className="h-6 w-6" />
-      </Link>
-    </main>
+        <Link
+          href={createHref}
+          className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-[24px] border border-[#d6e0e6] bg-[linear-gradient(135deg,#ffffff_0%,#e1eaef_100%)] text-[#5f7f8f] shadow-[0_24px_46px_rgba(118,126,133,0.18)] transition hover:scale-[1.02]"
+          aria-label="Create meetup"
+        >
+          <Plus className="h-6 w-6" />
+        </Link>
+      </main>
+    </>
   );
 }
 
