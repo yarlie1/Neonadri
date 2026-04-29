@@ -11,7 +11,6 @@ import {
   APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
   APP_PAGE_BG_CLASS,
-  APP_PILL_ACTIVE_CLASS,
   APP_PILL_INACTIVE_CLASS,
   APP_SOFT_CARD_CLASS,
   APP_SUBTLE_TEXT_CLASS,
@@ -148,10 +147,13 @@ function ToggleChip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-3 py-2 text-sm font-medium transition ${
-        selected ? APP_PILL_ACTIVE_CLASS : APP_PILL_INACTIVE_CLASS
+      className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2.5 text-sm font-medium transition ${
+        selected
+          ? "border-[#8698a4] bg-[linear-gradient(180deg,#ffffff_0%,#d5e0e7_100%)] text-[#1d2c35] shadow-[0_14px_26px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.98)] ring-2 ring-[#dbe4ea]"
+          : APP_PILL_INACTIVE_CLASS
       }`}
     >
+      {selected ? <Check className="h-4 w-4" /> : null}
       {label}
     </button>
   );
@@ -647,15 +649,23 @@ function SignupPageContent() {
                 </div>
               ) : showIntentPicker ? (
                 <div className="mt-7 space-y-3">
-                  <div className="rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
+                  <button
+                    type="button"
+                    onClick={() => handleSelectIntent("guest")}
+                    className="w-full rounded-[22px] border border-[#d6dee4] bg-white/70 px-4 py-4 text-left transition hover:border-[#b9c7d0] hover:shadow-[0_14px_24px_rgba(118,126,133,0.12)]"
+                  >
                     <div className="text-sm font-semibold text-[#24323c]">
                       Join-first path
                     </div>
                     <div className="mt-1 text-xs leading-6 text-[#67747c]">
                       Browse posts, apply to join meetups, and use the app immediately.
                     </div>
-                  </div>
-                  <div className="rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectIntent("host")}
+                    className="w-full rounded-[22px] border border-[#d6dee4] bg-white/70 px-4 py-4 text-left transition hover:border-[#b9c7d0] hover:shadow-[0_14px_24px_rgba(118,126,133,0.12)]"
+                  >
                     <div className="text-sm font-semibold text-[#24323c]">
                       {postingBetaRequired ? "Host-first path" : "Host path"}
                     </div>
@@ -664,7 +674,7 @@ function SignupPageContent() {
                         ? "Create meetup posts during beta after your email is approved for posting access."
                         : "Create meetup posts right away without waiting for posting approval."}
                     </div>
-                  </div>
+                  </button>
                 </div>
               ) : showSignupForm ? (
                 <div className="mt-7 space-y-3">
@@ -749,15 +759,6 @@ function SignupPageContent() {
                 <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
                   We&apos;re loading the current posting beta setting before we show the next step.
                 </p>
-
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <Link
-                    href="/login"
-                    className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-                  >
-                    I already have one
-                  </Link>
-                </div>
               </>
             ) : showIntentPicker ? (
               <>
@@ -765,54 +766,22 @@ function SignupPageContent() {
                   <div>
                     <div className={APP_EYEBROW_CLASS}>Sign Up</div>
                     <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-                      Pick your starting path
+                      Already have an account?
                     </h2>
                   </div>
                   <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                    Start here
+                    Quick link
                   </div>
                 </div>
 
                 <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  You can join meetups right away, or choose the posting path if
-                  you want to host meetups during beta.
+                  If you&apos;ve already signed up, log in here. If not, pick your path from the card on the left and we&apos;ll move you forward right away.
                 </p>
 
-                <div className="mt-6 grid gap-3">
-                  <button
-                    type="button"
-                    onClick={() => handleSelectIntent("guest")}
-                    className="rounded-[24px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-5 py-5 text-left transition hover:border-[#b9c7d0] hover:shadow-[0_14px_24px_rgba(118,126,133,0.12)]"
-                  >
-                    <div className="text-base font-semibold text-[#24323c]">
-                      I want to join meetups
-                    </div>
-                    <p className="mt-2 text-sm leading-6 text-[#5b6871]">
-                      Sign up now, browse posts, and request to join other people&apos;s
-                      meetups without waiting for beta approval.
-                    </p>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleSelectIntent("host")}
-                    className="rounded-[24px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-5 py-5 text-left transition hover:border-[#b9c7d0] hover:shadow-[0_14px_24px_rgba(118,126,133,0.12)]"
-                  >
-                    <div className="text-base font-semibold text-[#24323c]">
-                      I want to post meetups
-                    </div>
-                    <p className="mt-2 text-sm leading-6 text-[#5b6871]">
-                      Creating meetup posts is limited to approved beta testers
-                      during this period, so we&apos;ll verify your email first.
-                    </p>
-                  </button>
-                </div>
-
-                <div className="mt-6 text-sm text-[#5f6d76]">
-                  Already have an account?{" "}
+                <div className="mt-6">
                   <Link
                     href="/login"
-                    className="font-semibold text-[#31424d] underline underline-offset-4"
+                    className={`inline-flex rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                   >
                     Log in
                   </Link>
@@ -1159,30 +1128,14 @@ function SignupPageContent() {
                       Back
                     </button>
                   ) : postingBetaRequired ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={handleResetIntent}
-                        className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-                      >
-                        <ArrowLeft className="h-4 w-4" />
-                        Choose path
-                      </button>
-                      <Link
-                        href="/login"
-                        className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-                      >
-                        I already have one
-                      </Link>
-                    </>
-                  ) : (
-                    <Link
-                      href="/login"
+                    <button
+                      type="button"
+                      onClick={handleResetIntent}
                       className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                     >
-                      I already have one
-                    </Link>
-                  )}
+                      Choose path
+                    </button>
+                  ) : null}
 
                   {step < STEPS.length ? (
                     <button

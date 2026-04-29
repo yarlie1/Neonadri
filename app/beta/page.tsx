@@ -30,6 +30,19 @@ const INTEREST_OPTIONS = [
   "Language Exchange",
 ] as const;
 
+const REGION_OPTIONS = [
+  {
+    value: "la_nearby",
+    title: "LA or nearby",
+    description: "You want to host in Los Angeles or close-by areas during beta.",
+  },
+  {
+    value: "other_region",
+    title: "Other region",
+    description: "You are outside the current LA-area beta rollout.",
+  },
+] as const;
+
 const INPUT_CLASS =
   "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30";
 
@@ -69,6 +82,7 @@ function BetaPageContent() {
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
+  const [region, setRegion] = useState<"la_nearby" | "other_region" | "">("");
   const [motivation, setMotivation] = useState("");
   const [meetupInterests, setMeetupInterests] = useState<string[]>([]);
   const requestedNext = searchParams.get("next")?.trim() || "";
@@ -98,6 +112,10 @@ function BetaPageContent() {
   const secondaryLabel = shouldTreatAsExistingUser
     ? "Keep browsing meetups"
     : "Join meetups without posting";
+  const submitLabel =
+    region === "other_region"
+      ? "Submit interest for later"
+      : "Apply for posting access";
 
   useEffect(() => {
     let mounted = true;
@@ -185,6 +203,12 @@ function BetaPageContent() {
 
   const handleSubmit = async () => {
     if (submitting) return;
+    if (!region) {
+      setMessage("Please choose whether you're in LA or nearby, or in another region.");
+      setStatus("");
+      return;
+    }
+
     setSubmitting(true);
     setMessage("");
     setStatus("");
@@ -197,6 +221,7 @@ function BetaPageContent() {
         email,
         gender,
         ageGroup,
+        region,
         motivation,
         meetupInterests,
       }),
@@ -350,6 +375,40 @@ function BetaPageContent() {
               </div>
 
               <div className="mt-5">
+                <label className={APP_EYEBROW_CLASS}>Hosting region</label>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {REGION_OPTIONS.map((option) => {
+                    const selected = region === option.value;
+
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setRegion(option.value)}
+                        className={`rounded-[24px] border px-5 py-5 text-left transition ${
+                          selected
+                            ? "border-[#8698a4] bg-[linear-gradient(180deg,#ffffff_0%,#d5e0e7_100%)] text-[#1d2c35] shadow-[0_14px_26px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.98)] ring-2 ring-[#dbe4ea]"
+                            : "border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] text-[#52616a] hover:border-[#b9c7d0] hover:shadow-[0_14px_24px_rgba(118,126,133,0.12)]"
+                        }`}
+                      >
+                        <div className="text-base font-semibold text-[#24323c]">
+                          {option.title}
+                        </div>
+                        <p className="mt-2 text-sm leading-6 text-[#5b6871]">
+                          {option.description}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+                {region === "other_region" ? (
+                  <div className={`${APP_SOFT_CARD_CLASS} mt-3 px-4 py-3 text-sm leading-6 text-[#6a625b]`}>
+                    Posting beta approvals are currently only opening for LA or nearby. You can still join meetups with a regular account, but hosting access for other regions is not being approved during this beta period.
+                  </div>
+                ) : null}
+              </div>
+
+              <div className="mt-5">
                 <label className={APP_EYEBROW_CLASS}>Meetup interests</label>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {INTEREST_OPTIONS.map((interest) => (
@@ -381,7 +440,7 @@ function BetaPageContent() {
                   disabled={submitting}
                   className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${APP_BUTTON_PRIMARY_CLASS} disabled:cursor-not-allowed disabled:opacity-60`}
                 >
-                  {submitting ? "Submitting..." : "Apply for posting access"}
+                  {submitting ? "Submitting..." : submitLabel}
                   <ArrowRight className="h-4 w-4" />
                 </button>
                 <Link
