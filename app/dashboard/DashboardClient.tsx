@@ -1245,7 +1245,7 @@ export default function DashboardClient({
             active={activeTab === "posts"}
             label="My Posts"
             value={posts.length}
-            subtext={activeTab === "posts" ? "Currently selected" : "Manage your meetups"}
+            subtext="Manage your meetups"
             icon={<FileText className="h-4 w-4" />}
             onClick={() => setActiveTab("posts")}
           />
@@ -1280,8 +1280,6 @@ export default function DashboardClient({
                   </span>
                   <span>Upcoming accepted</span>
                 </span>
-              ) : activeTab === "sent" ? (
-                "Currently selected"
               ) : null
             }
             icon={<Send className="h-4 w-4" />}
@@ -1299,9 +1297,7 @@ export default function DashboardClient({
                   </span>
                   <span>pending</span>
                 </span>
-              ) : (
-                activeTab === "received" ? "Currently selected" : "No pending"
-              )
+              ) : "No pending"
             }
             icon={<Inbox className="h-4 w-4" />}
             onClick={() => setActiveTab("received")}
