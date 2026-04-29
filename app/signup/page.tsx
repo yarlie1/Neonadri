@@ -1183,6 +1183,34 @@ function SignupPageContent() {
           </section>
         </div>
 
+        {showBetaGate ? (
+          <section className={`mt-4 ${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
+            <div className="flex items-start gap-3">
+              <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                Posting beta
+              </div>
+            </div>
+            <h3 className="mt-3 text-xl font-black tracking-[-0.04em] text-[#24323c]">
+              No approved posting email yet? Apply first.
+            </h3>
+            <p className={`mt-3 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
+              If this email is not approved yet, you can apply for posting access
+              first and come back once your hosting spot opens.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <Link
+                href={email ? `/beta?email=${encodeURIComponent(email)}` : "/beta"}
+                className={BETA_ACTION_CLASS}
+              >
+                <span className="text-sm font-medium text-[#52616a]">
+                  Apply for posting access
+                </span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </section>
+        ) : null}
+
       </div>
     </main>
   );
