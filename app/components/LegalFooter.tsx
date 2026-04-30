@@ -19,6 +19,12 @@ export default function LegalFooter() {
             <Link href="/community" className="transition hover:text-[#24323f]">
               Community
             </Link>
+            <a
+              href="mailto:hello@neonadri.net?subject=Beta%20testing%20question"
+              className="transition hover:text-[#24323f]"
+            >
+              Beta questions
+            </a>
           </div>
         </div>
       </div>
