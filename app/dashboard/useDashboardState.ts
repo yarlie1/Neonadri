@@ -9,7 +9,6 @@ import {
 } from "../../lib/meetingTime";
 import { isConfirmedMatchStatus } from "../../lib/matches/status";
 import type { MatchRow, MatchRequestRow, PostRow } from "./page";
-import { getPostMatchState } from "./dashboardComponents";
 
 export type DashboardTab = "posts" | "received" | "sent" | "matches";
 export type PostFilter = "all" | "open" | "expired" | "cancelled";
@@ -155,14 +154,16 @@ export function useDashboardState({
 
   const filteredPosts = useMemo(() => {
     if (postFilter === "all") return posts;
-    return posts.filter(
-      (post) =>
-        getPostMatchState(
-          getPostLifecycleStatus(post),
-          matchSummaryMap[post.id]
-        ).toLowerCase() === postFilter
-    );
-  }, [posts, postFilter, matchSummaryMap]);
+    return posts.filter((post) => {
+      const lifecycleStatus = getPostLifecycleStatus(post).toLowerCase();
+
+      if (postFilter === "open") {
+        return lifecycleStatus === "upcoming";
+      }
+
+      return lifecycleStatus === postFilter;
+    });
+  }, [posts, postFilter]);
 
   const filteredReceived = useMemo(() => {
     if (receivedFilter === "all") return receivedItems;
@@ -255,6 +256,14 @@ export function useDashboardState({
     });
   }, [matchItems, matchFilter, postMap, reviewedMatchIds]);
 
+  const reviewDueMatches = useMemo(() => {
+    return matchItems.filter((match) => {
+      const post = postMap[match.post_id];
+      const status = getPostLifecycleStatus(post).toLowerCase();
+      return status === "expired" && !reviewedMatchIds.includes(match.id);
+    });
+  }, [matchItems, postMap, reviewedMatchIds]);
+
   const pendingReceived = useMemo(
     () =>
       receivedItems.filter(
@@ -346,6 +355,7 @@ export function useDashboardState({
     filteredReceived,
     filteredSent,
     filteredMatches,
+    reviewDueMatches,
     pendingReceived,
     acceptedReceived,
     rejectedReceived,

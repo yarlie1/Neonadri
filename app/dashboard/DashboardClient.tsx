@@ -684,6 +684,7 @@ export default function DashboardClient({
     filteredReceived,
     filteredSent,
     filteredMatches,
+    reviewDueMatches,
     pendingReceived,
     acceptedReceived,
     rejectedReceived,
@@ -1140,6 +1141,22 @@ export default function DashboardClient({
             Cancellation feedback submitted successfully.
           </div>
         )}
+
+        {reviewDueMatches.length > 0 ? (
+          <Link
+            href={`/reviews/write/${reviewDueMatches[0].id}`}
+            className={`${SOFT_CARD_CLASS} block px-4 py-3 text-[#43525b] shadow-sm transition hover:bg-white/90`}
+          >
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7f8990]">
+              Review reminder
+            </div>
+            <div className="mt-1 text-sm font-medium leading-6">
+              {reviewDueMatches.length === 1
+                ? "You have 1 meetup waiting for a review. Tap here to write it now."
+                : `You have ${reviewDueMatches.length} meetups waiting for reviews. Tap here to start with the next one.`}
+            </div>
+          </Link>
+        ) : null}
 
         <div className="relative overflow-hidden rounded-[32px] border border-[#dfe7ec] bg-[radial-gradient(circle_at_top_left,#ffffff_0%,#f4f7f9_44%,#dfe7ec_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(118,126,133,0.11)]">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/45 blur-2xl" />

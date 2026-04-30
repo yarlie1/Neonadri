@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
 import { isPostingBetaRequired } from "../../../../lib/postingAccess";
+import { sendBetaApplicationNotificationEmail } from "../../../../lib/betaApplicationNotificationEmail";
 
 const VALID_AGE_GROUPS = ["20s", "30s", "40s", "50s+"] as const;
 const VALID_GENDERS = ["Male", "Female", "Other", "Prefer not to say"] as const;
@@ -99,6 +100,23 @@ export async function POST(req: Request) {
             "This email is already approved for posting access. You can continue with signup now.",
         },
         { status: 200 }
+      );
+    }
+
+    const notificationResult = await sendBetaApplicationNotificationEmail({
+      applicantEmail: email,
+      fullName: sanitizeOptionalText(body.fullName),
+      ageGroup: sanitizeOptionalChoice(body.ageGroup, VALID_AGE_GROUPS),
+      gender: sanitizeOptionalChoice(body.gender, VALID_GENDERS),
+      region: toApplicationCity(region),
+      meetupInterests,
+      motivation,
+    });
+
+    if (!notificationResult.ok && !notificationResult.skipped) {
+      console.error(
+        "Beta application notification email failed",
+        notificationResult.details
       );
     }
 
