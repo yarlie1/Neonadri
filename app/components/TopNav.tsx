@@ -513,6 +513,13 @@ export default function TopNav({
                   <NavLabel icon={<UserCircle2 className="h-4 w-4" />}>Profile</NavLabel>
                 </Link>
 
+                <Link
+                  href="/account"
+                  className={navBtn(isActivePath(pathname, "/account"))}
+                >
+                  <NavLabel icon={<Settings2 className="h-4 w-4" />}>Account</NavLabel>
+                </Link>
+
                 <Link href={createHref} className={primary}>
                   <Plus className="h-4 w-4" />
                   Create
