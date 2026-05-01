@@ -1238,11 +1238,7 @@ export default function DashboardClient({
                       <div className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#66727a]">
                         <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#7a8b95]" />
                         <span className="min-w-0 truncate">
-                          {getVisibleLocationLabel({
-                            placeName: item.post.place_name,
-                            location: item.post.location,
-                            revealExact: true,
-                          }) || "Selected place"}
+                          {item.post.place_name || item.post.location || "Selected place"}
                         </span>
                       </div>
                     </div>
