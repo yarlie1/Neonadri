@@ -6,6 +6,7 @@ import {
   Cake,
   Camera,
   Coffee,
+  CookingPot,
   Dice5,
   Film,
   Footprints,
@@ -13,9 +14,8 @@ import {
   Laptop,
   MapPin,
   Mic,
-  Moon,
+  Sandwich,
   Smile,
-  Sun,
   Target,
   Utensils,
 } from "lucide-react";
@@ -44,9 +44,9 @@ export function getPurposeIcon(purpose: string | null, className?: string) {
     case "Meal":
       return <Utensils className={iconClassName} />;
     case "Lunch":
-      return <Sun className={iconClassName} />;
+      return <Sandwich className={iconClassName} />;
     case "Dinner":
-      return <Moon className={iconClassName} />;
+      return <CookingPot className={iconClassName} />;
     case "Dessert":
       return <Cake className={iconClassName} />;
     case "Walk":

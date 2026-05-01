@@ -9,6 +9,7 @@ import {
   Clock3,
   Coins,
   Coffee,
+  CookingPot,
   Dice5,
   Film,
   Footprints,
@@ -16,9 +17,8 @@ import {
   Laptop,
   MapPin,
   Mic,
-  Moon,
+  Sandwich,
   Smile,
-  Sun,
   Target,
   Utensils,
   UserRound,
@@ -87,9 +87,9 @@ export function getPurposeIcon(purpose: string | null) {
     case "Meal":
       return <Utensils className={className} />;
     case "Lunch":
-      return <Sun className={className} />;
+      return <Sandwich className={className} />;
     case "Dinner":
-      return <Moon className={className} />;
+      return <CookingPot className={className} />;
     case "Dessert":
       return <Cake className={className} />;
     case "Walk":
