@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import TopNav from "./components/TopNav";
 import LegalFooter from "./components/LegalFooter";
+import SiteVisitTracker from "./components/SiteVisitTracker";
 import { OG_IMAGE_VERSION } from "../lib/socialPreview";
 import { createClient } from "../lib/supabase/server";
 import { loadNavIndicatorState } from "../lib/navIndicators";
@@ -87,6 +88,7 @@ export default async function RootLayout({
         ) : null}
 
         <TopNav initialUser={initialUser} initialIndicators={initialIndicators} />
+        <SiteVisitTracker />
         {children}
         <LegalFooter />
       </body>

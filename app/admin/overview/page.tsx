@@ -5,6 +5,7 @@ import {
   BellRing,
   CalendarClock,
   ClipboardList,
+  Eye,
   HeartHandshake,
   ShieldCheck,
   Users,
@@ -145,6 +146,16 @@ export default async function AdminOverviewPage() {
                 label="New users today"
                 value={overview.metrics.newUsersToday}
                 icon={<BellRing className="h-5 w-5" />}
+              />
+              <MetricCard
+                label="Total visitors"
+                value={overview.metrics.totalVisitors}
+                icon={<Eye className="h-5 w-5" />}
+              />
+              <MetricCard
+                label="Visitors today"
+                value={overview.metrics.visitorsToday}
+                icon={<Users className="h-5 w-5" />}
               />
               <MetricCard
                 label="Pending beta applications"

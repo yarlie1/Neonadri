@@ -43,6 +43,11 @@ type BetaApplicationRow = {
   created_at: string;
 };
 
+type SiteVisitRow = {
+  visitor_id: string;
+  created_at: string;
+};
+
 function getTimeZoneOffsetMs(date: Date, timeZone: string) {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone,
@@ -101,7 +106,14 @@ export async function getAdminOverviewData(admin: SupabaseClient) {
   const startOfTodayIso = getStartOfTodayIso(ADMIN_TIME_ZONE);
   const weekAgoIso = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString();
 
-  const [profilesRes, postsRes, matchesRes, reviewsRes, betaApplicationsRes] =
+  const [
+    profilesRes,
+    postsRes,
+    matchesRes,
+    reviewsRes,
+    betaApplicationsRes,
+    siteVisitsRes,
+  ] =
     await Promise.all([
       admin
         .from("profiles")
@@ -122,6 +134,10 @@ export async function getAdminOverviewData(admin: SupabaseClient) {
         .from("beta_applications")
         .select("id, email, full_name, city, status, created_at")
         .order("created_at", { ascending: false }),
+      admin
+        .from("site_visits")
+        .select("visitor_id, created_at")
+        .order("created_at", { ascending: false }),
     ]);
 
   if (profilesRes.error) throw profilesRes.error;
@@ -129,12 +145,14 @@ export async function getAdminOverviewData(admin: SupabaseClient) {
   if (matchesRes.error) throw matchesRes.error;
   if (reviewsRes.error) throw reviewsRes.error;
   if (betaApplicationsRes.error) throw betaApplicationsRes.error;
+  if (siteVisitsRes.error) throw siteVisitsRes.error;
 
   const profiles = (profilesRes.data || []) as ProfileRow[];
   const posts = (postsRes.data || []) as PostRow[];
   const matches = (matchesRes.data || []) as MatchRow[];
   const reviews = (reviewsRes.data || []) as MatchReviewRow[];
   const betaApplications = (betaApplicationsRes.data || []) as BetaApplicationRow[];
+  const siteVisits = (siteVisitsRes.data || []) as SiteVisitRow[];
 
   const profileMap = new Map(
     profiles.map((profile) => [profile.id, profile.display_name || "Unknown"])
@@ -150,6 +168,12 @@ export async function getAdminOverviewData(admin: SupabaseClient) {
   );
   const matchesThisWeek = matches.filter(
     (match) => match.created_at >= weekAgoIso
+  );
+  const totalVisitorIds = new Set(siteVisits.map((visit) => visit.visitor_id));
+  const todayVisitorIds = new Set(
+    siteVisits
+      .filter((visit) => visit.created_at >= startOfTodayIso)
+      .map((visit) => visit.visitor_id)
   );
   const reviewDueMatches = matches.filter((match) => {
     const post = postMap.get(match.post_id);
@@ -170,6 +194,8 @@ export async function getAdminOverviewData(admin: SupabaseClient) {
       upcomingMeetups: upcomingMeetups.length,
       matchesThisWeek: matchesThisWeek.length,
       reviewsDue: reviewDueMatches.length,
+      totalVisitors: totalVisitorIds.size,
+      visitorsToday: todayVisitorIds.size,
     },
     recentSignups: profiles.slice(0, RECENT_ITEM_LIMIT).map((profile) => ({
       id: profile.id,
