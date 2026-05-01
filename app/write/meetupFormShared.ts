@@ -9,7 +9,9 @@ import {
   Gamepad2,
   Laptop,
   Mic,
+  Moon,
   Smile,
+  Sun,
   Target,
   Utensils,
   type LucideIcon,
@@ -21,8 +23,8 @@ export const PURPOSE_OPTIONS: ReadonlyArray<{
   icon: LucideIcon;
 }> = [
   { value: "Coffee Chat", icon: Coffee },
-  { value: "Lunch", icon: Utensils },
-  { value: "Dinner", icon: Utensils },
+  { value: "Lunch", icon: Sun },
+  { value: "Dinner", icon: Moon },
   { value: "Dessert", icon: Cake },
   { value: "Walk", icon: Footprints },
   { value: "Jogging", icon: Activity },

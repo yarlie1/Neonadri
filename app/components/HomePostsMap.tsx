@@ -56,9 +56,11 @@ const getPurposeIcon = (purpose: string | null) => {
     case "Coffee":
       return "\u2615";
     case "Meal":
-    case "Lunch":
-    case "Dinner":
       return "\ud83c\udf7d";
+    case "Lunch":
+      return "\u2600\ufe0f";
+    case "Dinner":
+      return "\ud83c\udf19";
     case "Dessert":
       return "\ud83c\udf70";
     case "Walk":

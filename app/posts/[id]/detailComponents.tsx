@@ -30,9 +30,11 @@ import {
   MessageSquare,
   MessageSquareText,
   Mic,
+  Moon,
   Smile,
   Sparkles,
   Star,
+  Sun,
   Target,
   UserRound,
   Utensils,
@@ -103,9 +105,11 @@ export const getPurposeIcon = (purpose: string | null, className?: string) => {
     case "Coffee":
       return <Coffee className={iconClassName} />;
     case "Meal":
-    case "Lunch":
-    case "Dinner":
       return <Utensils className={iconClassName} />;
+    case "Lunch":
+      return <Sun className={iconClassName} />;
+    case "Dinner":
+      return <Moon className={iconClassName} />;
     case "Dessert":
       return <Cake className={iconClassName} />;
     case "Walk":

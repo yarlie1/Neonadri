@@ -16,7 +16,9 @@ import {
   Laptop,
   MapPin,
   Mic,
+  Moon,
   Smile,
+  Sun,
   Target,
   Utensils,
   UserRound,
@@ -83,9 +85,11 @@ export function getPurposeIcon(purpose: string | null) {
     case "Coffee":
       return <Coffee className={className} />;
     case "Meal":
-    case "Lunch":
-    case "Dinner":
       return <Utensils className={className} />;
+    case "Lunch":
+      return <Sun className={className} />;
+    case "Dinner":
+      return <Moon className={className} />;
     case "Dessert":
       return <Cake className={className} />;
     case "Walk":
