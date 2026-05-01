@@ -15,7 +15,13 @@ function createFallbackVisitorId() {
 }
 
 function getVisitorId() {
-  const existing = window.localStorage.getItem(VISITOR_ID_STORAGE_KEY);
+  const existing = (() => {
+    try {
+      return window.localStorage.getItem(VISITOR_ID_STORAGE_KEY);
+    } catch {
+      return null;
+    }
+  })();
 
   if (existing) {
     return existing;
@@ -26,7 +32,10 @@ function getVisitorId() {
       ? window.crypto.randomUUID()
       : createFallbackVisitorId();
 
-  window.localStorage.setItem(VISITOR_ID_STORAGE_KEY, nextId);
+  try {
+    window.localStorage.setItem(VISITOR_ID_STORAGE_KEY, nextId);
+  } catch {}
+
   return nextId;
 }
 
@@ -36,25 +45,27 @@ export default function SiteVisitTracker() {
   useEffect(() => {
     if (!pathname || pathname.startsWith("/admin")) return;
 
-    const visitorId = getVisitorId();
-    const payload = JSON.stringify({
-      visitorId,
-      path: pathname,
-    });
+    try {
+      const visitorId = getVisitorId();
+      const payload = JSON.stringify({
+        visitorId,
+        path: pathname,
+      });
 
-    const queued = navigator.sendBeacon?.(
-      "/api/visits",
-      new Blob([payload], { type: "application/json" })
-    );
+      const queued = navigator.sendBeacon?.(
+        "/api/visits",
+        new Blob([payload], { type: "application/json" })
+      );
 
-    if (!queued) {
-      fetch("/api/visits", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: payload,
-        keepalive: true,
-      }).catch(() => {});
-    }
+      if (!queued) {
+        fetch("/api/visits", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: payload,
+          keepalive: true,
+        }).catch(() => {});
+      }
+    } catch {}
   }, [pathname]);
 
   return null;
