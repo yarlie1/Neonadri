@@ -83,7 +83,7 @@ export default async function AdminOverviewPage() {
   let loadError = "";
 
   try {
-    overview = await getAdminOverviewData();
+    overview = await getAdminOverviewData(supabase);
   } catch (error) {
     console.error("Admin overview load failed", error);
     loadError = "Could not load the latest site overview.";

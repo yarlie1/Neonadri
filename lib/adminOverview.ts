@@ -1,5 +1,5 @@
 import { getMeetingStatus } from "./meetingTime";
-import { createAdminClient } from "./supabase/admin";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 const ADMIN_TIME_ZONE = "America/Los_Angeles";
 const RECENT_ITEM_LIMIT = 8;
@@ -97,8 +97,7 @@ function getPostLifecycleStatus(post: Pick<PostRow, "status" | "meeting_time">) 
   return getMeetingStatus(post.meeting_time, ADMIN_TIME_ZONE);
 }
 
-export async function getAdminOverviewData() {
-  const admin = createAdminClient();
+export async function getAdminOverviewData(admin: SupabaseClient) {
   const startOfTodayIso = getStartOfTodayIso(ADMIN_TIME_ZONE);
   const weekAgoIso = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString();
 
