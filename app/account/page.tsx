@@ -155,12 +155,18 @@ export default async function AccountPage() {
           <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
             <div className={APP_EYEBROW_CLASS}>Admin tools</div>
             <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
-              Review safety reports
+              Run admin tools
             </h2>
             <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
-              Open the admin tools to review reports and posting access requests.
+              Open the overview, safety reports, and beta applications from one place.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
+              <Link
+                href="/admin/overview"
+                className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+              >
+                Open admin overview
+              </Link>
               <Link
                 href="/admin/reports"
                 className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
