@@ -138,7 +138,7 @@ export default async function MatchChatPage({ params }: PageProps) {
   const meetingTimeLabel = formatShortMeetingTime(
     postData?.meeting_time || null,
     userTimeZone
-  );
+  ) || "Time TBD";
   const { chatClosed } = getChatWindowState(postData?.meeting_time || null, userTimeZone);
   const chatCancelled = String(postData?.status || "open").toLowerCase() === "cancelled";
   const placeLabel = postData?.place_name || postData?.location || "Selected place";
