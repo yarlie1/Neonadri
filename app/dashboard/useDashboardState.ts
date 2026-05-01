@@ -38,6 +38,10 @@ function isUpcomingAcceptedRequest(
   return getMeetingStatus(postMap[item.post_id]?.meeting_time || null, userTimeZone) === "Upcoming";
 }
 
+function isPresent<T>(value: T | null | undefined): value is T {
+  return value != null;
+}
+
 export function useDashboardState({
   initialPosts,
   requestsReceived,
@@ -317,8 +321,8 @@ export function useDashboardState({
           otherName: profileMap[otherUserId] || "Unknown",
         };
       })
-      .filter(Boolean)
-      .sort((a, b) => a!.time - b!.time);
+      .filter(isPresent)
+      .sort((a, b) => a.time - b.time);
   }, [matchItems, postMap, profileMap, userId, userTimeZone]);
 
   return {
