@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       typeof body.motivation === "string" ? body.motivation.trim() : "";
     const region = sanitizeOptionalChoice(body.region, VALID_REGIONS) as BetaRegion | null;
     const meetupInterests = Array.isArray(body.meetupInterests)
-      ? body.meetupInterests
+      ? (body.meetupInterests as unknown[])
           .filter((value): value is string => typeof value === "string")
           .map((value) => value.trim())
           .filter(Boolean)
