@@ -426,7 +426,14 @@ export default function WriteLocationPage() {
             marker,
           };
         })
-        .filter(Boolean);
+        .filter(
+          (
+            item
+          ): item is {
+            key: string;
+            marker: any;
+          } => item !== null
+        );
 
       if (!bounds.isEmpty()) {
         mapRef.current.fitBounds(bounds);
