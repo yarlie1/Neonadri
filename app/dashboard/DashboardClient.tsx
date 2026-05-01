@@ -21,7 +21,6 @@ import type { MatchChatMetaRow, MatchRow, MatchRequestRow, PostRow } from "./pag
 import { getMeetingStatus, parseMeetingTime } from "../../lib/meetingTime";
 import {
   getPublicLocationLabel,
-  getVisibleLocationLabel,
 } from "../../lib/locationPrivacy";
 import {
   CompactActionButton,

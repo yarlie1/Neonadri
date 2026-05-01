@@ -103,6 +103,8 @@ export const getPurposeIcon = (purpose: string | null, className?: string) => {
     case "Coffee":
       return <Coffee className={iconClassName} />;
     case "Meal":
+    case "Lunch":
+    case "Dinner":
       return <Utensils className={iconClassName} />;
     case "Dessert":
       return <Cake className={iconClassName} />;

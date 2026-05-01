@@ -21,7 +21,8 @@ export const PURPOSE_OPTIONS: ReadonlyArray<{
   icon: LucideIcon;
 }> = [
   { value: "Coffee Chat", icon: Coffee },
-  { value: "Meal", icon: Utensils },
+  { value: "Lunch", icon: Utensils },
+  { value: "Dinner", icon: Utensils },
   { value: "Dessert", icon: Cake },
   { value: "Walk", icon: Footprints },
   { value: "Jogging", icon: Activity },
@@ -39,6 +40,8 @@ export const PURPOSE_OPTIONS: ReadonlyArray<{
 export const PURPOSE_HELP_TEXT: Record<string, string> = {
   "Coffee Chat": "Quick casual conversation over coffee.",
   Meal: "Enjoy food and conversation together.",
+  Lunch: "Keep it casual with a daytime meal.",
+  Dinner: "Plan a slower evening meal and conversation.",
   Dessert: "Meet for dessert, cafe time, and easy conversation.",
   Walk: "Light walk and chat outdoors.",
   Jogging: "Go for a jog together and stay active.",

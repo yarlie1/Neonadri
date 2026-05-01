@@ -8,7 +8,8 @@ const HOME_FILTER_STICKY_TOP_DESKTOP = 76;
 export const PURPOSE_OPTIONS = [
   "All",
   "Coffee Chat",
-  "Meal",
+  "Lunch",
+  "Dinner",
   "Dessert",
   "Walk",
   "Jogging",

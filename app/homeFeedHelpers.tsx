@@ -40,6 +40,8 @@ export function getPurposeIcon(purpose: string | null, className?: string) {
     case "Coffee":
       return <Coffee className={iconClassName} />;
     case "Meal":
+    case "Lunch":
+    case "Dinner":
       return <Utensils className={iconClassName} />;
     case "Dessert":
       return <Cake className={iconClassName} />;
@@ -98,6 +100,8 @@ export function getPurposeTheme(purpose: string | null) {
         iconWrapClass: baseIconWrapClass,
       };
     case "Meal":
+    case "Lunch":
+    case "Dinner":
     case "Dessert":
       return {
         pillClass: `${APP_PILL_INACTIVE_CLASS} text-[#5f6f78]`,
@@ -280,6 +284,10 @@ export function getPurposeLabel(purpose: string | null) {
       return "Easy conversation";
     case "Meal":
       return "Sit down and connect";
+    case "Lunch":
+      return "Casual daytime meal";
+    case "Dinner":
+      return "Evening meal plan";
     case "Dessert":
       return "Sweet and casual";
     case "Walk":

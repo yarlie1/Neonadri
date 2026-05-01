@@ -48,6 +48,8 @@ export function getPurposeTheme(purpose: string | null) {
     case "Coffee Chat":
     case "Coffee":
     case "Meal":
+    case "Lunch":
+    case "Dinner":
     case "Dessert":
     case "Walk":
     case "Jogging":
@@ -81,6 +83,8 @@ export function getPurposeIcon(purpose: string | null) {
     case "Coffee":
       return <Coffee className={className} />;
     case "Meal":
+    case "Lunch":
+    case "Dinner":
       return <Utensils className={className} />;
     case "Dessert":
       return <Cake className={className} />;
