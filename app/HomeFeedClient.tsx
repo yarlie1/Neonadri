@@ -367,12 +367,11 @@ export default function HomeFeedClient({
             </div>
 
             <h1 className="mt-3 max-w-[16ch] text-[33px] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#223039] sm:mt-4 sm:text-[41px]">
-              Meet new people through simple shared plans.
+              Simple plans. New people.
             </h1>
 
             <p className={`mt-3 max-w-xl text-[14px] sm:mt-4 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-              Hosts can offer cost support for coffee, food, tickets, games, or
-              other shared activities.
+              Join local meetups with clear activity cost support.
             </p>
 
             <div className="mt-5 grid grid-cols-3 gap-2.5 sm:mt-7 sm:gap-3">

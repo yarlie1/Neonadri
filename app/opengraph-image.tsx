@@ -112,7 +112,7 @@ export default function OpenGraphImage() {
               letterSpacing: "-0.05em",
             }}
           >
-            Meet new people through simple shared plans.
+            Simple plans. New people.
           </div>
           <div
             style={{
@@ -121,8 +121,7 @@ export default function OpenGraphImage() {
               lineHeight: 1.4,
             }}
           >
-            Hosts can offer cost support for coffee, food, tickets, games, or
-            other shared activities.
+            Join local meetups with clear activity cost support.
           </div>
         </div>
       </div>
