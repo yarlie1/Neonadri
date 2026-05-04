@@ -112,7 +112,9 @@ export default function OpenGraphImage() {
               letterSpacing: "-0.05em",
             }}
           >
-            Simple plans. New people.
+            Simple plans.
+            <br />
+            New people.
           </div>
           <div
             style={{

@@ -367,7 +367,9 @@ export default function HomeFeedClient({
             </div>
 
             <h1 className="mt-3 max-w-[16ch] text-[33px] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#223039] sm:mt-4 sm:text-[41px]">
-              Simple plans. New people.
+              Simple plans.
+              <br />
+              New people.
             </h1>
 
             <p className={`mt-3 max-w-xl text-[14px] sm:mt-4 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
