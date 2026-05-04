@@ -379,34 +379,34 @@ export default function HomeFeedClient({
             <div className="mt-5 grid grid-cols-3 gap-2.5 sm:mt-7 sm:gap-3">
               <div className={heroStatClass}>
                 <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                  Happening now
+                  Plans
                 </div>
                 <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
                   {upcomingCount}
                 </div>
-                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Open right now</div>
+                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Upcoming</div>
               </div>
 
               <div className={heroStatClass}>
                 <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                  Hosts nearby
+                  People
                 </div>
                 <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
                   {hostCount}
                 </div>
-                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Across the city</div>
+                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Nearby hosts</div>
               </div>
 
               <div className={heroStatClass}>
                 <div className={`text-[11px] uppercase tracking-[0.16em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                  Mood
+                  Mode
                 </div>
                 <div className="mt-1.5 text-sm font-bold leading-5 text-[#24323f]">
                   Chill
                   <br />
                   Lab
                 </div>
-                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Softly guided</div>
+                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Low pressure</div>
               </div>
             </div>
 
@@ -432,10 +432,10 @@ export default function HomeFeedClient({
             <div className="min-w-0">
               <div className={APP_EYEBROW_CLASS}>Beta Notice</div>
               <div className="mt-1 text-base font-semibold tracking-[-0.03em] text-[#24323f]">
-                All features are free during the beta.
+                Free during beta.
               </div>
               <p className={`mt-2 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
-                You can browse, join, and use Neonadri at no charge while it is in beta. If a meetup is matched and you offered activity cost support, you are still expected to honor the agreed amount.
+                Costs shown on meetups should be honored when matched.
               </p>
             </div>
           </div>
@@ -452,7 +452,7 @@ export default function HomeFeedClient({
                     NOW
                   </div>
                   <div className="min-w-0 text-[13px] font-bold uppercase tracking-[0.18em] leading-[1.12] opacity-80">
-                    Sign up to browse and join meetups
+                    Browse and join meetups
                   </div>
                 </div>
                 <ArrowRight className="h-5 w-5 shrink-0" />

@@ -281,11 +281,11 @@ export function HomeFilterCard({
               <div className={`mt-3 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
                 {locationStatus === "loading" && "Finding nearby meetups..."}
                 {locationStatus === "denied" &&
-                  "Location permission is off, so nearby filters may be less precise."}
+                  "Location is off. Nearby filters may vary."}
                 {locationStatus === "unavailable" &&
-                  "Distance is unavailable on this device or browser."}
+                  "Distance is unavailable here."}
                 {locationStatus === "granted" &&
-                  "Showing meetups from your current location."}
+                  "Showing nearby meetups."}
               </div>
             )}
           </div>
@@ -361,7 +361,7 @@ export function FeaturedMeetupCard({
           </div>
 
           <div className={`mt-2.5 max-w-md sm:mt-3 ${APP_BODY_TEXT_CLASS}`}>
-            A quieter featured moment, with just a little more room to breathe.
+            A local plan with room to breathe.
           </div>
         </div>
 
@@ -504,7 +504,7 @@ export function MeetupFeedCard({
 
         <div className={`mt-3 flex items-center justify-between gap-3 rounded-[14px] px-3 py-1.5 ${APP_SOFT_CARD_CLASS}`}>
           <div className={`text-xs uppercase tracking-[0.16em] ${APP_SUBTLE_TEXT_CLASS}`}>
-            Refined mode
+            Activity
           </div>
           <div className="ml-auto text-right text-sm font-semibold text-[#314454]">
             {getPurposeLabel(purposeName)}
