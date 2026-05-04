@@ -367,12 +367,12 @@ export default function HomeFeedClient({
             </div>
 
             <h1 className="mt-3 max-w-[16ch] text-[33px] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#223039] sm:mt-4 sm:text-[41px]">
-              A calmer way to meet someone new.
+              Meet new people through simple shared plans.
             </h1>
 
             <p className={`mt-3 max-w-xl text-[14px] sm:mt-4 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-              Discover nearby meetups, see who is hosting, and browse at a calmer
-              pace.
+              Hosts can offer cost support for coffee, food, tickets, games, or
+              other shared activities.
             </p>
 
             <div className="mt-5 grid grid-cols-3 gap-2.5 sm:mt-7 sm:gap-3">
@@ -411,13 +411,13 @@ export default function HomeFeedClient({
 
             <div className="mt-4 flex flex-wrap gap-2 sm:mt-6 sm:gap-2.5">
               <span className={heroChipClass}>
-                Slow coffee
+                Coffee
               </span>
               <span className={heroChipClass}>
-                Afterglow walks
+                Walks
               </span>
               <span className={heroChipClass}>
-                Quiet co-work
+                Games
               </span>
             </div>
           </div>

@@ -20,11 +20,11 @@ export const metadata: Metadata = {
     template: "%s | Neonadri",
   },
   description:
-    "Discover nearby meetups, see who is hosting, and browse at a calmer pace.",
+    "Meet new people through simple shared plans with clear activity cost support.",
   openGraph: {
-    title: "A calmer way to meet someone new.",
+    title: "Meet new people through simple shared plans.",
     description:
-      "Discover nearby meetups, see who is hosting, and browse at a calmer pace.",
+      "Hosts can offer cost support for coffee, food, tickets, games, or other shared activities.",
     url: APP_URL,
     siteName: "Neonadri",
     type: "website",
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "A calmer way to meet someone new.",
+    title: "Meet new people through simple shared plans.",
     description:
-      "Discover nearby meetups, see who is hosting, and browse at a calmer pace.",
+      "Hosts can offer cost support for coffee, food, tickets, games, or other shared activities.",
     images: [`/opengraph-image?${OG_IMAGE_VERSION}`],
   },
 };

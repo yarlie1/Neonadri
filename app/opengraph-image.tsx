@@ -112,7 +112,7 @@ export default function OpenGraphImage() {
               letterSpacing: "-0.05em",
             }}
           >
-            A calmer way to meet someone new.
+            Meet new people through simple shared plans.
           </div>
           <div
             style={{
@@ -121,8 +121,8 @@ export default function OpenGraphImage() {
               lineHeight: 1.4,
             }}
           >
-            Discover nearby meetups, see who is hosting, and browse at a calmer
-            pace.
+            Hosts can offer cost support for coffee, food, tickets, games, or
+            other shared activities.
           </div>
         </div>
       </div>
