@@ -745,7 +745,7 @@ function SignupPageContent() {
                   Coffee chats
                 </span>
                 <span className={`rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                  Walk dates
+                  Walk meetups
                 </span>
                 <span className={`rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                   Focus sessions

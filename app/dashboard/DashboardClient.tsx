@@ -1195,7 +1195,7 @@ export default function DashboardClient({
                   Your next meetup
                 </div>
                 <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  {upcomingMatchedMeetups.length} matched meetup{upcomingMatchedMeetups.length > 1 ? "s" : ""} still ahead. Keep this one in view as the date gets closer.
+                  {upcomingMatchedMeetups.length} matched meetup{upcomingMatchedMeetups.length > 1 ? "s" : ""} still ahead. Keep this one in view as the time gets closer.
                 </div>
               </div>
             </div>
