@@ -14,7 +14,6 @@ import {
   HomeFilterCard,
   MeetupFeedCard,
 } from "./homeComponents";
-import IntroVideoGate from "./IntroVideoGate";
 import {
   FilterSummaryText,
   formatDistanceKm,
@@ -352,7 +351,6 @@ export default function HomeFeedClient({
 
   return (
     <>
-      <IntroVideoGate />
       <main className={`relative isolate min-h-[100dvh] px-4 py-5 ${APP_PAGE_BG_CLASS}`}>
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7fafc_20%,#e8edf1_56%,#d7dfe5_100%)]" />
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.62),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.28),transparent_20%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.16),transparent_32%)]" />

@@ -2,7 +2,6 @@
 
 import { Play, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
 
 const STORAGE_KEY = "neonadri-intro-dismissed-date-v1";
 const OPEN_EVENT = "neonadri:open-intro";
@@ -16,7 +15,6 @@ function getTodayKey() {
 }
 
 export default function IntroVideoGate() {
-  const searchParams = useSearchParams();
   const mobileVideoRef = useRef<HTMLVideoElement | null>(null);
   const desktopVideoRef = useRef<HTMLVideoElement | null>(null);
   const mobileBackgroundVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -24,6 +22,7 @@ export default function IntroVideoGate() {
   const [isVisible, setIsVisible] = useState(false);
   const [hasEnded, setHasEnded] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [playRequest, setPlayRequest] = useState(0);
 
   const resetAndPlayVideos = async () => {
     const videos = [
@@ -37,49 +36,65 @@ export default function IntroVideoGate() {
 
     await Promise.all(
       videos.map(async (video) => {
-        video.currentTime = 0;
         try {
+          video.pause();
+          video.currentTime = 0;
           await video.play();
-        } catch {}
+        } catch {
+          try {
+            video.load();
+            video.currentTime = 0;
+            await video.play();
+          } catch {}
+        }
       })
     );
   };
 
   useEffect(() => {
     const todayKey = getTodayKey();
+    const url = new URL(window.location.href);
+    const shouldOpenFromUrl = url.searchParams.get("intro") === "1";
+    const shouldAutoOpen = url.pathname === "/";
 
     try {
       const dismissed = window.localStorage.getItem(STORAGE_KEY);
-      if (dismissed !== todayKey) {
+      if (shouldOpenFromUrl || (shouldAutoOpen && dismissed !== todayKey)) {
         setIsVisible(true);
+        setPlayRequest((value) => value + 1);
       }
     } catch {
-      setIsVisible(true);
+      if (shouldOpenFromUrl || shouldAutoOpen) {
+        setIsVisible(true);
+        setPlayRequest((value) => value + 1);
+      }
     } finally {
+      if (shouldOpenFromUrl) {
+        url.searchParams.delete("intro");
+        window.history.replaceState(
+          {},
+          "",
+          url.pathname + url.search + url.hash
+        );
+      }
       setIsReady(true);
     }
   }, []);
 
   useEffect(() => {
-    if (!isReady) return;
-    if (searchParams.get("intro") !== "1") return;
+    if (!isVisible || playRequest === 0) return;
 
-    setIsVisible(true);
-    window.setTimeout(() => {
+    const frameId = window.requestAnimationFrame(() => {
       void resetAndPlayVideos();
-    }, 50);
+    });
 
-    const nextUrl = new URL(window.location.href);
-    nextUrl.searchParams.delete("intro");
-    window.history.replaceState({}, "", nextUrl.pathname + nextUrl.search + nextUrl.hash);
-  }, [isReady, searchParams]);
+    return () => window.cancelAnimationFrame(frameId);
+  }, [isVisible, playRequest]);
 
   useEffect(() => {
     const openIntro = () => {
       setIsVisible(true);
-      window.setTimeout(() => {
-        void resetAndPlayVideos();
-      }, 50);
+      setPlayRequest((value) => value + 1);
     };
 
     window.addEventListener(OPEN_EVENT, openIntro);
@@ -105,8 +120,8 @@ export default function IntroVideoGate() {
     setIsVisible(false);
   };
 
-  const handleReplay = async () => {
-    await resetAndPlayVideos();
+  const handleReplay = () => {
+    setPlayRequest((value) => value + 1);
   };
 
   if (!isReady || !isVisible) {

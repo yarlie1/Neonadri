@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
 import {
   Menu,
@@ -91,7 +91,6 @@ export default function TopNav({
   initialUser = null,
   initialIndicators,
 }: TopNavProps) {
-  const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [user, setUser] = useState<SimpleUser>(initialUser);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -132,12 +131,7 @@ export default function TopNav({
   const createHref = useCreateMeetupHref(!!user);
   const openIntroVideo = () => {
     setMenuOpen(false);
-    if (pathname === "/") {
-      window.dispatchEvent(new CustomEvent("neonadri:open-intro"));
-      return;
-    }
-
-    router.push("/?intro=1");
+    window.dispatchEvent(new CustomEvent("neonadri:open-intro"));
   };
 
   useEffect(() => {
