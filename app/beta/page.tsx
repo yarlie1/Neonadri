@@ -115,7 +115,7 @@ function BetaPageContent() {
   const submitLabel =
     region === "other_region"
       ? "Submit interest for later"
-      : "Apply for posting access";
+      : "Apply to create meetups";
 
   useEffect(() => {
     let mounted = true;
@@ -231,14 +231,14 @@ function BetaPageContent() {
     setSubmitting(false);
 
     if (!response.ok) {
-      setMessage(payload.error || "Could not submit your posting access application.");
+      setMessage(payload.error || "Could not submit your create access application.");
       return;
     }
 
     setStatus(payload.status || "pending");
     setMessage(
       payload.message ||
-        "Your posting access application is in. We'll email you if a spot opens for this round."
+        "Your application is in. We'll email you if a spot opens."
     );
 
     if (payload.status === "approved") {
@@ -266,14 +266,12 @@ function BetaPageContent() {
                 <Sparkles className="h-3.5 w-3.5" />
                 Hosting open
               </div>
-              <div className={APP_EYEBROW_CLASS + " mt-5"}>Posting access</div>
+              <div className={APP_EYEBROW_CLASS + " mt-5"}>Create access</div>
               <h1 className="mt-2 max-w-2xl text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
-                Posting beta apply is off right now.
+                Creating meetups is open.
               </h1>
               <p className={`mt-3 max-w-2xl ${APP_BODY_TEXT_CLASS}`}>
-                You do not need a separate approval email right now. You can
-                continue straight into hosting signup, or go back to creating a
-                meetup if you are already logged in.
+                No separate approval email is needed right now.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
@@ -282,7 +280,7 @@ function BetaPageContent() {
                 >
                   {shouldTreatAsExistingUser
                     ? "Continue to create meetup"
-                    : "Continue to hosting signup"}
+                    : "Continue to signup"}
                 </Link>
                 <Link
                   href={secondaryHref}
@@ -302,21 +300,15 @@ function BetaPageContent() {
                 <Sparkles className="h-3.5 w-3.5" />
                 Closed beta
               </div>
-              <div className={APP_EYEBROW_CLASS + " mt-5"}>Apply for access</div>
+              <div className={APP_EYEBROW_CLASS + " mt-5"}>Create access</div>
               <h1 className="mt-2 max-w-2xl text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
-                Apply for posting access during beta.
+                Apply to create meetups.
               </h1>
               <p className={`mt-3 max-w-2xl ${APP_BODY_TEXT_CLASS}`}>
-                Browsing and joining meetups can happen with a regular account now.
-                We&apos;re only limiting posting access while we tune safety, meetup
-                quality, and feedback loops.
+                Joining is open now. Creating meetups is reviewed during beta.
               </p>
               <p className="mt-3 text-sm text-[#5f6d76]">
-                New posting applications go into review first during this beta period.
-              </p>
-              <p className="mt-3 text-sm text-[#5f6d76]">
-                If you&apos;re approved later, you&apos;ll be able to create meetup posts with the
-                same email address you use here.
+                Use the same email here and at signup.
               </p>
             </section>
 
@@ -403,7 +395,7 @@ function BetaPageContent() {
                 </div>
                 {region === "other_region" ? (
                   <div className={`${APP_SOFT_CARD_CLASS} mt-3 px-4 py-3 text-sm leading-6 text-[#6a625b]`}>
-                    Posting beta approvals are currently only opening for LA or nearby. You can still join meetups with a regular account, but hosting access for other regions is not being approved during this beta period.
+                    Create access is currently focused on LA and nearby areas. You can still join meetups with a regular account.
                   </div>
                 ) : null}
               </div>
@@ -429,7 +421,7 @@ function BetaPageContent() {
                   onChange={(event) => setMotivation(event.target.value)}
                   rows={5}
                   className={`${INPUT_CLASS} mt-2`}
-                  placeholder="Tell us what kinds of meetups you want to post and why you want hosting access."
+                  placeholder="What kinds of meetups would you create?"
                 />
               </div>
 
@@ -481,7 +473,7 @@ export default function BetaPage() {
         <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
           <div className="mx-auto max-w-5xl">
             <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
-              <div className={APP_EYEBROW_CLASS}>Apply for access</div>
+              <div className={APP_EYEBROW_CLASS}>Create access</div>
               <div className="mt-3 text-sm text-[#55626a]">Loading beta access...</div>
             </section>
           </div>

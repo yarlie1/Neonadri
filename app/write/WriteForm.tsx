@@ -303,7 +303,7 @@ export default function WriteForm({ userId }: { userId: string }) {
     }
 
     if (benefitAmount && !benefitConfirmed) {
-      setMessage("Please confirm the cost support note before creating the meetup.");
+      setMessage("Please confirm the cost note before creating the meetup.");
       return;
     }
 
@@ -523,7 +523,7 @@ export default function WriteForm({ userId }: { userId: string }) {
         </div>
 
         <h2 className={`mt-6 text-sm font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
-          Target & Cost Support
+          Target & Cost
         </h2>
 
         <div className="mt-3 space-y-3">
@@ -564,7 +564,7 @@ export default function WriteForm({ userId }: { userId: string }) {
               value={benefitAmount}
               onChange={(e) => setBenefitAmount(e.target.value)}
             >
-              <option value="">Select cost support</option>
+              <option value="">Select cost</option>
               <option value="$0">$0</option>
               <option value="$10">$10</option>
               <option value="$20">$20</option>
@@ -576,7 +576,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           </div>
 
           <div className={`${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}>
-            Use cost support only for direct meetup costs such as food, tickets, or transport. Do not offer money for attendance, time, or companionship.
+            Cost support is only for the activity, not for attendance or time.
           </div>
 
           {benefitAmount && (
@@ -592,7 +592,7 @@ export default function WriteForm({ userId }: { userId: string }) {
               <span className="min-w-0 flex-1 leading-6">
                 I understand that{" "}
                 <span className="font-semibold text-[#24323f]">{benefitAmount}</span>{" "}
-                is only for direct meetup costs, not for attendance, time, or companionship.
+                is only for direct meetup costs.
               </span>
             </label>
           )}

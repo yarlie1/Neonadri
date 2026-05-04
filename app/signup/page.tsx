@@ -399,7 +399,7 @@ function SignupPageContent() {
 
       if (!betaCheckResponse.ok) {
         setMessage(
-          betaCheckPayload.error || "Could not verify posting access right now."
+          betaCheckPayload.error || "Could not verify create access right now."
         );
         setCheckingBetaAccess(false);
         return;
@@ -408,7 +408,7 @@ function SignupPageContent() {
       if (!betaCheckPayload.allowed) {
         setBetaAccessAllowed(false);
         setMessage(
-          "This email is not approved for posting access yet. Please apply for posting access first."
+          "This email is not approved to create meetups yet. Please apply first."
         );
         setCheckingBetaAccess(false);
         return;
@@ -419,12 +419,12 @@ function SignupPageContent() {
       setPostingBetaRequired(betaCheckPayload.postingBetaRequired !== false);
       setMessage(
         betaCheckPayload.postingBetaRequired === false
-          ? "Posting signup is open right now. Let's finish your profile."
-          : "Posting access confirmed. Let's finish your profile."
+          ? "Creating meetups is open. Let's finish your profile."
+          : "Create access confirmed. Let's finish your profile."
       );
     } catch (error) {
       console.error("Beta access check error:", error);
-      setMessage("Could not verify posting access right now.");
+      setMessage("Could not verify create access right now.");
     } finally {
       setCheckingBetaAccess(false);
     }
@@ -473,7 +473,7 @@ function SignupPageContent() {
 
         if (!betaCheckResponse.ok) {
           setMessage(
-            betaCheckPayload.error || "Could not verify posting access right now."
+            betaCheckPayload.error || "Could not verify create access right now."
           );
           setSubmitting(false);
           return;
@@ -481,7 +481,7 @@ function SignupPageContent() {
 
         if (!betaCheckPayload.allowed) {
           setMessage(
-            "Posting during beta is limited to approved beta testers. Please apply for posting access first."
+            "Creating meetups is limited during beta. Please apply first."
           );
           setSubmitting(false);
           return;
@@ -605,27 +605,27 @@ function SignupPageContent() {
               </div>
               <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
                 {awaitingSignupMode
-                  ? "Setting up the right signup flow for you."
+                  ? "Checking your signup path."
                   : showIntentPicker
-                  ? "Tell us how you want to use Neonadri first."
+                  ? "How do you want to start?"
                   : requiresPostingBeta
-                  ? "Continue with your hosting email."
+                  ? "Use your approved email."
                   : hostSignupOpen
-                  ? "Start hosting without beta approval."
-                  : "Start joining meetups without the beta wait."}
+                  ? "Create meetups now."
+                  : "Join meetups now."}
               </h1>
               <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
                 {awaitingSignupMode
-                  ? "We're checking whether posting signup is open right now."
+                  ? "We're checking what is open right now."
                   : showIntentPicker
                   ? postingBetaRequired
-                    ? "People who want to browse and join can sign up right away. People who want to post meetups during beta need creator approval first."
-                    : "People who want to browse and join can sign up right away. Hosting signup is also open right now."
+                    ? "Join right away, or apply to create meetups during beta."
+                    : "Join or create meetups right away."
                   : requiresPostingBeta
-                  ? "Use the email already approved for hosting, then we&apos;ll take you straight into the rest of signup."
+                  ? "Use the email already approved for creating meetups."
                   : hostSignupOpen
-                  ? "Posting beta apply is off right now, so you can go straight through the hosting signup flow."
-                  : "You can finish account setup now, browse available posts, and apply for posting access later if you decide to host."}
+                  ? "Create meetup posts without a separate beta review."
+                  : "Set up your account, browse plans, and apply to create later."}
               </p>
               <div className={`mt-4 inline-flex rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                 Neonadri is for adults 18+ only.
@@ -637,7 +637,7 @@ function SignupPageContent() {
                     Checking signup mode
                   </div>
                   <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                    If posting beta apply is off, you&apos;ll go straight into the host signup flow.
+                    If creating is open, you can continue right away.
                   </div>
                 </div>
               ) : showIntentPicker ? (
@@ -650,10 +650,10 @@ function SignupPageContent() {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="text-base font-semibold text-[#24323c]">
-                          Join-first path
+                          Join meetups
                         </div>
                         <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                          Browse posts, apply to join meetups, and use the app immediately.
+                          Browse local plans and request to join.
                         </div>
                       </div>
                       <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c3d0d8] bg-white/90 text-[#31424d] shadow-sm">
@@ -672,12 +672,12 @@ function SignupPageContent() {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="text-base font-semibold text-[#24323c]">
-                          {postingBetaRequired ? "Host-first path" : "Host path"}
+                          Create meetups
                         </div>
                         <div className="mt-1 text-xs leading-6 text-[#67747c]">
                           {postingBetaRequired
-                            ? "Create meetup posts during beta after your email is approved for posting access."
-                            : "Create meetup posts right away without waiting for posting approval."}
+                            ? "Apply for beta access to post plans."
+                            : "Post plans right away."}
                         </div>
                       </div>
                       <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c3d0d8] bg-white/90 text-[#31424d] shadow-sm">
@@ -732,10 +732,10 @@ function SignupPageContent() {
               ) : showBetaGate ? null : (
                 <div className="mt-7 rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
                   <div className="text-sm font-semibold text-[#24323c]">
-                    Posting access comes first
+                    Create access comes first
                   </div>
                   <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                    Use the email approved for hosting. After that, the rest of signup works the same as everyone else.
+                    Use the approved email, then finish signup.
                   </div>
                 </div>
               )}
@@ -771,7 +771,7 @@ function SignupPageContent() {
                 </div>
 
                 <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  We&apos;re loading the current posting beta setting before we show the next step.
+                  {"We're checking the current create setting before the next step."}
                 </p>
               </>
             ) : showIntentPicker ? (
@@ -789,7 +789,7 @@ function SignupPageContent() {
                 </div>
 
                 <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  If you&apos;ve already signed up, log in here. If not, pick your path from the card on the left and we&apos;ll move you forward right away.
+                  Already signed up? Log in here. New here? Pick a path first.
                 </p>
 
                 <div className="mt-6">
@@ -805,9 +805,9 @@ function SignupPageContent() {
               <>
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <div className={APP_EYEBROW_CLASS}>Posting Access</div>
+                    <div className={APP_EYEBROW_CLASS}>Create Access</div>
                     <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-                      Approved posting beta email required
+                      Approved email required
                     </h2>
                   </div>
                   <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
@@ -816,13 +816,13 @@ function SignupPageContent() {
                 </div>
 
                 <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  Use the email approved for posting to continue this signup path.
+                  Use your approved email to create meetups.
                 </p>
 
                 <div className="mt-6 space-y-3">
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      Email approved for posting beta
+                      Approved email
                     </label>
                     <input
                       type="email"
@@ -1116,7 +1116,7 @@ function SignupPageContent() {
                   )}
                   {step === 3 && (
                     <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                      By creating an account, you agree to Neonadri&apos;s{" "}
+                      {"By creating an account, you agree to Neonadri's "}
                       <Link href="/terms" className="underline underline-offset-2 transition hover:text-[#24323c]">
                         Terms
                       </Link>
@@ -1179,15 +1179,14 @@ function SignupPageContent() {
           <section className={`mt-4 ${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
             <div className="flex items-start gap-3">
               <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                Posting beta
+                Create access
               </div>
             </div>
             <h3 className="mt-3 text-xl font-black tracking-[-0.04em] text-[#24323c]">
-              No approved posting email yet? Apply first.
+              Need create access?
             </h3>
             <p className={`mt-3 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
-              If this email is not approved yet, you can apply for posting access
-              first and come back once your hosting spot opens.
+              Apply first, then return with the same email.
             </p>
             <div className="mt-3 flex flex-wrap gap-3">
               <Link
@@ -1195,7 +1194,7 @@ function SignupPageContent() {
                 className={BETA_ACTION_CLASS}
               >
                 <span className="text-sm font-medium text-[#52616a]">
-                  Apply for posting access
+                  Apply to create meetups
                 </span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
