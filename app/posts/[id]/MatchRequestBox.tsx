@@ -55,7 +55,7 @@ export default function MatchRequestBox({
   const headerEyebrow = isUnavailableBecauseCancelled
     ? "Meetup cancelled"
     : hasMatchedRequest
-    ? "Matched meetup"
+    ? "Confirmed meetup"
     : isUnavailableBecauseExpired
     ? "Meetup expired"
     : isUnavailableBecauseMatched
@@ -64,12 +64,12 @@ export default function MatchRequestBox({
   const headerTitle = isUnavailableBecauseCancelled
     ? "This meetup was cancelled"
     : hasMatchedRequest
-    ? "You're matched"
+    ? "You're in"
     : isUnavailableBecauseExpired
     ? "Meetup expired"
     : isUnavailableBecauseMatched
-    ? "Already matched"
-    : "Request Match";
+    ? "Spot filled"
+    : "Request to join";
   const headerDescription = isUnavailableBecauseCancelled
     ? "The host cancelled this meetup. You can still review the details here."
     : hasMatchedRequest
@@ -77,8 +77,8 @@ export default function MatchRequestBox({
     : isUnavailableBecauseExpired
     ? "This meetup has already passed, so new requests are no longer available."
     : isUnavailableBecauseMatched
-    ? "This meetup has already been matched with another guest, so new requests are closed."
-    : "Send your request to the host and wait for approval.";
+    ? "This meetup already has a confirmed guest, so new requests are closed."
+    : "Ask to join this meetup. The host can approve your request.";
 
   const handleRequestMatch = async () => {
     setLoading(true);
@@ -105,12 +105,12 @@ export default function MatchRequestBox({
       }
 
       if (!response.ok) {
-        setMessage(payload?.error || "Failed to send match request.");
+        setMessage(payload?.error || "Failed to send request.");
         setMessageType("info");
         return;
       }
 
-      setMessage("Match request sent successfully.");
+      setMessage("Request sent.");
       setMessageType("success");
       router.refresh();
     } finally {
@@ -177,7 +177,7 @@ export default function MatchRequestBox({
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <div className={`rounded-full px-3 py-[0.3125rem] text-xs font-medium leading-none ${APP_PILL_INACTIVE_CLASS}`}>
-          {isPostMatched ? "Match complete" : "Host approval"}
+          {isPostMatched ? "Spot filled" : "Host approval"}
         </div>
         <div className={`rounded-full px-3 py-[0.3125rem] text-xs font-medium leading-none ${APP_PILL_INACTIVE_CLASS}`}>
           {requestCountLabel}
@@ -193,7 +193,7 @@ export default function MatchRequestBox({
         !isUnavailableBecauseExpired &&
         !isRejectedRequest && (
         <p className={`mt-1 ${APP_BODY_TEXT_CLASS}`}>
-          Any listed cost support should only cover direct meetup costs such as food, tickets, or transport, not attendance or companionship.
+          Cost support is only for the activity, not attendance or time.
         </p>
       )}
 
@@ -203,13 +203,13 @@ export default function MatchRequestBox({
         </div>
         <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
           {isUnavailableBecauseCancelled
-            ? "This meetup is no longer active. New requests are closed, and matched chat is now read-only."
+            ? "This meetup is no longer active. New requests are closed, and confirmed chat is now read-only."
             : hasMatchedRequest
             ? "This meetup is confirmed. You can review the details above and connect with the host here."
             : isUnavailableBecauseExpired
             ? "This meetup has already ended, so requests are closed."
             : isUnavailableBecauseMatched
-            ? "This meetup is no longer accepting requests because the host already matched with another guest."
+            ? "This meetup is no longer accepting requests because the host already confirmed a guest."
             : hasPendingRequest
             ? "Your request is with the host now. You can leave it pending or cancel it here."
             : isRejectedRequest
@@ -227,7 +227,7 @@ export default function MatchRequestBox({
         ) : hasMatchedRequest ? (
           <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium ${APP_PILL_INACTIVE_CLASS}`}>
             <CheckCircle2 className="h-4 w-4" />
-            Match completed
+            Confirmed
           </div>
         ) : isUnavailableBecauseExpired ? (
           <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium ${APP_PILL_INACTIVE_CLASS}`}>
@@ -237,7 +237,7 @@ export default function MatchRequestBox({
         ) : isUnavailableBecauseMatched ? (
           <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium ${APP_PILL_INACTIVE_CLASS}`}>
             <AlertCircle className="h-4 w-4" />
-            Already matched with someone else
+            Already confirmed with someone else
           </div>
         ) : hasPendingRequest ? (
           <>
@@ -253,7 +253,7 @@ export default function MatchRequestBox({
               className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               <XCircle className="h-4 w-4" />
-              {cancelLoading ? "Cancelling..." : "Cancel Request"}
+              {cancelLoading ? "Cancelling..." : "Cancel request"}
             </button>
           </>
         ) : isRejectedRequest ? (
@@ -269,7 +269,7 @@ export default function MatchRequestBox({
               className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
             >
               <Send className="h-4 w-4" />
-              {loading ? "Sending..." : "Send Request"}
+              {loading ? "Sending..." : "Request to join"}
             </button>
         )}
       </div>
