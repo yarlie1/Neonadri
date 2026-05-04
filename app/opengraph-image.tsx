@@ -106,15 +106,16 @@ export default function OpenGraphImage() {
         >
           <div
             style={{
+              display: "flex",
+              flexDirection: "column",
               fontSize: "64px",
               fontWeight: 800,
               lineHeight: 1,
               letterSpacing: "-0.05em",
             }}
           >
-            Simple plans.
-            <br />
-            New people.
+            <div>Simple plans.</div>
+            <div>New people.</div>
           </div>
           <div
             style={{
