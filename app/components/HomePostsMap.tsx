@@ -392,6 +392,9 @@ export default function HomePostsMap({ posts }: Props) {
                 {selectedPost.benefit_amount && (
                   <div className={`inline-flex shrink-0 items-center gap-2 rounded-2xl px-4 py-2 text-sm font-semibold ${APP_PILL_ACTIVE_CLASS}`}>
                     <Coins className="h-4 w-4" />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.12em] opacity-70">
+                      Cost
+                    </span>
                     {selectedPost.benefit_amount}
                   </div>
                 )}

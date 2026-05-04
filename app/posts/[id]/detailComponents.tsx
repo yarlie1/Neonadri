@@ -658,6 +658,9 @@ export function MeetupOverviewCard({
             </div>
             <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-1 py-2 text-center text-[#52616a] shadow-sm">
               <Coins className="h-3.5 w-3.5 text-[#7e8d96]" />
+              <span className="mt-1 text-[8px] font-bold uppercase leading-none tracking-[0.08em] text-[#7a8790]">
+                Cost
+              </span>
               <span className="mt-1 text-sm font-extrabold leading-tight tracking-[-0.03em] text-[#23333d]">
                 {post.benefit_amount || "N/A"}
               </span>
