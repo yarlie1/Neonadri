@@ -5,16 +5,17 @@ export default function CommunityPage() {
     <LegalPageShell
       eyebrow="Community"
       title="Community Guidelines"
-      intro="Neonadri is meant for calm, adult, real-world 1:1 social meetups, not dating. These guidelines set the baseline for how we expect people to use the platform and treat each other."
-      lastUpdated="2026-04-22"
+      intro="Neonadri is meant for calm, adult, real-world social meetups, not dating or matchmaking. These guidelines set the baseline for how we expect people to use the platform and treat each other."
+      lastUpdated="2026-05-05"
       sections={[
         {
           title: "1. What belongs on Neonadri",
           bullets: [
             "Real meetup activities with clear time, place, and tone.",
+            "Public-location meetups that feel safe, respectful, and low-pressure.",
             "Honest communication about expectations and availability.",
             "Respectful interaction before, during, and after a meetup.",
-            "Covered costs that only apply to direct meetup-related expenses.",
+            "Cost support that only applies to direct, shared meetup-related expenses.",
           ],
         },
         {
@@ -23,26 +24,32 @@ export default function CommunityPage() {
             "Harassment, intimidation, threats, or stalking.",
             "Pressure to meet, continue chatting, or share private information.",
             "Impersonation or misleading identity claims.",
+            "Private residences, hotel rooms, isolated locations, or other unsafe meetup locations.",
+            "Creating or pursuing romantic, sexual, or financial expectations through the platform.",
             "Escort-style, companionship-for-pay, or sexual services content.",
             "Money offers for attendance, time, or companionship.",
+            "Misleading meetup details, unlawful activity, or attempts to evade moderation.",
             "Use of the service by anyone under 18.",
           ],
         },
         {
-          title: "3. Covered cost rule",
+          title: "3. Cost support rule",
           paragraphs: [
-            "Covered cost is only for direct meetup costs such as food, drinks, tickets, parking, transport, or similar activity expenses.",
+            "Cost support is only for direct, shared meetup costs such as food, drinks, tickets, parking, transport, or similar activity expenses.",
+            "Cost support is not a payment to any individual.",
           ],
           bullets: [
-            "Do not use covered cost to pay someone to show up.",
-            "Do not use covered cost to pay for time or presence.",
-            "Do not use covered cost for companionship, romantic access, or sexual access.",
+            "Do not use cost support to pay someone to show up.",
+            "Do not use cost support to pay for time or presence.",
+            "Do not use cost support for companionship, romantic access, or sexual access.",
           ],
         },
         {
           title: "4. Location and safety expectations",
           paragraphs: [
+            "All meetups must take place in public locations. Private residences, hotel rooms, and isolated locations are not permitted.",
             "Respect location privacy boundaries in the product. Do not pressure other users to reveal more precise location detail than the product is meant to show at that stage.",
+            "Prioritize your own safety. You may leave a meetup at any time.",
           ],
         },
         {
