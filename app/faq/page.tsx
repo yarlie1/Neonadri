@@ -5,13 +5,13 @@ export default function FaqPage() {
     <LegalPageShell
       eyebrow="FAQ"
       title="Frequently asked questions"
-      intro="These answers cover the main product rules and expectations around meetups, cost support, chat, location sharing, and account safety on Neonadri."
+      intro="These answers cover the main product rules and expectations around 1:1 social meetups, covered activity costs, chat, location sharing, and account safety on Neonadri."
       lastUpdated="2026-04-23"
       sections={[
         {
           title: "1. What is Neonadri?",
           paragraphs: [
-            "Neonadri is an adults-only meetup platform for calm, in-person social discovery. You can create a meetup, request to join someone else's meetup, match, and chat around the meetup.",
+            "Neonadri is an adults-only platform for low-pressure 1:1 social meetups. It is not a dating app. You can create a meetup, request to join someone else's meetup, match, and chat around the plan.",
           ],
         },
         {
@@ -21,9 +21,9 @@ export default function FaqPage() {
           ],
         },
         {
-          title: "3. What does cost support mean?",
+          title: "3. What does covered cost mean?",
           paragraphs: [
-            "Cost support refers only to direct meetup-related costs such as food, drinks, tickets, transport, parking, or similar activity expenses.",
+            "Covered cost refers only to direct meetup-related costs such as food, drinks, tickets, transport, parking, or similar activity expenses.",
           ],
           bullets: [
             "It is not payment for attendance.",

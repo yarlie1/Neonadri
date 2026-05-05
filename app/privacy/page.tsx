@@ -5,7 +5,7 @@ export default function PrivacyPage() {
     <LegalPageShell
       eyebrow="Privacy"
       title="Privacy Policy"
-      intro="This page explains the kinds of information Neonadri uses to run the service, support meetup flows, reduce abuse, and manage account safety."
+      intro="This page explains the kinds of information Neonadri uses to run the service, support 1:1 social meetup flows, reduce abuse, and manage account safety."
       lastUpdated="2026-04-22"
       sections={[
         {
@@ -13,7 +13,7 @@ export default function PrivacyPage() {
           bullets: [
             "Account information such as email address.",
             "Profile information such as display name, gender, age group, languages, interests, meeting style, and response note.",
-            "Meetup information such as purpose, place name, location, time, duration, target preferences, and cost support amount.",
+            "Meetup information such as purpose, place name, location, time, duration, target preferences, and covered cost amount.",
             "Messages, reviews, block events, and safety-related submissions where available.",
           ],
         },
@@ -34,9 +34,9 @@ export default function PrivacyPage() {
           ],
         },
         {
-          title: "4. Safety and cost support review",
+          title: "4. Safety and covered cost review",
           paragraphs: [
-            "We may review meetup or account context where reasonably necessary to detect unsafe or prohibited cost support behavior, including attempts to use the service to offer money for attendance, time, companionship, or personal interaction.",
+            "We may review meetup or account context where reasonably necessary to detect unsafe or prohibited covered cost behavior, including attempts to use the service to offer money for attendance, time, companionship, romantic access, or personal interaction.",
           ],
         },
         {

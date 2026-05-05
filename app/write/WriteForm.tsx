@@ -359,10 +359,11 @@ export default function WriteForm({ userId }: { userId: string }) {
               Create meetup
             </div>
             <h1 className="mt-4 max-w-md text-[32px] font-black leading-[0.98] tracking-[-0.05em] text-[#24323f] sm:text-[38px]">
-              Make the first step feel easy.
+              Create a low-pressure 1:1 meetup.
             </h1>
             <p className={`mt-3 max-w-lg text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
-              Pick a vibe, set a clear place and time, and give people enough context to say yes without hesitation.
+              Start with the activity: coffee, dinner, a walk, games, or
+              something simple. Clear plans help guests say yes comfortably.
             </p>
           </div>
         </section>
@@ -523,7 +524,7 @@ export default function WriteForm({ userId }: { userId: string }) {
         </div>
 
         <h2 className={`mt-6 text-sm font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
-          Target & Cost
+          Guest & Covered Cost
         </h2>
 
         <div className="mt-3 space-y-3">
@@ -576,7 +577,8 @@ export default function WriteForm({ userId }: { userId: string }) {
           </div>
 
           <div className={`${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}>
-            Cost support is only for the activity, not for attendance or time.
+            Hosts cover direct activity costs only. Never offer payment for
+            attendance, time, or anything outside the meetup plan.
           </div>
 
           {benefitAmount && (

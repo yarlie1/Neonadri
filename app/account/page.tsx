@@ -125,7 +125,7 @@ export default async function AccountPage() {
               ? "You can create meetup posts during the beta period."
               : profile.signup_intent === "host"
               ? "Your account was set up for posting, but posting approval is not active on this email yet."
-              : "You can browse and join meetups now, then apply for posting access later whenever you want to host."}
+              : "You can browse and join 1:1 meetups now, then apply for posting access later whenever you want to host."}
           </p>
 
           <div className="mt-4 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">

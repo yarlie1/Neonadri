@@ -71,7 +71,7 @@ const STEPS = [
 ];
 
 const DEFAULT_ABOUT_ME =
-  "I enjoy meeting new people over coffee, walks, or low-pressure plans. I usually appreciate clear communication, relaxed energy, and a meetup that feels easy to settle into.";
+  "I enjoy meeting new people through coffee, walks, food, or low-pressure activities. I like clear plans, easy conversation, and meetups that feel comfortable from the start.";
 const DISPLAY_NAME_MAX_LENGTH = 24;
 const PASSWORD_MIN_LENGTH = 8;
 const DISPLAY_NAME_LENGTH_MESSAGE = `Display name must be ${DISPLAY_NAME_MAX_LENGTH} characters or fewer.`;
@@ -619,8 +619,8 @@ function SignupPageContent() {
                   ? "We're checking what is open right now."
                   : showIntentPicker
                   ? postingBetaRequired
-                    ? "Join right away, or apply to create meetups during beta."
-                    : "Join or create meetups right away."
+                    ? "Join 1:1 meetups right away, or apply to create during beta."
+                    : "Join or create low-pressure 1:1 meetups right away."
                   : requiresPostingBeta
                   ? "Use the email already approved for creating meetups."
                   : hostSignupOpen
@@ -650,10 +650,10 @@ function SignupPageContent() {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="text-base font-semibold text-[#24323c]">
-                          Join meetups
+                          Join 1:1 meetups
                         </div>
                         <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                          Browse local plans and request to join.
+                          Browse local plans and request to join with no pressure.
                         </div>
                       </div>
                       <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c3d0d8] bg-white/90 text-[#31424d] shadow-sm">
@@ -672,12 +672,12 @@ function SignupPageContent() {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="text-base font-semibold text-[#24323c]">
-                          Create meetups
+                          Create 1:1 meetups
                         </div>
                         <div className="mt-1 text-xs leading-6 text-[#67747c]">
                           {postingBetaRequired
-                            ? "Apply for beta access to post plans."
-                            : "Post plans right away."}
+                            ? "Apply for beta access to post activity-based plans."
+                            : "Post activity-based plans right away."}
                         </div>
                       </div>
                       <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c3d0d8] bg-white/90 text-[#31424d] shadow-sm">
@@ -873,7 +873,7 @@ function SignupPageContent() {
                   {step === 1 &&
                     "Add the basics people usually want to know first."}
                   {step === 2 &&
-                    "Show your personality so meetup requests feel more natural."}
+                    "Keep it activity-based so meetup requests feel natural."}
                   {step === 3 &&
                     "Finish with the password you will use to sign in."}
                 </p>
@@ -1029,7 +1029,9 @@ function SignupPageContent() {
                           className={INPUT_CLASS}
                         />
                         <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                          Avoid prostitution, solicitation, or other unsafe sexual content.
+                          Keep it activity-based: what you like doing, how you
+                          like to meet, and what kind of conversation feels
+                          comfortable. Avoid solicitation or unsafe sexual content.
                         </p>
                       </div>
                     </>

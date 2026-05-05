@@ -142,16 +142,16 @@ export default function HomeTestClient({
           <div className="relative">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7e858b] shadow-[0_10px_22px_rgba(136,142,148,0.08)]">
               <Sparkles className="h-3.5 w-3.5" />
-              Soft social layer
+              1:1 social meetups
             </div>
 
             <h1 className="mt-3 max-w-lg text-[35px] font-black leading-[0.92] tracking-[-0.065em] text-[#1f2b34] sm:mt-4 sm:text-[44px]">
-              Find someone new, without the noise.
+              Meet someone new, no pressure.
             </h1>
 
             <p className="mt-3 max-w-xl text-[14px] leading-6 text-[#667179] sm:mt-4 sm:text-[15px]">
-              A quieter way to discover nearby meetups. Soft silver surfaces,
-              calm pacing, and just enough AI presence to make browsing feel easy.
+              A quieter way to discover nearby 1:1 meetups. Hosts cover the
+              listed activity cost, and guests simply join the plan.
             </p>
 
             <div className="mt-5 grid grid-cols-3 gap-2.5 sm:mt-7 sm:gap-3">
@@ -407,7 +407,7 @@ export default function HomeTestClient({
                         </span>
                         <span className="inline-flex items-center gap-2 rounded-[14px] border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.90)_0%,rgba(237,241,244,0.76)_100%)] px-3 py-1.5 font-semibold text-[#435760] shadow-[0_8px_16px_rgba(118,126,133,0.10)]">
                           <Coins className="h-4 w-4 text-[#7b8d97]" />
-                          {amount !== null ? `Cost $${amount.toLocaleString()}` : "No cost support"}
+                          {amount !== null ? `Host covers $${amount.toLocaleString()}` : "No covered cost"}
                         </span>
                       </div>
                     </div>

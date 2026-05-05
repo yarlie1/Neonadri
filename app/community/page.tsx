@@ -5,7 +5,7 @@ export default function CommunityPage() {
     <LegalPageShell
       eyebrow="Community"
       title="Community Guidelines"
-      intro="Neonadri is meant for calm, adult, real-world social discovery. These guidelines set the baseline for how we expect people to use the platform and treat each other."
+      intro="Neonadri is meant for calm, adult, real-world 1:1 social meetups, not dating. These guidelines set the baseline for how we expect people to use the platform and treat each other."
       lastUpdated="2026-04-22"
       sections={[
         {
@@ -14,7 +14,7 @@ export default function CommunityPage() {
             "Real meetup activities with clear time, place, and tone.",
             "Honest communication about expectations and availability.",
             "Respectful interaction before, during, and after a meetup.",
-            "Cost support that only covers direct meetup-related expenses.",
+            "Covered costs that only apply to direct meetup-related expenses.",
           ],
         },
         {
@@ -29,14 +29,14 @@ export default function CommunityPage() {
           ],
         },
         {
-          title: "3. Cost support rule",
+          title: "3. Covered cost rule",
           paragraphs: [
-            "Cost support is only for direct meetup costs such as food, drinks, tickets, parking, transport, or similar activity expenses.",
+            "Covered cost is only for direct meetup costs such as food, drinks, tickets, parking, transport, or similar activity expenses.",
           ],
           bullets: [
-            "Do not use cost support to pay someone to show up.",
-            "Do not use cost support to pay for time or presence.",
-            "Do not use cost support for companionship, romantic access, or sexual access.",
+            "Do not use covered cost to pay someone to show up.",
+            "Do not use covered cost to pay for time or presence.",
+            "Do not use covered cost for companionship, romantic access, or sexual access.",
           ],
         },
         {

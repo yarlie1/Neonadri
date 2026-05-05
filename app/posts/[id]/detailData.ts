@@ -295,8 +295,8 @@ export function buildDetailViewModel({
     meetupFinished &&
     !viewerHasReview;
   const benefitExplanation = post.benefit_amount
-    ? `The host listed ${post.benefit_amount} in cost support for direct meetup expenses such as food, tickets, or transport.`
-    : `No direct meetup cost support has been listed for this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"} yet.`;
+    ? `The host covers ${post.benefit_amount} for direct activity costs such as food, tickets, or transport. No expectations beyond the meetup plan.`
+    : `No covered activity cost has been listed for this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"} yet.`;
   const purposeTheme = getPurposeTheme(post.meeting_purpose);
 
   return {

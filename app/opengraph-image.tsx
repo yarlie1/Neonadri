@@ -91,7 +91,7 @@ export default function OpenGraphImage() {
                 color: "#62707a",
               }}
             >
-              Soft social layer
+              1:1 social meetups
             </div>
           </div>
         </div>
@@ -114,8 +114,8 @@ export default function OpenGraphImage() {
               letterSpacing: "-0.05em",
             }}
           >
-            <div>Simple plans.</div>
-            <div>New people.</div>
+            <div>Meet someone new.</div>
+            <div>No pressure.</div>
           </div>
           <div
             style={{
@@ -124,7 +124,7 @@ export default function OpenGraphImage() {
               lineHeight: 1.4,
             }}
           >
-            Join local meetups with clear activity cost support.
+            Hosts cover the listed activity cost. Real conversations, zero pressure.
           </div>
         </div>
       </div>

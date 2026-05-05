@@ -5,7 +5,7 @@ export default function TermsPage() {
     <LegalPageShell
       eyebrow="Terms"
       title="Terms of Service"
-      intro="These terms describe the basic rules for using Neonadri as an adults-only meetup platform for calm, in-person social discovery."
+      intro="These terms describe the basic rules for using Neonadri as an adults-only platform for calm, in-person 1:1 social meetups."
       lastUpdated="2026-04-22"
       sections={[
         {
@@ -32,14 +32,14 @@ export default function TermsPage() {
           ],
         },
         {
-          title: "4. Cost support rule",
+          title: "4. Covered cost rule",
           paragraphs: [
-            "Any cost support shown on Neonadri may only refer to direct meetup-related costs such as food, drinks, tickets, transport, parking, or similar activity expenses.",
+            "Any covered cost shown on Neonadri may only refer to direct meetup-related costs such as food, drinks, tickets, transport, parking, or similar activity expenses.",
           ],
           bullets: [
-            "Cost support may not be used for attendance.",
-            "Cost support may not be used for time or companionship.",
-            "Cost support may not be used for personal, romantic, or sexual access.",
+            "Covered cost may not be used for attendance.",
+            "Covered cost may not be used for time or companionship.",
+            "Covered cost may not be used for personal, romantic, or sexual access.",
           ],
         },
         {

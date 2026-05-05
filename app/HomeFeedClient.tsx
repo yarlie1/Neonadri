@@ -363,17 +363,18 @@ export default function HomeFeedClient({
           <div className="relative">
             <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 shadow-[0_10px_22px_rgba(136,142,148,0.08)] ${APP_PILL_INACTIVE_CLASS} ${APP_EYEBROW_CLASS}`}>
               <Sparkles className="h-3.5 w-3.5" />
-              Soft social layer
+              1:1 social meetups
             </div>
 
             <h1 className="mt-3 max-w-[16ch] text-[33px] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#223039] sm:mt-4 sm:text-[41px]">
-              Simple plans.
+              Meet someone new
               <br />
-              New people.
+              no pressure.
             </h1>
 
             <p className={`mt-3 max-w-xl text-[14px] sm:mt-4 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-              Join local meetups with clear activity cost support.
+              Hosts cover the listed activity cost. Guests simply show up,
+              join, and enjoy the conversation.
             </p>
 
             <div className="mt-5 grid grid-cols-3 gap-2.5 sm:mt-7 sm:gap-3">
@@ -402,23 +403,23 @@ export default function HomeFeedClient({
                   Mode
                 </div>
                 <div className="mt-1.5 text-sm font-bold leading-5 text-[#24323f]">
-                  Chill
+                  Social
                   <br />
-                  Lab
+                  1:1
                 </div>
-                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Low pressure</div>
+                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Not dating</div>
               </div>
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2 sm:mt-6 sm:gap-2.5">
               <span className={heroChipClass}>
-                Coffee
+                Not dating
               </span>
               <span className={heroChipClass}>
-                Walks
+                No expectations
               </span>
               <span className={heroChipClass}>
-                Games
+                Host covers
               </span>
             </div>
           </div>
@@ -432,10 +433,11 @@ export default function HomeFeedClient({
             <div className="min-w-0">
               <div className={APP_EYEBROW_CLASS}>Beta Notice</div>
               <div className="mt-1 text-base font-semibold tracking-[-0.03em] text-[#24323f]">
-                Free during beta.
+                Real conversations, zero pressure.
               </div>
               <p className={`mt-2 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
-                Costs shown on meetups should be honored when matched.
+                Hosts cover coffee, food, or activity costs shown on each
+                meetup. No expectations beyond showing up respectfully.
               </p>
             </div>
           </div>
@@ -452,7 +454,7 @@ export default function HomeFeedClient({
                     NOW
                   </div>
                   <div className="min-w-0 text-[13px] font-bold uppercase tracking-[0.18em] leading-[1.12] opacity-80">
-                    Browse and join meetups
+                    Browse 1:1 meetups
                   </div>
                 </div>
                 <ArrowRight className="h-5 w-5 shrink-0" />

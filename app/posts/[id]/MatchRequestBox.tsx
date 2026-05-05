@@ -60,7 +60,7 @@ export default function MatchRequestBox({
     ? "Meetup expired"
     : isUnavailableBecauseMatched
     ? "Meetup closed"
-    : "Join this meetup";
+    : "Join this 1:1 meetup";
   const headerTitle = isUnavailableBecauseCancelled
     ? "This meetup was cancelled"
     : hasMatchedRequest
@@ -78,7 +78,7 @@ export default function MatchRequestBox({
     ? "This meetup has already passed, so new requests are no longer available."
     : isUnavailableBecauseMatched
     ? "This meetup already has a confirmed guest, so new requests are closed."
-    : "Ask to join this meetup. The host can approve your request.";
+    : "Ask to join this 1:1 meetup. The host can approve your request. No expectations - just a real conversation around the plan.";
 
   const handleRequestMatch = async () => {
     setLoading(true);
@@ -193,7 +193,8 @@ export default function MatchRequestBox({
         !isUnavailableBecauseExpired &&
         !isRejectedRequest && (
         <p className={`mt-1 ${APP_BODY_TEXT_CLASS}`}>
-          Cost support is only for the activity, not attendance or time.
+          The listed amount covers direct activity costs only, never attendance
+          or time.
         </p>
       )}
 

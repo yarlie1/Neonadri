@@ -65,8 +65,8 @@ export default async function WritePage() {
               Posting is limited to beta testers right now.
             </h1>
             <p className={`mt-3 max-w-2xl text-sm leading-6 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-              You can browse and join meetups with your current account, but
-              creating a meetup during beta still needs posting approval.
+              You can browse and join 1:1 meetups with your current account,
+              but creating a meetup during beta still needs posting approval.
             </p>
             <p className="mt-4 rounded-[20px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
               {POSTING_ACCESS_ERROR_MESSAGE}

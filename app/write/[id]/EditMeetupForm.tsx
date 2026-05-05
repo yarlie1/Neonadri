@@ -319,7 +319,7 @@ export default function EditMeetupForm({
     }
 
     if (benefitAmount && !benefitConfirmed) {
-      setMessage("Please confirm the cost support note before saving the meetup.");
+      setMessage("Please confirm the covered cost note before saving the meetup.");
       return;
     }
 
@@ -533,7 +533,7 @@ export default function EditMeetupForm({
         </div>
 
         <h2 className={`mt-6 text-sm font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
-          Target & Cost Support
+          Guest & Covered Cost
         </h2>
 
         <div className="mt-3 space-y-3">
@@ -574,7 +574,7 @@ export default function EditMeetupForm({
               value={benefitAmount}
               onChange={(e) => setBenefitAmount(e.target.value)}
             >
-              <option value="">Select cost support</option>
+              <option value="">Select covered cost</option>
               <option value="$0">$0</option>
               <option value="$10">$10</option>
               <option value="$20">$20</option>
@@ -586,7 +586,8 @@ export default function EditMeetupForm({
           </div>
 
           <div className={`${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}>
-            Use cost support only for direct meetup costs such as food, tickets, or transport. Do not offer money for attendance, time, or companionship.
+            Hosts cover direct activity costs only. Never offer payment for
+            attendance, time, companionship, or anything outside the meetup plan.
           </div>
 
           {benefitAmount && (

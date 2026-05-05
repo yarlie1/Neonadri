@@ -20,11 +20,11 @@ export const metadata: Metadata = {
     template: "%s | Neonadri",
   },
   description:
-    "Join local meetups with clear activity cost support.",
+    "Meet someone new through 1:1 social meetups with no pressure.",
   openGraph: {
-    title: "Simple plans. New people.",
+    title: "Meet someone new - no pressure.",
     description:
-      "Join local meetups with clear activity cost support.",
+      "1:1 social meetups where hosts cover the listed activity cost.",
     url: APP_URL,
     siteName: "Neonadri",
     type: "website",
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Simple plans. New people.",
+    title: "Meet someone new - no pressure.",
     description:
-      "Join local meetups with clear activity cost support.",
+      "1:1 social meetups where hosts cover the listed activity cost.",
     images: [`/opengraph-image?${OG_IMAGE_VERSION}`],
   },
 };
