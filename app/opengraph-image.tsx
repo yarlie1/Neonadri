@@ -114,8 +114,8 @@ export default function OpenGraphImage() {
               letterSpacing: "-0.05em",
             }}
           >
-            <div>Meet someone new.</div>
-            <div>No pressure.</div>
+            <div>Meet someone new,</div>
+            <div>no pressure.</div>
           </div>
           <div
             style={{

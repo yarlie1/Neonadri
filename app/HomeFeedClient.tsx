@@ -367,7 +367,7 @@ export default function HomeFeedClient({
             </div>
 
             <h1 className="mt-3 max-w-[16ch] text-[33px] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#223039] sm:mt-4 sm:text-[41px]">
-              Meet someone new
+              Meet someone new,
               <br />
               no pressure.
             </h1>
