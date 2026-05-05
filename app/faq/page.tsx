@@ -5,50 +5,55 @@ export default function FaqPage() {
     <LegalPageShell
       eyebrow="FAQ"
       title="Frequently asked questions"
-      intro="These answers cover the main product rules and expectations around 1:1 social meetups, covered activity costs, chat, location sharing, and account safety on Neonadri."
-      lastUpdated="2026-04-23"
+      intro="These answers cover the main product rules and expectations around adults-only social meetups, cost support, public locations, chat, moderation, and account safety on Neonadri."
+      lastUpdated="2026-05-05"
       sections={[
         {
           title: "1. What is Neonadri?",
           paragraphs: [
-            "Neonadri is an adults-only platform for low-pressure 1:1 social meetups. It is not a dating app. You can create a meetup, request to join someone else's meetup, match, and chat around the plan.",
+            "Neonadri is an adults-only social meetup platform designed for calm, in-person social discovery.",
+            "Neonadri is not a dating or matchmaking service. You can create a meetup, request to join someone else's meetup, match, and chat around the plan.",
           ],
         },
         {
           title: "2. Who can use Neonadri?",
           paragraphs: [
-            "Neonadri is for adults 18 or older only. We ask users to confirm that they are 18+ during signup and before protected parts of the product when needed.",
+            "Neonadri is for adults 18 years of age or older only. By creating an account or using the service, you confirm that you are at least 18, that your information is accurate, and that you will use the service lawfully.",
           ],
         },
         {
-          title: "3. What does covered cost mean?",
+          title: "3. What does cost support mean?",
           paragraphs: [
-            "Covered cost refers only to direct meetup-related costs such as food, drinks, tickets, transport, parking, or similar activity expenses.",
+            "Cost support refers only to direct, shared meetup-related expenses such as food, drinks, tickets, transportation, parking, or similar activity costs.",
+            "Cost support is not a payment to any individual.",
           ],
           bullets: [
-            "It is not payment for attendance.",
-            "It is not payment for time or companionship.",
+            "It may not be used for attendance.",
+            "It may not be used for time or companionship.",
             "It may not be used for personal, romantic, or sexual access.",
           ],
         },
         {
-          title: "4. When is the full address shared?",
+          title: "4. Where can meetups happen?",
           paragraphs: [
-            "Before a meetup is matched, Neonadri limits location detail and may show a place name or masked area instead of the full address.",
-            "Once a meetup is matched, more precise location details may be shown to confirmed participants.",
+            "All meetups must take place in public locations. Private residences, hotel rooms, isolated locations, or other unsafe meetup locations are not permitted.",
+            "Neonadri may limit how precisely location details are displayed before a meetup is confirmed. Once a meetup is confirmed, more precise location details may be shown to confirmed participants.",
+            "Users are expected to prioritize their own safety and may leave a meetup at any time.",
           ],
         },
         {
           title: "5. How do match requests work?",
           paragraphs: [
             "If a meetup is open and you fit the meetup's target settings, you can send a request to join. The host can accept or decline that request.",
-            "Accepted requests can lead to a match and chat access. Expired meetups cannot be requested.",
+            "Accepted requests can lead to a match and chat access. Expired, cancelled, or already-filled meetups cannot be requested.",
+            "Neonadri does not guarantee that a meetup will occur, that a user will attend, or that a match or request will remain available.",
           ],
         },
         {
           title: "6. When can I chat?",
           paragraphs: [
             "Chat becomes available after a meetup is matched. The chat is intended to help confirmed participants align details before and shortly after the meetup.",
+            "Do not use chat to create romantic, sexual, financial, or other expectations outside the meetup plan.",
           ],
         },
         {
@@ -61,19 +66,22 @@ export default function FaqPage() {
           title: "8. How do blocking and reporting work?",
           paragraphs: [
             "You can block another user from their profile. Blocking limits new interaction, hides related content, and restricts direct access between the two accounts.",
-            "If someone makes an unsafe payment-related request, you can report it from the profile safety area for review.",
+            "If someone makes an unsafe payment-related request, pressures you, misrepresents their identity, suggests a private or isolated location, or tries to use Neonadri as a dating or matchmaking service, you can report it from the profile safety area for review.",
+            "We may review, restrict, suspend, or remove content or accounts when needed to enforce platform rules, investigate unsafe behavior, comply with legal obligations, or protect users and the platform.",
           ],
         },
         {
           title: "9. What happens if a meetup is cancelled or changed?",
           paragraphs: [
-            "If a meetup changes, the current product experience may update the related details and participant flow depending on the state of that meetup. As product support expands, change and cancellation handling may become more explicit.",
+            "Neonadri is not responsible for cancellations, no-shows, or unmet expectations related to any meetup.",
+            "If a meetup changes, the current product experience may update related details and participant flow depending on the state of that meetup. Users are responsible for their own expenses unless otherwise agreed between participants.",
           ],
         },
         {
-          title: "10. How do reviews work?",
+          title: "10. Does Neonadri verify users or guarantee safety?",
           paragraphs: [
-            "After a matched meetup has passed, eligible participants may be able to leave a review. Review availability depends on the meetup state and whether a review has already been submitted.",
+            "No. Neonadri does not conduct background checks, does not verify user identity, and is not responsible for the behavior, actions, or conduct of any user.",
+            "Users interact at their own risk. No romantic, financial, or other expectations are created or implied by using Neonadri.",
           ],
         },
       ]}
