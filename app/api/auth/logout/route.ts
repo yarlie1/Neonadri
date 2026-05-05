@@ -60,5 +60,10 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const redirectTo = url.searchParams.get("redirect") || "/";
-  return buildLogoutResponse(request, NextResponse.redirect(new URL(redirectTo, url)));
+  const safeRedirectTo =
+    redirectTo.startsWith("/") && !redirectTo.startsWith("//")
+      ? redirectTo
+      : "/";
+
+  return buildLogoutResponse(request, NextResponse.redirect(new URL(safeRedirectTo, url)));
 }
