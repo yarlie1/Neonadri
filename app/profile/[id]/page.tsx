@@ -85,6 +85,33 @@ function RatingStar({
   );
 }
 
+function StarRating({
+  value,
+  size = "sm",
+}: {
+  value: number;
+  size?: "sm" | "md";
+}) {
+  const iconClass = size === "md" ? "h-5 w-5" : "h-4 w-4";
+
+  return (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((n) => {
+        const filled = n <= value;
+
+        return (
+          <Star
+            key={n}
+            className={`${iconClass} ${
+              filled ? "fill-[#71828c] text-[#71828c]" : "text-[#d3dce2]"
+            }`}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 function InfoItem({
   icon,
   label,
@@ -206,6 +233,7 @@ export default async function ProfilePage({ params }: PageProps) {
   const averageRating = Number(stats.average_rating ?? 0);
   const reviewCount = Number(stats.review_count ?? 0);
   const completedMeetups = Number(stats.completed_meetups ?? 0);
+  const roundedAverage = Math.round(averageRating);
   const hasRating = reviewCount > 0;
   const hasAboutMe = !!profile.about_me?.trim();
   const hasLanguages = !!profile.languages && profile.languages.length > 0;
@@ -363,7 +391,7 @@ export default async function ProfilePage({ params }: PageProps) {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 {hasRating ? (
                   <div className="flex items-center gap-3">
-                    <RatingStar size="md" />
+                    <StarRating value={roundedAverage} size="md" />
                     <div className="text-2xl font-black tracking-[-0.04em] text-[#24323f]">
                       {averageRating.toFixed(1)}
                     </div>
@@ -425,7 +453,7 @@ export default async function ProfilePage({ params }: PageProps) {
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <RatingStar size="md" />
+                        <StarRating value={review.rating} size="md" />
                         <div className="text-sm font-semibold text-[#52616a]">
                           {review.rating}.0 / 5
                         </div>
