@@ -50,7 +50,7 @@ export async function sendPushNotificationToUser(
     return { ok: false, skipped: true, reason: "missing-vapid-config" };
   }
 
-  const adminSupabase = createAdminClient();
+  const adminSupabase = createAdminClient() as any;
   const { data: subscriptions, error } = await adminSupabase
     .from("push_subscriptions")
     .select("id, endpoint, p256dh, auth")
