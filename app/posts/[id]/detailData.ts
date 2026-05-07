@@ -28,6 +28,7 @@ export type ProfileRow = {
   meeting_style: string | null;
   interests: string[] | null;
   response_time_note: string | null;
+  avatar_url: string | null;
 };
 
 export type MatchRequestRow = {
@@ -67,6 +68,7 @@ export type LoadedProfileData = {
   meetingStyle: string;
   interests: string[];
   responseNote: string;
+  avatarUrl: string | null;
   averageRating: number;
   reviewCount: number;
   completedMeetups: number;
@@ -104,7 +106,7 @@ export async function fetchProfileShowcaseData(
     supabase
       .from("profiles")
       .select(
-        "id, display_name, bio, about_me, gender, age_group, preferred_area, languages, meeting_style, interests, response_time_note"
+        "id, display_name, bio, about_me, gender, age_group, preferred_area, languages, meeting_style, interests, response_time_note, avatar_url"
       )
       .eq("id", userId)
       .maybeSingle(),
@@ -138,6 +140,7 @@ export async function fetchProfileShowcaseData(
   const meetingStyle = profile?.meeting_style || "";
   const interests = profile?.interests || [];
   const responseNote = profile?.response_time_note || "";
+  const avatarUrl = profile?.avatar_url || null;
   const averageRating = Number(stats?.average_rating ?? 0);
   const reviewCount = Number(stats?.review_count ?? 0);
   const completedMeetups = Number(stats?.completed_meetups ?? 0);
@@ -151,6 +154,7 @@ export async function fetchProfileShowcaseData(
     meetingStyle,
     interests,
     responseNote,
+    avatarUrl,
     averageRating,
     reviewCount,
     completedMeetups,
@@ -162,6 +166,7 @@ export async function fetchProfileShowcaseData(
     profileCardData: {
       userId,
       displayName,
+      avatarUrl,
       aboutMe,
       gender,
       ageGroup,

@@ -39,6 +39,7 @@ import {
   UserRound,
   Utensils,
 } from "lucide-react";
+import Avatar from "../../components/Avatar";
 
 export type ReviewRow = {
   id: number;
@@ -59,6 +60,7 @@ export type MatchReviewRow = {
 export type ProfileCardData = {
   userId: string;
   displayName: string;
+  avatarUrl: string | null;
   aboutMe: string;
   gender: string;
   ageGroup: string;
@@ -288,8 +290,11 @@ export function ProfileShowcaseCard({
             {title}
           </div>
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            <div className="truncate text-[1.15rem] font-black tracking-[-0.03em] text-[#24323f]">
-              {data.displayName}
+            <div className="flex min-w-0 items-center gap-2">
+              <Avatar src={data.avatarUrl} name={data.displayName} size="sm" />
+              <div className="truncate text-[1.15rem] font-black tracking-[-0.03em] text-[#24323f]">
+                {data.displayName}
+              </div>
             </div>
             {hasRating ? (
               <span className="inline-flex items-center gap-1 rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2.5 py-1 text-[11px] font-medium text-[#5f7480]">
@@ -322,9 +327,7 @@ export function ProfileShowcaseCard({
               {title}
             </div>
             <div className="mt-3 flex items-center gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_top,_#ffffff,_#d9e1e6_78%)] text-lg font-bold text-[#24323f] shadow-[0_12px_24px_rgba(118,126,133,0.15)]">
-                {data.displayName.charAt(0).toUpperCase()}
-              </div>
+              <Avatar src={data.avatarUrl} name={data.displayName} size="lg" />
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   {profileHref ? (

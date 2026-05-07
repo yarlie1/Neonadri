@@ -29,6 +29,7 @@ type ProfileRow = {
   interests: string[] | null;
   response_time_note: string | null;
   is_public: boolean | null;
+  avatar_url: string | null;
 };
 
 export default async function EditProfilePage({ params }: PageProps) {
@@ -61,7 +62,8 @@ export default async function EditProfilePage({ params }: PageProps) {
         meeting_style,
         interests,
         response_time_note,
-        is_public
+        is_public,
+        avatar_url
       `
     )
     .eq("id", userId)

@@ -8,12 +8,32 @@ import {
 const DISPLAY_NAME_MAX_LENGTH = 24;
 const VALID_GENDERS = ["Male", "Female", "Other", "Prefer not to say"] as const;
 const VALID_AGE_GROUPS = ["20s", "30s", "40s", "50s+"] as const;
+const AVATAR_BUCKET_PATH = "/storage/v1/object/public/profile-avatars/";
 
 function sanitizeAllowedValue(value: unknown, allowedValues: readonly string[]) {
   if (typeof value !== "string") return null;
   const normalized = value.trim();
   if (!normalized) return null;
   return allowedValues.includes(normalized) ? normalized : null;
+}
+
+function sanitizeAvatarUrl(value: unknown, userId: string) {
+  if (value === null || value === "") return null;
+  if (typeof value !== "string") return undefined;
+
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+
+  try {
+    const parsed = new URL(trimmed);
+    const expectedPath = `${AVATAR_BUCKET_PATH}${userId}/`;
+    if (!parsed.pathname.startsWith(expectedPath)) {
+      return undefined;
+    }
+    return trimmed;
+  } catch {
+    return undefined;
+  }
 }
 
 export async function POST(req: Request) {
@@ -90,6 +110,7 @@ export async function POST(req: Request) {
 
     const genderValue = sanitizeAllowedValue(body.gender, VALID_GENDERS);
     const ageGroupValue = sanitizeAllowedValue(body.age_group, VALID_AGE_GROUPS);
+    const avatarUrlValue = sanitizeAvatarUrl(body.avatar_url, user.id);
 
     if (!genderValue) {
       return NextResponse.json(
@@ -101,6 +122,13 @@ export async function POST(req: Request) {
     if (!ageGroupValue) {
       return NextResponse.json(
         { error: "Please select an age group." },
+        { status: 400 }
+      );
+    }
+
+    if (avatarUrlValue === undefined) {
+      return NextResponse.json(
+        { error: "Invalid profile photo." },
         { status: 400 }
       );
     }
@@ -138,6 +166,7 @@ export async function POST(req: Request) {
         body.signup_intent === "host" || body.signup_intent === "guest"
           ? body.signup_intent
           : "guest",
+      avatar_url: avatarUrlValue,
       updated_at: new Date().toISOString(),
     };
 

@@ -191,6 +191,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   let ownerMeetingStyle = "";
   let ownerInterests: string[] = [];
   let ownerResponseNote = "";
+  let ownerAvatarUrl: string | null = null;
 
   let ownerAverageRating = 0;
   let ownerReviewCount = 0;
@@ -213,6 +214,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     ownerMeetingStyle = ownerData.meetingStyle;
     ownerInterests = ownerData.interests;
     ownerResponseNote = ownerData.responseNote;
+    ownerAvatarUrl = ownerData.avatarUrl;
     ownerAverageRating = ownerData.averageRating;
     ownerReviewCount = ownerData.reviewCount;
     ownerCompletedMeetups = ownerData.completedMeetups;
@@ -410,6 +412,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const ownerProfileData: ProfileCardData = {
     userId: post.user_id,
     displayName: ownerName,
+    avatarUrl: ownerAvatarUrl,
     aboutMe: ownerAboutMe,
     gender: ownerGender,
     ageGroup: ownerAgeGroup,

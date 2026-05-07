@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Save } from "lucide-react";
+import { ImagePlus, Save, Trash2 } from "lucide-react";
+import { createClient } from "../../../lib/supabase/client";
 import {
   ABOUT_ME_RESTRICTION_MESSAGE,
   validateAboutMeContent,
@@ -18,6 +19,7 @@ import {
   APP_SUBTLE_TEXT_CLASS,
   APP_SURFACE_CARD_CLASS,
 } from "../../designSystem";
+import Avatar from "../../components/Avatar";
 
 type ProfileRow = {
   id: string;
@@ -31,6 +33,7 @@ type ProfileRow = {
   interests: string[] | null;
   response_time_note: string | null;
   is_public: boolean | null;
+  avatar_url: string | null;
 };
 
 const LANGUAGE_OPTIONS = [
@@ -103,6 +106,8 @@ function ToggleChip({
 
 const INPUT_CLASS =
   "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30";
+const AVATAR_BUCKET = "profile-avatars";
+const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
 
 function sanitizeSelectValue(value: string | null | undefined, placeholderPrefix: string) {
   const normalized = String(value || "").trim();
@@ -127,9 +132,12 @@ export default function ProfileEditForm({
 }: {
   profile: ProfileRow;
 }) {
+  const supabase = createClient();
   const [saving, setSaving] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   const [displayName, setDisplayName] = useState(profile.display_name || "");
+  const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url || "");
   const [aboutMe, setAboutMe] = useState(profile.about_me || "");
   const [gender, setGender] = useState(
     sanitizeAllowedValue(
@@ -178,6 +186,53 @@ export default function ProfileEditForm({
     }
   };
 
+  const handleAvatarUpload = async (file: File | null) => {
+    if (!file || uploadingAvatar) return;
+
+    if (!file.type.startsWith("image/")) {
+      setMessage("Please choose an image file.");
+      return;
+    }
+
+    if (file.size > MAX_AVATAR_BYTES) {
+      setMessage("Profile photo must be 2 MB or smaller.");
+      return;
+    }
+
+    try {
+      setUploadingAvatar(true);
+      setMessage("Uploading profile photo...");
+
+      const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const safeExtension = ["jpg", "jpeg", "png", "webp", "gif"].includes(extension)
+        ? extension
+        : "jpg";
+      const path = `${profile.id}/avatar-${Date.now()}.${safeExtension}`;
+      const { error } = await supabase.storage
+        .from(AVATAR_BUCKET)
+        .upload(path, file, {
+          cacheControl: "3600",
+          upsert: true,
+        });
+
+      if (error) throw error;
+
+      const { data } = supabase.storage.from(AVATAR_BUCKET).getPublicUrl(path);
+      setAvatarUrl(data.publicUrl);
+      setMessage("Profile photo uploaded. Save your profile to keep it.");
+    } catch (error) {
+      console.error("Profile avatar upload failed", error);
+      setMessage("Could not upload profile photo.");
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  const handleRemoveAvatar = () => {
+    setAvatarUrl("");
+    setMessage("Profile photo removed. Save your profile to keep it removed.");
+  };
+
   const handleSave = async () => {
     if (saving) return;
 
@@ -208,6 +263,7 @@ export default function ProfileEditForm({
       const payload = {
         id: profile.id,
         display_name: displayName.trim() || null,
+        avatar_url: avatarUrl || null,
         bio: aboutMeSummary || null,
         about_me: aboutMe.trim() || null,
         gender: normalizedGender || null,
@@ -262,17 +318,61 @@ export default function ProfileEditForm({
         </div>
 
         <div className="space-y-4">
-              <div>
+          <div className="rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <Avatar
+                src={avatarUrl}
+                name={displayName || profile.display_name}
+                size="xl"
+              />
+              <div className="min-w-0 flex-1">
                 <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                  Display Name
+                  Profile photo
                 </label>
-                <input
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  className={INPUT_CLASS}
-                  placeholder="Your name"
-                />
+                <p className={`mb-3 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+                  Upload a square image if you want to replace the default avatar.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <label className={`inline-flex cursor-pointer items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}>
+                    <ImagePlus className="h-4 w-4" />
+                    {uploadingAvatar ? "Uploading..." : "Upload photo"}
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/gif"
+                      className="sr-only"
+                      disabled={uploadingAvatar}
+                      onChange={(event) => {
+                        void handleAvatarUpload(event.target.files?.[0] || null);
+                        event.target.value = "";
+                      }}
+                    />
+                  </label>
+                  {avatarUrl ? (
+                    <button
+                      type="button"
+                      onClick={handleRemoveAvatar}
+                      className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Remove
+                    </button>
+                  ) : null}
+                </div>
               </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[#52616a]">
+              Display Name
+            </label>
+            <input
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              className={INPUT_CLASS}
+              placeholder="Your name"
+            />
+          </div>
 
               <div>
               <label className="mb-2 block text-sm font-medium text-[#52616a]">
