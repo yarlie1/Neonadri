@@ -12,11 +12,13 @@ import {
 } from "../designSystem";
 import BlockedUsersCard from "../components/BlockedUsersCard";
 import PushNotificationButton from "../components/PushNotificationButton";
+import EmailNotificationToggle from "./EmailNotificationToggle";
 
 type Profile = {
   id: string;
   is_admin: boolean | null;
   signup_intent: "guest" | "host" | null;
+  email_notifications_enabled: boolean | null;
 };
 
 const HERO_SURFACE_CLASS =
@@ -34,7 +36,7 @@ export default async function AccountPage() {
 
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, is_admin, signup_intent")
+    .select("id, is_admin, signup_intent, email_notifications_enabled")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -46,6 +48,7 @@ export default async function AccountPage() {
     id: user.id,
     is_admin: false,
     signup_intent: "guest" as const,
+    email_notifications_enabled: true,
   };
   let postingAccessAllowed = false;
   let postingBetaRequired = true;
@@ -120,6 +123,11 @@ export default async function AccountPage() {
           </p>
           <div className="mt-4 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
             <PushNotificationButton variant="toggle" />
+          </div>
+          <div className="mt-3 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+            <EmailNotificationToggle
+              initialEnabled={profile.email_notifications_enabled !== false}
+            />
           </div>
         </section>
 

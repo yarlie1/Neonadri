@@ -252,11 +252,7 @@ export default function PushNotificationButton({
             Device notifications
           </div>
           <div className="mt-1 text-xs font-medium text-[#728089]">
-            {denied
-              ? "Blocked in this browser"
-              : subscribed
-              ? "Alerts are on for this device"
-              : "Alerts are off for this device"}
+            Browser alerts for requests, updates, and messages
           </div>
         </div>
         <button
@@ -287,9 +283,6 @@ export default function PushNotificationButton({
             )}
           </span>
         </button>
-        {message ? (
-          <div className="w-full text-xs font-medium text-[#728089]">{message}</div>
-        ) : null}
       </div>
     );
   }

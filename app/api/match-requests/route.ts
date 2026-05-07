@@ -9,6 +9,7 @@ import {
   USER_TIME_ZONE_COOKIE,
 } from "../../../lib/userTimeZone";
 import { sendPushNotificationToUser } from "../../../lib/pushNotifications";
+import { sendEmailNotificationToUser } from "../../../lib/emailNotifications";
 
 export async function POST(req: Request) {
   try {
@@ -220,16 +221,29 @@ export async function POST(req: Request) {
     const meetupLabel =
       postData.meeting_purpose || postData.place_name || postData.location || "your meetup";
 
-    await sendPushNotificationToUser(postOwnerUserId, {
-      title: "New meetup request",
-      body: `${requesterName} requested ${meetupLabel}.`,
-      url: "/dashboard?tab=received",
-      tag: createdRequest?.id
-        ? `match-request-${createdRequest.id}`
-        : `match-request-post-${postId}`,
-    }).catch((pushError) => {
-      console.error("Match request push notification failed", pushError);
-    });
+    const notificationBody = `${requesterName} requested ${meetupLabel}.`;
+
+    await Promise.all([
+      sendPushNotificationToUser(postOwnerUserId, {
+        title: "New meetup request",
+        body: notificationBody,
+        url: "/dashboard?tab=received",
+        tag: createdRequest?.id
+          ? `match-request-${createdRequest.id}`
+          : `match-request-post-${postId}`,
+      }).catch((pushError) => {
+        console.error("Match request push notification failed", pushError);
+      }),
+      sendEmailNotificationToUser(postOwnerUserId, {
+        subject: "New meetup request on Neonadri",
+        headline: "New meetup request",
+        body: notificationBody,
+        url: "/dashboard?tab=received",
+        buttonLabel: "Review request",
+      }).catch((emailError) => {
+        console.error("Match request email notification failed", emailError);
+      }),
+    ]);
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error) {

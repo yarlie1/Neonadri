@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
 import { isAdultConfirmedUser } from "../../../../lib/adultGate";
 import { sendPushNotificationToUser } from "../../../../lib/pushNotifications";
+import { sendEmailNotificationToUser } from "../../../../lib/emailNotifications";
 
 function normalizeMatchRequestError(message: string, action: string) {
   const normalized = message.toLowerCase();
@@ -121,6 +122,16 @@ export async function POST(req: Request) {
       );
     }
 
+    const { data: otherPendingRequests } =
+      action === "accepted"
+        ? await supabase
+            .from("match_requests")
+            .select("id, requester_user_id")
+            .eq("post_id", requestData.post_id)
+            .eq("status", "pending")
+            .neq("id", requestId)
+        : { data: [] };
+
     const rpcName =
       action === "accepted" ? "accept_match_request" : "reject_match_request";
 
@@ -161,23 +172,84 @@ export async function POST(req: Request) {
       "your meetup request";
 
     if (action === "accepted") {
-      await sendPushNotificationToUser(requestData.requester_user_id, {
-        title: "Your request was accepted",
-        body: `Good news: ${meetupLabel} was accepted.`,
-        url: "/dashboard?tab=sent",
-        tag: `match-request-accepted-${requestId}`,
-      }).catch((pushError) => {
-        console.error("Match request accepted push notification failed", pushError);
-      });
+      const notificationBody = `Good news: ${meetupLabel} was accepted.`;
+
+      await Promise.all([
+        sendPushNotificationToUser(requestData.requester_user_id, {
+          title: "Your request was accepted",
+          body: notificationBody,
+          url: "/dashboard?tab=sent",
+          tag: `match-request-accepted-${requestId}`,
+        }).catch((pushError) => {
+          console.error("Match request accepted push notification failed", pushError);
+        }),
+        sendEmailNotificationToUser(requestData.requester_user_id, {
+          subject: "Your Neonadri request was accepted",
+          headline: "Your request was accepted",
+          body: notificationBody,
+          url: "/dashboard?tab=sent",
+          buttonLabel: "View request",
+        }).catch((emailError) => {
+          console.error("Match request accepted email notification failed", emailError);
+        }),
+      ]);
+
+      await Promise.all(
+        ((otherPendingRequests || []) as Array<{
+          id: number;
+          requester_user_id: string;
+        }>).map((otherRequest) => {
+          const declinedBody = `${meetupLabel} was matched with another request.`;
+
+          return Promise.all([
+            sendPushNotificationToUser(otherRequest.requester_user_id, {
+              title: "Your request was declined",
+              body: declinedBody,
+              url: "/dashboard?tab=sent",
+              tag: `match-request-rejected-${otherRequest.id}`,
+            }).catch((pushError) => {
+              console.error("Auto-rejected request push notification failed", {
+                pushError,
+                requestId: otherRequest.id,
+              });
+            }),
+            sendEmailNotificationToUser(otherRequest.requester_user_id, {
+              subject: "Your Neonadri request was declined",
+              headline: "Your request was declined",
+              body: declinedBody,
+              url: "/dashboard?tab=sent",
+              buttonLabel: "View request",
+            }).catch((emailError) => {
+              console.error("Auto-rejected request email notification failed", {
+                emailError,
+                requestId: otherRequest.id,
+              });
+            }),
+          ]);
+        })
+      );
     } else {
-      await sendPushNotificationToUser(requestData.requester_user_id, {
-        title: "Your request was declined",
-        body: `${meetupLabel} was declined by the host.`,
-        url: "/dashboard?tab=sent",
-        tag: `match-request-rejected-${requestId}`,
-      }).catch((pushError) => {
-        console.error("Match request rejected push notification failed", pushError);
-      });
+      const notificationBody = `${meetupLabel} was declined by the host.`;
+
+      await Promise.all([
+        sendPushNotificationToUser(requestData.requester_user_id, {
+          title: "Your request was declined",
+          body: notificationBody,
+          url: "/dashboard?tab=sent",
+          tag: `match-request-rejected-${requestId}`,
+        }).catch((pushError) => {
+          console.error("Match request rejected push notification failed", pushError);
+        }),
+        sendEmailNotificationToUser(requestData.requester_user_id, {
+          subject: "Your Neonadri request was declined",
+          headline: "Your request was declined",
+          body: notificationBody,
+          url: "/dashboard?tab=sent",
+          buttonLabel: "View request",
+        }).catch((emailError) => {
+          console.error("Match request rejected email notification failed", emailError);
+        }),
+      ]);
     }
 
     return NextResponse.json({ ok: true, result }, { status: 200 });

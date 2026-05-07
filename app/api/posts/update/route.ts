@@ -6,6 +6,7 @@ import {
 } from "../../../../lib/adultGate";
 import { getOwnedPostEditLockState } from "../../../../lib/postEditAccess";
 import { sendPushNotificationToUser } from "../../../../lib/pushNotifications";
+import { sendEmailNotificationToUser } from "../../../../lib/emailNotifications";
 
 export async function POST(req: Request) {
   try {
@@ -161,18 +162,33 @@ export async function POST(req: Request) {
 
     await Promise.all(
       recipientIds.map((recipientId) =>
-        sendPushNotificationToUser(recipientId, {
-          title: "Meetup updated",
-          body: `${meetupLabel} details were updated by the host.`,
-          url: `/posts/${postId}`,
-          tag: `meetup-updated-${postId}`,
-        }).catch((pushError) => {
-          console.error("Post update push notification failed", {
-            pushError,
-            recipientId,
-            postId,
-          });
-        })
+        Promise.all([
+          sendPushNotificationToUser(recipientId, {
+            title: "Meetup updated",
+            body: `${meetupLabel} details were updated by the host.`,
+            url: `/posts/${postId}`,
+            tag: `meetup-updated-${postId}`,
+          }).catch((pushError) => {
+            console.error("Post update push notification failed", {
+              pushError,
+              recipientId,
+              postId,
+            });
+          }),
+          sendEmailNotificationToUser(recipientId, {
+            subject: "A Neonadri meetup was updated",
+            headline: "Meetup updated",
+            body: `${meetupLabel} details were updated by the host.`,
+            url: `/posts/${postId}`,
+            buttonLabel: "View meetup",
+          }).catch((emailError) => {
+            console.error("Post update email notification failed", {
+              emailError,
+              recipientId,
+              postId,
+            });
+          }),
+        ])
       )
     );
 

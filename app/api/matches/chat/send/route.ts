@@ -17,6 +17,7 @@ import {
   rateLimitResponse,
 } from "../../../../../lib/rateLimit";
 import { sendPushNotificationToUser } from "../../../../../lib/pushNotifications";
+import { sendEmailNotificationToUser } from "../../../../../lib/emailNotifications";
 
 const PUBNUB_PUBLISH_ORIGIN = "https://ps.pndsn.com";
 const MATCH_CHAT_CANCELLED_MESSAGE =
@@ -212,14 +213,29 @@ export async function POST(request: Request) {
     console.error("[match-chat-send] activity update failed", updateError);
   }
 
-  await sendPushNotificationToUser(matchChat.otherUserId, {
-    title: "New chat message",
-    body: `${message.senderName}: ${text.length > 80 ? `${text.slice(0, 77)}...` : text}`,
-    url: `/matches/${matchId}/chat`,
-    tag: `match-chat-${matchId}`,
-  }).catch((pushError) => {
-    console.error("[match-chat-send] push notification failed", pushError);
-  });
+  const notificationBody = `${message.senderName}: ${
+    text.length > 80 ? `${text.slice(0, 77)}...` : text
+  }`;
+
+  await Promise.all([
+    sendPushNotificationToUser(matchChat.otherUserId, {
+      title: "New chat message",
+      body: notificationBody,
+      url: `/matches/${matchId}/chat`,
+      tag: `match-chat-${matchId}`,
+    }).catch((pushError) => {
+      console.error("[match-chat-send] push notification failed", pushError);
+    }),
+    sendEmailNotificationToUser(matchChat.otherUserId, {
+      subject: "New Neonadri chat message",
+      headline: "New chat message",
+      body: notificationBody,
+      url: `/matches/${matchId}/chat`,
+      buttonLabel: "Open chat",
+    }).catch((emailError) => {
+      console.error("[match-chat-send] email notification failed", emailError);
+    }),
+  ]);
 
   return NextResponse.json({
     ok: true,

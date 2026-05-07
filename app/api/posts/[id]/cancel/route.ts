@@ -7,6 +7,7 @@ import {
   USER_TIME_ZONE_COOKIE,
 } from "../../../../../lib/userTimeZone";
 import { sendPushNotificationToUser } from "../../../../../lib/pushNotifications";
+import { sendEmailNotificationToUser } from "../../../../../lib/emailNotifications";
 
 type RouteContext = {
   params: {
@@ -123,18 +124,33 @@ export async function POST(_req: Request, { params }: RouteContext) {
 
     await Promise.all(
       Array.from(recipientIds).map((recipientId) =>
-        sendPushNotificationToUser(recipientId, {
-          title: "Meetup cancelled",
-          body: `${meetupLabel} was cancelled by the host.`,
-          url: "/dashboard?tab=matches",
-          tag: `meetup-cancelled-${postId}`,
-        }).catch((pushError) => {
-          console.error("Cancel meetup push notification failed", {
-            pushError,
-            recipientId,
-            postId,
-          });
-        })
+        Promise.all([
+          sendPushNotificationToUser(recipientId, {
+            title: "Meetup cancelled",
+            body: `${meetupLabel} was cancelled by the host.`,
+            url: "/dashboard?tab=matches",
+            tag: `meetup-cancelled-${postId}`,
+          }).catch((pushError) => {
+            console.error("Cancel meetup push notification failed", {
+              pushError,
+              recipientId,
+              postId,
+            });
+          }),
+          sendEmailNotificationToUser(recipientId, {
+            subject: "A Neonadri meetup was cancelled",
+            headline: "Meetup cancelled",
+            body: `${meetupLabel} was cancelled by the host.`,
+            url: "/dashboard?tab=matches",
+            buttonLabel: "View dashboard",
+          }).catch((emailError) => {
+            console.error("Cancel meetup email notification failed", {
+              emailError,
+              recipientId,
+              postId,
+            });
+          }),
+        ])
       )
     );
 
