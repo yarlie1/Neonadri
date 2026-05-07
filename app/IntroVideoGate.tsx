@@ -1,10 +1,94 @@
 "use client";
 
-import { Play, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import {
+  AlertTriangle,
+  Check,
+  Clock,
+  DollarSign,
+  MapPin,
+  MessageCircle,
+  Play,
+  Send,
+  ShieldCheck,
+  Sparkles,
+  UserCheck,
+  X,
+} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "neonadri-intro-dismissed-date-v1";
+const STORAGE_KEY = "neonadri-intro-dismissed-date-v2";
 const OPEN_EVENT = "neonadri:open-intro";
+const SLIDE_MS = 4200;
+
+const slides = [
+  {
+    eyebrow: "Step 1 - Host",
+    title: "Post a meetup",
+    body: "Choose the activity, time, place, and what you will cover so guests know exactly what they are requesting.",
+    icon: Sparkles,
+    chips: [
+      { label: "Activity", icon: Sparkles },
+      { label: "Time", icon: Clock },
+      { label: "Place", icon: MapPin },
+      { label: "Host covers", icon: DollarSign },
+    ],
+  },
+  {
+    eyebrow: "Step 2 - Guest",
+    title: "Send a request",
+    body: "Guests browse open meetups and request to join the one that fits their schedule and comfort level.",
+    icon: Send,
+    chips: [
+      { label: "Browse", icon: Sparkles },
+      { label: "Review details", icon: Check },
+      { label: "Request", icon: Send },
+    ],
+  },
+  {
+    eyebrow: "Step 3 - Host",
+    title: "Accept a guest",
+    body: "The host reviews incoming requests and accepts one guest. Both people are then connected for the meetup.",
+    icon: UserCheck,
+    chips: [
+      { label: "Review requests", icon: Check },
+      { label: "Accept", icon: UserCheck },
+      { label: "Matched", icon: Sparkles },
+    ],
+  },
+  {
+    eyebrow: "Step 4 - Chat",
+    title: "Coordinate details",
+    body: "Use chat to confirm small details like arrival time, meeting spot, and anything that helps the plan feel clear.",
+    icon: MessageCircle,
+    chips: [
+      { label: "Confirm time", icon: Clock },
+      { label: "Confirm spot", icon: MapPin },
+      { label: "Stay clear", icon: MessageCircle },
+    ],
+  },
+  {
+    eyebrow: "Step 5 - Meetup",
+    title: "Meet in person",
+    body: "Show up respectfully, keep the plan simple, and enjoy a low-pressure real-world conversation.",
+    icon: ShieldCheck,
+    chips: [
+      { label: "Public place", icon: MapPin },
+      { label: "Respectful", icon: ShieldCheck },
+      { label: "No pressure", icon: Sparkles },
+    ],
+  },
+  {
+    eyebrow: "Before you go",
+    title: "Stay safe and considerate",
+    body: "Use public locations, keep expectations clear, avoid unsafe requests, and report anything that feels off.",
+    icon: AlertTriangle,
+    chips: [
+      { label: "Adults only", icon: ShieldCheck },
+      { label: "Public meetups", icon: MapPin },
+      { label: "Report concerns", icon: AlertTriangle },
+    ],
+  },
+] as const;
 
 function getTodayKey() {
   const now = new Date();
@@ -15,40 +99,22 @@ function getTodayKey() {
 }
 
 export default function IntroVideoGate() {
-  const mobileVideoRef = useRef<HTMLVideoElement | null>(null);
-  const desktopVideoRef = useRef<HTMLVideoElement | null>(null);
-  const mobileBackgroundVideoRef = useRef<HTMLVideoElement | null>(null);
-  const desktopBackgroundVideoRef = useRef<HTMLVideoElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [hasEnded, setHasEnded] = useState(false);
   const [isReady, setIsReady] = useState(false);
-  const [playRequest, setPlayRequest] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [progressKey, setProgressKey] = useState(0);
+  const hasEnded = currentSlide === slides.length - 1;
+  const activeSlide = slides[currentSlide];
+  const ActiveIcon = activeSlide.icon;
+  const slideNumberLabel = useMemo(
+    () => `${currentSlide + 1} / ${slides.length}`,
+    [currentSlide]
+  );
 
-  const resetAndPlayVideos = async () => {
-    const videos = [
-      mobileVideoRef.current,
-      desktopVideoRef.current,
-      mobileBackgroundVideoRef.current,
-      desktopBackgroundVideoRef.current,
-    ].filter(Boolean) as HTMLVideoElement[];
-
-    setHasEnded(false);
-
-    await Promise.all(
-      videos.map(async (video) => {
-        try {
-          video.pause();
-          video.currentTime = 0;
-          await video.play();
-        } catch {
-          try {
-            video.load();
-            video.currentTime = 0;
-            await video.play();
-          } catch {}
-        }
-      })
-    );
+  const openIntro = () => {
+    setCurrentSlide(0);
+    setProgressKey((value) => value + 1);
+    setIsVisible(true);
   };
 
   useEffect(() => {
@@ -60,13 +126,11 @@ export default function IntroVideoGate() {
     try {
       const dismissed = window.localStorage.getItem(STORAGE_KEY);
       if (shouldOpenFromUrl || (shouldAutoOpen && dismissed !== todayKey)) {
-        setIsVisible(true);
-        setPlayRequest((value) => value + 1);
+        openIntro();
       }
     } catch {
       if (shouldOpenFromUrl || shouldAutoOpen) {
-        setIsVisible(true);
-        setPlayRequest((value) => value + 1);
+        openIntro();
       }
     } finally {
       if (shouldOpenFromUrl) {
@@ -82,23 +146,10 @@ export default function IntroVideoGate() {
   }, []);
 
   useEffect(() => {
-    if (!isVisible || playRequest === 0) return;
+    const handleOpenIntro = () => openIntro();
 
-    const frameId = window.requestAnimationFrame(() => {
-      void resetAndPlayVideos();
-    });
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, [isVisible, playRequest]);
-
-  useEffect(() => {
-    const openIntro = () => {
-      setIsVisible(true);
-      setPlayRequest((value) => value + 1);
-    };
-
-    window.addEventListener(OPEN_EVENT, openIntro);
-    return () => window.removeEventListener(OPEN_EVENT, openIntro);
+    window.addEventListener(OPEN_EVENT, handleOpenIntro);
+    return () => window.removeEventListener(OPEN_EVENT, handleOpenIntro);
   }, []);
 
   useEffect(() => {
@@ -112,6 +163,17 @@ export default function IntroVideoGate() {
     };
   }, [isVisible]);
 
+  useEffect(() => {
+    if (!isVisible || hasEnded) return;
+
+    const timer = window.setTimeout(() => {
+      setCurrentSlide((value) => Math.min(value + 1, slides.length - 1));
+      setProgressKey((value) => value + 1);
+    }, SLIDE_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [currentSlide, hasEnded, isVisible]);
+
   const handleClose = () => {
     try {
       window.localStorage.setItem(STORAGE_KEY, getTodayKey());
@@ -121,7 +183,18 @@ export default function IntroVideoGate() {
   };
 
   const handleReplay = () => {
-    setPlayRequest((value) => value + 1);
+    setCurrentSlide(0);
+    setProgressKey((value) => value + 1);
+  };
+
+  const handleNext = () => {
+    if (hasEnded) {
+      handleClose();
+      return;
+    }
+
+    setCurrentSlide((value) => Math.min(value + 1, slides.length - 1));
+    setProgressKey((value) => value + 1);
   };
 
   if (!isReady || !isVisible) {
@@ -129,111 +202,165 @@ export default function IntroVideoGate() {
   }
 
   return (
-    <div className="fixed inset-0 z-[120] overflow-hidden bg-[#091117] text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_32%),linear-gradient(180deg,rgba(8,14,18,0.18)_0%,rgba(8,14,18,0.72)_100%)]" />
-
-      <div className="absolute inset-0 hidden sm:block">
-        <video
-          ref={desktopBackgroundVideoRef}
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover blur-2xl brightness-[0.42]"
-          autoPlay
-          muted
-          playsInline
-          preload="auto"
-        >
-          <source src="/neonadri-intro.webm" type="video/webm" />
-        </video>
+    <div className="fixed inset-0 z-[120] overflow-hidden bg-[#f7fafb] text-[#22303a]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.98)_0%,rgba(234,241,245,0.92)_35%,rgba(205,216,224,0.86)_100%)]" />
+      <div className="absolute inset-x-0 top-0 h-1 bg-[#dce5eb]">
+        <div
+          key={progressKey}
+          className="h-full origin-left bg-[#8ea0aa]"
+          style={{
+            animation: hasEnded ? "none" : `intro-progress ${SLIDE_MS}ms linear`,
+          }}
+        />
       </div>
 
-      <div className="absolute inset-0 sm:hidden">
-        <video
-          ref={mobileBackgroundVideoRef}
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover blur-2xl brightness-[0.42]"
-          autoPlay
-          muted
-          playsInline
-          preload="auto"
-        >
-          <source src="/neonadri-intro.webm" type="video/webm" />
-        </video>
-      </div>
-
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,10,14,0.18)_0%,rgba(5,10,14,0.28)_22%,rgba(5,10,14,0.64)_100%)]" />
+      <style jsx>{`
+        @keyframes intro-progress {
+          from {
+            transform: scaleX(0);
+          }
+          to {
+            transform: scaleX(1);
+          }
+        }
+      `}</style>
 
       <button
         type="button"
         onClick={handleClose}
-        className="absolute right-5 top-5 z-10 inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-md transition hover:bg-white/16"
+        className="absolute right-4 top-5 z-20 inline-flex items-center gap-2 rounded-full border border-[#dbe4ea] bg-white/80 px-4 py-2 text-sm font-medium text-[#52616a] shadow-[0_14px_32px_rgba(118,126,133,0.12)] backdrop-blur-md transition hover:bg-white"
       >
         <X className="h-4 w-4" />
         Skip
       </button>
 
-      <div className="absolute inset-x-0 top-20 bottom-[16.5rem] z-[9] hidden items-center justify-center px-8 sm:flex lg:top-24 lg:bottom-[17.5rem] lg:px-12">
-        <video
-          ref={desktopVideoRef}
-          className="max-h-full max-w-full object-contain"
-          autoPlay
-          muted
-          playsInline
-          preload="auto"
-          onEnded={() => setHasEnded(true)}
-        >
-          <source src="/neonadri-intro.webm" type="video/webm" />
-        </video>
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pb-36 pt-16 sm:px-6 sm:pb-32">
+        <div className="grid w-full max-w-6xl gap-5 md:grid-cols-[0.92fr_1.08fr] md:items-center">
+          <section className="rounded-[32px] border border-[#dce5eb] bg-white/72 p-5 shadow-[0_28px_80px_rgba(118,126,133,0.16)] backdrop-blur-xl sm:p-7">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#66757e]">
+              <ActiveIcon className="h-3.5 w-3.5" />
+              {activeSlide.eyebrow}
+            </div>
+            <h1 className="mt-5 text-[42px] font-black leading-[0.92] tracking-[-0.05em] text-[#22303a] sm:text-[64px]">
+              {activeSlide.title}
+            </h1>
+            <p className="mt-5 max-w-xl text-[17px] leading-7 text-[#62717a] sm:text-[19px]">
+              {activeSlide.body}
+            </p>
+
+            <div className="mt-5 flex gap-1.5 md:hidden">
+              {slides.map((slide, index) => (
+                <button
+                  key={slide.title}
+                  type="button"
+                  onClick={() => {
+                    setCurrentSlide(index);
+                    setProgressKey((value) => value + 1);
+                  }}
+                  aria-label={slide.title}
+                  className={`h-2 flex-1 rounded-full transition ${
+                    index === currentSlide ? "bg-[#7f929d]" : "bg-[#dce5eb]"
+                  }`}
+                />
+              ))}
+            </div>
+
+            <div className="mt-7 flex flex-wrap gap-2.5">
+              {activeSlide.chips.map((chip) => {
+                const ChipIcon = chip.icon;
+
+                return (
+                  <span
+                    key={chip.label}
+                    className="inline-flex items-center gap-2 rounded-full border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] px-3.5 py-2 text-sm font-semibold text-[#52616a] shadow-[0_12px_26px_rgba(118,126,133,0.08)]"
+                  >
+                    <ChipIcon className="h-4 w-4" />
+                    {chip.label}
+                  </span>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="hidden rounded-[32px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(237,243,246,0.94)_100%)] p-4 shadow-[0_28px_80px_rgba(118,126,133,0.14)] sm:p-6 md:block">
+            <div className="grid gap-3">
+              {slides.map((slide, index) => {
+                const StepIcon = slide.icon;
+                const active = index === currentSlide;
+                const complete = index < currentSlide;
+
+                return (
+                  <button
+                    key={slide.title}
+                    type="button"
+                    onClick={() => {
+                      setCurrentSlide(index);
+                      setProgressKey((value) => value + 1);
+                    }}
+                    className={`grid grid-cols-[42px_minmax(0,1fr)] items-center gap-3 rounded-[24px] border px-3.5 py-3 text-left transition sm:grid-cols-[48px_minmax(0,1fr)] sm:px-4 ${
+                      active
+                        ? "border-[#b8c6cf] bg-white text-[#22303a] shadow-[0_18px_40px_rgba(118,126,133,0.14)]"
+                        : "border-[#e3eaf0] bg-white/56 text-[#66757e] hover:bg-white/82"
+                    }`}
+                  >
+                    <span
+                      className={`inline-flex h-10 w-10 items-center justify-center rounded-full border sm:h-12 sm:w-12 ${
+                        active
+                          ? "border-[#cbd7de] bg-[linear-gradient(180deg,#ffffff_0%,#dce7ed_100%)]"
+                          : "border-[#e1e8ed] bg-[#f7fafb]"
+                      }`}
+                    >
+                      {complete ? (
+                        <Check className="h-4 w-4" />
+                      ) : (
+                        <StepIcon className="h-4 w-4" />
+                      )}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[11px] font-bold uppercase tracking-[0.16em] text-[#88949b]">
+                        {slide.eyebrow}
+                      </span>
+                      <span className="mt-1 block text-base font-black tracking-[-0.03em]">
+                        {slide.title}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        </div>
       </div>
 
-      <div className="absolute inset-x-0 top-16 bottom-[17.5rem] z-[9] flex items-center justify-center px-4 sm:hidden">
-        <video
-          ref={mobileVideoRef}
-          className="max-h-full w-full object-contain"
-          autoPlay
-          muted
-          playsInline
-          preload="auto"
-          onEnded={() => setHasEnded(true)}
-        >
-          <source src="/neonadri-intro.webm" type="video/webm" />
-        </video>
-      </div>
-
-      <div className="absolute inset-x-0 bottom-0 z-10 px-3 pb-4 sm:px-6 sm:pb-8">
-        <div className="mx-auto max-w-5xl rounded-[28px] border border-white/14 bg-[rgba(10,18,24,0.58)] px-4 py-4 shadow-[0_28px_64px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:rounded-[32px] sm:px-7 sm:py-6">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/70">
-            Neonadri Intro
+      <div className="absolute inset-x-0 bottom-0 z-20 border-t border-[#dce5eb] bg-white/78 px-4 py-4 shadow-[0_-18px_48px_rgba(118,126,133,0.12)] backdrop-blur-xl sm:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#849099]">
+              Neonadri intro - {slideNumberLabel}
+            </div>
+            <div className="mt-1 text-sm font-medium text-[#62717a]">
+              {hasEnded
+                ? "You're ready to enter Neonadri."
+                : "A quick walkthrough of how a meetup works."}
+            </div>
           </div>
-          <h2 className="mt-2 max-w-3xl text-[26px] font-black leading-[0.95] tracking-[-0.05em] text-white sm:text-[42px]">
-            A calmer way to meet someone new.
-          </h2>
-          <p className="mt-3 max-w-3xl text-[13px] leading-5 text-white/78 sm:text-[15px] sm:leading-6">
-            Watch the quick intro, then enter the full Neonadri experience.
-          </p>
-
-          <div className="mt-5 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-3">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/22 bg-white px-5 py-3 text-sm font-semibold text-[#1c2a33] transition hover:bg-[#f3f7fa] sm:min-h-0"
-            >
-              Enter Neonadri
-            </button>
+          <div className="flex flex-col gap-2 sm:flex-row">
             <button
               type="button"
               onClick={handleReplay}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/18 bg-white/10 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/16 sm:min-h-0"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#dbe4ea] bg-white px-5 py-3 text-sm font-medium text-[#52616a] transition hover:bg-[#f7fafb] sm:min-h-0"
             >
               <Play className="h-4 w-4" />
-              Replay intro
+              Replay
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#bac7d0] bg-[linear-gradient(180deg,#ffffff_0%,#dce6ec_100%)] px-5 py-3 text-sm font-bold text-[#24323c] shadow-[0_16px_30px_rgba(118,126,133,0.16)] transition hover:border-[#a8b8c2] sm:min-h-0"
+            >
+              {hasEnded ? "Enter Neonadri" : "Next"}
             </button>
           </div>
-
-          {hasEnded ? (
-            <div className="mt-4 text-sm text-white/74">
-              The intro has finished. Tap Enter Neonadri to continue.
-            </div>
-          ) : null}
         </div>
       </div>
     </div>
