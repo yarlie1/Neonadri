@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
 import { isAdultConfirmedUser } from "../../../../lib/adultGate";
+import { sendPushNotificationToUser } from "../../../../lib/pushNotifications";
 
 function normalizeMatchRequestError(message: string, action: string) {
   const normalized = message.toLowerCase();
@@ -60,7 +61,7 @@ export async function POST(req: Request) {
 
     const { data: requestData, error: requestLookupError } = await supabase
       .from("match_requests")
-      .select("id, post_id, post_owner_user_id")
+      .select("id, post_id, post_owner_user_id, requester_user_id")
       .eq("id", requestId)
       .maybeSingle();
 
@@ -94,7 +95,7 @@ export async function POST(req: Request) {
 
     const { data: postData, error: postLookupError } = await supabase
       .from("posts")
-      .select("status")
+      .select("status, meeting_purpose, place_name, location")
       .eq("id", requestData.post_id)
       .maybeSingle();
 
@@ -151,6 +152,23 @@ export async function POST(req: Request) {
         { error: normalizeMatchRequestError(result?.error || "", action) },
         { status: 400 }
       );
+    }
+
+    if (action === "accepted") {
+      const meetupLabel =
+        postData?.meeting_purpose ||
+        postData?.place_name ||
+        postData?.location ||
+        "your meetup request";
+
+      await sendPushNotificationToUser(requestData.requester_user_id, {
+        title: "Your request was accepted",
+        body: `Good news: ${meetupLabel} was accepted.`,
+        url: "/dashboard?tab=sent",
+        tag: `match-request-accepted-${requestId}`,
+      }).catch((pushError) => {
+        console.error("Match request accepted push notification failed", pushError);
+      });
     }
 
     return NextResponse.json({ ok: true, result }, { status: 200 });

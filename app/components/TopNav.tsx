@@ -24,6 +24,7 @@ import {
   USER_TIME_ZONE_COOKIE,
 } from "../../lib/userTimeZone";
 import { loadNavIndicatorState, type NavIndicatorState } from "../../lib/navIndicators";
+import PushNotificationButton from "./PushNotificationButton";
 import {
   APP_PILL_ACTIVE_CLASS,
   APP_PILL_INACTIVE_CLASS,
@@ -485,6 +486,8 @@ export default function TopNav({
 
             {user ? (
               <>
+                <PushNotificationButton />
+
                 <Link
                   href={dashboardHref}
                   className={`${navBtn(isActivePath(pathname, "/dashboard"))} relative pr-12`}
@@ -645,6 +648,10 @@ export default function TopNav({
                         <Plus className="h-4 w-4" />
                         Create Meetup
                       </Link>
+
+                      <div className="px-3 py-2">
+                        <PushNotificationButton showLabel />
+                      </div>
 
                       <div className="my-1 border-t border-[#eef3f6]" />
 

@@ -8,6 +8,7 @@ import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
 } from "../../../lib/userTimeZone";
+import { sendPushNotificationToUser } from "../../../lib/pushNotifications";
 
 export async function POST(req: Request) {
   try {
@@ -61,12 +62,12 @@ export async function POST(req: Request) {
       await Promise.all([
         supabase
           .from("posts")
-          .select("user_id, target_gender, target_age_group, meeting_time, status")
+          .select("user_id, target_gender, target_age_group, meeting_time, status, meeting_purpose, place_name, location")
           .eq("id", postId)
           .maybeSingle(),
         supabase
           .from("profiles")
-          .select("gender, age_group")
+          .select("gender, age_group, display_name")
           .eq("id", user.id)
           .maybeSingle(),
       ]);
@@ -184,12 +185,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error }, { status: 409 });
     }
 
-    const { error } = await supabase.from("match_requests").insert({
-      post_id: postId,
-      requester_user_id: user.id,
-      post_owner_user_id: postOwnerUserId,
-      status: "pending",
-    });
+    const { data: createdRequest, error } = await supabase
+      .from("match_requests")
+      .insert({
+        post_id: postId,
+        requester_user_id: user.id,
+        post_owner_user_id: postOwnerUserId,
+        status: "pending",
+      })
+      .select("id")
+      .maybeSingle();
 
     if (error) {
       if (error.code === "23505") {
@@ -210,6 +215,21 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
+
+    const requesterName = profileData?.display_name || "Someone";
+    const meetupLabel =
+      postData.meeting_purpose || postData.place_name || postData.location || "your meetup";
+
+    await sendPushNotificationToUser(postOwnerUserId, {
+      title: "New meetup request",
+      body: `${requesterName} requested ${meetupLabel}.`,
+      url: "/dashboard?tab=received",
+      tag: createdRequest?.id
+        ? `match-request-${createdRequest.id}`
+        : `match-request-post-${postId}`,
+    }).catch((pushError) => {
+      console.error("Match request push notification failed", pushError);
+    });
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error) {
