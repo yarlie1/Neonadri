@@ -593,10 +593,10 @@ function SignupPageContent() {
           <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
             <div className={APP_EYEBROW_CLASS}>Account created</div>
             <h1 className="mt-3 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-              알림을 켤까요?
+              Turn on notifications?
             </h1>
             <p className={`mt-3 ${APP_BODY_TEXT_CLASS}`}>
-              밋업 요청, 수락/거절, 채팅 메시지 등이 왔을 때 이 기기에서 알림을 받을 수 있도록 하겠습니까?
+              Would you like to receive alerts on this device when meetup requests, request updates, or chat messages arrive?
             </p>
 
             <div className="mt-6 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
