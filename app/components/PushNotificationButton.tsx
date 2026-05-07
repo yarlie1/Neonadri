@@ -184,7 +184,10 @@ export default function PushNotificationButton({
       const payload = await response.json().catch(() => null);
 
       if (!response.ok) {
-        setMessage(payload?.error || "Test alert failed");
+        const reason = payload?.result?.reason
+          ? ` (${payload.result.reason})`
+          : "";
+        setMessage(`${payload?.error || "Test alert failed"}${reason}`);
         return;
       }
 
