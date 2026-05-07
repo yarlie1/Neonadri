@@ -13,12 +13,26 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const result = await sendPushNotificationToUser(user.id, {
-    title: "Neonadri alerts are on",
-    body: "This is a test notification from Neonadri.",
-    url: "/dashboard",
-    tag: "neonadri-test-alert",
-  });
+  let result;
+  try {
+    result = await sendPushNotificationToUser(user.id, {
+      title: "Neonadri alerts are on",
+      body: "This is a test notification from Neonadri.",
+      url: "/dashboard",
+      tag: "neonadri-test-alert",
+    });
+  } catch (error) {
+    console.error("[push-test] unexpected failure", error);
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unexpected push test failure.",
+      },
+      { status: 500 }
+    );
+  }
 
   if (!result.ok && !result.skipped) {
     return NextResponse.json(
