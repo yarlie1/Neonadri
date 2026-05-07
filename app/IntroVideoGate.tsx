@@ -2,7 +2,6 @@
 
 import {
   Check,
-  Handshake,
   MessageCircle,
   Play,
   Send,
@@ -23,82 +22,38 @@ const slides = [
     title: "1. Post a meetup",
     body: "Add the activity, time, place, and what the host covers.",
     icon: Sparkles,
-    visual: "post",
   },
   {
     eyebrow: "Guest",
     title: "2. Send a request",
     body: "Choose a meetup that fits and ask to join.",
     icon: Send,
-    visual: "request",
   },
   {
     eyebrow: "Host",
     title: "3. Accept a guest",
     body: "Review requests and accept one guest to match.",
     icon: UserCheck,
-    visual: "accept",
   },
   {
     eyebrow: "Host / Guest",
     title: "4. Chat",
     body: "Confirm the exact time, meeting spot, and small details.",
     icon: MessageCircle,
-    visual: "chat",
   },
   {
     eyebrow: "Host / Guest",
     title: "5. Meetup",
     body: "Meet in a public place and keep the plan respectful.",
     icon: ShieldCheck,
-    visual: "meetup",
   },
   {
-    eyebrow: "Good Habits",
-    title: "Quick notice",
+    eyebrow: "Quick notice",
+    title: "Respect and care",
     body: "Meet in public places, keep plans clear, and use reports when something feels off.",
     icon: ShieldCheck,
-    visual: "habits",
   },
 ] as const;
-
-function IntroIllustration({
-  visual,
-}: {
-  visual: (typeof slides)[number]["visual"];
-}) {
-  const iconMap = {
-    post: Sparkles,
-    request: Send,
-    accept: UserCheck,
-    chat: MessageCircle,
-    meetup: Handshake,
-    habits: ShieldCheck,
-  } as const;
-  const labelMap = {
-    post: "Create",
-    request: "Request",
-    accept: "Accept",
-    chat: "Chat",
-    meetup: "Meet",
-    habits: "Notice",
-  } as const;
-  const VisualIcon = iconMap[visual];
-
-  return (
-    <div className="flex min-h-[8rem] items-center justify-center">
-      <div className="flex flex-col items-center gap-3">
-        <span className="inline-flex h-20 w-20 items-center justify-center rounded-full border border-[#dce5eb] bg-white text-[#52616a] shadow-[0_16px_32px_rgba(118,126,133,0.12)] sm:h-24 sm:w-24">
-          <VisualIcon className="h-9 w-9 sm:h-10 sm:w-10" />
-        </span>
-        <span className="h-1 w-16 rounded-full bg-[#dce5eb]" />
-        <span className="text-xs font-black uppercase tracking-[0.18em] text-[#849099]">
-          {labelMap[visual]}
-        </span>
-      </div>
-    </div>
-  );
-}
 
 function getTodayKey() {
   const now = new Date();
@@ -246,23 +201,20 @@ export default function IntroVideoGate() {
 
       <div className="relative z-10 flex max-h-screen min-h-screen items-center justify-center overflow-y-auto px-4 pb-[11.5rem] pt-20 sm:px-6 sm:pb-32 sm:pt-16">
         <div className="grid w-full max-w-6xl gap-5 md:grid-cols-[0.92fr_1.08fr] md:items-center">
-          <section className="rounded-[32px] border border-[#dce5eb] bg-white/72 p-5 shadow-[0_28px_80px_rgba(118,126,133,0.16)] backdrop-blur-xl sm:p-7">
-            <div className="inline-flex items-center gap-2 rounded-[18px] border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-4 py-2 text-[16px] font-black uppercase tracking-[0.08em] text-[#31414a] sm:text-[18px]">
+          <section className="relative overflow-hidden rounded-[32px] border border-[#dce5eb] bg-white/72 p-5 shadow-[0_28px_80px_rgba(118,126,133,0.16)] backdrop-blur-xl sm:p-7">
+            <ActiveIcon className="pointer-events-none absolute -right-4 top-8 h-40 w-40 text-[#dce5eb]/55 sm:-right-8 sm:top-4 sm:h-60 sm:w-60" />
+            <div className="relative inline-flex items-center gap-2 rounded-[18px] border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-4 py-2 text-[16px] font-black uppercase tracking-[0.08em] text-[#31414a] sm:text-[18px]">
               <ActiveIcon className="h-3.5 w-3.5" />
               {activeSlide.eyebrow}
             </div>
-            <h1 className="mt-5 text-[42px] font-black leading-[0.92] tracking-[-0.05em] text-[#22303a] sm:text-[64px]">
+            <h1 className="relative mt-5 text-[42px] font-black leading-[0.92] tracking-[-0.05em] text-[#22303a] sm:text-[64px]">
               {activeSlide.title}
             </h1>
-            <p className="mt-5 max-w-xl text-[17px] leading-7 text-[#62717a] sm:text-[19px]">
+            <p className="relative mt-5 max-w-xl text-[17px] leading-7 text-[#62717a] sm:text-[19px]">
               {activeSlide.body}
             </p>
 
-            <div className="mt-5 rounded-[28px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,0.62)_0%,rgba(237,243,246,0.72)_100%)] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:mt-6 sm:p-4">
-              <IntroIllustration visual={activeSlide.visual} />
-            </div>
-
-            <div className="mt-5 flex gap-1.5 md:hidden">
+            <div className="relative mt-8 flex gap-1.5 md:hidden">
               {slides.map((slide, index) => (
                 <button
                   key={slide.title}
