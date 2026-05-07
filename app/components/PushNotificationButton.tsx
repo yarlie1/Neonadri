@@ -5,6 +5,7 @@ import { Bell, BellOff, LoaderCircle } from "lucide-react";
 
 type PushConfig = {
   enabled?: boolean;
+  sendEnabled?: boolean;
   publicKey?: string | null;
 };
 
@@ -30,10 +31,12 @@ export default function PushNotificationButton({
 }) {
   const [supported, setSupported] = useState(false);
   const [configured, setConfigured] = useState(false);
+  const [sendConfigured, setSendConfigured] = useState(false);
   const [publicKey, setPublicKey] = useState("");
   const [permission, setPermission] = useState<NotificationPermission>("default");
   const [subscribed, setSubscribed] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (
@@ -56,6 +59,7 @@ export default function PushNotificationButton({
         if (!active) return;
 
         setConfigured(Boolean(config.enabled && config.publicKey));
+        setSendConfigured(Boolean(config.sendEnabled));
         setPublicKey(config.publicKey || "");
 
         const registration = await navigator.serviceWorker.register("/sw.js");
@@ -94,6 +98,7 @@ export default function PushNotificationButton({
   const enableNotifications = async () => {
     if (busy) return;
     setBusy(true);
+    setMessage("");
 
     try {
       const nextPermission =
@@ -128,8 +133,10 @@ export default function PushNotificationButton({
       }
 
       setSubscribed(true);
+      setMessage("Alerts on");
     } catch (error) {
       console.error("[push-button] enable failed", error);
+      setMessage("Could not turn on alerts");
     } finally {
       setBusy(false);
     }
@@ -138,6 +145,7 @@ export default function PushNotificationButton({
   const disableNotifications = async () => {
     if (busy) return;
     setBusy(true);
+    setMessage("");
 
     try {
       const registration = await navigator.serviceWorker.ready;
@@ -155,8 +163,35 @@ export default function PushNotificationButton({
       }
 
       setSubscribed(false);
+      setMessage("Alerts off");
     } catch (error) {
       console.error("[push-button] disable failed", error);
+      setMessage("Could not turn off alerts");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const sendTestNotification = async () => {
+    if (busy) return;
+    setBusy(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/push/test", {
+        method: "POST",
+      });
+      const payload = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        setMessage(payload?.error || "Test alert failed");
+        return;
+      }
+
+      setMessage("Test sent");
+    } catch (error) {
+      console.error("[push-button] test failed", error);
+      setMessage("Test alert failed");
     } finally {
       setBusy(false);
     }
@@ -170,24 +205,46 @@ export default function PushNotificationButton({
     : "Turn on notifications";
 
   return (
-    <button
-      type="button"
-      onClick={subscribed ? disableNotifications : enableNotifications}
-      disabled={busy || denied}
-      className="inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-medium text-[#728089] transition hover:bg-[#eef4f7] hover:text-[#33434c] disabled:cursor-not-allowed disabled:opacity-60"
-      title={label}
-      aria-label={label}
-    >
-      {busy ? (
-        <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
-      ) : subscribed ? (
-        <Bell className="h-3.5 w-3.5" />
-      ) : (
-        <BellOff className="h-3.5 w-3.5" />
-      )}
-      <span className={showLabel ? "inline" : "hidden lg:inline"}>
-        {subscribed ? "Alerts on" : "Alerts"}
-      </span>
-    </button>
+    <span className="inline-flex items-center gap-1.5">
+      <button
+        type="button"
+        onClick={subscribed ? disableNotifications : enableNotifications}
+        disabled={busy || denied}
+        className="inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-medium text-[#728089] transition hover:bg-[#eef4f7] hover:text-[#33434c] disabled:cursor-not-allowed disabled:opacity-60"
+        title={label}
+        aria-label={label}
+      >
+        {busy ? (
+          <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+        ) : subscribed ? (
+          <Bell className="h-3.5 w-3.5" />
+        ) : (
+          <BellOff className="h-3.5 w-3.5" />
+        )}
+        <span className={showLabel ? "inline" : "hidden lg:inline"}>
+          {subscribed ? "Alerts on" : "Alerts"}
+        </span>
+      </button>
+
+      {subscribed ? (
+        <button
+          type="button"
+          onClick={sendTestNotification}
+          disabled={busy || !sendConfigured}
+          className="rounded-full px-2 py-1.5 text-xs font-medium text-[#728089] transition hover:bg-[#eef4f7] hover:text-[#33434c] disabled:cursor-not-allowed disabled:opacity-60"
+          title={
+            sendConfigured
+              ? "Send a test notification"
+              : "Server push config is missing"
+          }
+        >
+          Test
+        </button>
+      ) : null}
+
+      {message && showLabel ? (
+        <span className="text-xs font-medium text-[#728089]">{message}</span>
+      ) : null}
+    </span>
   );
 }

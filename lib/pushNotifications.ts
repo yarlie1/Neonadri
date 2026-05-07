@@ -26,6 +26,10 @@ export function getVapidPublicKey() {
   return getRequiredEnv("NEXT_PUBLIC_VAPID_PUBLIC_KEY");
 }
 
+export function isPushSendConfigured() {
+  return Boolean(getVapidPublicKey() && getRequiredEnv("VAPID_PRIVATE_KEY"));
+}
+
 function configureWebPush() {
   if (vapidConfigured) return true;
 
