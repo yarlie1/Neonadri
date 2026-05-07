@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
-import { createAdminClient } from "../../../../lib/supabase/admin";
 
 type PushSubscriptionPayload = {
   endpoint?: string;
@@ -55,22 +54,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid subscription" }, { status: 400 });
   }
 
-  const now = new Date().toISOString();
-  const adminSupabase = createAdminClient() as any;
-  const { error } = await adminSupabase
-    .from("push_subscriptions")
-    .upsert(
-      {
-        user_id: user.id,
-        endpoint: subscription.endpoint,
-        p256dh: subscription.p256dh,
-        auth: subscription.auth,
-        user_agent: request.headers.get("user-agent")?.slice(0, 500) || null,
-        updated_at: now,
-        last_error_at: null,
-      },
-      { onConflict: "endpoint" }
-    );
+  const { error } = await supabase.rpc("save_push_subscription_for_current_user", {
+    p_endpoint: subscription.endpoint,
+    p_p256dh: subscription.p256dh,
+    p_auth: subscription.auth,
+    p_user_agent: request.headers.get("user-agent")?.slice(0, 500) || null,
+  });
 
   if (error) {
     console.error("[push-subscription] save failed", error);
@@ -106,12 +95,12 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "Invalid subscription" }, { status: 400 });
   }
 
-  const adminSupabase = createAdminClient() as any;
-  const { error } = await adminSupabase
-    .from("push_subscriptions")
-    .delete()
-    .eq("user_id", user.id)
-    .eq("endpoint", endpoint);
+  const { error } = await supabase.rpc(
+    "delete_push_subscription_for_current_user",
+    {
+      p_endpoint: endpoint,
+    }
+  );
 
   if (error) {
     console.error("[push-subscription] delete failed", error);
