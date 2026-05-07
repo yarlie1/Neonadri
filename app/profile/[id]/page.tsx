@@ -71,29 +71,16 @@ type ProfileStats = {
   completed_meetups?: number | null;
 };
 
-function StarRating({
-  value,
+function RatingStar({
   size = "sm",
 }: {
-  value: number;
   size?: "sm" | "md";
 }) {
   const iconClass = size === "md" ? "h-5 w-5" : "h-4 w-4";
 
   return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((n) => {
-        const filled = n <= value;
-
-        return (
-          <Star
-            key={n}
-            className={`${iconClass} ${
-              filled ? "fill-[#71828c] text-[#71828c]" : "text-[#d3dce2]"
-            }`}
-          />
-        );
-      })}
+    <div className="flex items-center">
+      <Star className={`${iconClass} fill-[#71828c] text-[#71828c]`} />
     </div>
   );
 }
@@ -219,7 +206,6 @@ export default async function ProfilePage({ params }: PageProps) {
   const averageRating = Number(stats.average_rating ?? 0);
   const reviewCount = Number(stats.review_count ?? 0);
   const completedMeetups = Number(stats.completed_meetups ?? 0);
-  const roundedAverage = Math.round(averageRating);
   const hasRating = reviewCount > 0;
   const hasAboutMe = !!profile.about_me?.trim();
   const hasLanguages = !!profile.languages && profile.languages.length > 0;
@@ -259,7 +245,7 @@ export default async function ProfilePage({ params }: PageProps) {
                   </h1>
                   {hasRating ? (
                     <div className={`inline-flex items-center gap-2 rounded-full ${APP_ROW_SURFACE_CLASS} px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#52616a] shadow-[0_6px_14px_rgba(118,126,133,0.08)]`}>
-                      <StarRating value={roundedAverage} size="sm" />
+                      <RatingStar size="sm" />
                       <span className="font-semibold text-[#3c4850]">
                         {averageRating.toFixed(1)}
                       </span>
@@ -377,7 +363,7 @@ export default async function ProfilePage({ params }: PageProps) {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 {hasRating ? (
                   <div className="flex items-center gap-3">
-                    <StarRating value={roundedAverage} size="md" />
+                    <RatingStar size="md" />
                     <div className="text-2xl font-black tracking-[-0.04em] text-[#24323f]">
                       {averageRating.toFixed(1)}
                     </div>
@@ -439,7 +425,7 @@ export default async function ProfilePage({ params }: PageProps) {
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <StarRating value={review.rating} size="md" />
+                        <RatingStar size="md" />
                         <div className="text-sm font-semibold text-[#52616a]">
                           {review.rating}.0 / 5
                         </div>
