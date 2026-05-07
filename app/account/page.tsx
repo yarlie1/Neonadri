@@ -119,51 +119,49 @@ export default async function AccountPage() {
             Turn on browser alerts for this device to receive meetup requests and accepted request updates.
           </p>
           <div className="mt-4 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
-            <PushNotificationButton showLabel />
+            <PushNotificationButton variant="toggle" />
           </div>
         </section>
 
-        <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
-          <div className={APP_EYEBROW_CLASS}>Posting access</div>
-          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
-            {!postingBetaRequired
-              ? "Posting is open for all accounts"
-              : postingAccessAllowed
-              ? "Beta tester posting is active"
-              : "This account is in join-only mode"}
-          </h2>
-          <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
-            {!postingBetaRequired
-              ? "Posting beta apply is turned off right now, so this account can create meetup posts without separate approval."
-              : postingAccessAllowed
-              ? "You can create meetup posts during the beta period."
-              : profile.signup_intent === "host"
-              ? "Your account was set up for posting, but posting approval is not active on this email yet."
-              : "You can browse and join 1:1 meetups now, then apply for posting access later whenever you want to host."}
-          </p>
+        {postingBetaRequired ? (
+          <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
+            <div className={APP_EYEBROW_CLASS}>Posting access</div>
+            <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
+              {postingAccessAllowed
+                ? "Beta tester posting is active"
+                : "This account is in join-only mode"}
+            </h2>
+            <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
+              {postingAccessAllowed
+                ? "You can create meetup posts during the beta period."
+                : profile.signup_intent === "host"
+                ? "Your account was set up for posting, but posting approval is not active on this email yet."
+                : "You can browse and join 1:1 meetups now, then apply for posting access later whenever you want to host."}
+            </p>
 
-          <div className="mt-4 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#849099]">
-              Signup path
+            <div className="mt-4 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#849099]">
+                Signup path
+              </div>
+              <div className="mt-2 text-sm font-medium text-[#52616a]">
+                {profile.signup_intent === "host"
+                  ? "Started as a posting account"
+                  : "Started as a participation account"}
+              </div>
             </div>
-            <div className="mt-2 text-sm font-medium text-[#52616a]">
-              {profile.signup_intent === "host"
-                ? "Started as a posting account"
-                : "Started as a participation account"}
-            </div>
-          </div>
 
-          {!postingAccessAllowed && postingBetaRequired ? (
-            <div className="mt-4 flex flex-wrap gap-3">
-              <Link
-                href={postingAccessHref}
-                className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-              >
-                Apply for posting access
-              </Link>
-            </div>
-          ) : null}
-        </section>
+            {!postingAccessAllowed ? (
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href={postingAccessHref}
+                  className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                >
+                  Apply for posting access
+                </Link>
+              </div>
+            ) : null}
+          </section>
+        ) : null}
 
         {!!profile.is_admin ? (
           <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>

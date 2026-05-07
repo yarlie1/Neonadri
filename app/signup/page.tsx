@@ -593,24 +593,18 @@ function SignupPageContent() {
           <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
             <div className={APP_EYEBROW_CLASS}>Account created</div>
             <h1 className="mt-3 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-              Turn on alerts for this device.
+              알림을 켤까요?
             </h1>
             <p className={`mt-3 ${APP_BODY_TEXT_CLASS}`}>
-              Get notified when someone requests your meetup or when a request is accepted.
+              밋업 요청, 수락/거절, 채팅 메시지 등이 왔을 때 이 기기에서 알림을 받을 수 있도록 하겠습니까?
             </p>
 
             <div className="mt-6 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
-              <PushNotificationButton showLabel />
-            </div>
-
-            <div className="mt-6">
-              <button
-                type="button"
-                onClick={() => router.push("/")}
-                className={`inline-flex rounded-full border px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
-              >
-                Continue to Neonadri
-              </button>
+              <PushNotificationButton
+                variant="choice"
+                onEnabled={() => router.push("/")}
+                onSkipped={() => router.push("/")}
+              />
             </div>
           </section>
         </div>
