@@ -3,9 +3,6 @@
 import {
   AlertTriangle,
   Check,
-  Clock,
-  DollarSign,
-  MapPin,
   MessageCircle,
   Play,
   Send,
@@ -22,71 +19,40 @@ const SLIDE_MS = 4200;
 
 const slides = [
   {
-    eyebrow: "Step 1 - Host",
+    eyebrow: "1 - Host",
     title: "Post a meetup",
     body: "Choose the activity, time, place, and what you will cover so guests know exactly what they are requesting.",
     icon: Sparkles,
-    chips: [
-      { label: "Activity", icon: Sparkles },
-      { label: "Time", icon: Clock },
-      { label: "Place", icon: MapPin },
-      { label: "Host covers", icon: DollarSign },
-    ],
   },
   {
-    eyebrow: "Step 2 - Guest",
+    eyebrow: "2 - Guest",
     title: "Send a request",
     body: "Guests browse open meetups and request to join the one that fits their schedule and comfort level.",
     icon: Send,
-    chips: [
-      { label: "Browse", icon: Sparkles },
-      { label: "Review details", icon: Check },
-      { label: "Request", icon: Send },
-    ],
   },
   {
-    eyebrow: "Step 3 - Host",
+    eyebrow: "3 - Host",
     title: "Accept a guest",
     body: "The host reviews incoming requests and accepts one guest. Both people are then connected for the meetup.",
     icon: UserCheck,
-    chips: [
-      { label: "Review requests", icon: Check },
-      { label: "Accept", icon: UserCheck },
-      { label: "Matched", icon: Sparkles },
-    ],
   },
   {
-    eyebrow: "Step 4 - Chat",
+    eyebrow: "4 - Chat",
     title: "Coordinate details",
     body: "Use chat to confirm small details like arrival time, meeting spot, and anything that helps the plan feel clear.",
     icon: MessageCircle,
-    chips: [
-      { label: "Confirm time", icon: Clock },
-      { label: "Confirm spot", icon: MapPin },
-      { label: "Stay clear", icon: MessageCircle },
-    ],
   },
   {
-    eyebrow: "Step 5 - Meetup",
+    eyebrow: "5 - Meetup",
     title: "Meet in person",
     body: "Show up respectfully, keep the plan simple, and enjoy a low-pressure real-world conversation.",
     icon: ShieldCheck,
-    chips: [
-      { label: "Public place", icon: MapPin },
-      { label: "Respectful", icon: ShieldCheck },
-      { label: "No pressure", icon: Sparkles },
-    ],
   },
   {
-    eyebrow: "Before you go",
+    eyebrow: "6 - Safety",
     title: "Stay safe and considerate",
     body: "Use public locations, keep expectations clear, avoid unsafe requests, and report anything that feels off.",
     icon: AlertTriangle,
-    chips: [
-      { label: "Adults only", icon: ShieldCheck },
-      { label: "Public meetups", icon: MapPin },
-      { label: "Report concerns", icon: AlertTriangle },
-    ],
   },
 ] as const;
 
@@ -234,10 +200,10 @@ export default function IntroVideoGate() {
         Skip
       </button>
 
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pb-36 pt-16 sm:px-6 sm:pb-32">
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pb-[11.5rem] pt-20 sm:px-6 sm:pb-32 sm:pt-16">
         <div className="grid w-full max-w-6xl gap-5 md:grid-cols-[0.92fr_1.08fr] md:items-center">
           <section className="rounded-[32px] border border-[#dce5eb] bg-white/72 p-5 shadow-[0_28px_80px_rgba(118,126,133,0.16)] backdrop-blur-xl sm:p-7">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#66757e]">
+            <div className="inline-flex items-center gap-2 rounded-[18px] border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-4 py-2 text-[16px] font-black uppercase tracking-[0.08em] text-[#31414a] sm:text-[18px]">
               <ActiveIcon className="h-3.5 w-3.5" />
               {activeSlide.eyebrow}
             </div>
@@ -265,21 +231,6 @@ export default function IntroVideoGate() {
               ))}
             </div>
 
-            <div className="mt-7 flex flex-wrap gap-2.5">
-              {activeSlide.chips.map((chip) => {
-                const ChipIcon = chip.icon;
-
-                return (
-                  <span
-                    key={chip.label}
-                    className="inline-flex items-center gap-2 rounded-full border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] px-3.5 py-2 text-sm font-semibold text-[#52616a] shadow-[0_12px_26px_rgba(118,126,133,0.08)]"
-                  >
-                    <ChipIcon className="h-4 w-4" />
-                    {chip.label}
-                  </span>
-                );
-              })}
-            </div>
           </section>
 
           <section className="hidden rounded-[32px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(237,243,246,0.94)_100%)] p-4 shadow-[0_28px_80px_rgba(118,126,133,0.14)] sm:p-6 md:block">
