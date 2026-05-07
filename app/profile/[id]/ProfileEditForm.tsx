@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ImagePlus, Save, Trash2 } from "lucide-react";
-import { createClient } from "../../../lib/supabase/client";
 import {
   ABOUT_ME_RESTRICTION_MESSAGE,
   validateAboutMeContent,
@@ -106,8 +105,9 @@ function ToggleChip({
 
 const INPUT_CLASS =
   "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30";
-const AVATAR_BUCKET = "profile-avatars";
-const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
+const MAX_SOURCE_AVATAR_BYTES = 12 * 1024 * 1024;
+const MAX_UPLOAD_AVATAR_BYTES = 2 * 1024 * 1024;
+const AVATAR_IMAGE_SIZE = 512;
 
 function sanitizeSelectValue(value: string | null | undefined, placeholderPrefix: string) {
   const normalized = String(value || "").trim();
@@ -127,12 +127,79 @@ function sanitizeAllowedValue(
   return allowedValues.includes(normalized) ? normalized : "";
 }
 
+function loadImage(file: File) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Could not read image."));
+    };
+    image.src = url;
+  });
+}
+
+function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality: number) {
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error("Could not resize image."));
+        }
+      },
+      type,
+      quality
+    );
+  });
+}
+
+async function resizeAvatarFile(file: File) {
+  const image = await loadImage(file);
+  const scale = Math.min(
+    1,
+    AVATAR_IMAGE_SIZE / Math.max(image.naturalWidth, image.naturalHeight)
+  );
+  const width = Math.max(1, Math.round(image.naturalWidth * scale));
+  const height = Math.max(1, Math.round(image.naturalHeight * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d");
+
+  if (!context) {
+    throw new Error("Could not resize image.");
+  }
+
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, width, height);
+  context.drawImage(image, 0, 0, width, height);
+
+  let quality = 0.86;
+  let blob = await canvasToBlob(canvas, "image/jpeg", quality);
+
+  while (blob.size > MAX_UPLOAD_AVATAR_BYTES && quality > 0.5) {
+    quality -= 0.08;
+    blob = await canvasToBlob(canvas, "image/jpeg", quality);
+  }
+
+  if (blob.size > MAX_UPLOAD_AVATAR_BYTES) {
+    throw new Error("Profile photo must be 2 MB or smaller after resizing.");
+  }
+
+  return new File([blob], "profile-avatar.jpg", { type: "image/jpeg" });
+}
+
 export default function ProfileEditForm({
   profile,
 }: {
   profile: ProfileRow;
 }) {
-  const supabase = createClient();
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
@@ -194,36 +261,46 @@ export default function ProfileEditForm({
       return;
     }
 
-    if (file.size > MAX_AVATAR_BYTES) {
-      setMessage("Profile photo must be 2 MB or smaller.");
+    if (file.size > MAX_SOURCE_AVATAR_BYTES) {
+      setMessage("Please choose an image smaller than 12 MB.");
       return;
     }
 
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 30000);
+
     try {
       setUploadingAvatar(true);
-      setMessage("Uploading profile photo...");
+      setMessage("Resizing and uploading profile photo...");
 
-      const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
-      const safeExtension = ["jpg", "jpeg", "png", "webp", "gif"].includes(extension)
-        ? extension
-        : "jpg";
-      const path = `${profile.id}/avatar-${Date.now()}.${safeExtension}`;
-      const { error } = await supabase.storage
-        .from(AVATAR_BUCKET)
-        .upload(path, file, {
-          cacheControl: "3600",
-          upsert: true,
-        });
+      const resizedFile = await resizeAvatarFile(file);
+      const formData = new FormData();
+      formData.append("avatar", resizedFile);
 
-      if (error) throw error;
+      const response = await fetch("/api/profile/avatar", {
+        method: "POST",
+        body: formData,
+        signal: controller.signal,
+      });
+      const result = await response.json().catch(() => ({}));
 
-      const { data } = supabase.storage.from(AVATAR_BUCKET).getPublicUrl(path);
-      setAvatarUrl(data.publicUrl);
+      if (!response.ok) {
+        throw new Error(result.error || "Could not upload profile photo.");
+      }
+
+      setAvatarUrl(result.avatarUrl);
       setMessage("Profile photo uploaded. Save your profile to keep it.");
     } catch (error) {
       console.error("Profile avatar upload failed", error);
-      setMessage("Could not upload profile photo.");
+      setMessage(
+        error instanceof Error && error.name === "AbortError"
+          ? "Upload timed out. Please try again."
+          : error instanceof Error
+          ? error.message
+          : "Could not upload profile photo."
+      );
     } finally {
+      window.clearTimeout(timeoutId);
       setUploadingAvatar(false);
     }
   };
