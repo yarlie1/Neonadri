@@ -44,7 +44,7 @@ const slides = [
   {
     eyebrow: "Host / Guest",
     title: "5. Meetup",
-    body: "Meet in a public place and keep the plan respectful.",
+    body: "Show up, relax, and enjoy the time together.",
     icon: ShieldCheck,
   },
   {
