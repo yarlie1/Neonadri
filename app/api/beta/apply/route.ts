@@ -2,16 +2,26 @@ import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
 import { isPostingBetaRequired } from "../../../../lib/postingAccess";
 import { sendBetaApplicationNotificationEmail } from "../../../../lib/betaApplicationNotificationEmail";
+import {
+  checkRateLimit,
+  getRateLimitKey,
+  rateLimitResponse,
+} from "../../../../lib/rateLimit";
 
 const VALID_AGE_GROUPS = ["20s", "30s", "40s", "50s+"] as const;
 const VALID_GENDERS = ["Male", "Female", "Other", "Prefer not to say"] as const;
 const VALID_REGIONS = ["la_nearby", "other_region"] as const;
+const EMAIL_MAX_LENGTH = 254;
+const NAME_MAX_LENGTH = 80;
+const MOTIVATION_MAX_LENGTH = 1200;
+const MAX_MEETUP_INTERESTS = 12;
+const INTEREST_MAX_LENGTH = 40;
 
 type BetaRegion = (typeof VALID_REGIONS)[number];
 
-function sanitizeOptionalText(value: unknown) {
+function sanitizeLimitedOptionalText(value: unknown, maxLength: number) {
   if (typeof value !== "string") return null;
-  const normalized = value.trim();
+  const normalized = value.trim().slice(0, maxLength);
   return normalized ? normalized : null;
 }
 
@@ -26,19 +36,35 @@ function toApplicationCity(region: BetaRegion) {
 }
 
 export async function POST(req: Request) {
+  const rateLimit = checkRateLimit({
+    key: getRateLimitKey(req, "beta-apply"),
+    limit: 5,
+    windowMs: 10 * 60 * 1000,
+  });
+
+  if (rateLimit.limited) {
+    return rateLimitResponse(rateLimit.resetAt);
+  }
+
   try {
     const supabase = await createClient();
     const body = await req.json();
 
-    const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+    const email = typeof body.email === "string"
+      ? body.email.trim().toLowerCase().slice(0, EMAIL_MAX_LENGTH)
+      : "";
     const motivation =
-      typeof body.motivation === "string" ? body.motivation.trim() : "";
+      typeof body.motivation === "string"
+        ? body.motivation.trim().slice(0, MOTIVATION_MAX_LENGTH)
+        : "";
+    const fullName = sanitizeLimitedOptionalText(body.fullName, NAME_MAX_LENGTH);
     const region = sanitizeOptionalChoice(body.region, VALID_REGIONS) as BetaRegion | null;
     const meetupInterests = Array.isArray(body.meetupInterests)
       ? (body.meetupInterests as unknown[])
           .filter((value): value is string => typeof value === "string")
-          .map((value) => value.trim())
+          .map((value) => value.trim().slice(0, INTEREST_MAX_LENGTH))
           .filter(Boolean)
+          .slice(0, MAX_MEETUP_INTERESTS)
       : [];
 
     if (!email || !email.includes("@")) {
@@ -71,7 +97,7 @@ export async function POST(req: Request) {
 
     const { data, error } = await supabase.rpc("submit_beta_application", {
       p_email: email,
-      p_full_name: sanitizeOptionalText(body.fullName),
+      p_full_name: fullName,
       p_city: toApplicationCity(region),
       p_age_group: sanitizeOptionalChoice(body.ageGroup, VALID_AGE_GROUPS),
       p_gender: sanitizeOptionalChoice(body.gender, VALID_GENDERS),
@@ -105,7 +131,7 @@ export async function POST(req: Request) {
 
     const notificationResult = await sendBetaApplicationNotificationEmail({
       applicantEmail: email,
-      fullName: sanitizeOptionalText(body.fullName),
+      fullName,
       ageGroup: sanitizeOptionalChoice(body.ageGroup, VALID_AGE_GROUPS),
       gender: sanitizeOptionalChoice(body.gender, VALID_GENDERS),
       region: toApplicationCity(region),

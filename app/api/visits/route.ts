@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../lib/supabase/server";
+import {
+  checkRateLimit,
+  getRateLimitKey,
+  rateLimitResponse,
+} from "../../../lib/rateLimit";
 
 const VISITOR_ID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -13,6 +18,16 @@ function normalizePath(value: unknown) {
 }
 
 export async function POST(request: Request) {
+  const rateLimit = checkRateLimit({
+    key: getRateLimitKey(request, "site-visits"),
+    limit: 60,
+    windowMs: 60 * 1000,
+  });
+
+  if (rateLimit.limited) {
+    return rateLimitResponse(rateLimit.resetAt);
+  }
+
   try {
     const body = await request.json();
     const visitorId =

@@ -22,7 +22,6 @@ import {
 declare global {
   interface Window {
     PubNub?: new (config: {
-      publishKey: string;
       subscribeKey: string;
       userId: string;
     }) => {
@@ -43,16 +42,6 @@ declare global {
           unsubscribe: () => void;
         };
       };
-      publish: (payload: {
-        channel: string;
-        message: {
-          text: string;
-          senderId: string;
-          senderName: string;
-          createdAt: string;
-        };
-        storeInHistory?: boolean;
-      }) => Promise<unknown>;
     };
   }
 }
@@ -103,8 +92,6 @@ export default function ChatRoomClient({
   chatClosed,
   chatClosedMessage,
   currentUserId,
-  currentUserName,
-  otherUserId,
 }: {
   matchId: number;
   otherUserName: string;
@@ -116,8 +103,6 @@ export default function ChatRoomClient({
   chatClosed: boolean;
   chatClosedMessage: string;
   currentUserId: string;
-  currentUserName: string;
-  otherUserId: string;
 }) {
   const [sdkReady, setSdkReady] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -133,7 +118,6 @@ export default function ChatRoomClient({
   const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
 
-  const publishKey = process.env.NEXT_PUBLIC_PUBNUB_PUBLISH_KEY;
   const subscribeKey = process.env.NEXT_PUBLIC_PUBNUB_SUBSCRIBE_KEY;
 
   const roomLabel = useMemo(() => roomId, [roomId]);
@@ -206,12 +190,11 @@ export default function ChatRoomClient({
   }, [isProviderConfigured, matchId]);
 
   useEffect(() => {
-    if (!sdkReady || !isProviderConfigured || !window.PubNub || !publishKey || !subscribeKey) {
+    if (!sdkReady || !isProviderConfigured || !window.PubNub || !subscribeKey) {
       return;
     }
 
     const pubnub = new window.PubNub({
-      publishKey,
       subscribeKey,
       userId: currentUserId,
     });
@@ -305,7 +288,6 @@ export default function ChatRoomClient({
     currentUserId,
     isProviderConfigured,
     matchId,
-    publishKey,
     roomLabel,
     sdkReady,
     subscribeKey,
@@ -391,22 +373,35 @@ export default function ChatRoomClient({
     setErrorMessage(null);
 
     try {
-      const activityResult = await markActivity("message");
-      if (!activityResult?.ok) {
-        setErrorMessage(activityResult?.error || chatClosedMessage);
+      const response = await fetch("/api/matches/chat/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          matchId,
+          text,
+        }),
+      });
+      const payload = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        setErrorMessage(payload?.error || "Message could not be sent. Please try again.");
         return;
       }
 
-      await pubnubRef.current.publish({
-        channel: roomLabel,
-        message: {
-          text,
-          senderId: currentUserId,
-          senderName: currentUserName,
-          createdAt: new Date().toISOString(),
-        },
-        storeInHistory: true,
-      });
+      if (payload?.message) {
+        setMessages((current) => {
+          if (current.some((message) => message.id === payload.message.id)) {
+            return current;
+          }
+
+          return [...current, payload.message].sort((a, b) =>
+            a.createdAt.localeCompare(b.createdAt)
+          );
+        });
+      }
+
       setDraft("");
     } catch {
       setErrorMessage("Message could not be sent. Please try again.");

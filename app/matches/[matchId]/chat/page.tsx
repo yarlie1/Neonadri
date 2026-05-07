@@ -129,12 +129,6 @@ export default async function MatchChatPage({ params }: PageProps) {
     .eq("id", matchChat.otherUserId)
     .maybeSingle();
 
-  const { data: currentProfileData } = await supabase
-    .from("profiles")
-    .select("display_name")
-    .eq("id", user.id)
-    .maybeSingle();
-
   const meetingTimeLabel = formatShortMeetingTime(
     postData?.meeting_time || null,
     userTimeZone
@@ -143,9 +137,9 @@ export default async function MatchChatPage({ params }: PageProps) {
   const chatCancelled = String(postData?.status || "open").toLowerCase() === "cancelled";
   const placeLabel = postData?.place_name || postData?.location || "Selected place";
   const otherUserName = otherProfileData?.display_name || "Participant";
-  const currentUserName = currentProfileData?.display_name || "You";
   const isProviderConfigured = Boolean(
-    process.env.NEXT_PUBLIC_PUBNUB_PUBLISH_KEY &&
+    (process.env.PUBNUB_PUBLISH_KEY ||
+      process.env.NEXT_PUBLIC_PUBNUB_PUBLISH_KEY) &&
       process.env.NEXT_PUBLIC_PUBNUB_SUBSCRIBE_KEY
   );
 
@@ -169,8 +163,6 @@ export default async function MatchChatPage({ params }: PageProps) {
           : MATCH_CHAT_CLOSED_MESSAGE
       }
       currentUserId={user.id}
-      currentUserName={currentUserName}
-      otherUserId={matchChat.otherUserId}
     />
   );
 }
