@@ -154,13 +154,13 @@ export async function POST(req: Request) {
       );
     }
 
-    if (action === "accepted") {
-      const meetupLabel =
-        postData?.meeting_purpose ||
-        postData?.place_name ||
-        postData?.location ||
-        "your meetup request";
+    const meetupLabel =
+      postData?.meeting_purpose ||
+      postData?.place_name ||
+      postData?.location ||
+      "your meetup request";
 
+    if (action === "accepted") {
       await sendPushNotificationToUser(requestData.requester_user_id, {
         title: "Your request was accepted",
         body: `Good news: ${meetupLabel} was accepted.`,
@@ -168,6 +168,15 @@ export async function POST(req: Request) {
         tag: `match-request-accepted-${requestId}`,
       }).catch((pushError) => {
         console.error("Match request accepted push notification failed", pushError);
+      });
+    } else {
+      await sendPushNotificationToUser(requestData.requester_user_id, {
+        title: "Your request was declined",
+        body: `${meetupLabel} was declined by the host.`,
+        url: "/dashboard?tab=sent",
+        tag: `match-request-rejected-${requestId}`,
+      }).catch((pushError) => {
+        console.error("Match request rejected push notification failed", pushError);
       });
     }
 

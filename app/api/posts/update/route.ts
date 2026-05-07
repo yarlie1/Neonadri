@@ -5,6 +5,7 @@ import {
   isAdultConfirmedUser,
 } from "../../../../lib/adultGate";
 import { getOwnedPostEditLockState } from "../../../../lib/postEditAccess";
+import { sendPushNotificationToUser } from "../../../../lib/pushNotifications";
 
 export async function POST(req: Request) {
   try {
@@ -138,6 +139,42 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
+
+    const { data: requestRows } = await supabase
+      .from("match_requests")
+      .select("requester_user_id")
+      .eq("post_id", postId)
+      .in("status", ["pending", "accepted"]);
+
+    const recipientIds = Array.from(
+      new Set(
+        (requestRows || [])
+          .map((row) => row.requester_user_id)
+          .filter((id): id is string => Boolean(id && id !== user.id))
+      )
+    );
+    const meetupLabel =
+      payload.meeting_purpose ||
+      payload.place_name ||
+      payload.location ||
+      "a meetup";
+
+    await Promise.all(
+      recipientIds.map((recipientId) =>
+        sendPushNotificationToUser(recipientId, {
+          title: "Meetup updated",
+          body: `${meetupLabel} details were updated by the host.`,
+          url: `/posts/${postId}`,
+          tag: `meetup-updated-${postId}`,
+        }).catch((pushError) => {
+          console.error("Post update push notification failed", {
+            pushError,
+            recipientId,
+            postId,
+          });
+        })
+      )
+    );
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error) {

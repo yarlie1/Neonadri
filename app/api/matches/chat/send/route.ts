@@ -16,6 +16,7 @@ import {
   getRateLimitKey,
   rateLimitResponse,
 } from "../../../../../lib/rateLimit";
+import { sendPushNotificationToUser } from "../../../../../lib/pushNotifications";
 
 const PUBNUB_PUBLISH_ORIGIN = "https://ps.pndsn.com";
 const MATCH_CHAT_CANCELLED_MESSAGE =
@@ -210,6 +211,15 @@ export async function POST(request: Request) {
   if (updateError) {
     console.error("[match-chat-send] activity update failed", updateError);
   }
+
+  await sendPushNotificationToUser(matchChat.otherUserId, {
+    title: "New chat message",
+    body: `${message.senderName}: ${text.length > 80 ? `${text.slice(0, 77)}...` : text}`,
+    url: `/matches/${matchId}/chat`,
+    tag: `match-chat-${matchId}`,
+  }).catch((pushError) => {
+    console.error("[match-chat-send] push notification failed", pushError);
+  });
 
   return NextResponse.json({
     ok: true,
