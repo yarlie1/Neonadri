@@ -11,6 +11,7 @@ import {
   APP_SURFACE_CARD_CLASS,
 } from "../designSystem";
 import BlockedUsersCard from "../components/BlockedUsersCard";
+import PushNotificationButton from "../components/PushNotificationButton";
 
 type Profile = {
   id: string;
@@ -106,6 +107,19 @@ export default async function AccountPage() {
             >
               Change password
             </Link>
+          </div>
+        </section>
+
+        <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
+          <div className={APP_EYEBROW_CLASS}>Notifications</div>
+          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
+            Request and match alerts
+          </h2>
+          <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
+            Turn on browser alerts for this device to receive meetup requests and accepted request updates.
+          </p>
+          <div className="mt-4 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+            <PushNotificationButton showLabel />
           </div>
         </section>
 

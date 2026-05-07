@@ -5,7 +5,6 @@ import { Bell, BellOff, LoaderCircle } from "lucide-react";
 
 type PushConfig = {
   enabled?: boolean;
-  sendEnabled?: boolean;
   publicKey?: string | null;
 };
 
@@ -31,7 +30,6 @@ export default function PushNotificationButton({
 }) {
   const [supported, setSupported] = useState(false);
   const [configured, setConfigured] = useState(false);
-  const [sendConfigured, setSendConfigured] = useState(false);
   const [publicKey, setPublicKey] = useState("");
   const [permission, setPermission] = useState<NotificationPermission>("default");
   const [subscribed, setSubscribed] = useState(false);
@@ -59,7 +57,6 @@ export default function PushNotificationButton({
         if (!active) return;
 
         setConfigured(Boolean(config.enabled && config.publicKey));
-        setSendConfigured(Boolean(config.sendEnabled));
         setPublicKey(config.publicKey || "");
 
         const registration = await navigator.serviceWorker.register("/sw.js");
@@ -172,36 +169,6 @@ export default function PushNotificationButton({
     }
   };
 
-  const sendTestNotification = async () => {
-    if (busy) return;
-    setBusy(true);
-    setMessage("");
-
-    try {
-      const response = await fetch("/api/push/test", {
-        method: "POST",
-      });
-      const payload = await response.json().catch(() => null);
-
-      if (!response.ok) {
-        const reason =
-          payload?.result?.reason ||
-          (typeof payload?.result?.failedCount === "number"
-            ? `failed-count-${payload.result.failedCount}`
-            : "");
-        setMessage(reason || payload?.error || "Test alert failed");
-        return;
-      }
-
-      setMessage("Test sent");
-    } catch (error) {
-      console.error("[push-button] test failed", error);
-      setMessage("Test alert failed");
-    } finally {
-      setBusy(false);
-    }
-  };
-
   const denied = permission === "denied";
   const label = denied
     ? "Notifications blocked"
@@ -230,22 +197,6 @@ export default function PushNotificationButton({
           {subscribed ? "Alerts on" : "Alerts"}
         </span>
       </button>
-
-      {subscribed ? (
-        <button
-          type="button"
-          onClick={sendTestNotification}
-          disabled={busy || !sendConfigured}
-          className="rounded-full px-2 py-1.5 text-xs font-medium text-[#728089] transition hover:bg-[#eef4f7] hover:text-[#33434c] disabled:cursor-not-allowed disabled:opacity-60"
-          title={
-            sendConfigured
-              ? "Send a test notification"
-              : "Server push config is missing"
-          }
-        >
-          Test
-        </button>
-      ) : null}
 
       {message ? (
         <span className="text-xs font-medium text-[#728089]">{message}</span>

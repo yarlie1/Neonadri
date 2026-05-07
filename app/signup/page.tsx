@@ -20,6 +20,7 @@ import {
   ABOUT_ME_RESTRICTION_MESSAGE,
   validateAboutMeContent,
 } from "../../lib/profileContent";
+import PushNotificationButton from "../components/PushNotificationButton";
 
 const LANGUAGE_OPTIONS = [
   "English",
@@ -188,6 +189,7 @@ function SignupPageContent() {
     hasInitialPostingBetaRequired
   );
   const [message, setMessage] = useState("");
+  const [signupCompleteWithSession, setSignupCompleteWithSession] = useState(false);
 
   const [email, setEmail] = useState(initialEmailFromLink);
   const [password, setPassword] = useState("");
@@ -565,14 +567,17 @@ function SignupPageContent() {
         }
       }
 
-      setMessage(
-        hasSession
-          ? "Account created. Taking you into Neonadri now..."
-          : "Account created. Please log in to continue."
-      );
+      if (hasSession) {
+        setSignupCompleteWithSession(true);
+        setSubmitting(false);
+        setMessage("");
+        return;
+      }
+
+      setMessage("Account created. Please log in to continue.");
 
       window.setTimeout(() => {
-        router.push(hasSession ? "/" : "/login");
+        router.push("/login");
       }, 900);
     } catch (error) {
       console.error("Signup flow error:", error);
@@ -580,6 +585,38 @@ function SignupPageContent() {
       setSubmitting(false);
     }
   };
+
+  if (signupCompleteWithSession) {
+    return (
+      <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
+        <div className="mx-auto max-w-2xl">
+          <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
+            <div className={APP_EYEBROW_CLASS}>Account created</div>
+            <h1 className="mt-3 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
+              Turn on alerts for this device.
+            </h1>
+            <p className={`mt-3 ${APP_BODY_TEXT_CLASS}`}>
+              Get notified when someone requests your meetup or when a request is accepted.
+            </p>
+
+            <div className="mt-6 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+              <PushNotificationButton showLabel />
+            </div>
+
+            <div className="mt-6">
+              <button
+                type="button"
+                onClick={() => router.push("/")}
+                className={`inline-flex rounded-full border px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
+              >
+                Continue to Neonadri
+              </button>
+            </div>
+          </section>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
