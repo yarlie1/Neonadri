@@ -71,6 +71,7 @@ export async function sendPushNotificationToUser(
   }
 
   const body = JSON.stringify(payload);
+  const failureDetails: string[] = [];
   const results = await Promise.allSettled(
     rows.map(async (subscription) => {
       try {
@@ -103,6 +104,9 @@ export async function sendPushNotificationToUser(
           .update({ last_error_at: new Date().toISOString() })
           .eq("id", subscription.id);
 
+        failureDetails.push(
+          error instanceof Error ? error.message : "Unknown push provider error"
+        );
         throw error;
       }
     })
@@ -110,7 +114,11 @@ export async function sendPushNotificationToUser(
 
   const failedCount = results.filter((result) => result.status === "rejected").length;
   if (failedCount > 0) {
-    console.error("[push] send failed for some subscriptions", { failedCount, userId });
+    console.error("[push] send failed for some subscriptions", {
+      failedCount,
+      userId,
+      failureDetails,
+    });
   }
 
   return {
@@ -118,5 +126,6 @@ export async function sendPushNotificationToUser(
     skipped: false,
     sentCount: rows.length - failedCount,
     failedCount,
+    reason: failedCount > 0 ? failureDetails[0] || "push-send-failed" : undefined,
   };
 }

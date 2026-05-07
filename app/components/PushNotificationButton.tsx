@@ -184,10 +184,12 @@ export default function PushNotificationButton({
       const payload = await response.json().catch(() => null);
 
       if (!response.ok) {
-        const reason = payload?.result?.reason
-          ? ` (${payload.result.reason})`
-          : "";
-        setMessage(`${payload?.error || "Test alert failed"}${reason}`);
+        const reason =
+          payload?.result?.reason ||
+          (typeof payload?.result?.failedCount === "number"
+            ? `failed-count-${payload.result.failedCount}`
+            : "");
+        setMessage(reason || payload?.error || "Test alert failed");
         return;
       }
 
@@ -245,7 +247,7 @@ export default function PushNotificationButton({
         </button>
       ) : null}
 
-      {message && showLabel ? (
+      {message ? (
         <span className="text-xs font-medium text-[#728089]">{message}</span>
       ) : null}
     </span>
