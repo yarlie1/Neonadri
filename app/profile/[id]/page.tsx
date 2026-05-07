@@ -31,7 +31,7 @@ import {
   APP_SURFACE_CARD_CLASS,
 } from "../../designSystem";
 import SafetyActions from "../../components/SafetyActions";
-import Avatar from "../../components/Avatar";
+import ProfileAvatarViewer from "./ProfileAvatarViewer";
 
 type PageProps = {
   params: {
@@ -250,10 +250,9 @@ export default async function ProfilePage({ params }: PageProps) {
             <div className="min-w-0">
               <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-1 text-sm ${APP_MUTED_TEXT_CLASS}`}>
                 <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 py-2">
-                  <Avatar
+                  <ProfileAvatarViewer
                     src={profile.avatar_url}
                     name={profile.display_name}
-                    size="lg"
                   />
                   <h1 className="min-w-0 truncate text-3xl font-black tracking-[-0.05em] text-[#24323f] sm:text-[2.6rem]">
                     {profile.display_name || "Unknown"}
