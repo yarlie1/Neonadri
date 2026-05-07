@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
+import { createAdminClient } from "../../../../lib/supabase/admin";
 
 type PushSubscriptionPayload = {
   endpoint?: string;
@@ -55,7 +56,8 @@ export async function POST(request: Request) {
   }
 
   const now = new Date().toISOString();
-  const { error } = await supabase
+  const adminSupabase = createAdminClient() as any;
+  const { error } = await adminSupabase
     .from("push_subscriptions")
     .upsert(
       {
@@ -104,7 +106,8 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "Invalid subscription" }, { status: 400 });
   }
 
-  const { error } = await supabase
+  const adminSupabase = createAdminClient() as any;
+  const { error } = await adminSupabase
     .from("push_subscriptions")
     .delete()
     .eq("user_id", user.id)

@@ -61,6 +61,19 @@ export default function PushNotificationButton({
         const registration = await navigator.serviceWorker.register("/sw.js");
         const existing = await registration.pushManager.getSubscription();
         if (!active) return;
+
+        if (existing) {
+          await fetch("/api/push/subscriptions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ subscription: existing.toJSON() }),
+          }).catch((error) => {
+            console.error("[push-button] subscription sync failed", error);
+          });
+        }
+
         setSubscribed(Boolean(existing));
       } catch (error) {
         console.error("[push-button] state load failed", error);
