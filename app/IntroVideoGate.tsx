@@ -1,8 +1,12 @@
 "use client";
 
 import {
-  AlertTriangle,
+  CalendarClock,
   Check,
+  Coffee,
+  DollarSign,
+  Handshake,
+  MapPin,
   MessageCircle,
   Play,
   Send,
@@ -23,38 +27,170 @@ const slides = [
     title: "1. Post a meetup",
     body: "Add the activity, time, place, and what the host covers.",
     icon: Sparkles,
+    visual: "post",
   },
   {
     eyebrow: "Guest",
     title: "2. Send a request",
     body: "Choose a meetup that fits and ask to join.",
     icon: Send,
+    visual: "request",
   },
   {
     eyebrow: "Host",
     title: "3. Accept a guest",
     body: "Review requests and accept one guest to match.",
     icon: UserCheck,
+    visual: "accept",
   },
   {
     eyebrow: "Host / Guest",
     title: "4. Chat",
     body: "Confirm the exact time, meeting spot, and small details.",
     icon: MessageCircle,
+    visual: "chat",
   },
   {
     eyebrow: "Host / Guest",
     title: "5. Meetup",
     body: "Meet in a public place and keep the plan respectful.",
     icon: ShieldCheck,
+    visual: "meetup",
   },
   {
-    eyebrow: "Safety Notes",
-    title: "Stay safe",
-    body: "Use public places. Keep expectations clear. Avoid unsafe requests. Report anything that feels off.",
-    icon: AlertTriangle,
+    eyebrow: "Good Habits",
+    title: "6. Meet well",
+    body: "Pick public places, keep plans clear, and use reports if something feels off.",
+    icon: ShieldCheck,
+    visual: "habits",
   },
 ] as const;
+
+function IntroIllustration({
+  visual,
+}: {
+  visual: (typeof slides)[number]["visual"];
+}) {
+  if (visual === "post") {
+    return (
+      <div className="grid gap-2 sm:gap-3">
+        {[
+          { label: "Coffee meetup", icon: Coffee },
+          { label: "Saturday 2:00 PM", icon: CalendarClock },
+          { label: "Public cafe", icon: MapPin },
+          { label: "Host covers coffee", icon: DollarSign },
+        ].map((item) => {
+          const ItemIcon = item.icon;
+
+          return (
+            <div
+              key={item.label}
+              className="flex items-center gap-3 rounded-[20px] border border-[#dce5eb] bg-white/78 px-3 py-2.5 sm:px-4 sm:py-3"
+            >
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#edf3f6] text-[#52616a] sm:h-9 sm:w-9">
+                <ItemIcon className="h-4 w-4" />
+              </span>
+              <span className="text-sm font-bold text-[#31414a]">
+                {item.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (visual === "request") {
+    return (
+      <div className="grid gap-4">
+        <div className="rounded-[24px] border border-[#dce5eb] bg-white/78 p-4">
+          <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#849099]">
+            Open meetup
+          </div>
+          <div className="mt-2 text-lg font-black text-[#24323c]">
+            Lunch at a calm spot
+          </div>
+        </div>
+        <div className="ml-auto inline-flex items-center gap-2 rounded-full border border-[#cbd7de] bg-[linear-gradient(180deg,#ffffff_0%,#dce7ed_100%)] px-4 py-3 text-sm font-black text-[#31414a]">
+          <Send className="h-4 w-4" />
+          Request sent
+        </div>
+      </div>
+    );
+  }
+
+  if (visual === "accept") {
+    return (
+      <div className="grid gap-3">
+        {["Guest A", "Guest B", "Guest C"].map((name, index) => (
+          <div
+            key={name}
+            className={`flex items-center justify-between gap-3 rounded-[20px] border px-4 py-3 ${
+              index === 1
+                ? "border-[#c4d1d9] bg-white text-[#24323c] shadow-[0_16px_28px_rgba(118,126,133,0.12)]"
+                : "border-[#e1e8ed] bg-white/60 text-[#6f7d86]"
+            }`}
+          >
+            <span className="text-sm font-bold">{name}</span>
+            {index === 1 ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#edf3f6] px-3 py-1.5 text-xs font-black">
+                <Check className="h-3.5 w-3.5" />
+                Accepted
+              </span>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (visual === "chat") {
+    return (
+      <div className="space-y-3">
+        <div className="mr-10 rounded-[22px] border border-[#dce5eb] bg-white/78 px-4 py-3 text-sm font-semibold text-[#52616a]">
+          Does 2:00 PM still work?
+        </div>
+        <div className="ml-10 rounded-[22px] border border-[#cbd7de] bg-[linear-gradient(180deg,#ffffff_0%,#e4edf2_100%)] px-4 py-3 text-sm font-bold text-[#31414a]">
+          Yes. Meet by the front door.
+        </div>
+      </div>
+    );
+  }
+
+  if (visual === "meetup") {
+    return (
+      <div className="flex items-center justify-center gap-4 py-3">
+        <span className="inline-flex h-20 w-20 items-center justify-center rounded-full border border-[#dce5eb] bg-white text-xl font-black text-[#31414a] shadow-[0_16px_32px_rgba(118,126,133,0.12)]">
+          H
+        </span>
+        <Handshake className="h-9 w-9 text-[#728089]" />
+        <span className="inline-flex h-20 w-20 items-center justify-center rounded-full border border-[#dce5eb] bg-white text-xl font-black text-[#31414a] shadow-[0_16px_32px_rgba(118,126,133,0.12)]">
+          G
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-3">
+      {[
+        "Public place",
+        "Clear expectations",
+        "Report concerns",
+      ].map((label) => (
+        <div
+          key={label}
+          className="flex items-center gap-3 rounded-[20px] border border-[#dce5eb] bg-white/78 px-4 py-3"
+        >
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#edf3f6] text-[#52616a]">
+            <Check className="h-4 w-4" />
+          </span>
+          <span className="text-sm font-bold text-[#31414a]">{label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function getTodayKey() {
   const now = new Date();
@@ -200,7 +336,7 @@ export default function IntroVideoGate() {
         Skip
       </button>
 
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pb-[11.5rem] pt-20 sm:px-6 sm:pb-32 sm:pt-16">
+      <div className="relative z-10 flex max-h-screen min-h-screen items-center justify-center overflow-y-auto px-4 pb-[11.5rem] pt-20 sm:px-6 sm:pb-32 sm:pt-16">
         <div className="grid w-full max-w-6xl gap-5 md:grid-cols-[0.92fr_1.08fr] md:items-center">
           <section className="rounded-[32px] border border-[#dce5eb] bg-white/72 p-5 shadow-[0_28px_80px_rgba(118,126,133,0.16)] backdrop-blur-xl sm:p-7">
             <div className="inline-flex items-center gap-2 rounded-[18px] border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-4 py-2 text-[16px] font-black uppercase tracking-[0.08em] text-[#31414a] sm:text-[18px]">
@@ -213,6 +349,10 @@ export default function IntroVideoGate() {
             <p className="mt-5 max-w-xl text-[17px] leading-7 text-[#62717a] sm:text-[19px]">
               {activeSlide.body}
             </p>
+
+            <div className="mt-5 rounded-[28px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,0.62)_0%,rgba(237,243,246,0.72)_100%)] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:mt-6 sm:p-4">
+              <IntroIllustration visual={activeSlide.visual} />
+            </div>
 
             <div className="mt-5 flex gap-1.5 md:hidden">
               {slides.map((slide, index) => (
