@@ -173,7 +173,7 @@ export default function LoginPage() {
               </button>
 
               <a
-                href="/signup"
+                href="/signup?postingBetaRequired=0"
                 className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
               >
                 Create account
