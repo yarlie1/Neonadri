@@ -84,6 +84,9 @@ const HERO_SURFACE_CLASS =
   "relative overflow-hidden rounded-[32px] border border-[#dde5eb] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.99)_0%,rgba(241,246,249,0.96)_44%,rgba(225,232,237,0.95)_100%)] px-6 py-7 text-[#25313a] shadow-[0_24px_52px_rgba(118,126,133,0.12)] sm:px-8 sm:py-9";
 const BETA_ACTION_CLASS =
   "inline-flex appearance-none items-center justify-center gap-2 rounded-full border border-[#d6dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] px-5 py-3 text-sm font-medium text-[#52616a] no-underline transition hover:bg-[#f5f8fa] disabled:cursor-not-allowed disabled:opacity-50";
+const SIGNUP_HERO_TITLE = "Join or create meetups.";
+const SIGNUP_HERO_BODY =
+  "Set up your profile, then browse plans, send requests, or create your own meetup.";
 
 function formatNaturalList(values: string[]) {
   if (values.length === 0) return "";
@@ -625,7 +628,7 @@ function SignupPageContent() {
               <div className={`inline-flex items-center gap-2 rounded-full px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}>
                 <Sparkles className="h-3.5 w-3.5" />
                 {awaitingSignupMode
-                  ? "Preparing signup"
+                  ? "Create account"
                   : showIntentPicker
                   ? "Choose your path"
                   : requiresPostingBeta
@@ -634,38 +637,29 @@ function SignupPageContent() {
               </div>
               <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
                 {awaitingSignupMode
-                  ? "Checking your signup path."
+                  ? SIGNUP_HERO_TITLE
                   : showIntentPicker
                   ? "How do you want to start?"
                   : requiresPostingBeta
                   ? "Use your approved email."
-                  : "Start with Neonadri."}
+                  : SIGNUP_HERO_TITLE}
               </h1>
               <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
                 {awaitingSignupMode
-                  ? "We're checking what is open right now."
+                  ? SIGNUP_HERO_BODY
                   : showIntentPicker
                   ? postingBetaRequired
-                    ? "Join 1:1 meetups right away, or apply to create during beta."
+                    ? "Join meetups now, or request posting access when you want to create one."
                     : "Join or create low-pressure 1:1 meetups right away."
                   : requiresPostingBeta
                   ? "Use the email already approved for creating meetups."
-                  : "Set up your profile, then browse or create meetups when ready."}
+                  : SIGNUP_HERO_BODY}
               </p>
               <div className={`mt-4 inline-flex rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                 Neonadri is for adults 18+ only.
               </div>
 
-              {awaitingSignupMode ? (
-                <div className="mt-7 rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
-                  <div className="text-sm font-semibold text-[#24323c]">
-                    Checking signup mode
-                  </div>
-                  <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                    If creating is open, you can continue right away.
-                  </div>
-                </div>
-              ) : showIntentPicker ? (
+              {showIntentPicker ? (
                 <div className="mt-7 space-y-3">
                   <button
                     type="button"
@@ -714,7 +708,7 @@ function SignupPageContent() {
                     </div>
                   </button>
                 </div>
-              ) : showSignupForm ? (
+              ) : showSignupForm || awaitingSignupMode ? (
                 <div className="mt-7 space-y-3">
                   {STEPS.map((item) => {
                     const active = step === item.number;
@@ -787,16 +781,16 @@ function SignupPageContent() {
                   <div>
                     <div className={APP_EYEBROW_CLASS}>Sign Up</div>
                     <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-                      Checking signup mode
+                      Create your account
                     </h2>
                   </div>
                   <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                    One moment
+                    Getting ready
                   </div>
                 </div>
 
                 <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  {"We're checking the current create setting before the next step."}
+                  {SIGNUP_HERO_BODY}
                 </p>
               </>
             ) : showIntentPicker ? (
