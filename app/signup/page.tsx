@@ -630,9 +630,7 @@ function SignupPageContent() {
                   ? "Choose your path"
                   : requiresPostingBeta
                   ? "Posting during beta"
-                  : hostSignupOpen
-                  ? "Hosting is open"
-                  : "Join meetups now"}
+                  : "Create account"}
               </div>
               <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
                 {awaitingSignupMode
@@ -641,9 +639,7 @@ function SignupPageContent() {
                   ? "How do you want to start?"
                   : requiresPostingBeta
                   ? "Use your approved email."
-                  : hostSignupOpen
-                  ? "Create meetups now."
-                  : "Join meetups now."}
+                  : "Start with Neonadri."}
               </h1>
               <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
                 {awaitingSignupMode
@@ -654,9 +650,7 @@ function SignupPageContent() {
                     : "Join or create low-pressure 1:1 meetups right away."
                   : requiresPostingBeta
                   ? "Use the email already approved for creating meetups."
-                  : hostSignupOpen
-                  ? "Create meetup posts without a separate beta review."
-                  : "Set up your account, browse plans, and apply to create later."}
+                  : "Set up your profile, then browse or create meetups when ready."}
               </p>
               <div className={`mt-4 inline-flex rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                 Neonadri is for adults 18+ only.
