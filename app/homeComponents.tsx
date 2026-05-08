@@ -373,7 +373,7 @@ export function FeaturedMeetupCard({
 
           <div className="flex min-w-0 items-start gap-2 text-sm">
             <MapPin className={`mt-0.5 h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
-            <span className="block min-w-0 flex-1 break-words line-clamp-2">
+            <span className="block min-w-0 flex-1 break-words font-semibold text-[#24323f] line-clamp-2">
               {placeText}
             </span>
           </div>
@@ -475,7 +475,7 @@ export function MeetupFeedCard({
 
           <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
             <MapPin className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
-            <span className="min-w-0 flex-1 break-words">{placeText}</span>
+            <span className="min-w-0 flex-1 break-words font-semibold text-[#24323f]">{placeText}</span>
           </div>
 
           <div className={`flex min-h-[56px] items-center justify-between gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
