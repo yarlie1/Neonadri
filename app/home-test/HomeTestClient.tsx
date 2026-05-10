@@ -132,7 +132,7 @@ export default function HomeTestClient({
     <main className="min-h-screen overflow-hidden px-4 py-5 text-[#2f3a42]">
       <div className="relative mx-auto max-w-2xl space-y-4 pb-28 pt-1 sm:space-y-5">
         {/* HERO / BACK LAYER */}
-        <section className="relative z-0 overflow-hidden rounded-[32px] border border-[#edf1f4] bg-[linear-gradient(145deg,rgba(255,255,255,0.97)_0%,rgba(247,249,250,0.95)_36%,rgba(232,236,239,0.93)_100%)] px-5 py-5 pb-14 shadow-[0_26px_66px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-1px_0_rgba(204,210,215,0.30)] sm:px-7 sm:py-7 sm:pb-16">
+        <section className="relative z-0 overflow-hidden rounded-[24px] border border-[#edf1f4] bg-[linear-gradient(145deg,rgba(255,255,255,0.97)_0%,rgba(247,249,250,0.95)_36%,rgba(232,236,239,0.93)_100%)] px-5 py-5 pb-14 shadow-[0_26px_66px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-1px_0_rgba(204,210,215,0.30)] sm:px-7 sm:py-7 sm:pb-16">
           <div className="pointer-events-none absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffe8] blur-3xl" />
           <div className="pointer-events-none absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#f5f9fcc7] blur-3xl" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-[linear-gradient(180deg,rgba(255,255,255,0.0)_0%,rgba(255,255,255,0.28)_45%,rgba(255,255,255,0.0)_100%)]" />
@@ -428,7 +428,7 @@ export default function HomeTestClient({
         </div>
 
         {sortedPosts.length === 0 && (
-          <div className="rounded-[32px] border border-white/75 bg-[linear-gradient(180deg,rgba(248,251,253,0.88)_0%,rgba(226,234,240,0.74)_100%)] px-5 py-10 text-center text-[#69808f] sm:px-6 sm:py-12">
+          <div className="rounded-[24px] border border-white/75 bg-[linear-gradient(180deg,rgba(248,251,253,0.88)_0%,rgba(226,234,240,0.74)_100%)] px-5 py-10 text-center text-[#69808f] sm:px-6 sm:py-12">
             No meetups found.
           </div>
         )}

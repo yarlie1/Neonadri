@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -256,7 +256,7 @@ function RecentChatsPanel({
                 ) : null}
               </div>
               <div className="mt-1 truncate text-xs text-[#78848c]">
-                {formatRecentChatTime(chat.meetingTime, userTimeZone)} · {chat.placeLabel}
+                {formatRecentChatTime(chat.meetingTime, userTimeZone)}  /  {chat.placeLabel}
               </div>
             </div>
 
@@ -1141,7 +1141,7 @@ export default function DashboardClient({
           </div>
         )}
 
-        <div className="relative overflow-hidden rounded-[32px] border border-[#dfe7ec] bg-[radial-gradient(circle_at_top_left,#ffffff_0%,#f4f7f9_44%,#dfe7ec_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(118,126,133,0.11)]">
+        <div className="relative overflow-hidden rounded-[24px] border border-[#dfe7ec] bg-[radial-gradient(circle_at_top_left,#ffffff_0%,#f4f7f9_44%,#dfe7ec_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(118,126,133,0.11)]">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/45 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#d8e1e7]/55 blur-2xl" />
           <div className="relative">

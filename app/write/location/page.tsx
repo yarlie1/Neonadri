@@ -540,7 +540,7 @@ export default function WriteLocationPage() {
             </div>
           )}
 
-          <div className={`overflow-hidden rounded-[28px] ${APP_SOFT_CARD_CLASS}`}>
+          <div className={`overflow-hidden rounded-[22px] ${APP_SOFT_CARD_CLASS}`}>
             <div ref={mapContainerRef} className="h-[22rem] w-full sm:h-[24rem]" />
           </div>
 

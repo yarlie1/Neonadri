@@ -102,7 +102,7 @@ export default function ReviewWriteForm({
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6`}>
       <div className="mx-auto max-w-xl space-y-4">
-        <div className={`${APP_SURFACE_CARD_CLASS} rounded-[28px] p-6`}>
+        <div className={`${APP_SURFACE_CARD_CLASS} rounded-[22px] p-6`}>
           <h1 className="text-2xl font-bold text-[#24323c]">Leave a Review</h1>
 
           {initialPostInfo && (

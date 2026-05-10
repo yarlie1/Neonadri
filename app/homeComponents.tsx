@@ -115,7 +115,7 @@ export function HomeFilterCard({
 }: HomeFilterCardProps) {
   return (
     <div
-      className={`rounded-[28px] transition ${
+      className={`rounded-[22px] transition ${
         isPinned
           ? `${APP_SOFT_CARD_CLASS} shadow-[0_18px_40px_rgba(118,126,133,0.11)]`
           : `${APP_SOFT_CARD_CLASS} shadow-[0_8px_20px_rgba(118,126,133,0.05)]`

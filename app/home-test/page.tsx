@@ -82,7 +82,7 @@ export default async function HomeTestPage() {
         <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.84),transparent_24%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.48),transparent_22%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.3),transparent_34%)]" />
 
         <div className="relative mx-auto max-w-2xl">
-          <div className="rounded-[28px] border border-[#e3e8ec] bg-[linear-gradient(180deg,rgba(255,255,255,0.997)_0%,rgba(247,249,250,0.988)_32%,rgba(233,237,240,0.988)_100%)] p-5 shadow-[0_18px_38px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(203,209,214,0.38)]">
+          <div className="rounded-[22px] border border-[#e3e8ec] bg-[linear-gradient(180deg,rgba(255,255,255,0.997)_0%,rgba(247,249,250,0.988)_32%,rgba(233,237,240,0.988)_100%)] p-5 shadow-[0_18px_38px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(203,209,214,0.38)]">
             <div className="text-base font-semibold">Could not load home test</div>
             <div className="mt-2 text-sm text-[#6f7a81]">{postsError.message}</div>
           </div>

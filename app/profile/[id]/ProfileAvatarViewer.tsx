@@ -68,7 +68,7 @@ export default function ProfileAvatarViewer({
             <img
               src={src}
               alt={label}
-              className="max-h-[82vh] w-full rounded-[28px] border border-white/30 bg-white object-contain shadow-[0_24px_80px_rgba(10,18,24,0.35)]"
+              className="max-h-[82vh] w-full rounded-[22px] border border-white/30 bg-white object-contain shadow-[0_24px_80px_rgba(10,18,24,0.35)]"
               referrerPolicy="no-referrer"
             />
           </div>

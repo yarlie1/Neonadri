@@ -201,7 +201,7 @@ export default function IntroVideoGate() {
 
       <div className="relative z-10 flex max-h-screen min-h-screen items-center justify-center overflow-y-auto px-4 pb-[11.5rem] pt-20 sm:px-6 sm:pb-32 sm:pt-16">
         <div className="grid w-full max-w-6xl gap-5 md:grid-cols-[0.92fr_1.08fr] md:items-center">
-          <section className="relative overflow-hidden rounded-[32px] border border-[#dce5eb] bg-white/72 p-5 shadow-[0_28px_80px_rgba(118,126,133,0.16)] backdrop-blur-xl sm:p-7">
+          <section className="relative overflow-hidden rounded-[24px] border border-[#dce5eb] bg-white/72 p-5 shadow-[0_28px_80px_rgba(118,126,133,0.16)] backdrop-blur-xl sm:p-7">
             <ActiveIcon className="pointer-events-none absolute -right-4 top-8 h-40 w-40 text-[#dce5eb]/55 sm:-right-8 sm:top-4 sm:h-60 sm:w-60" />
             <div className="relative inline-flex items-center gap-2 rounded-[18px] border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-4 py-2 text-[16px] font-black uppercase tracking-[0.08em] text-[#31414a] sm:text-[18px]">
               <ActiveIcon className="h-3.5 w-3.5" />
@@ -233,7 +233,7 @@ export default function IntroVideoGate() {
 
           </section>
 
-          <section className="hidden rounded-[32px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(237,243,246,0.94)_100%)] p-4 shadow-[0_28px_80px_rgba(118,126,133,0.14)] sm:p-6 md:block">
+          <section className="hidden rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(237,243,246,0.94)_100%)] p-4 shadow-[0_28px_80px_rgba(118,126,133,0.14)] sm:p-6 md:block">
             <div className="grid gap-3">
               {slides.map((slide, index) => {
                 const StepIcon = slide.icon;

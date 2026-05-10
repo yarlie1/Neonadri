@@ -2,16 +2,16 @@ export const APP_PAGE_BG_CLASS =
   "bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7fafc_20%,#e8edf1_56%,#d7dfe5_100%)] text-[#2f3a42]";
 
 export const APP_SURFACE_CARD_CLASS =
-  "rounded-[32px] border border-[#e5ebef] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(246,249,251,0.988)_36%,rgba(232,237,241,0.99)_100%)] shadow-[0_24px_60px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur";
+  "rounded-[24px] border border-[#e5ebef] bg-[linear-gradient(180deg,rgba(255,255,255,0.995)_0%,rgba(246,249,251,0.988)_36%,rgba(232,237,241,0.99)_100%)] shadow-[0_24px_60px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur";
 
 export const APP_SOFT_CARD_CLASS =
-  "rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]";
+  "rounded-[18px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]";
 
 export const APP_INNER_PANEL_CLASS =
-  "rounded-[22px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] shadow-[0_14px_24px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.95)]";
+  "rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] shadow-[0_14px_24px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.95)]";
 
 export const APP_ROW_SURFACE_CLASS =
-  "rounded-[16px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] shadow-[0_10px_18px_rgba(118,126,133,0.07),inset_0_1px_0_rgba(255,255,255,0.98)]";
+  "rounded-[12px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] shadow-[0_10px_18px_rgba(118,126,133,0.07),inset_0_1px_0_rgba(255,255,255,0.98)]";
 
 export const APP_PILL_ACTIVE_CLASS =
   "border border-[#bfcbd3] bg-[linear-gradient(180deg,#ffffff_0%,#dde7ed_100%)] text-[#1f2e38] shadow-[0_12px_22px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,0.96)]";

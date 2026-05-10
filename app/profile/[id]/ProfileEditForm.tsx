@@ -379,7 +379,7 @@ export default function ProfileEditForm({
   };
 
   return (
-    <div className={`overflow-hidden rounded-[36px] ${APP_SURFACE_CARD_CLASS} backdrop-blur`}>
+    <div className={`overflow-hidden rounded-[24px] ${APP_SURFACE_CARD_CLASS} backdrop-blur`}>
       <div className="bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fa_100%)] px-6 py-5">
         <div className={APP_EYEBROW_CLASS}>
           Edit profile
