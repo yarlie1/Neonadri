@@ -3,7 +3,6 @@ import {
   Coffee,
   Dice5,
   DollarSign,
-  ForkKnife,
   Home,
   MapPin,
   MessageCircle,
@@ -13,6 +12,7 @@ import {
   SlidersHorizontal,
   Sparkles,
   Trees,
+  Utensils,
   User,
   UsersRound,
   X,
@@ -32,7 +32,7 @@ const colors = [
 
 const categories = [
   { label: "All", active: true },
-  { label: "Food", icon: ForkKnife },
+  { label: "Food", icon: Utensils },
   { label: "Games", icon: Dice5 },
   { label: "Coffee", icon: Coffee },
   { label: "Outdoors", icon: Trees },
@@ -48,7 +48,7 @@ const meetups = [
         venue: "Moonlark's Dinette",
         host: "Hosted by Chae | Male / 40s",
         meta: "May 13 - 12:00 PM - Female / Any",
-        icon: ForkKnife,
+        icon: Utensils,
       },
       {
         title: "Board Games",
