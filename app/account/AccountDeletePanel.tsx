@@ -51,7 +51,7 @@ export default function AccountDeletePanel() {
         Delete account
       </div>
       <p className="mt-2 text-sm text-[#637079]">
-        Permanently remove your profile, meetups, requests, matches, and saved access.
+        Remove profile, meetups, requests, and matches.
       </p>
 
       <div className="mt-4 rounded-[18px] border border-[#eaded8] bg-[linear-gradient(180deg,#fffdfc_0%,#f7f0ed_100%)] px-4 py-3 text-sm text-[#775f55]">

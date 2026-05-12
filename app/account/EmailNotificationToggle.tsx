@@ -45,7 +45,7 @@ export default function EmailNotificationToggle({
           Email notifications
         </div>
         <div className="mt-1 text-xs font-medium text-[#728089]">
-          Receive important Neonadri updates by email
+          Important updates by email
         </div>
       </div>
       <button

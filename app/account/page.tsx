@@ -83,7 +83,7 @@ export default async function AccountPage() {
               Manage access.
             </h1>
             <p className={`mt-3 max-w-xl ${APP_BODY_TEXT_CLASS}`}>
-              Update password, safety settings, and account tools here.
+              Password, alerts, and safety.
             </p>
           </div>
         </section>
@@ -119,7 +119,7 @@ export default async function AccountPage() {
             Request and match alerts
           </h2>
           <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
-            Turn on browser alerts for this device to receive meetup requests and accepted request updates.
+            Request and match alerts.
           </p>
           <div className="mt-4 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
             <PushNotificationButton variant="toggle" />
@@ -141,10 +141,10 @@ export default async function AccountPage() {
             </h2>
             <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
               {postingAccessAllowed
-                ? "You can create meetup posts during the beta period."
+                ? "You can create meetups."
                 : profile.signup_intent === "host"
-                ? "Your account was set up for posting, but posting approval is not active on this email yet."
-                : "You can browse and join 1:1 meetups now, then apply for posting access later whenever you want to host."}
+                ? "Posting approval is not active yet."
+                : "Join now. Apply to host later."}
             </p>
 
             <div className="mt-4 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
@@ -153,8 +153,8 @@ export default async function AccountPage() {
               </div>
               <div className="mt-2 text-sm font-medium text-[#52616a]">
                 {profile.signup_intent === "host"
-                  ? "Started as a posting account"
-                  : "Started as a participation account"}
+                  ? "Host path"
+                  : "Join path"}
               </div>
             </div>
 
@@ -178,7 +178,7 @@ export default async function AccountPage() {
               Run admin tools
             </h2>
             <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
-              Open the overview, safety reports, and beta applications from one place.
+              Overview, reports, and beta.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               <Link
@@ -211,7 +211,7 @@ export default async function AccountPage() {
             Delete this account
           </h2>
           <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
-            Open the final confirmation screen if you want to permanently remove this account.
+            Permanently remove this account.
           </p>
           <div className="mt-4">
             <Link
