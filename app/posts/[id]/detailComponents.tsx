@@ -599,7 +599,6 @@ export function MeetupOverviewCard({
   benefitExplanation,
   hostIdentityLabel,
   targetLabel,
-  ownerName,
   meetupTimeLabel,
   mapUrl,
   distanceNote,
@@ -616,7 +615,6 @@ export function MeetupOverviewCard({
   benefitExplanation: string;
   hostIdentityLabel: string;
   targetLabel: string;
-  ownerName: string;
   meetupTimeLabel: string;
   mapUrl: string;
   distanceNote?: ReactNode;
@@ -672,10 +670,6 @@ export function MeetupOverviewCard({
           <p className={`mt-3 max-w-2xl text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
             {benefitExplanation}
           </p>
-          <div className={`mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm ${APP_MUTED_TEXT_CLASS}`}>
-            <span>Looking for {targetLabel}</span>
-            <span>Hosted by {ownerName}</span>
-          </div>
         </div>
 
         <div className={`mt-5 ${APP_INNER_PANEL_CLASS} px-4 py-4`}>

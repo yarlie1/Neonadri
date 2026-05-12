@@ -487,7 +487,6 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           benefitExplanation={benefitExplanation}
           hostIdentityLabel={hostIdentityLabel}
           targetLabel={targetLabel}
-          ownerName={ownerName}
           meetupTimeLabel={meetupTimeLabel}
           mapUrl={mapUrl}
           placeDisplay={placeDisplay}
