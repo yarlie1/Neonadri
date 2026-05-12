@@ -57,7 +57,7 @@ export function useCreateMeetupHref(
       const fallbackHref = getPostingAccessHref(sessionUser.email);
 
       if (!cancelled) {
-        setCreateHref(fallbackHref);
+        setCreateHref(initialHref || fallbackHref);
       }
 
       if (!sessionUser.email) {

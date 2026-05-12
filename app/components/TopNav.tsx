@@ -128,7 +128,7 @@ export default function TopNav({
       : "/dashboard";
   const mobileDashboardCount =
     pendingCount + acceptedSentCount + upcomingMatchCount;
-  const createHref = useCreateMeetupHref(!!user);
+  const createHref = useCreateMeetupHref(!!user, user ? "/write" : undefined);
   const openIntroVideo = () => {
     setMenuOpen(false);
     window.dispatchEvent(new CustomEvent("neonadri:open-intro"));
