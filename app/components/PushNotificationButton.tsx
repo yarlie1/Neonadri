@@ -99,7 +99,7 @@ export default function PushNotificationButton({
       return (
         <div className="space-y-3">
           <p className="text-sm font-medium text-[#728089]">
-            Notifications are not available in this browser right now.
+            Notifications unavailable here.
           </p>
           <button
             type="button"
@@ -158,7 +158,7 @@ export default function PushNotificationButton({
       return true;
     } catch (error) {
       console.error("[push-button] enable failed", error);
-      setMessage("Could not turn on alerts");
+      setMessage("Alerts failed");
       return false;
     } finally {
       setBusy(false);
@@ -190,7 +190,7 @@ export default function PushNotificationButton({
       return true;
     } catch (error) {
       console.error("[push-button] disable failed", error);
-      setMessage("Could not turn off alerts");
+      setMessage("Could not turn alerts off");
       return false;
     } finally {
       setBusy(false);
@@ -252,7 +252,7 @@ export default function PushNotificationButton({
             Device notifications
           </div>
           <div className="mt-1 text-xs font-medium text-[#728089]">
-            Browser alerts for requests, updates, and messages
+            Requests, updates, and messages
           </div>
         </div>
         <button

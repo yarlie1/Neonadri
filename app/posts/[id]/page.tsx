@@ -168,7 +168,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             This meetup is unavailable.
           </div>
           <p className={`mt-2 text-sm ${APP_SUBTLE_TEXT_CLASS}`}>
-            You cannot view this meetup because one participant has blocked the other.
+            This meetup is blocked.
           </p>
           <div className="mt-4">
             <Link
@@ -624,7 +624,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                       Meetup actions
                     </div>
                     <div className="mt-2 text-sm leading-6 text-[#66727a]">
-                      Need to change the time or place instead? Cancel this meetup and create a new one.
+                      Need a new time or place? Cancel and recreate.
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2">
                       <CancelMeetupButton
@@ -649,8 +649,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                   </div>
                   <div className="mt-2 text-sm leading-6 text-[#66727a]">
                     {user?.id === post.user_id
-                      ? "This meetup is no longer active. Create a new meetup if you want to share updated plans."
-                      : "The host cancelled this meetup. You can still review the details and previous chat messages here."}
+                      ? "Create a new meetup for updated plans."
+                      : "Cancelled by host. Chat is read-only."}
                   </div>
                 </div>
               </ScrollReveal>

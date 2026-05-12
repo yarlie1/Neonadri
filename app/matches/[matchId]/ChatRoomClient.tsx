@@ -270,7 +270,7 @@ export default function ChatRoomClient({
         setMessages(historyMessages);
         void markSeenIfVisible();
       } catch {
-        setErrorMessage("Past messages could not be loaded. New chat still works.");
+        setErrorMessage("Past messages unavailable.");
       } finally {
         setHistoryLoading(false);
       }
@@ -365,7 +365,7 @@ export default function ChatRoomClient({
       return;
     }
     if (!pubnubRef.current) {
-      setErrorMessage("Chat is still connecting. Please try again in a moment.");
+      setErrorMessage("Chat still connecting.");
       return;
     }
 
@@ -386,7 +386,7 @@ export default function ChatRoomClient({
       const payload = await response.json().catch(() => null);
 
       if (!response.ok) {
-        setErrorMessage(payload?.error || "Message could not be sent. Please try again.");
+        setErrorMessage(payload?.error || "Message failed.");
         return;
       }
 
@@ -404,7 +404,7 @@ export default function ChatRoomClient({
 
       setDraft("");
     } catch {
-      setErrorMessage("Message could not be sent. Please try again.");
+      setErrorMessage("Message failed.");
     } finally {
       setSending(false);
     }
@@ -428,7 +428,7 @@ export default function ChatRoomClient({
         onReady={() => setSdkReady(true)}
         onError={() => {
           setConnectionLabel("Unavailable");
-          setErrorMessage("Chat could not connect right now. Please refresh once and try again.");
+          setErrorMessage("Chat connection failed.");
         }}
       />
       <div className="mx-auto max-w-3xl">
@@ -511,7 +511,7 @@ export default function ChatRoomClient({
                     <div className="mt-1 max-w-xs leading-6">
                       {chatClosed
                         ? "This conversation is now read-only."
-                        : "Start with a quick hello, confirm the time, or share an arrival update."}
+                        : "Say hello or confirm details."}
                     </div>
                   </div>
                 )}

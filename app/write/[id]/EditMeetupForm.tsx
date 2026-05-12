@@ -259,7 +259,7 @@ export default function EditMeetupForm({
 
   const purposeHelpText = useMemo(() => {
     if (!meetingPurpose) {
-      return "Choose the kind of meetup you want, and a short description will appear here.";
+      return "Choose a meetup type.";
     }
     return PURPOSE_HELP_TEXT[meetingPurpose] || "";
   }, [meetingPurpose]);
@@ -313,13 +313,13 @@ export default function EditMeetupForm({
       !locationConfirmed
     ) {
       setMessage(
-        "Please choose one exact location from the dropdown or map picker."
+        "Choose one exact location."
       );
       return;
     }
 
     if (benefitAmount && !benefitConfirmed) {
-      setMessage("Please confirm the covered cost note before saving the meetup.");
+      setMessage("Confirm the cost note.");
       return;
     }
 
@@ -378,7 +378,7 @@ export default function EditMeetupForm({
               Refine the plan without losing the vibe.
             </h1>
             <p className={`mt-3 max-w-lg text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
-              Update the details, keep the tone clear, and make sure the meetup still feels easy to say yes to.
+              Update the details. Keep it clear.
             </p>
           </div>
         </section>
@@ -586,8 +586,7 @@ export default function EditMeetupForm({
           </div>
 
           <div className={`${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}>
-            Hosts cover direct activity costs only. Never offer payment for
-            attendance, time, companionship, or anything outside the meetup plan.
+            Activity costs only. Never pay for attendance, time, or companionship.
           </div>
 
           {benefitAmount && (
@@ -601,7 +600,7 @@ export default function EditMeetupForm({
               <span className="min-w-0 flex-1 leading-6">
                 I understand that{" "}
                 <span className="font-semibold text-[#24323f]">{benefitAmount}</span>{" "}
-                is only for direct meetup costs, not for attendance, time, or companionship.
+                covers meetup costs only.
               </span>
             </label>
           )}

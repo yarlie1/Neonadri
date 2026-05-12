@@ -27,7 +27,7 @@ export default function CancelMeetupButton({
 
     if (started) {
       window.alert(
-        "This meetup has already started, so it can no longer be cancelled here."
+        "This meetup already started."
       );
       return;
     }
@@ -35,9 +35,9 @@ export default function CancelMeetupButton({
     const confirmed = window.confirm(
       sameDay
         ? hasMatchedParticipant
-          ? "Cancel this meetup today?\n\nThis meetup starts today. Cancelling now can strongly affect trust, and your guest can leave cancellation feedback. Chat will become read-only for matched participants."
-          : "Cancel this meetup today?\n\nThis meetup starts today. Cancelling now can strongly affect trust. This meetup will stop accepting requests, and any existing plans around it may be disrupted."
-        : "Cancel this meetup?\n\nThis meetup will stop accepting requests, and chat will become read-only for matched participants."
+          ? "Cancel today?\n\nTrust may be affected. Your guest can leave private feedback. Chat becomes read-only."
+          : "Cancel today?\n\nRequests will close. Existing plans may be disrupted."
+        : "Cancel this meetup?\n\nRequests close. Chat becomes read-only."
     );
 
     if (!confirmed) return;

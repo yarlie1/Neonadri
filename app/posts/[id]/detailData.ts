@@ -270,7 +270,7 @@ export function buildDetailViewModel({
   const locationHeading = revealExactLocation ? "Address" : "Area";
   const locationPrivacyNote = revealExactLocation
     ? null
-    : "Full address is shared only with confirmed participants after the meetup is matched.";
+    : "Full address unlocks after matching.";
   const mapQuery = revealExactLocation
     ? post.location || post.place_name || ""
     : getPublicLocationLabel(post.place_name, post.location) || "";
@@ -300,8 +300,8 @@ export function buildDetailViewModel({
     meetupFinished &&
     !viewerHasReview;
   const benefitExplanation = post.benefit_amount
-    ? `The host covers ${post.benefit_amount} for direct activity costs such as food, tickets, or transport. No expectations beyond the meetup plan.`
-    : `No covered activity cost has been listed for this ${meetupDurationLabel} ${post.meeting_purpose || "meetup"} yet.`;
+    ? `Host covers ${post.benefit_amount} in activity costs.`
+    : `No covered cost listed.`;
   const purposeTheme = getPurposeTheme(post.meeting_purpose);
 
   return {

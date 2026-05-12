@@ -155,7 +155,7 @@ export default async function ProfilePage({ params }: PageProps) {
         <div className={`mx-auto max-w-2xl ${APP_SURFACE_CARD_CLASS} p-6`}>
           <div className="text-2xl font-bold">Profile unavailable</div>
           <p className={`mt-2 text-sm ${APP_MUTED_TEXT_CLASS}`}>
-            You cannot view this profile because one participant has blocked the other.
+            This profile is blocked.
           </p>
         </div>
       </main>
@@ -382,7 +382,7 @@ export default async function ProfilePage({ params }: PageProps) {
                   Reviews
                 </h2>
                 <p className={`mt-1 text-sm ${APP_MUTED_TEXT_CLASS}`}>
-                  Signals from past meetups and how people felt afterward.
+                  Past meetup feedback.
                 </p>
               </div>
             </div>
@@ -479,7 +479,7 @@ export default async function ProfilePage({ params }: PageProps) {
           <section className={`${APP_SURFACE_CARD_CLASS} p-5`}>
             <div className={APP_EYEBROW_CLASS}>Safety</div>
             <div className="mt-2 text-sm text-[#6c7880]">
-              Block this user if you no longer want to see or interact with this profile.
+              Block future interaction.
             </div>
             <div className="mt-4">
               <SafetyActions

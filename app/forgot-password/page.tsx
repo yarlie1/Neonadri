@@ -60,7 +60,7 @@ export default function ForgotPasswordPage() {
     }
 
     setMessage(
-      "Reset link sent. Check your email and open the link to choose a new password."
+      "Reset link sent."
     );
     setMessageTone("default");
   };
@@ -80,7 +80,7 @@ export default function ForgotPasswordPage() {
                 Reset your password without losing your place.
               </h1>
               <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-                We will email you a secure link so you can choose a new password and get back to your meetups.
+                We will email a reset link.
               </p>
               <div className={`mt-4 inline-flex rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                 The reset link opens a secure Neonadri page.
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
               Send reset link
             </h2>
             <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-              Enter the email you used for Neonadri. We will send you a reset link right away.
+              Enter your Neonadri email.
             </p>
             <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
               The email can take a minute or two to arrive.

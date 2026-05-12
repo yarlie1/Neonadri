@@ -307,7 +307,7 @@ export default function ProfileEditForm({
 
   const handleRemoveAvatar = () => {
     setAvatarUrl("");
-    setMessage("Profile photo removed. Save your profile to keep it removed.");
+    setMessage("Photo removed. Save to keep it.");
   };
 
   const handleSave = async () => {
@@ -391,7 +391,7 @@ export default function ProfileEditForm({
 
       <div className="border-t border-[#e6edf2]/80 px-6 py-5">
         <div className={`mb-5 rounded-[22px] px-4 py-4 text-sm leading-6 ${APP_SOFT_CARD_CLASS} ${APP_BODY_TEXT_CLASS}`}>
-          A clear profile makes it easier for people to understand your energy before they send a request.
+          Help people understand your meetup style.
         </div>
 
         <div className="space-y-4">
@@ -407,7 +407,7 @@ export default function ProfileEditForm({
                   Profile photo
                 </label>
                 <p className={`mb-3 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                  Upload a square image if you want to replace the default avatar.
+                  Upload a square photo.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <label className={`inline-flex cursor-pointer items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}>
@@ -463,7 +463,7 @@ export default function ProfileEditForm({
                   placeholder="Tell people more about yourself"
                 />
                 <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                  Avoid prostitution, solicitation, or other unsafe sexual content.
+                  Avoid solicitation or unsafe sexual content.
                 </p>
               </div>
 

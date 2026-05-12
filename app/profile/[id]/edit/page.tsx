@@ -93,8 +93,7 @@ export default async function EditProfilePage({ params }: PageProps) {
               Update your profile
             </h1>
             <p className={`mt-3 max-w-xl text-sm leading-6 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-              Edit your profile on a full page so it is easier to review details
-              and save changes without a popup getting in the way.
+              Review and save your profile.
             </p>
           </div>
         </div>

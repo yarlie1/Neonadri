@@ -101,7 +101,7 @@ export default function ChatsPageClient({
                 Chats from your matched meetups
               </div>
               <p className={`mt-2 max-w-2xl ${APP_BODY_TEXT_CLASS}`}>
-                Review active conversations, read-only threads, and cancelled meetup chats in one place.
+                Active and read-only chats.
               </p>
             </div>
           </div>
@@ -180,14 +180,14 @@ export default function ChatsPageClient({
                 <MessageSquareMore className="h-8 w-8 text-[#9aa6ad]" />
                 <div className="mt-3 text-base font-medium text-[#52616a]">No chats in this filter</div>
                 <div className="mt-1 max-w-sm text-sm leading-6">
-                  Matched meetup conversations will appear here when they fit this status.
+                  Matching chats will appear here.
                 </div>
               </div>
             )}
           </div>
 
           <div className="mt-5 rounded-[18px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-xs leading-6 text-[#6b7780]">
-            Chat is powered by PubNub. Conversation content is not stored by Neonadri and is kept in PubNub history for up to 7 days only.
+            PubNub chat history is kept up to 7 days.
           </div>
 
           <div className="mt-5 flex justify-start">

@@ -72,7 +72,7 @@ const STEPS = [
 ];
 
 const DEFAULT_ABOUT_ME =
-  "I enjoy meeting new people through coffee, walks, food, or low-pressure activities. I like clear plans, easy conversation, and meetups that feel comfortable from the start.";
+  "I like clear plans, easy conversation, and low-pressure meetups.";
 const DISPLAY_NAME_MAX_LENGTH = 24;
 const PASSWORD_MIN_LENGTH = 8;
 const DISPLAY_NAME_LENGTH_MESSAGE = `Display name must be ${DISPLAY_NAME_MAX_LENGTH} characters or fewer.`;
@@ -86,7 +86,7 @@ const BETA_ACTION_CLASS =
   "inline-flex appearance-none items-center justify-center gap-2 rounded-full border border-[#d6dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] px-5 py-3 text-sm font-medium text-[#52616a] no-underline transition hover:bg-[#f5f8fa] disabled:cursor-not-allowed disabled:opacity-50";
 const SIGNUP_HERO_TITLE = "Join or create meetups.";
 const SIGNUP_HERO_BODY =
-  "Set up your profile, then browse plans, send requests, or create your own meetup.";
+  "Set up your profile. Browse, request, or host.";
 
 function formatNaturalList(values: string[]) {
   if (values.length === 0) return "";
@@ -413,7 +413,7 @@ function SignupPageContent() {
       if (!betaCheckPayload.allowed) {
         setBetaAccessAllowed(false);
         setMessage(
-          "This email is not approved to create meetups yet. Please apply first."
+          "Apply to host first."
         );
         setCheckingBetaAccess(false);
         return;
@@ -424,8 +424,8 @@ function SignupPageContent() {
       setPostingBetaRequired(betaCheckPayload.postingBetaRequired !== false);
       setMessage(
         betaCheckPayload.postingBetaRequired === false
-          ? "Creating meetups is open. Let's finish your profile."
-          : "Create access confirmed. Let's finish your profile."
+          ? "Hosting is open. Finish your profile."
+          : "Create access confirmed."
       );
     } catch (error) {
       console.error("Beta access check error:", error);
@@ -486,7 +486,7 @@ function SignupPageContent() {
 
         if (!betaCheckPayload.allowed) {
           setMessage(
-            "Creating meetups is limited during beta. Please apply first."
+            "Apply to host first."
           );
           setSubmitting(false);
           return;
@@ -530,7 +530,7 @@ function SignupPageContent() {
       const userId = data.user?.id;
 
       if (!userId) {
-        setMessage("Account was created, but profile setup could not be finished.");
+        setMessage("Account created. Profile incomplete.");
         setSubmitting(false);
         return;
       }
@@ -599,7 +599,7 @@ function SignupPageContent() {
               Turn on notifications?
             </h1>
             <p className={`mt-3 ${APP_BODY_TEXT_CLASS}`}>
-              Would you like to receive alerts on this device when meetup requests, request updates, or chat messages arrive?
+              Get request and chat alerts?
             </p>
 
             <div className="mt-6 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
@@ -649,7 +649,7 @@ function SignupPageContent() {
                   ? SIGNUP_HERO_BODY
                   : showIntentPicker
                   ? postingBetaRequired
-                    ? "Join meetups now, or request posting access when you want to create one."
+                    ? "Join now, or apply to host."
                     : "Join or create low-pressure 1:1 meetups right away."
                   : requiresPostingBeta
                   ? "Use the email already approved for creating meetups."
@@ -672,7 +672,7 @@ function SignupPageContent() {
                           Join 1:1 meetups
                         </div>
                         <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                          Browse local plans and request to join with no pressure.
+                          Browse plans. Request to join.
                         </div>
                       </div>
                       <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c3d0d8] bg-white/90 text-[#31424d] shadow-sm">
@@ -808,7 +808,7 @@ function SignupPageContent() {
                 </div>
 
                 <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  Already signed up? Log in here. New here? Pick a path first.
+                  Have an account? Log in.
                 </p>
 
                 <div className="mt-6">
@@ -890,11 +890,11 @@ function SignupPageContent() {
 
                 <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
                   {step === 1 &&
-                    "Add the basics people usually want to know first."}
+                    "Add the basics."}
                   {step === 2 &&
-                    "Keep it activity-based so meetup requests feel natural."}
+                    "Keep it activity-based."}
                   {step === 3 &&
-                    "Finish with the password you will use to sign in."}
+                    "Set your password."}
                 </p>
 
                 <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#e8eef2]">
@@ -1048,9 +1048,7 @@ function SignupPageContent() {
                           className={INPUT_CLASS}
                         />
                         <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                          Keep it activity-based: what you like doing, how you
-                          like to meet, and what kind of conversation feels
-                          comfortable. Avoid solicitation or unsafe sexual content.
+                          Keep it activity-based. Avoid unsafe sexual content.
                         </p>
                       </div>
                     </>
@@ -1127,7 +1125,7 @@ function SignupPageContent() {
                 <div className="mt-6 flex flex-wrap gap-3">
                   {step === 2 && !canMoveNext && (
                     <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                      Select a meeting style and at least one interest to continue.
+                      Pick a style and interest.
                     </p>
                   )}
                   {step === 3 && !isAdultConfirmed && (

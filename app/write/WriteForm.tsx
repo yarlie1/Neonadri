@@ -297,13 +297,13 @@ export default function WriteForm({ userId }: { userId: string }) {
       !locationConfirmed
     ) {
       setMessage(
-        "Please choose one exact location from the dropdown or map picker."
+        "Choose one exact location."
       );
       return;
     }
 
     if (benefitAmount && !benefitConfirmed) {
-      setMessage("Please confirm the cost note before creating the meetup.");
+      setMessage("Confirm the cost note.");
       return;
     }
 
@@ -362,8 +362,7 @@ export default function WriteForm({ userId }: { userId: string }) {
               Create a low-pressure 1:1 meetup.
             </h1>
             <p className={`mt-3 max-w-lg text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
-              Start with the activity: coffee, dinner, a walk, games, or
-              something simple. Clear plans help guests say yes comfortably.
+              Start with the activity. Keep it simple.
             </p>
           </div>
         </section>
@@ -577,8 +576,7 @@ export default function WriteForm({ userId }: { userId: string }) {
           </div>
 
           <div className={`${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}>
-            Hosts cover direct activity costs only. Never offer payment for
-            attendance, time, or anything outside the meetup plan.
+            Activity costs only. Never pay for attendance or time.
           </div>
 
           {benefitAmount && (

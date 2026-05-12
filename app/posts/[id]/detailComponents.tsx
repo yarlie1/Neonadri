@@ -780,14 +780,14 @@ export function MatchReviewPanel({
         className={`mt-4 ${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}
       >
         {isCancelled
-          ? "This meetup was cancelled by the host, so standard meetup reviews are not available."
+          ? "Reviews unavailable after cancellation."
           : meetupFinished
           ? viewerHasReview
-            ? "You already submitted your review for this meetup."
+            ? "Review submitted."
             : matchReviews.length > 0
-            ? "Reviews from this matched meetup are shown below."
-            : "This meetup is complete. You can leave a review now."
-          : "This meetup is still upcoming. Reviews open after it is completed."}
+            ? "Reviews are shown below."
+            : "Review now."
+          : "Reviews open after meetup."}
       </div>
 
       {matchReviews.length > 0 && (
@@ -860,10 +860,10 @@ export function CancellationFeedbackPanel({
 
       <div className={`mt-4 ${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}>
         {hasCancellationFeedback
-          ? "You already shared cancellation feedback for this meetup."
+          ? "Feedback submitted."
           : canLeaveCancellationFeedback
-          ? "Share how this cancellation was handled. This feedback stays internal and is not shown on profiles."
-          : "Cancellation feedback is not available for the person who cancelled this meetup."}
+          ? "Share private cancellation feedback."
+          : "Feedback unavailable."}
       </div>
     </div>
   );
@@ -898,15 +898,15 @@ export function MatchedChatPanel({
     ? "Keep the conversation going"
     : "Stay in touch before the meetup";
   const body = isCancelled
-    ? "This meetup was cancelled by the host. You can still review previous messages here."
+    ? "Chat is read-only."
     : chatClosed
     ? "This chat closed 72 hours after the meetup."
     : meetupFinished
     ? "You can still chat for 72 hours after the meetup."
-    : "Use chat to confirm details and stay in sync before you meet.";
+    : "Confirm details in chat.";
   const subBody =
     !isCancelled && !chatClosed && !meetupFinished
-      ? "Chat stays open for 72 hours after the meetup."
+      ? "Open until 72h after."
       : null;
 
   return (

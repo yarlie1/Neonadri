@@ -373,8 +373,7 @@ export default function HomeFeedClient({
             </h1>
 
             <p className={`mt-3 max-w-xl text-[14px] sm:mt-4 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-              Hosts cover the listed activity cost. Guests simply show up,
-              join, and enjoy the time together.
+              Browse nearby plans. Join when it feels right.
             </p>
 
             <div className="mt-5 grid grid-cols-3 gap-2.5 sm:mt-7 sm:gap-3">
@@ -436,8 +435,7 @@ export default function HomeFeedClient({
                 Real conversations, zero pressure.
               </div>
               <p className={`mt-2 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
-                Hosts cover coffee, food, or activity costs shown on each
-                meetup. No expectations beyond showing up respectfully.
+                Activity costs only. No pressure.
               </p>
             </div>
           </div>

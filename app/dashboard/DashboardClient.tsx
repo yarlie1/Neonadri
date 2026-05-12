@@ -208,7 +208,7 @@ function RecentChatsPanel({
               Meetup chat
             </div>
             <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-              Keep plans aligned before and after the meetup.
+              Meetup chat updates.
             </div>
           </div>
         </div>
@@ -224,7 +224,7 @@ function RecentChatsPanel({
             Meetup chat
           </div>
           <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#24323f]">
-            Stay connected around the meetup
+            Recent meetup chats
           </div>
         </div>
         <Link
@@ -1153,7 +1153,7 @@ export default function DashboardClient({
                 My Meetups
               </h1>
               <p className={`mt-2 max-w-md ${APP_BODY_TEXT_CLASS}`}>
-                Keep your next meetup in view, stay connected in chat, and manage everything else in one place.
+                Your meetups, requests, and chats.
               </p>
             </div>
 
@@ -1178,8 +1178,8 @@ export default function DashboardClient({
             </div>
             <div className="mt-1 text-sm font-medium leading-6">
               {reviewDueMatches.length === 1
-                ? "You have 1 meetup waiting for a review. Tap here to write it now."
-                : `You have ${reviewDueMatches.length} meetups waiting for reviews. Tap here to start with the next one.`}
+                ? "1 review due."
+                : `${reviewDueMatches.length} reviews due.`}
             </div>
           </Link>
         ) : null}
@@ -1195,7 +1195,7 @@ export default function DashboardClient({
                   Your next meetup
                 </div>
                 <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  {upcomingMatchedMeetups.length} matched meetup{upcomingMatchedMeetups.length > 1 ? "s" : ""} still ahead. Keep this one in view as the time gets closer.
+                  Next confirmed plan.
                 </div>
               </div>
             </div>
@@ -1323,7 +1323,7 @@ export default function DashboardClient({
               <SectionIntro
                 eyebrow="Hosting"
                 title="Everything you are hosting"
-                body="Review what is live, what has passed, and what still needs attention before the meetup happens."
+                body="Your hosted meetups."
               />
 
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1362,7 +1362,7 @@ export default function DashboardClient({
               <SectionIntro
                 eyebrow="Incoming"
                 title="People who want to join"
-                body="Review every request at once, or focus on the pending ones that still need your decision."
+                body="Incoming requests."
               />
 
               <div className="flex flex-wrap gap-2">
@@ -1407,7 +1407,7 @@ export default function DashboardClient({
               <SectionIntro
                 eyebrow="Outgoing"
                 title="Requests you have sent"
-                body="See which requests are still waiting, which got accepted, and which ones have already closed."
+                body="Requests you sent."
               />
 
               <div className="flex flex-wrap gap-2">
@@ -1449,7 +1449,7 @@ export default function DashboardClient({
               <SectionIntro
                 eyebrow="Connections"
                 title="People you have matched with"
-                body="Keep track of upcoming meetups, revisit finished ones, and leave reviews after the moment has passed."
+                body="Confirmed meetups."
               />
 
               <div className="flex flex-wrap gap-2">

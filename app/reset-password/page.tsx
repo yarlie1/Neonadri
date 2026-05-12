@@ -118,7 +118,7 @@ export default function ResetPasswordPage() {
       if (!recoveryLink) {
         if (!active) return;
         setIsReady(false);
-        setMessage("Open this page from the password reset link in your email.");
+        setMessage("Open from your reset email.");
         setMessageTone("danger");
         return;
       }
@@ -177,7 +177,7 @@ export default function ResetPasswordPage() {
 
       if (sessionResult.error || !sessionResult.data.session) {
         setIsReady(false);
-        setMessage("This reset link is missing or expired. Request a new one.");
+        setMessage("Reset link expired.");
         setMessageTone("danger");
         return;
       }
@@ -233,7 +233,7 @@ export default function ResetPasswordPage() {
       setIsSaving(false);
       setMessage(
         sessionError?.message ||
-          "This reset session expired. Request a new password reset link."
+          "Reset session expired."
       );
       setMessageTone("danger");
       return;
@@ -280,7 +280,7 @@ export default function ResetPasswordPage() {
                 Choose a new password and jump back in.
               </h1>
               <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-                This page only works from the reset link we emailed you. Once you save a new password, you can log in again right away.
+                Use the email reset link.
               </p>
             </div>
           </section>
@@ -291,10 +291,10 @@ export default function ResetPasswordPage() {
               Reset password
             </h2>
             <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-              Use at least 8 characters. A fresh password will replace the old one immediately.
+              Use at least 8 characters.
             </p>
             <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-              For safety, this page requires the reset link from your email.
+              Reset link required.
             </p>
 
             <div className="mt-6 space-y-4">

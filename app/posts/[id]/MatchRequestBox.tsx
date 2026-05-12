@@ -71,14 +71,14 @@ export default function MatchRequestBox({
     ? "Spot filled"
     : "Request to join";
   const headerDescription = isUnavailableBecauseCancelled
-    ? "The host cancelled this meetup. You can still review the details here."
+    ? "Cancelled by host."
     : hasMatchedRequest
-    ? "Your request was accepted and this meetup is now confirmed."
+    ? "Request accepted."
     : isUnavailableBecauseExpired
-    ? "This meetup has already passed, so new requests are no longer available."
+    ? "Meetup ended."
     : isUnavailableBecauseMatched
-    ? "This meetup already has a confirmed guest, so new requests are closed."
-    : "Ask to join this 1:1 meetup. The host can approve your request. No expectations - just a real conversation around the plan.";
+    ? "Spot filled."
+    : "Send a request to join.";
 
   const handleRequestMatch = async () => {
     setLoading(true);
@@ -193,8 +193,7 @@ export default function MatchRequestBox({
         !isUnavailableBecauseExpired &&
         !isRejectedRequest && (
         <p className={`mt-1 ${APP_BODY_TEXT_CLASS}`}>
-          The listed amount covers direct activity costs only, never attendance
-          or time.
+          Cost support covers activity costs only.
         </p>
       )}
 
@@ -204,18 +203,18 @@ export default function MatchRequestBox({
         </div>
         <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
           {isUnavailableBecauseCancelled
-            ? "This meetup is no longer active. New requests are closed, and confirmed chat is now read-only."
+            ? "Requests closed. Chat is read-only."
             : hasMatchedRequest
-            ? "This meetup is confirmed. You can review the details above and connect with the host here."
+            ? "Confirmed. Chat with the host here."
             : isUnavailableBecauseExpired
-            ? "This meetup has already ended, so requests are closed."
+            ? "Meetup ended."
             : isUnavailableBecauseMatched
-            ? "This meetup is no longer accepting requests because the host already confirmed a guest."
+            ? "Spot filled."
             : hasPendingRequest
-            ? "Your request is with the host now. You can leave it pending or cancel it here."
+            ? "Request pending."
             : isRejectedRequest
-            ? "This request was declined. You can review the meetup details, but the current request is closed."
-            : "Once you send a request, the host can review your profile and accept or decline from their dashboard."}
+            ? "Request declined."
+            : "The host can accept or decline."}
         </div>
       </div>
 

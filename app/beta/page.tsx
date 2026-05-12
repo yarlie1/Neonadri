@@ -34,7 +34,7 @@ const REGION_OPTIONS = [
   {
     value: "la_nearby",
     title: "LA or nearby",
-    description: "You want to host in Los Angeles or close-by areas during beta.",
+    description: "Host in LA during beta.",
   },
   {
     value: "other_region",
@@ -204,7 +204,7 @@ function BetaPageContent() {
   const handleSubmit = async () => {
     if (submitting) return;
     if (!region) {
-      setMessage("Please choose whether you're in LA or nearby, or in another region.");
+      setMessage("Choose your region.");
       setStatus("");
       return;
     }
@@ -238,7 +238,7 @@ function BetaPageContent() {
     setStatus(payload.status || "pending");
     setMessage(
       payload.message ||
-        "Your application is in. We'll email you if a spot opens."
+        "Application received."
     );
 
     if (payload.status === "approved") {
@@ -271,7 +271,7 @@ function BetaPageContent() {
                 Creating meetups is open.
               </h1>
               <p className={`mt-3 max-w-2xl ${APP_BODY_TEXT_CLASS}`}>
-                No separate approval email is needed right now.
+                No approval needed.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
@@ -305,7 +305,7 @@ function BetaPageContent() {
                 Apply to create meetups.
               </h1>
               <p className={`mt-3 max-w-2xl ${APP_BODY_TEXT_CLASS}`}>
-                Joining is open now. Creating meetups is reviewed during beta.
+                Join now. Apply to host.
               </p>
               <p className="mt-3 text-sm text-[#5f6d76]">
                 Use the same email here and at signup.
@@ -395,7 +395,7 @@ function BetaPageContent() {
                 </div>
                 {region === "other_region" ? (
                   <div className={`${APP_SOFT_CARD_CLASS} mt-3 px-4 py-3 text-sm leading-6 text-[#6a625b]`}>
-                    Create access is currently focused on LA and nearby areas. You can still join meetups with a regular account.
+                    Hosting is LA-focused for now. You can still join.
                   </div>
                 ) : null}
               </div>

@@ -118,13 +118,13 @@ export default function OwnerMatchPanel({
             {!isCancelled && !isMatched && (
               <p className={`mt-1 max-w-xl ${APP_BODY_TEXT_CLASS}`}>
                 {pendingRequestCount > 0
-                  ? `${pendingRequestCount} pending request${pendingRequestCount === 1 ? "" : "s"} waiting for your decision.`
-                  : "No requests yet. You can still edit the meetup while it is open."}
+                  ? `${pendingRequestCount} pending.`
+                  : "No requests yet."}
               </p>
             )}
             {isCancelled && (
               <p className={`mt-1 max-w-xl ${APP_BODY_TEXT_CLASS}`}>
-                This meetup is no longer active. Participants can still read previous chat messages, but new requests and messages are closed.
+                Requests and chat are closed.
               </p>
             )}
           </div>
@@ -232,7 +232,7 @@ export default function OwnerMatchPanel({
 
         {!isMatched && requests.length === 0 && !isCancelled && (
           <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} backdrop-blur`}>
-            No one has requested this meetup yet. You can keep it open or edit the details first.
+            No requests yet.
           </div>
         )}
 
@@ -244,7 +244,7 @@ export default function OwnerMatchPanel({
 
         {isCancelled && (
           <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} backdrop-blur`}>
-            This meetup was cancelled by you. Create a new meetup if you want to share updated plans.
+            Cancelled by you.
           </div>
         )}
       </div>

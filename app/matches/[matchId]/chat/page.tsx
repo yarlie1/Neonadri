@@ -52,13 +52,13 @@ function formatShortMeetingTime(
 function MatchChatErrorState({ code }: { code: string }) {
   const body =
     code === "MATCH_BLOCKED"
-      ? "This chat is unavailable because one participant has blocked the other."
+      ? "Chat blocked."
       : "We could not open this match chat yet.";
 
   const supportNote =
     code === "MATCH_BLOCKED"
-      ? "If this looks unexpected, you can return to Matches and check the meetup status there."
-      : "Please head back to Matches and try again in a moment.";
+      ? "Check the meetup status in Matches."
+      : "Return to Matches and try again.";
 
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>

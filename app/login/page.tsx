@@ -33,7 +33,7 @@ export default function LoginPage() {
     const params = new URLSearchParams(window.location.search);
     setNextPath(params.get("next"));
     if (params.get("message") === "password-reset") {
-      setMessage("Password reset complete. Log in with your new password.");
+      setMessage("Password reset. Log in again.");
     }
   }, []);
 
@@ -74,7 +74,7 @@ export default function LoginPage() {
                 Meet someone new, no pressure.
               </h1>
               <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-                Log in or create an account to start using Neonadri.
+                Log in to continue.
               </p>
               <div className={`mt-4 inline-flex rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                 Neonadri is for adults 18+ only.
@@ -111,7 +111,7 @@ export default function LoginPage() {
               Enter your account
             </h2>
             <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-              Use your email and password to continue.
+              Use your email and password.
             </p>
             <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
               By using Neonadri, you confirm that you are 18 or older.
