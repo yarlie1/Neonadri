@@ -17,6 +17,7 @@ import {
   BookOpen,
   Cake,
   Camera,
+  CheckCircle,
   Clock3,
   Coffee,
   CookingPot,
@@ -675,9 +676,10 @@ export function MeetupOverviewCard({
             </div>
           </div>
           {purposeHelpText ? (
-            <p className={`mt-3 text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
-              {purposeHelpText}
-            </p>
+            <div className={`mt-3 flex items-start gap-2 ${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm ${APP_MUTED_TEXT_CLASS}`}>
+              <CheckCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              <p>{purposeHelpText}</p>
+            </div>
           ) : null}
           <p className={`mt-3 ml-auto max-w-2xl text-right text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
             {benefitExplanation}
