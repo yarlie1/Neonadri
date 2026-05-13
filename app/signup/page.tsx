@@ -313,6 +313,14 @@ function SignupPageContent() {
     };
   }, [hasInitialPostingBetaRequired]);
 
+  useEffect(() => {
+    if (!signupCompleteWithSession) return;
+
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    });
+  }, [signupCompleteWithSession]);
+
   const toggleArrayValue = (
     value: string,
     current: string[],
