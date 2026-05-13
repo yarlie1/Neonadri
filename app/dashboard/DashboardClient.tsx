@@ -5,11 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import {
-  Coins,
-  Clock3,
-  MapPin,
   MessageSquareMore,
-  UserRound,
   FileText,
   Inbox,
   Send,
@@ -22,6 +18,7 @@ import { getMeetingStatus, parseMeetingTime } from "../../lib/meetingTime";
 import {
   getPublicLocationLabel,
 } from "../../lib/locationPrivacy";
+import { MeetupFeedCard } from "../homeComponents";
 import {
   CompactActionButton,
   DashboardTabCard,
@@ -30,7 +27,6 @@ import {
   getPurposeIcon,
   getStatusBadgeClass,
   MiniPostPreview,
-  PURPOSE_ICON_TILE_CLASS,
   parseBenefitAmount,
   SectionIntro,
   SOFT_CARD_CLASS,
@@ -44,7 +40,6 @@ import {
   APP_INNER_PANEL_CLASS,
   APP_PAGE_BG_CLASS,
   APP_PILL_INACTIVE_CLASS,
-  APP_ROW_SURFACE_CLASS,
 } from "../designSystem";
 import { useDashboardState } from "./useDashboardState";
 import { useCreateMeetupHref } from "../useCreateMeetupHref";
@@ -76,81 +71,34 @@ function PostsTabPanel({
         );
         const amount = parseBenefitAmount(post.benefit_amount);
         const durationLabel = formatDuration(post.duration_minutes);
+        const isExpired = postStatus === "Expired" || postStatus === "Cancelled";
 
         return (
-          <div
+          <MeetupFeedCard
             key={post.id}
+            postId={post.id}
+            href={null}
             onClick={() => openPostDetail(post.id)}
-            className={`cursor-pointer ${SURFACE_CARD_CLASS} p-4`}
-          >
-            <div className={`${APP_INNER_PANEL_CLASS} p-3`}>
-              <div className="grid grid-cols-[46px_minmax(0,1fr)_auto] grid-rows-[auto_auto] items-center gap-x-2.5 gap-y-1">
-                <div className={`row-span-2 ${PURPOSE_ICON_TILE_CLASS}`}>
-                  {getPurposeIcon(post.meeting_purpose)}
-                </div>
-                <div className="min-w-0 truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
-                  {post.meeting_purpose || "Meetup"}
-                </div>
-                <div
-                  className={`col-start-3 row-span-2 row-start-1 shrink-0 self-start rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${getStatusBadgeClass(
-                    postStatus
-                  )}`}
-                >
-                  {postStatus}
-                </div>
-                <div className="col-start-2 row-start-2 min-w-0 pr-1 text-[12px] leading-[1.15] text-[#849099]">
-                  Hosted by you{currentUserMeta ? ` | ${currentUserMeta}` : ""}
-                </div>
-              </div>
-
-              <div className="mt-3 grid gap-2">
-                <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
-                  <MapPin className="h-4 w-4 shrink-0 text-[#7a8b95]" />
-                  <span className="min-w-0 flex-1 break-words font-semibold text-[#24323f] line-clamp-2">
-                    {post.place_name ||
-                      getPublicLocationLabel(post.place_name, post.location) ||
-                      "No place"}
-                  </span>
-                </div>
-
-                {post.meeting_time && (
-                  <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
-                    <Clock3 className="h-4 w-4 shrink-0 text-[#7a8b95]" />
-                    <span className="truncate">{formatTime(post.meeting_time)}</span>
-                    {durationLabel ? (
-                      <span className="ml-auto rounded-[14px] border border-[#cbd4db] bg-[linear-gradient(180deg,#ffffff_0%,#eceff2_100%)] px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#3b4c56] shadow-[0_8px_14px_rgba(118,126,133,0.12)]">
-                        {durationLabel}
-                      </span>
-                    ) : null}
-                  </div>
-                )}
-
-                <div className={`flex min-h-[56px] items-center justify-between gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
-                  <span className="inline-flex min-w-0 items-center gap-2 text-[#55646e]">
-                    <UserRound className="h-4 w-4 shrink-0 text-[#7a8b95]" />
-                    <span className="truncate">
-                      {post.target_gender || "Any"} / {post.target_age_group || "Any"}
-                    </span>
-                  </span>
-                  {amount !== null ? (
-                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-3 py-1.5 text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)]">
-                      <Coins className="h-3.5 w-3.5 text-[#7a8b95]" />
-                      Cost ${amount.toLocaleString()}
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-
-              <div className={`mt-3 flex items-center justify-between gap-3 rounded-[16px] px-3.5 py-2 ${SOFT_CARD_CLASS}`}>
-                <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-[#8a949b]">
-                  Refined mode
-                </span>
-                <span className="truncate text-sm font-semibold text-[#314454]">
-                  {post.meeting_purpose || "Meetup"}
-                </span>
-              </div>
-            </div>
-          </div>
+            isExpired={isExpired}
+            hostName="you"
+            hostMeta={currentUserMeta}
+            matchBadgeLabel={postStatus}
+            matchBadgeClassName={getStatusBadgeClass(postStatus)}
+            purposeIcon={getPurposeIcon(post.meeting_purpose)}
+            purposeName={post.meeting_purpose || "Meetup"}
+            durationLabel={durationLabel}
+            amountText={amount !== null ? `$${amount.toLocaleString()}` : ""}
+            whenText={post.meeting_time ? formatTime(post.meeting_time) : ""}
+            placeText={
+              post.place_name ||
+              getPublicLocationLabel(post.place_name, post.location) ||
+              "No place"
+            }
+            lookingForText={`${post.target_gender || "Any"} / ${post.target_age_group || "Any"}`}
+            distanceText=""
+            activityLabel="Requests"
+            activityText={`${matchSummaryMap[post.id]?.pendingRequestCount || 0} pending`}
+          />
         );
       })}
 
@@ -1205,46 +1153,24 @@ export default function DashboardClient({
                 const durationLabel = formatDuration(item.post.duration_minutes);
 
                 return (
-                  <Link
+                  <MeetupFeedCard
                     key={item.match.id}
-                    href={`/posts/${item.post.id}`}
-                    className={`block ${APP_INNER_PANEL_CLASS} p-4 transition hover:bg-white/96`}
-                  >
-                    <div className="grid grid-cols-[46px_minmax(0,1fr)_auto] grid-rows-[auto_auto] items-center gap-x-2.5 gap-y-1">
-                      <div className={`row-span-2 ${PURPOSE_ICON_TILE_CLASS}`}>
-                        {getPurposeIcon(item.post.meeting_purpose)}
-                      </div>
-                      <div className="min-w-0 truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
-                        {item.post.meeting_purpose || "Meetup"}
-                      </div>
-
-                      <div className="col-start-3 row-span-2 row-start-1 shrink-0 self-start rounded-[14px] border border-[#d4dfe6] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.12em] text-[#536a75]">
-                        Matched
-                      </div>
-                      <div className="col-start-2 row-start-2 min-w-0 pr-1 text-[12px] leading-[1.15] text-[#849099]">
-                        Next confirmed plan
-                      </div>
-                    </div>
-
-                    <div className="mt-3 grid gap-2">
-                      <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
-                        <MapPin className="h-4 w-4 shrink-0 text-[#7a8b95]" />
-                        <span className="min-w-0 flex-1 truncate font-semibold text-[#24323f]">
-                          {item.post.place_name || item.post.location || "Selected place"}
-                        </span>
-                      </div>
-
-                      <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
-                        <div className="inline-flex min-w-0 flex-1 items-center gap-2 text-sm font-semibold text-[#24323f]">
-                          <Clock3 className="h-4 w-4 shrink-0 text-[#7a8b95]" />
-                          <span className="truncate">{formatTime(item.post.meeting_time)}</span>
-                        </div>
-                        <span className="shrink-0 rounded-[14px] border border-[#cbd4db] bg-[linear-gradient(180deg,#ffffff_0%,#eceff2_100%)] px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#3b4c56] shadow-[0_8px_14px_rgba(118,126,133,0.12)]">
-                          {durationLabel || countdown || "Soon"}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
+                    postId={item.post.id}
+                    isExpired={false}
+                    hostName=""
+                    hostMeta=""
+                    hostLine="Next confirmed plan"
+                    matchBadgeLabel="Matched"
+                    matchBadgeClassName={getStatusBadgeClass("matched")}
+                    purposeIcon={getPurposeIcon(item.post.meeting_purpose)}
+                    purposeName={item.post.meeting_purpose || "Meetup"}
+                    durationLabel={durationLabel || countdown || "Soon"}
+                    amountText=""
+                    whenText={item.post.meeting_time ? formatTime(item.post.meeting_time) : ""}
+                    placeText={item.post.place_name || item.post.location || "Selected place"}
+                    lookingForText={`${item.post.target_gender || "Any"} / ${item.post.target_age_group || "Any"}`}
+                    distanceText=""
+                  />
                 );
               })}
             </div>

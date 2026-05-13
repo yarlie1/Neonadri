@@ -390,9 +390,13 @@ export function FeaturedMeetupCard({
 
 export function MeetupFeedCard({
   postId,
+  href,
+  onClick,
+  className = "",
   isExpired,
   hostName,
   hostMeta,
+  hostLine,
   isFeatured,
   matchBadgeLabel,
   matchBadgeClassName,
@@ -404,11 +408,17 @@ export function MeetupFeedCard({
   placeText,
   lookingForText,
   distanceText,
+  activityLabel = "Activity",
+  activityText,
 }: {
   postId: number;
+  href?: string | null;
+  onClick?: () => void;
+  className?: string;
   isExpired: boolean;
   hostName: string;
   hostMeta: string;
+  hostLine?: string;
   isFeatured?: boolean;
   matchBadgeLabel: string;
   matchBadgeClassName: string;
@@ -420,16 +430,16 @@ export function MeetupFeedCard({
   placeText: string;
   lookingForText: string;
   distanceText: string;
+  activityLabel?: string;
+  activityText?: string;
 }) {
-  return (
-    <Link
-      href={`/posts/${postId}`}
-      className={`block overflow-hidden rounded-[24px] border p-2.5 shadow-[0_18px_30px_rgba(118,126,133,0.12)] transition active:scale-[0.995] sm:p-3 ${
+  const cardClassName = `block overflow-hidden rounded-[24px] border p-2.5 shadow-[0_18px_30px_rgba(118,126,133,0.12)] transition active:scale-[0.995] sm:p-3 ${
         isExpired
           ? "border-[#d2dbe1] bg-[linear-gradient(180deg,rgba(239,243,246,0.99)_0%,rgba(227,233,238,0.98)_100%)]"
           : "border-[#d7e1e7] bg-[linear-gradient(180deg,rgba(250,252,254,1)_0%,rgba(231,238,243,0.985)_100%)] hover:-translate-y-0.5 hover:shadow-[0_20px_34px_rgba(118,126,133,0.15)]"
-      }`}
-    >
+      } ${onClick ? "w-full cursor-pointer text-left" : ""} ${className}`;
+  const resolvedHref = href === undefined ? `/posts/${postId}` : href;
+  const content = (
       <div className={`px-4 py-3.5 ${APP_INNER_PANEL_CLASS}`}>
         <div className="grid grid-cols-[46px_minmax(0,1fr)_auto] grid-rows-[auto_auto] items-center gap-x-2.5 gap-y-1">
           <div className="row-span-2 inline-flex h-11 w-11 items-center justify-center self-center rounded-[16px] border border-white/70 bg-[radial-gradient(circle_at_28%_18%,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.72)_26%,rgba(226,235,241,0.74)_58%,rgba(185,199,209,0.68)_100%)] text-[#60717c] shadow-[0_14px_26px_rgba(118,126,133,0.18),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-10px_18px_rgba(142,157,169,0.16)] backdrop-blur-md">
@@ -455,8 +465,12 @@ export function MeetupFeedCard({
           <div
             className={`col-start-2 row-start-2 min-w-0 pr-1 line-clamp-2 text-[12px] leading-[1.15] ${APP_SUBTLE_TEXT_CLASS}`}
           >
-            Hosted by {hostName}
-            {hostMeta ? ` | ${hostMeta}` : ""}
+            {hostLine || (
+              <>
+                Hosted by {hostName}
+                {hostMeta ? ` | ${hostMeta}` : ""}
+              </>
+            )}
           </div>
         </div>
 
@@ -504,13 +518,34 @@ export function MeetupFeedCard({
 
         <div className={`mt-3 flex items-center justify-between gap-3 rounded-[14px] px-3 py-1.5 ${APP_SOFT_CARD_CLASS}`}>
           <div className={`text-xs uppercase tracking-[0.16em] ${APP_SUBTLE_TEXT_CLASS}`}>
-            Activity
+            {activityLabel}
           </div>
           <div className="ml-auto text-right text-sm font-semibold text-[#314454]">
-            {getPurposeLabel(purposeName)}
+            {activityText || getPurposeLabel(purposeName)}
           </div>
         </div>
       </div>
-    </Link>
+  );
+
+  if (resolvedHref) {
+    return (
+      <Link href={resolvedHref} className={cardClassName}>
+        {content}
+      </Link>
+    );
+  }
+
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={cardClassName}>
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <div className={cardClassName}>
+      {content}
+    </div>
   );
 }

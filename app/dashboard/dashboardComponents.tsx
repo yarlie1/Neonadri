@@ -1,13 +1,12 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { MeetupFeedCard } from "../homeComponents";
 import {
   Activity,
   Book,
   BookOpen,
   Cake,
   Camera,
-  Clock3,
-  Coins,
   Coffee,
   CookingPot,
   Dice5,
@@ -21,7 +20,6 @@ import {
   Smile,
   Target,
   Utensils,
-  UserRound,
 } from "lucide-react";
 import { formatMeetingTime } from "../../lib/meetingTime";
 import { getPublicLocationLabel } from "../../lib/locationPrivacy";
@@ -30,7 +28,6 @@ import {
   APP_BUTTON_PRIMARY_CLASS,
   APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
-  APP_INNER_PANEL_CLASS,
   APP_PILL_ACTIVE_CLASS,
   APP_PILL_INACTIVE_CLASS,
   APP_ROW_SURFACE_CLASS,
@@ -42,8 +39,6 @@ export const SURFACE_CARD_CLASS =
   APP_SURFACE_CARD_CLASS;
 export const SOFT_CARD_CLASS =
   APP_SOFT_CARD_CLASS;
-export const PURPOSE_ICON_TILE_CLASS =
-  "inline-flex h-11 w-11 items-center justify-center self-center rounded-[16px] border border-white/70 bg-[radial-gradient(circle_at_28%_18%,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.72)_26%,rgba(226,235,241,0.74)_58%,rgba(185,199,209,0.68)_100%)] text-[#60717c] shadow-[0_14px_26px_rgba(118,126,133,0.18),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-10px_18px_rgba(142,157,169,0.16)] backdrop-blur-md";
 
 export function getPurposeTheme(purpose: string | null) {
   const baseBandClass = `${APP_ROW_SURFACE_CLASS} text-[#24323f]`;
@@ -342,72 +337,27 @@ export function MiniPostPreview({
   const amount = parseBenefitAmount(post.benefit_amount);
   const durationLabel = formatDuration(post.duration_minutes);
   const postStatus = String(post.status || "open").toLowerCase();
+  const isClosed = postStatus === "expired" || postStatus === "cancelled";
 
   return (
-    <div className={`mt-3 ${APP_INNER_PANEL_CLASS} p-3`}>
-      <div className="grid grid-cols-[46px_minmax(0,1fr)] grid-rows-[auto_auto] items-center gap-x-2.5 gap-y-1">
-        <div className={`row-span-2 ${PURPOSE_ICON_TILE_CLASS}`}>
-          {getPurposeIcon(post.meeting_purpose)}
-        </div>
-        <div className="min-w-0 truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
-          {post.meeting_purpose || "Meetup"}
-        </div>
-        {hostLine ? (
-          <div className="col-start-2 row-start-2 min-w-0 pr-1 text-[12px] leading-[1.15] text-[#849099]">
-            {hostLine}
-          </div>
-        ) : null}
-        {postStatus === "cancelled" ? (
-          <div className="col-start-2 mt-2">
-            <span className={`inline-flex rounded-full px-3 py-1 text-[11px] font-medium ${getStatusBadgeClass("cancelled")}`}>
-              Cancelled
-            </span>
-          </div>
-        ) : null}
-      </div>
-
-      <div className="mt-3 grid gap-2">
-        <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
-          <MapPin className="h-4 w-4 shrink-0 text-[#7a8b95]" />
-          <span className="min-w-0 flex-1 break-words font-semibold text-[#24323f] line-clamp-2">
-            {post.place_name || getPublicLocationLabel(post.place_name, post.location) || "No place"}
-          </span>
-        </div>
-
-        {post.meeting_time && (
-          <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
-            <Clock3 className="h-4 w-4 shrink-0 text-[#7a8b95]" />
-            <span className="truncate">{formatMeetingTime(post.meeting_time, timeZone) || ""}</span>
-            {durationLabel ? (
-              <span className="ml-auto rounded-[14px] border border-[#cbd4db] bg-[linear-gradient(180deg,#ffffff_0%,#eceff2_100%)] px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#3b4c56] shadow-[0_8px_14px_rgba(118,126,133,0.12)]">
-                {durationLabel}
-              </span>
-            ) : null}
-          </div>
-        )}
-
-        <div className={`flex min-h-[56px] items-center justify-between gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
-          <span className="inline-flex min-w-0 items-center gap-2 text-[#55646e]">
-            <UserRound className="h-4 w-4 shrink-0 text-[#7a8b95]" />
-            <span className="truncate">{post.target_gender || "Any"} / {post.target_age_group || "Any"}</span>
-          </span>
-          {amount !== null ? (
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-3 py-1.5 text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)]">
-              <Coins className="h-3.5 w-3.5 text-[#7a8b95]" />
-              Cost ${amount.toLocaleString()}
-            </span>
-          ) : null}
-        </div>
-      </div>
-
-      <div className={`mt-3 flex items-center justify-between gap-3 rounded-[16px] px-3.5 py-2 ${APP_SOFT_CARD_CLASS}`}>
-        <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-[#8a949b]">
-          Refined mode
-        </span>
-        <span className="truncate text-sm font-semibold text-[#314454]">
-          {post.meeting_purpose || "Meetup"}
-        </span>
-      </div>
-    </div>
+    <MeetupFeedCard
+      postId={post.id}
+      href={null}
+      className="mt-3"
+      isExpired={isClosed}
+      hostName=""
+      hostMeta=""
+      hostLine={hostLine}
+      matchBadgeLabel={isClosed ? postStatus : "Open"}
+      matchBadgeClassName={getStatusBadgeClass(isClosed ? postStatus : "open")}
+      purposeIcon={getPurposeIcon(post.meeting_purpose)}
+      purposeName={post.meeting_purpose || "Meetup"}
+      durationLabel={durationLabel}
+      amountText={amount !== null ? `$${amount.toLocaleString()}` : ""}
+      whenText={post.meeting_time ? formatMeetingTime(post.meeting_time, timeZone) || "" : ""}
+      placeText={post.place_name || getPublicLocationLabel(post.place_name, post.location) || "No place"}
+      lookingForText={`${post.target_gender || "Any"} / ${post.target_age_group || "Any"}`}
+      distanceText=""
+    />
   );
 }
