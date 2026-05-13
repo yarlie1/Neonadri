@@ -2,12 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  DM_Sans,
-  Instrument_Sans,
-  Manrope,
-  Plus_Jakarta_Sans,
-} from "next/font/google";
+import { Instrument_Sans } from "next/font/google";
 import { getPublicLocationLabel } from "../lib/locationPrivacy";
 import {
   formatMeetingTime,
@@ -55,21 +50,6 @@ import {
 } from "./useHomeFeedFilters";
 import { useDistanceUnit } from "./useDistanceUnit";
 import { useCreateMeetupHref } from "./useCreateMeetupHref";
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: "800",
-});
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: "800",
-});
-
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: "800",
-});
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -392,49 +372,10 @@ export default function HomeFeedClient({
               1:1 social meetups
             </div>
 
-            <h1 className="mt-3 space-y-3 text-[#223039] sm:mt-4">
-              <span className="block">
-                <span className={APP_EYEBROW_CLASS}>DM Sans</span>
-                <span className={`mt-1 block text-[29px] leading-[1.02] sm:text-[37px] ${dmSans.className}`}>
-                  Meet someone new, no pressure.
-                </span>
-              </span>
-              <span className="block">
-                <span className={APP_EYEBROW_CLASS}>Manrope</span>
-                <span className={`mt-1 block text-[30px] leading-[1.02] sm:text-[38px] ${manrope.className}`}>
-                  Meet someone new, no pressure.
-                </span>
-              </span>
-              <span className="block">
-                <span className={APP_EYEBROW_CLASS}>Plus Jakarta Sans</span>
-                <span className={`mt-1 block text-[29px] leading-[1.04] sm:text-[37px] ${plusJakarta.className}`}>
-                  Meet someone new, no pressure.
-                </span>
-              </span>
-              <span className="block">
-                <span className={APP_EYEBROW_CLASS}>Instrument Sans</span>
-                <span className={`mt-1 block text-[30px] leading-[1.02] sm:text-[38px] ${instrumentSans.className}`}>
-                  Meet someone new, no pressure.
-                </span>
-              </span>
-              <span className="block">
-                <span className={APP_EYEBROW_CLASS}>General Sans</span>
-                <span
-                  className="mt-1 block text-[30px] font-extrabold leading-[1.02] sm:text-[38px]"
-                  style={{ fontFamily: '"General Sans", "Manrope", system-ui, sans-serif' }}
-                >
-                  Meet someone new, no pressure.
-                </span>
-              </span>
-              <span className="block">
-                <span className={APP_EYEBROW_CLASS}>Satoshi</span>
-                <span
-                  className="mt-1 block text-[30px] font-extrabold leading-[1.02] sm:text-[38px]"
-                  style={{ fontFamily: '"Satoshi", "DM Sans", system-ui, sans-serif' }}
-                >
-                  Meet someone new, no pressure.
-                </span>
-              </span>
+            <h1 className={`mt-3 max-w-[18ch] text-[34px] font-bold leading-[0.98] text-[#223039] sm:mt-4 sm:text-[42px] ${instrumentSans.className}`}>
+              Meet someone new,
+              <br />
+              no pressure.
             </h1>
 
             <p className={`mt-3 max-w-xl text-[14px] sm:mt-4 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
