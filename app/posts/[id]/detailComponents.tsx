@@ -12,13 +12,10 @@ import {
 } from "../../designSystem";
 import {
   Activity,
-  BadgeCheck,
-  BadgeDollarSign,
   Book,
   BookOpen,
   Cake,
   Camera,
-  ChefHat,
   Clock3,
   Coffee,
   CookingPot,
@@ -26,7 +23,6 @@ import {
   Film,
   Footprints,
   Gamepad2,
-  HandHeart,
   HeartHandshake,
   Laptop,
   Languages,
@@ -35,7 +31,6 @@ import {
   MessageSquareText,
   Mic,
   Sandwich,
-  CircleDollarSign,
   Smile,
   Sparkles,
   Star,
@@ -43,7 +38,6 @@ import {
   UserRound,
   UserStar,
   Utensils,
-  WandSparkles,
 } from "lucide-react";
 import Avatar from "../../components/Avatar";
 
@@ -165,55 +159,6 @@ export const formatDuration = (minutes: number | null) => {
   if (Number.isInteger(hours)) return `${hours}H`;
   return `${hours.toFixed(1).replace(/\.0$/, "")}H`;
 };
-
-function HostIconOption({
-  label,
-  children,
-}: {
-  label: string;
-  children: ReactNode;
-}) {
-  return (
-    <div
-      className="inline-flex h-8 w-8 items-center justify-center rounded-[11px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#5f707a] shadow-[0_7px_12px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.96)]"
-      title={label}
-      aria-label={label}
-    >
-      {children}
-    </div>
-  );
-}
-
-function HostCostIconPreviewGrid() {
-  return (
-    <div className="grid grid-cols-4 gap-1.5">
-      <HostIconOption label="Wand sparkles">
-        <WandSparkles className="h-5 w-5" />
-      </HostIconOption>
-      <HostIconOption label="Sparkles">
-        <Sparkles className="h-5 w-5" />
-      </HostIconOption>
-      <HostIconOption label="Chef hat">
-        <ChefHat className="h-5 w-5" />
-      </HostIconOption>
-      <HostIconOption label="User star">
-        <UserStar className="h-5 w-5" />
-      </HostIconOption>
-      <HostIconOption label="Badge check">
-        <BadgeCheck className="h-5 w-5" />
-      </HostIconOption>
-      <HostIconOption label="Hand heart">
-        <HandHeart className="h-5 w-5" />
-      </HostIconOption>
-      <HostIconOption label="Circle dollar">
-        <CircleDollarSign className="h-5 w-5" />
-      </HostIconOption>
-      <HostIconOption label="Badge dollar">
-        <BadgeDollarSign className="h-5 w-5" />
-      </HostIconOption>
-    </div>
-  );
-}
 
 function StarRating({
   value,
@@ -717,9 +662,9 @@ export function MeetupOverviewCard({
                 {meetupDurationLabel}
               </span>
             </div>
-            <div className="inline-flex w-[150px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2 py-2 text-center text-[#52616a] shadow-sm">
-              <HostCostIconPreviewGrid />
-              <span className="mt-2 text-sm font-extrabold leading-tight tracking-[-0.03em] text-[#23333d]">
+            <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-1 py-2 text-center text-[#52616a] shadow-sm">
+              <UserStar className="h-3.5 w-3.5 text-[#7e8d96]" />
+              <span className="mt-1.5 text-sm font-extrabold leading-tight tracking-[-0.03em] text-[#23333d]">
                 {post.benefit_amount || "N/A"}
               </span>
             </div>
