@@ -435,8 +435,8 @@ export function MeetupFeedCard({
 }) {
   const cardClassName = `block overflow-hidden rounded-[24px] border p-2.5 shadow-[0_18px_30px_rgba(118,126,133,0.12)] transition active:scale-[0.995] sm:p-3 ${
         isExpired
-          ? "border-[#d2dbe1] bg-[linear-gradient(180deg,rgba(239,243,246,0.99)_0%,rgba(227,233,238,0.98)_100%)]"
-          : "border-[#d7e1e7] bg-[linear-gradient(180deg,rgba(250,252,254,1)_0%,rgba(231,238,243,0.985)_100%)] hover:-translate-y-0.5 hover:shadow-[0_20px_34px_rgba(118,126,133,0.15)]"
+          ? "border-[#d8e0e6] bg-[linear-gradient(180deg,rgba(250,252,253,0.99)_0%,rgba(241,245,247,0.98)_100%)]"
+          : "border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] hover:-translate-y-0.5 hover:shadow-[0_20px_34px_rgba(118,126,133,0.15)]"
       } ${onClick ? "w-full cursor-pointer text-left" : ""} ${className}`;
   const resolvedHref = href === undefined ? `/posts/${postId}` : href;
   const content = (
