@@ -432,10 +432,10 @@ export default function HomeFeedClient({
             <div className="min-w-0">
               <div className={APP_EYEBROW_CLASS}>Beta Notice</div>
               <div className="mt-1 text-base font-semibold tracking-[-0.03em] text-[#24323f]">
-                Real conversations, zero pressure.
+                Hosting is reviewed during beta.
               </div>
               <p className={`mt-2 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
-                Activity costs only. No pressure.
+                Join meetups now. Apply first to create one.
               </p>
             </div>
           </div>
