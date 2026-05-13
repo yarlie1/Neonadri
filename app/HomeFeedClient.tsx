@@ -432,10 +432,10 @@ export default function HomeFeedClient({
             <div className="min-w-0">
               <div className={APP_EYEBROW_CLASS}>Beta Notice</div>
               <div className="mt-1 text-base font-semibold tracking-[-0.03em] text-[#24323f]">
-                Hosting is reviewed during beta.
+                Free during beta.
               </div>
               <p className={`mt-2 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
-                Join meetups now. Apply first to create one.
+                Use Neonadri free during beta. Hosts must honor the cost support they list.
               </p>
             </div>
           </div>
