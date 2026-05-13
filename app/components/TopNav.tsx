@@ -432,11 +432,15 @@ export default function TopNav({
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#f7fbfd] bg-[radial-gradient(circle_at_top,_#ffffff,_#eef3f6_34%,_#9ea8b2_82%)] text-base font-bold tracking-[-0.05em] text-white shadow-[0_18px_32px_rgba(146,154,162,0.16)]"
+              className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/90 bg-[radial-gradient(circle_at_31%_20%,#ffffff_0%,#edf3f7_31%,#cbd5dd_62%,#85929d_100%)] text-base font-black tracking-[-0.06em] text-[#1f2c36] shadow-[0_18px_34px_rgba(118,126,133,0.22),inset_0_1px_1px_rgba(255,255,255,0.98),inset_0_-7px_14px_rgba(70,84,96,0.18)] ring-1 ring-[#d7e0e6]/80 transition hover:scale-[1.015]"
               onClick={closeMenu}
               aria-label="Neonadri home"
             >
-              N
+              <span className="pointer-events-none absolute inset-[3px] rounded-full border border-white/55 bg-[linear-gradient(145deg,rgba(255,255,255,0.58)_0%,rgba(255,255,255,0.14)_42%,rgba(73,88,101,0.14)_100%)]" />
+              <span className="pointer-events-none absolute left-2.5 top-1.5 h-2.5 w-3.5 rounded-full bg-white/70 blur-[6px]" />
+              <span className="relative translate-y-[0.5px] text-[17px] font-black leading-none text-[#1f2c36] drop-shadow-[0_1px_0_rgba(255,255,255,0.72)]">
+                N
+              </span>
             </Link>
 
             <div className="flex min-w-0 flex-1 items-center">
