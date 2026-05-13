@@ -12,18 +12,21 @@ import {
 } from "../../designSystem";
 import {
   Activity,
+  BadgeCheck,
+  Bell,
   Book,
   BookOpen,
   Cake,
   Camera,
   Clock3,
-  Coins,
   Coffee,
   CookingPot,
+  Crown,
   Dice5,
   Film,
   Footprints,
   Gamepad2,
+  HandHeart,
   HeartHandshake,
   Laptop,
   Languages,
@@ -159,6 +162,97 @@ export const formatDuration = (minutes: number | null) => {
   if (Number.isInteger(hours)) return `${hours}H`;
   return `${hours.toFixed(1).replace(/\.0$/, "")}H`;
 };
+
+function HostIconOption({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className="inline-flex h-8 w-8 items-center justify-center rounded-[11px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#5f707a] shadow-[0_7px_12px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.96)]"
+      title={label}
+      aria-label={label}
+    >
+      {children}
+    </div>
+  );
+}
+
+function BowTieHostIcon() {
+  return (
+    <span className="relative inline-flex h-5 w-5 items-center justify-center">
+      <UserRound className="h-5 w-5" />
+      <span className="absolute bottom-0.5 left-1/2 flex -translate-x-1/2 items-center text-[#5f707a]">
+        <span className="h-0 w-0 border-y-[3px] border-r-[5px] border-y-transparent border-r-current" />
+        <span className="h-1.5 w-1.5 rounded-full bg-current" />
+        <span className="h-0 w-0 border-y-[3px] border-l-[5px] border-y-transparent border-l-current" />
+      </span>
+    </span>
+  );
+}
+
+function SuitHostIcon() {
+  return (
+    <span className="relative inline-flex h-5 w-5 items-center justify-center">
+      <UserRound className="h-5 w-5" />
+      <span className="absolute bottom-0 left-[7px] h-2.5 w-[2px] rotate-[-30deg] rounded-full bg-current" />
+      <span className="absolute bottom-0 right-[7px] h-2.5 w-[2px] rotate-[30deg] rounded-full bg-current" />
+    </span>
+  );
+}
+
+function HatHostIcon() {
+  return (
+    <span className="relative inline-flex h-5 w-5 items-center justify-center">
+      <UserRound className="h-5 w-5" />
+      <span className="absolute -top-0.5 left-1/2 h-2 w-3.5 -translate-x-1/2 rounded-t-[6px] border border-current bg-[#eef3f6]" />
+      <span className="absolute top-1 left-1/2 h-[2px] w-5 -translate-x-1/2 rounded-full bg-current" />
+    </span>
+  );
+}
+
+function HostCostIconPreviewGrid() {
+  return (
+    <div className="grid grid-cols-4 gap-1.5">
+      <HostIconOption label="Bow tie host">
+        <BowTieHostIcon />
+      </HostIconOption>
+      <HostIconOption label="Suit host">
+        <SuitHostIcon />
+      </HostIconOption>
+      <HostIconOption label="Crown host">
+        <span className="relative inline-flex h-5 w-5 items-center justify-center">
+          <UserRound className="h-5 w-5" />
+          <Crown className="absolute -right-1 -top-1 h-3 w-3" />
+        </span>
+      </HostIconOption>
+      <HostIconOption label="Hat host">
+        <HatHostIcon />
+      </HostIconOption>
+      <HostIconOption label="Verified host">
+        <span className="relative inline-flex h-5 w-5 items-center justify-center">
+          <UserRound className="h-5 w-5" />
+          <BadgeCheck className="absolute -bottom-1 -right-1 h-3.5 w-3.5" />
+        </span>
+      </HostIconOption>
+      <HostIconOption label="Host support">
+        <HandHeart className="h-5 w-5" />
+      </HostIconOption>
+      <HostIconOption label="Featured host">
+        <span className="relative inline-flex h-5 w-5 items-center justify-center">
+          <UserRound className="h-5 w-5" />
+          <Sparkles className="absolute -right-1 -top-1 h-3.5 w-3.5" />
+        </span>
+      </HostIconOption>
+      <HostIconOption label="Concierge host">
+        <Bell className="h-5 w-5" />
+      </HostIconOption>
+    </div>
+  );
+}
 
 function StarRating({
   value,
@@ -662,9 +756,9 @@ export function MeetupOverviewCard({
                 {meetupDurationLabel}
               </span>
             </div>
-            <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-1 py-2 text-center text-[#52616a] shadow-sm">
-              <Coins className="h-3.5 w-3.5 text-[#7e8d96]" />
-              <span className="mt-1.5 text-sm font-extrabold leading-tight tracking-[-0.03em] text-[#23333d]">
+            <div className="inline-flex w-[150px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2 py-2 text-center text-[#52616a] shadow-sm">
+              <HostCostIconPreviewGrid />
+              <span className="mt-2 text-sm font-extrabold leading-tight tracking-[-0.03em] text-[#23333d]">
                 {post.benefit_amount || "N/A"}
               </span>
             </div>
