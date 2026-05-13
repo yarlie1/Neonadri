@@ -659,11 +659,6 @@ export function MeetupOverviewCard({
                 <div className="truncate text-[1.18rem] font-black tracking-[-0.03em] text-[#24323f] sm:text-[1.28rem]">
                   {post.meeting_purpose || "Meetup"}
                 </div>
-                {purposeHelpText ? (
-                  <div className="mt-1 line-clamp-2 text-[12px] font-semibold leading-4 tracking-normal text-[#64737d]">
-                    {purposeHelpText}
-                  </div>
-                ) : null}
               </div>
             </div>
             <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-1 py-2 text-center text-[#52616a] shadow-sm">
@@ -679,6 +674,11 @@ export function MeetupOverviewCard({
               </span>
             </div>
           </div>
+          {purposeHelpText ? (
+            <p className={`mt-3 text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
+              {purposeHelpText}
+            </p>
+          ) : null}
           <p className={`mt-3 ml-auto max-w-2xl text-right text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
             {benefitExplanation}
           </p>
