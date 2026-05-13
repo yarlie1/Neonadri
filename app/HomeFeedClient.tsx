@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Cormorant_Garamond,
-  Fraunces,
-  Libre_Baskerville,
-  Playfair_Display,
+  DM_Sans,
+  Instrument_Sans,
+  Manrope,
+  Plus_Jakarta_Sans,
 } from "next/font/google";
 import { getPublicLocationLabel } from "../lib/locationPrivacy";
 import {
@@ -56,24 +56,24 @@ import {
 import { useDistanceUnit } from "./useDistanceUnit";
 import { useCreateMeetupHref } from "./useCreateMeetupHref";
 
-const cormorant = Cormorant_Garamond({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  weight: "600",
+  weight: "800",
 });
 
-const libreBaskerville = Libre_Baskerville({
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: "800",
+});
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: "800",
+});
+
+const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
   weight: "700",
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: "700",
-});
-
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: "600",
 });
 
 type PostRow = {
@@ -392,18 +392,48 @@ export default function HomeFeedClient({
               1:1 social meetups
             </div>
 
-            <h1 className="mt-3 space-y-2.5 text-[#223039] sm:mt-4">
-              <span className={`block text-[32px] leading-[0.98] sm:text-[40px] ${cormorant.className}`}>
-                Meet someone new, no pressure.
+            <h1 className="mt-3 space-y-3 text-[#223039] sm:mt-4">
+              <span className="block">
+                <span className={APP_EYEBROW_CLASS}>DM Sans</span>
+                <span className={`mt-1 block text-[29px] leading-[1.02] sm:text-[37px] ${dmSans.className}`}>
+                  Meet someone new, no pressure.
+                </span>
               </span>
-              <span className={`block text-[28px] leading-[1.08] sm:text-[35px] ${libreBaskerville.className}`}>
-                Meet someone new, no pressure.
+              <span className="block">
+                <span className={APP_EYEBROW_CLASS}>Manrope</span>
+                <span className={`mt-1 block text-[30px] leading-[1.02] sm:text-[38px] ${manrope.className}`}>
+                  Meet someone new, no pressure.
+                </span>
               </span>
-              <span className={`block text-[31px] leading-[1] sm:text-[39px] ${playfair.className}`}>
-                Meet someone new, no pressure.
+              <span className="block">
+                <span className={APP_EYEBROW_CLASS}>Plus Jakarta Sans</span>
+                <span className={`mt-1 block text-[29px] leading-[1.04] sm:text-[37px] ${plusJakarta.className}`}>
+                  Meet someone new, no pressure.
+                </span>
               </span>
-              <span className={`block text-[30px] leading-[1.03] sm:text-[37px] ${fraunces.className}`}>
-                Meet someone new, no pressure.
+              <span className="block">
+                <span className={APP_EYEBROW_CLASS}>Instrument Sans</span>
+                <span className={`mt-1 block text-[30px] leading-[1.02] sm:text-[38px] ${instrumentSans.className}`}>
+                  Meet someone new, no pressure.
+                </span>
+              </span>
+              <span className="block">
+                <span className={APP_EYEBROW_CLASS}>General Sans</span>
+                <span
+                  className="mt-1 block text-[30px] font-extrabold leading-[1.02] sm:text-[38px]"
+                  style={{ fontFamily: '"General Sans", "Manrope", system-ui, sans-serif' }}
+                >
+                  Meet someone new, no pressure.
+                </span>
+              </span>
+              <span className="block">
+                <span className={APP_EYEBROW_CLASS}>Satoshi</span>
+                <span
+                  className="mt-1 block text-[30px] font-extrabold leading-[1.02] sm:text-[38px]"
+                  style={{ fontFamily: '"Satoshi", "DM Sans", system-ui, sans-serif' }}
+                >
+                  Meet someone new, no pressure.
+                </span>
               </span>
             </h1>
 
