@@ -297,6 +297,11 @@ export function ProfileShowcaseCard({
               <div className="truncate text-[1.15rem] font-black tracking-[-0.03em] text-[#24323f]">
                 {data.displayName}
               </div>
+              {isCurrentUser && (
+                <span className="shrink-0 rounded-full border border-[#d8e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-[#6b7b84]">
+                  You
+                </span>
+              )}
             </div>
             <div className="ml-auto flex shrink-0 items-center gap-2">
               {hasRating ? (
@@ -307,11 +312,6 @@ export function ProfileShowcaseCard({
               ) : (
                 <span className="inline-flex items-center rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2.5 py-1 text-[11px] font-medium text-[#5f7480]">
                   No reviews yet
-                </span>
-              )}
-              {isCurrentUser && (
-                <span className="rounded-full border border-[#d8e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-[#6b7b84]">
-                  You
                 </span>
               )}
             </div>
