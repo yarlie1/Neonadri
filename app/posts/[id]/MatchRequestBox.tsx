@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Send, CheckCircle2, AlertCircle, XCircle, Clock3 } from "lucide-react";
+import { Send, CheckCircle2, AlertCircle, XCircle } from "lucide-react";
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_PRIMARY_CLASS,
@@ -110,7 +110,7 @@ export default function MatchRequestBox({
         return;
       }
 
-      setMessage("Request sent.");
+      setMessage("Request sent. Waiting for host approval.");
       setMessageType("success");
       router.refresh();
     } finally {
@@ -211,7 +211,7 @@ export default function MatchRequestBox({
             : isUnavailableBecauseMatched
             ? "Spot filled."
             : hasPendingRequest
-            ? "Request pending."
+            ? "Request sent. Waiting for host approval."
             : isRejectedRequest
             ? "Request declined."
             : "The host can accept or decline."}
@@ -240,22 +240,15 @@ export default function MatchRequestBox({
             Already confirmed with someone else
           </div>
         ) : hasPendingRequest ? (
-          <>
-            <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-              <Clock3 className="h-4 w-4" />
-              Request sent
-            </div>
-
-            <button
-              type="button"
-              onClick={handleCancelRequest}
-              disabled={cancelLoading}
-              className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_SECONDARY_CLASS}`}
-            >
-              <XCircle className="h-4 w-4" />
-              {cancelLoading ? "Cancelling..." : "Cancel request"}
-            </button>
-          </>
+          <button
+            type="button"
+            onClick={handleCancelRequest}
+            disabled={cancelLoading}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_SECONDARY_CLASS}`}
+          >
+            <XCircle className="h-4 w-4" />
+            {cancelLoading ? "Cancelling..." : "Cancel request"}
+          </button>
         ) : isRejectedRequest ? (
           <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium ${APP_PILL_INACTIVE_CLASS}`}>
             <AlertCircle className="h-4 w-4" />
