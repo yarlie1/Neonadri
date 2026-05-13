@@ -687,7 +687,6 @@ export function MeetupOverviewCard({
         </div>
 
         <div className={`mt-5 ${APP_INNER_PANEL_CLASS} px-4 py-4`}>
-          <div className={APP_EYEBROW_CLASS}>Quick snapshot</div>
           <div className="grid grid-cols-1 gap-3">
             <StatCard label="Host" value={hostIdentityLabel} />
             <StatCard label="Guest" value={targetLabel} />
