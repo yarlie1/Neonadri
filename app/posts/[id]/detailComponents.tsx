@@ -12,8 +12,6 @@ import {
 } from "../../designSystem";
 import {
   Activity,
-  BadgeCheck,
-  Bell,
   Book,
   BookOpen,
   Cake,
@@ -21,12 +19,10 @@ import {
   Clock3,
   Coffee,
   CookingPot,
-  Crown,
   Dice5,
   Film,
   Footprints,
   Gamepad2,
-  HandHeart,
   HeartHandshake,
   Laptop,
   Languages,
@@ -181,35 +177,65 @@ function HostIconOption({
   );
 }
 
-function BowTieHostIcon() {
+function TopHatIcon({
+  variant = "plain",
+}: {
+  variant?: "plain" | "sparkle" | "tall" | "ribbon" | "tilt" | "badge" | "star" | "moon";
+}) {
+  const isTilt = variant === "tilt";
+  const isTall = variant === "tall";
+  const crownHeight = isTall ? "h-4" : "h-3.5";
+  const crownTop = isTall ? "top-0.5" : "top-1";
+  const ribbonTop = isTall ? "top-[13px]" : "top-[12px]";
+
   return (
-    <span className="relative inline-flex h-5 w-5 items-center justify-center">
-      <UserRound className="h-5 w-5" />
-      <span className="absolute bottom-0.5 left-1/2 flex -translate-x-1/2 items-center text-[#5f707a]">
-        <span className="h-0 w-0 border-y-[3px] border-r-[5px] border-y-transparent border-r-current" />
-        <span className="h-1.5 w-1.5 rounded-full bg-current" />
-        <span className="h-0 w-0 border-y-[3px] border-l-[5px] border-y-transparent border-l-current" />
-      </span>
+    <span
+      className={`relative inline-flex h-5 w-5 items-center justify-center ${
+        isTilt ? "-rotate-12" : ""
+      }`}
+    >
+      <span
+        className={`absolute left-1/2 ${crownTop} ${crownHeight} w-3.5 -translate-x-1/2 rounded-t-[5px] border border-current bg-[#f7fafb]`}
+      />
+      <span
+        className={`absolute left-1/2 ${ribbonTop} h-[3px] w-4 -translate-x-1/2 rounded-full bg-current`}
+      />
+      <span className="absolute bottom-1 left-1/2 h-[3px] w-5 -translate-x-1/2 rounded-full bg-current" />
+      {variant === "sparkle" ? (
+        <Sparkles className="absolute -right-1 -top-1 h-3 w-3" />
+      ) : null}
+      {variant === "ribbon" ? (
+        <span className="absolute left-1/2 top-[10px] h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#eef3f6] ring-1 ring-current" />
+      ) : null}
+      {variant === "badge" ? (
+        <span className="absolute -right-0.5 bottom-0 h-2.5 w-2.5 rounded-full border border-current bg-[#eef3f6]" />
+      ) : null}
+      {variant === "star" ? (
+        <Star className="absolute -right-1 -top-1 h-3 w-3 fill-[#5f707a]" />
+      ) : null}
+      {variant === "moon" ? (
+        <span className="absolute -right-0.5 top-0 h-2.5 w-2.5 rounded-full border-l-2 border-current" />
+      ) : null}
     </span>
   );
 }
 
-function SuitHostIcon() {
+function TopHatWithFaceIcon() {
   return (
     <span className="relative inline-flex h-5 w-5 items-center justify-center">
-      <UserRound className="h-5 w-5" />
-      <span className="absolute bottom-0 left-[7px] h-2.5 w-[2px] rotate-[-30deg] rounded-full bg-current" />
-      <span className="absolute bottom-0 right-[7px] h-2.5 w-[2px] rotate-[30deg] rounded-full bg-current" />
+      <UserRound className="absolute bottom-0 h-4 w-4" />
+      <span className="absolute left-1/2 top-0 h-2.5 w-3.5 -translate-x-1/2 rounded-t-[5px] border border-current bg-[#f7fafb]" />
+      <span className="absolute left-1/2 top-[8px] h-[3px] w-4 -translate-x-1/2 rounded-full bg-current" />
     </span>
   );
 }
 
-function HatHostIcon() {
+function WandTopHatIcon() {
   return (
     <span className="relative inline-flex h-5 w-5 items-center justify-center">
-      <UserRound className="h-5 w-5" />
-      <span className="absolute -top-0.5 left-1/2 h-2 w-3.5 -translate-x-1/2 rounded-t-[6px] border border-current bg-[#eef3f6]" />
-      <span className="absolute top-1 left-1/2 h-[2px] w-5 -translate-x-1/2 rounded-full bg-current" />
+      <TopHatIcon />
+      <span className="absolute -right-0.5 top-0 h-5 w-[2px] rotate-45 rounded-full bg-current" />
+      <span className="absolute right-1 top-0 h-[3px] w-[3px] rounded-full bg-current" />
     </span>
   );
 }
@@ -217,38 +243,29 @@ function HatHostIcon() {
 function HostCostIconPreviewGrid() {
   return (
     <div className="grid grid-cols-4 gap-1.5">
-      <HostIconOption label="Bow tie host">
-        <BowTieHostIcon />
+      <HostIconOption label="Classic top hat">
+        <TopHatIcon />
       </HostIconOption>
-      <HostIconOption label="Suit host">
-        <SuitHostIcon />
+      <HostIconOption label="Sparkle top hat">
+        <TopHatIcon variant="sparkle" />
       </HostIconOption>
-      <HostIconOption label="Crown host">
-        <span className="relative inline-flex h-5 w-5 items-center justify-center">
-          <UserRound className="h-5 w-5" />
-          <Crown className="absolute -right-1 -top-1 h-3 w-3" />
-        </span>
+      <HostIconOption label="Tall top hat">
+        <TopHatIcon variant="tall" />
       </HostIconOption>
-      <HostIconOption label="Hat host">
-        <HatHostIcon />
+      <HostIconOption label="Ribbon top hat">
+        <TopHatIcon variant="ribbon" />
       </HostIconOption>
-      <HostIconOption label="Verified host">
-        <span className="relative inline-flex h-5 w-5 items-center justify-center">
-          <UserRound className="h-5 w-5" />
-          <BadgeCheck className="absolute -bottom-1 -right-1 h-3.5 w-3.5" />
-        </span>
+      <HostIconOption label="Tilted top hat">
+        <TopHatIcon variant="tilt" />
       </HostIconOption>
-      <HostIconOption label="Host support">
-        <HandHeart className="h-5 w-5" />
+      <HostIconOption label="Badge top hat">
+        <TopHatIcon variant="badge" />
       </HostIconOption>
-      <HostIconOption label="Featured host">
-        <span className="relative inline-flex h-5 w-5 items-center justify-center">
-          <UserRound className="h-5 w-5" />
-          <Sparkles className="absolute -right-1 -top-1 h-3.5 w-3.5" />
-        </span>
+      <HostIconOption label="Host top hat">
+        <TopHatWithFaceIcon />
       </HostIconOption>
-      <HostIconOption label="Concierge host">
-        <Bell className="h-5 w-5" />
+      <HostIconOption label="Wand top hat">
+        <WandTopHatIcon />
       </HostIconOption>
     </div>
   );
