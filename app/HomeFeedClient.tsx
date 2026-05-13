@@ -2,6 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Cormorant_Garamond,
+  Fraunces,
+  Libre_Baskerville,
+  Playfair_Display,
+} from "next/font/google";
 import { getPublicLocationLabel } from "../lib/locationPrivacy";
 import {
   formatMeetingTime,
@@ -49,6 +55,26 @@ import {
 } from "./useHomeFeedFilters";
 import { useDistanceUnit } from "./useDistanceUnit";
 import { useCreateMeetupHref } from "./useCreateMeetupHref";
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: "600",
+});
+
+const libreBaskerville = Libre_Baskerville({
+  subsets: ["latin"],
+  weight: "700",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: "700",
+});
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: "600",
+});
 
 type PostRow = {
   id: number;
@@ -366,10 +392,19 @@ export default function HomeFeedClient({
               1:1 social meetups
             </div>
 
-            <h1 className="mt-3 max-w-[16ch] text-[33px] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#223039] sm:mt-4 sm:text-[41px]">
-              Meet someone new,
-              <br />
-              no pressure.
+            <h1 className="mt-3 space-y-2.5 text-[#223039] sm:mt-4">
+              <span className={`block text-[32px] leading-[0.98] sm:text-[40px] ${cormorant.className}`}>
+                Meet someone new, no pressure.
+              </span>
+              <span className={`block text-[28px] leading-[1.08] sm:text-[35px] ${libreBaskerville.className}`}>
+                Meet someone new, no pressure.
+              </span>
+              <span className={`block text-[31px] leading-[1] sm:text-[39px] ${playfair.className}`}>
+                Meet someone new, no pressure.
+              </span>
+              <span className={`block text-[30px] leading-[1.03] sm:text-[37px] ${fraunces.className}`}>
+                Meet someone new, no pressure.
+              </span>
             </h1>
 
             <p className={`mt-3 max-w-xl text-[14px] sm:mt-4 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
