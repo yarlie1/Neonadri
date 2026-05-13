@@ -8,7 +8,7 @@ import {
 import AccountDeletePanel from "../AccountDeletePanel";
 
 const HERO_SURFACE_CLASS =
-  "relative overflow-hidden rounded-[24px] border border-[#dce5eb] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.99)_0%,rgba(241,246,249,0.96)_44%,rgba(225,232,237,0.95)_100%)] px-6 py-7 text-[#24323c] shadow-[0_24px_60px_rgba(118,126,133,0.14)] sm:px-8 sm:py-8";
+  "relative overflow-hidden rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] px-6 py-7 text-[#24323c] shadow-[0_24px_48px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)] sm:px-8 sm:py-8";
 
 export default async function AccountDeletePage() {
   const supabase = await createClient();

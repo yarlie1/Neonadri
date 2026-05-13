@@ -343,7 +343,7 @@ export default async function ProfilePage({ params }: PageProps) {
                       {profile.interests!.map((item) => (
                         <span
                           key={item}
-                          className="rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-3 py-1.5 text-xs font-medium text-[#52616a]"
+                          className="rounded-full border border-[#dde6ec] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_100%)] px-3 py-1.5 text-xs font-medium text-[#52616a]"
                         >
                           {item}
                         </span>

@@ -7,6 +7,7 @@ import {
   APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
   APP_PAGE_BG_CLASS,
+  APP_SOFT_CARD_CLASS,
   APP_SURFACE_CARD_CLASS,
 } from "../designSystem";
 import BlockedUsersCard from "../components/BlockedUsersCard";
@@ -72,7 +73,7 @@ export default async function AccountPage() {
             Identity and settings
           </h2>
 
-          <div className="mt-4 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+          <div className={`mt-4 px-4 py-4 ${APP_SOFT_CARD_CLASS}`}>
             <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#849099]">
               Account email
             </div>
@@ -99,10 +100,10 @@ export default async function AccountPage() {
           <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
             Request and match alerts.
           </p>
-          <div className="mt-4 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+          <div className={`mt-4 px-4 py-4 ${APP_SOFT_CARD_CLASS}`}>
             <PushNotificationButton variant="toggle" />
           </div>
-          <div className="mt-3 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+          <div className={`mt-3 px-4 py-4 ${APP_SOFT_CARD_CLASS}`}>
             <EmailNotificationToggle
               initialEnabled={profile.email_notifications_enabled !== false}
             />
@@ -125,7 +126,7 @@ export default async function AccountPage() {
                 : "Join now. Apply to host later."}
             </p>
 
-            <div className="mt-4 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+            <div className={`mt-4 px-4 py-4 ${APP_SOFT_CARD_CLASS}`}>
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#849099]">
                 Signup path
               </div>

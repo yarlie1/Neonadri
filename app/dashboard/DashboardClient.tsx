@@ -147,7 +147,7 @@ function RecentChatsPanel({
     return (
       <div className={`${SURFACE_CARD_CLASS} p-4 sm:p-5`}>
         <div className="flex items-start gap-3">
-          <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d8e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#738690]">
+          <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#dde6ec] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_100%)] text-[#738690]">
             <MessageSquareMore className="h-4 w-4" />
           </div>
           <div>
@@ -182,7 +182,7 @@ function RecentChatsPanel({
         </Link>
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-[20px] border border-[#d8e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)]">
+      <div className="mt-4 overflow-hidden rounded-[20px] border border-[#dde6ec] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_100%)]">
         {recentChats.map((chat, index) => (
           <Link
             key={chat.matchId}
@@ -197,7 +197,7 @@ function RecentChatsPanel({
                   {chat.otherUserName}
                 </span>
                 {chat.hasNewMessage ? (
-                  <span className="shrink-0 rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#5f7480]">
+                  <span className="shrink-0 rounded-full border border-[#dde6ec] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_100%)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#5f7480]">
                     New
                   </span>
                 ) : null}
@@ -1088,7 +1088,7 @@ export default function DashboardClient({
           </div>
         )}
 
-        <div className="relative overflow-hidden rounded-[24px] border border-[#dfe7ec] bg-[radial-gradient(circle_at_top_left,#ffffff_0%,#f4f7f9_44%,#dfe7ec_100%)] px-6 py-6 shadow-[0_18px_42px_rgba(118,126,133,0.11)]">
+        <div className="relative overflow-hidden rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] px-6 py-6 shadow-[0_18px_36px_rgba(118,126,133,0.09),inset_0_1px_0_rgba(255,255,255,1)]">
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/45 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#d8e1e7]/55 blur-2xl" />
           <div className="relative">
