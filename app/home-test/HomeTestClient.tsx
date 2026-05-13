@@ -126,7 +126,7 @@ export default function HomeTestClient({
   const hostCount = Object.keys(hostProfileMap).length;
 
   const metaRowClass =
-    "flex min-h-[60px] items-center gap-2.5 rounded-[16px] border border-[#dde3e7] bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(244,246,247,0.86)_100%)] px-3.5 py-2.5 text-sm text-[#364149] shadow-[0_8px_18px_rgba(118,126,133,0.05),inset_0_1px_0_rgba(255,255,255,0.98)]";
+    "flex min-h-[60px] items-center gap-2.5 rounded-[16px] border border-[#cbd5dc] bg-[linear-gradient(180deg,#ffffff_0%,#f5f8fa_100%)] px-3.5 py-2.5 text-sm text-[#2f3b44] shadow-[0_10px_18px_rgba(86,101,112,0.08),inset_0_1px_0_rgba(255,255,255,1)]";
 
   return (
     <main className="min-h-screen overflow-hidden px-4 py-5 text-[#2f3a42]">
@@ -348,7 +348,7 @@ export default function HomeTestClient({
                       : "border-[#e4ebef] bg-[linear-gradient(180deg,rgba(248,250,252,0.90)_0%,rgba(228,235,240,0.80)_100%)]"
                   }`}
                 >
-                  <div className="rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(180deg,rgba(253,254,255,0.94)_0%,rgba(238,243,246,0.86)_100%)] px-4 py-3.5 shadow-[0_16px_28px_rgba(118,126,133,0.10),inset_0_1px_0_rgba(255,255,255,0.96)]">
+                  <div className="rounded-[18px] border border-[#cfd9e0] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_44%,#edf3f6_100%)] px-4 py-3.5 shadow-[0_18px_30px_rgba(86,101,112,0.13),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(202,212,219,0.5)]">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
                         <div className="flex min-w-0 items-center gap-2.5">
