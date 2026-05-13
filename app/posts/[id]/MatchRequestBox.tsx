@@ -187,16 +187,6 @@ export default function MatchRequestBox({
       <p className={`mt-4 ${APP_BODY_TEXT_CLASS}`}>
         {headerDescription}
       </p>
-      {!hasMatchedRequest &&
-        !isUnavailableBecauseCancelled &&
-        !isUnavailableBecauseMatched &&
-        !isUnavailableBecauseExpired &&
-        !isRejectedRequest && (
-        <p className={`mt-1 ${APP_BODY_TEXT_CLASS}`}>
-          Cost support covers activity costs only.
-        </p>
-      )}
-
       <div className={`mt-5 rounded-[22px] px-4 py-4 ${APP_SOFT_CARD_CLASS}`}>
         <div className={APP_EYEBROW_CLASS}>
           Status
