@@ -461,6 +461,11 @@ export function MeetupFeedCard({
         </div>
 
         <div className="mt-3 grid gap-2">
+          <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
+            <MapPin className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
+            <span className="min-w-0 flex-1 break-words font-semibold text-[#24323f]">{placeText}</span>
+          </div>
+
           {whenText && (
             <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
               <Clock3 className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
@@ -472,11 +477,6 @@ export function MeetupFeedCard({
               ) : null}
             </div>
           )}
-
-          <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
-            <MapPin className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
-            <span className="min-w-0 flex-1 break-words font-semibold text-[#24323f]">{placeText}</span>
-          </div>
 
           <div className={`flex min-h-[56px] items-center justify-between gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
             <span className="inline-flex min-w-0 items-center gap-2 text-[#55646e]">
