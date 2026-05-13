@@ -28,9 +28,9 @@ import {
   FilterPill,
   getPostMatchState,
   getPurposeIcon,
-  getPurposeTheme,
   getStatusBadgeClass,
   MiniPostPreview,
+  PURPOSE_ICON_TILE_CLASS,
   parseBenefitAmount,
   SectionIntro,
   SOFT_CARD_CLASS,
@@ -84,24 +84,23 @@ function PostsTabPanel({
             className={`cursor-pointer ${SURFACE_CARD_CLASS} p-4`}
           >
             <div className={`${APP_INNER_PANEL_CLASS} p-3`}>
-              <div className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-start gap-x-2.5 gap-y-0.5">
-                <div className={`inline-flex h-10 w-10 items-center justify-center rounded-[14px] shadow-[0_8px_16px_rgba(118,126,133,0.1)] ${APP_ROW_SURFACE_CLASS}`}>
+              <div className="grid grid-cols-[46px_minmax(0,1fr)_auto] grid-rows-[auto_auto] items-center gap-x-2.5 gap-y-1">
+                <div className={`row-span-2 ${PURPOSE_ICON_TILE_CLASS}`}>
                   {getPurposeIcon(post.meeting_purpose)}
                 </div>
-                <div className="min-w-0 self-center truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
+                <div className="min-w-0 truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
                   {post.meeting_purpose || "Meetup"}
                 </div>
                 <div
-                  className={`col-start-3 row-start-1 shrink-0 self-start rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${getStatusBadgeClass(
+                  className={`col-start-3 row-span-2 row-start-1 shrink-0 self-start rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${getStatusBadgeClass(
                     postStatus
                   )}`}
                 >
                   {postStatus}
                 </div>
-              </div>
-
-              <div className="mt-1 min-w-0 pr-1 text-[12px] leading-[1.15] text-[#849099]">
-                Hosted by you{currentUserMeta ? ` | ${currentUserMeta}` : ""}
+                <div className="col-start-2 row-start-2 min-w-0 pr-1 text-[12px] leading-[1.15] text-[#849099]">
+                  Hosted by you{currentUserMeta ? ` | ${currentUserMeta}` : ""}
+                </div>
               </div>
 
               <div className="mt-3 grid gap-2">
@@ -1202,8 +1201,8 @@ export default function DashboardClient({
 
             <div className="mt-4 space-y-3">
               {upcomingMatchedMeetups.map((item) => {
-                const purposeTheme = getPurposeTheme(item.post.meeting_purpose);
                 const countdown = formatTimeUntil(item.post.meeting_time);
+                const durationLabel = formatDuration(item.post.duration_minutes);
 
                 return (
                   <Link
@@ -1211,33 +1210,37 @@ export default function DashboardClient({
                     href={`/posts/${item.post.id}`}
                     className={`block ${APP_INNER_PANEL_CLASS} p-4 transition hover:bg-white/96`}
                   >
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div
-                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] shadow-sm ${purposeTheme.bandClass}`}
-                      >
+                    <div className="grid grid-cols-[46px_minmax(0,1fr)_auto] grid-rows-[auto_auto] items-center gap-x-2.5 gap-y-1">
+                      <div className={`row-span-2 ${PURPOSE_ICON_TILE_CLASS}`}>
                         {getPurposeIcon(item.post.meeting_purpose)}
+                      </div>
+                      <div className="min-w-0 truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
                         {item.post.meeting_purpose || "Meetup"}
                       </div>
 
-                      <div className="rounded-full border border-[#d4dfe6] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.12em] text-[#536a75]">
+                      <div className="col-start-3 row-span-2 row-start-1 shrink-0 self-start rounded-[14px] border border-[#d4dfe6] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.12em] text-[#536a75]">
                         Matched
+                      </div>
+                      <div className="col-start-2 row-start-2 min-w-0 pr-1 text-[12px] leading-[1.15] text-[#849099]">
+                        Next confirmed plan
                       </div>
                     </div>
 
-                    <div className={`mt-3 ${APP_ROW_SURFACE_CLASS} px-4 py-3`}>
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-[#24323f]">
+                    <div className="mt-3 grid gap-2">
+                      <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
+                        <MapPin className="h-4 w-4 shrink-0 text-[#7a8b95]" />
+                        <span className="min-w-0 flex-1 truncate font-semibold text-[#24323f]">
+                          {item.post.place_name || item.post.location || "Selected place"}
+                        </span>
+                      </div>
+
+                      <div className={`flex min-h-[56px] items-center gap-2.5 px-3.5 py-2 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
+                        <div className="inline-flex min-w-0 flex-1 items-center gap-2 text-sm font-semibold text-[#24323f]">
                           <Clock3 className="h-4 w-4 shrink-0 text-[#7a8b95]" />
                           <span className="truncate">{formatTime(item.post.meeting_time)}</span>
                         </div>
-                        <div className="shrink-0 text-sm font-semibold text-[#24323f]">
-                          {countdown || "Soon"}
-                        </div>
-                      </div>
-                      <div className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#66727a]">
-                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#7a8b95]" />
-                        <span className="min-w-0 truncate font-semibold text-[#24323f]">
-                          {item.post.place_name || item.post.location || "Selected place"}
+                        <span className="shrink-0 rounded-[14px] border border-[#cbd4db] bg-[linear-gradient(180deg,#ffffff_0%,#eceff2_100%)] px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#3b4c56] shadow-[0_8px_14px_rgba(118,126,133,0.12)]">
+                          {durationLabel || countdown || "Soon"}
                         </span>
                       </div>
                     </div>

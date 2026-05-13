@@ -42,6 +42,8 @@ export const SURFACE_CARD_CLASS =
   APP_SURFACE_CARD_CLASS;
 export const SOFT_CARD_CLASS =
   APP_SOFT_CARD_CLASS;
+export const PURPOSE_ICON_TILE_CLASS =
+  "inline-flex h-11 w-11 items-center justify-center self-center rounded-[16px] border border-white/70 bg-[radial-gradient(circle_at_28%_18%,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.72)_26%,rgba(226,235,241,0.74)_58%,rgba(185,199,209,0.68)_100%)] text-[#60717c] shadow-[0_14px_26px_rgba(118,126,133,0.18),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-10px_18px_rgba(142,157,169,0.16)] backdrop-blur-md";
 
 export function getPurposeTheme(purpose: string | null) {
   const baseBandClass = `${APP_ROW_SURFACE_CLASS} text-[#24323f]`;
@@ -343,20 +345,20 @@ export function MiniPostPreview({
 
   return (
     <div className={`mt-3 ${APP_INNER_PANEL_CLASS} p-3`}>
-      <div className="grid grid-cols-[40px_minmax(0,1fr)] items-start gap-x-2.5 gap-y-0.5">
-        <div className={`inline-flex h-10 w-10 items-center justify-center rounded-[14px] shadow-[0_8px_16px_rgba(118,126,133,0.1)] ${APP_ROW_SURFACE_CLASS}`}>
+      <div className="grid grid-cols-[46px_minmax(0,1fr)] grid-rows-[auto_auto] items-center gap-x-2.5 gap-y-1">
+        <div className={`row-span-2 ${PURPOSE_ICON_TILE_CLASS}`}>
           {getPurposeIcon(post.meeting_purpose)}
         </div>
-        <div className="min-w-0 self-center truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
+        <div className="min-w-0 truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
           {post.meeting_purpose || "Meetup"}
         </div>
         {hostLine ? (
-          <div className="col-span-2 min-w-0 pl-[50px] pr-1 text-[12px] leading-[1.15] text-[#849099]">
+          <div className="col-start-2 row-start-2 min-w-0 pr-1 text-[12px] leading-[1.15] text-[#849099]">
             {hostLine}
           </div>
         ) : null}
         {postStatus === "cancelled" ? (
-          <div className="col-span-2 mt-2 pl-[50px]">
+          <div className="col-start-2 mt-2">
             <span className={`inline-flex rounded-full px-3 py-1 text-[11px] font-medium ${getStatusBadgeClass("cancelled")}`}>
               Cancelled
             </span>
