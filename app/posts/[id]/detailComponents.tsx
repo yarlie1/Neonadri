@@ -313,6 +313,11 @@ export function ProfileShowcaseCard({
             )}
           </div>
           <div className="mt-2 text-sm text-[#52616a]">{identityLine}</div>
+          {title === "Host" && hasAboutMe ? (
+            <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#6a7680]">
+              {summary}
+            </p>
+          ) : null}
         </div>
       </div>
     </div>
