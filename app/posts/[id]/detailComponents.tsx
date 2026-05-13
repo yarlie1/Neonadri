@@ -41,7 +41,7 @@ import {
   Star,
   Target,
   UserRound,
-  UserRoundCheck,
+  UserStar,
   Utensils,
   WandSparkles,
 } from "lucide-react";
@@ -196,8 +196,8 @@ function HostCostIconPreviewGrid() {
       <HostIconOption label="Chef hat">
         <ChefHat className="h-5 w-5" />
       </HostIconOption>
-      <HostIconOption label="User check">
-        <UserRoundCheck className="h-5 w-5" />
+      <HostIconOption label="User star">
+        <UserStar className="h-5 w-5" />
       </HostIconOption>
       <HostIconOption label="Badge check">
         <BadgeCheck className="h-5 w-5" />
