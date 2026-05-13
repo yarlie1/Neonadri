@@ -669,7 +669,7 @@ export function MeetupOverviewCard({
               </span>
             </div>
           </div>
-          <p className={`mt-3 max-w-2xl text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
+          <p className={`mt-3 ml-auto max-w-2xl text-right text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
             {benefitExplanation}
           </p>
         </div>
