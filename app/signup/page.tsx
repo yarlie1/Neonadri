@@ -543,6 +543,7 @@ function SignupPageContent() {
           display_name: displayName.trim(),
           bio: profileSummary || null,
           about_me: aboutMe.trim() || null,
+          avatar_url: null,
           gender: gender || null,
           age_group: ageGroup || null,
           preferred_area: null,

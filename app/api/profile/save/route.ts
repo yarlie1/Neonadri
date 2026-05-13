@@ -18,7 +18,7 @@ function sanitizeAllowedValue(value: unknown, allowedValues: readonly string[]) 
 }
 
 function sanitizeAvatarUrl(value: unknown, userId: string) {
-  if (value === null || value === "") return null;
+  if (value === undefined || value === null || value === "") return null;
   if (typeof value !== "string") return undefined;
 
   const trimmed = value.trim();
