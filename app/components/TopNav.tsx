@@ -109,7 +109,6 @@ export default function TopNav({
   const menuRef = useRef<HTMLDivElement | null>(null);
   const loggingOutRef = useRef(false);
   const pathname = usePathname();
-  const isHomeTest = pathname.startsWith("/home-test");
   const isSilverHome = true;
   
   const currentPathWithSearch = useMemo(() => {
@@ -440,15 +439,11 @@ export default function TopNav({
               N
             </Link>
 
-            <div className={`flex items-center ${isHomeTest ? "shrink-0" : "min-w-0 flex-1"}`}>
-              <div
-                className={`flex flex-col items-start justify-center gap-[1px] sm:h-10 sm:justify-center sm:gap-[1px] ${
-                  isHomeTest ? "shrink-0" : "min-w-0"
-                }`}
-              >
+            <div className="flex min-w-0 flex-1 items-center">
+              <div className="flex min-w-0 flex-col items-start justify-center gap-[1px] sm:h-10 sm:justify-center sm:gap-[1px]">
                 <Link
                   href="/"
-                  className={`block ${isHomeTest ? "" : "w-full"}`}
+                  className="block w-full"
                   style={{
                     textShadow:
                       "0 1px 0 rgba(255,255,255,0.9), 0 0 16px rgba(255,255,255,0.22)",
