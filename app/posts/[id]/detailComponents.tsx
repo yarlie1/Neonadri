@@ -12,10 +12,13 @@ import {
 } from "../../designSystem";
 import {
   Activity,
+  BadgeCheck,
+  BadgeDollarSign,
   Book,
   BookOpen,
   Cake,
   Camera,
+  ChefHat,
   Clock3,
   Coffee,
   CookingPot,
@@ -23,6 +26,7 @@ import {
   Film,
   Footprints,
   Gamepad2,
+  HandHeart,
   HeartHandshake,
   Laptop,
   Languages,
@@ -31,12 +35,15 @@ import {
   MessageSquareText,
   Mic,
   Sandwich,
+  CircleDollarSign,
   Smile,
   Sparkles,
   Star,
   Target,
   UserRound,
+  UserRoundCheck,
   Utensils,
+  WandSparkles,
 } from "lucide-react";
 import Avatar from "../../components/Avatar";
 
@@ -177,95 +184,32 @@ function HostIconOption({
   );
 }
 
-function TopHatIcon({
-  variant = "plain",
-}: {
-  variant?: "plain" | "sparkle" | "tall" | "ribbon" | "tilt" | "badge" | "star" | "moon";
-}) {
-  const isTilt = variant === "tilt";
-  const isTall = variant === "tall";
-  const crownHeight = isTall ? "h-4" : "h-3.5";
-  const crownTop = isTall ? "top-0.5" : "top-1";
-  const ribbonTop = isTall ? "top-[13px]" : "top-[12px]";
-
-  return (
-    <span
-      className={`relative inline-flex h-5 w-5 items-center justify-center ${
-        isTilt ? "-rotate-12" : ""
-      }`}
-    >
-      <span
-        className={`absolute left-1/2 ${crownTop} ${crownHeight} w-3.5 -translate-x-1/2 rounded-t-[5px] border border-current bg-[#f7fafb]`}
-      />
-      <span
-        className={`absolute left-1/2 ${ribbonTop} h-[3px] w-4 -translate-x-1/2 rounded-full bg-current`}
-      />
-      <span className="absolute bottom-1 left-1/2 h-[3px] w-5 -translate-x-1/2 rounded-full bg-current" />
-      {variant === "sparkle" ? (
-        <Sparkles className="absolute -right-1 -top-1 h-3 w-3" />
-      ) : null}
-      {variant === "ribbon" ? (
-        <span className="absolute left-1/2 top-[10px] h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#eef3f6] ring-1 ring-current" />
-      ) : null}
-      {variant === "badge" ? (
-        <span className="absolute -right-0.5 bottom-0 h-2.5 w-2.5 rounded-full border border-current bg-[#eef3f6]" />
-      ) : null}
-      {variant === "star" ? (
-        <Star className="absolute -right-1 -top-1 h-3 w-3 fill-[#5f707a]" />
-      ) : null}
-      {variant === "moon" ? (
-        <span className="absolute -right-0.5 top-0 h-2.5 w-2.5 rounded-full border-l-2 border-current" />
-      ) : null}
-    </span>
-  );
-}
-
-function TopHatWithFaceIcon() {
-  return (
-    <span className="relative inline-flex h-5 w-5 items-center justify-center">
-      <UserRound className="absolute bottom-0 h-4 w-4" />
-      <span className="absolute left-1/2 top-0 h-2.5 w-3.5 -translate-x-1/2 rounded-t-[5px] border border-current bg-[#f7fafb]" />
-      <span className="absolute left-1/2 top-[8px] h-[3px] w-4 -translate-x-1/2 rounded-full bg-current" />
-    </span>
-  );
-}
-
-function WandTopHatIcon() {
-  return (
-    <span className="relative inline-flex h-5 w-5 items-center justify-center">
-      <TopHatIcon />
-      <span className="absolute -right-0.5 top-0 h-5 w-[2px] rotate-45 rounded-full bg-current" />
-      <span className="absolute right-1 top-0 h-[3px] w-[3px] rounded-full bg-current" />
-    </span>
-  );
-}
-
 function HostCostIconPreviewGrid() {
   return (
     <div className="grid grid-cols-4 gap-1.5">
-      <HostIconOption label="Classic top hat">
-        <TopHatIcon />
+      <HostIconOption label="Wand sparkles">
+        <WandSparkles className="h-5 w-5" />
       </HostIconOption>
-      <HostIconOption label="Sparkle top hat">
-        <TopHatIcon variant="sparkle" />
+      <HostIconOption label="Sparkles">
+        <Sparkles className="h-5 w-5" />
       </HostIconOption>
-      <HostIconOption label="Tall top hat">
-        <TopHatIcon variant="tall" />
+      <HostIconOption label="Chef hat">
+        <ChefHat className="h-5 w-5" />
       </HostIconOption>
-      <HostIconOption label="Ribbon top hat">
-        <TopHatIcon variant="ribbon" />
+      <HostIconOption label="User check">
+        <UserRoundCheck className="h-5 w-5" />
       </HostIconOption>
-      <HostIconOption label="Tilted top hat">
-        <TopHatIcon variant="tilt" />
+      <HostIconOption label="Badge check">
+        <BadgeCheck className="h-5 w-5" />
       </HostIconOption>
-      <HostIconOption label="Badge top hat">
-        <TopHatIcon variant="badge" />
+      <HostIconOption label="Hand heart">
+        <HandHeart className="h-5 w-5" />
       </HostIconOption>
-      <HostIconOption label="Host top hat">
-        <TopHatWithFaceIcon />
+      <HostIconOption label="Circle dollar">
+        <CircleDollarSign className="h-5 w-5" />
       </HostIconOption>
-      <HostIconOption label="Wand top hat">
-        <WandTopHatIcon />
+      <HostIconOption label="Badge dollar">
+        <BadgeDollarSign className="h-5 w-5" />
       </HostIconOption>
     </div>
   );
