@@ -76,8 +76,8 @@ export default function SafetyActions({
         targetId: String(reportTargetId),
         reason: "unsafe_behavior",
         detail: reportDetail.trim()
-          ? `Unsafe payment request: ${reportDetail.trim()}`
-          : "Unsafe payment request.",
+          ? `Unsafe behavior: ${reportDetail.trim()}`
+          : "Unsafe behavior.",
       }),
     });
 
@@ -91,7 +91,7 @@ export default function SafetyActions({
 
     setOpenPanel(null);
     setReportDetail("");
-    setMessage("Unsafe payment request reported.");
+    setMessage("Report submitted.");
   };
 
   return (
@@ -103,7 +103,7 @@ export default function SafetyActions({
             onClick={() => setOpenPanel(openPanel === "report" ? null : "report")}
             className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
           >
-            Report unsafe payment request
+            Report safety issue
           </button>
         ) : null}
         {canBlock ? (
@@ -150,10 +150,10 @@ export default function SafetyActions({
         <div className={`${APP_SOFT_CARD_CLASS} p-4`}>
           <div className={APP_EYEBROW_CLASS}>Report</div>
           <div className="mt-2 text-sm font-semibold text-[#24323c]">
-            Report an unsafe payment request?
+            Report a safety issue?
           </div>
           <p className="mt-1 text-sm text-[#6c7880]">
-            Use this if someone asks for money in a way that feels unsafe or unrelated to direct meetup costs.
+            Use this for unsafe behavior, pressure, harassment, payment issues, or rule violations.
           </p>
           <textarea
             value={reportDetail}
