@@ -640,9 +640,9 @@ export function MeetupOverviewCard({
       <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#cfd8de]/35 blur-2xl" />
       <div className="relative">
         <div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div className={APP_EYEBROW_CLASS}>Meetup overview</div>
-            <span className="rounded-full border border-white/60 bg-white/55 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b7b84]">
+            <span className="ml-auto rounded-full border border-white/60 bg-white/55 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b7b84]">
               {isCancelled ? "Cancelled" : isPostMatched ? "Matched" : "Open"}
             </span>
           </div>
