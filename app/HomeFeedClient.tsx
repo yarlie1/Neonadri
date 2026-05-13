@@ -24,7 +24,6 @@ import {
   getPurposeLabel,
   haversineKm,
   parseBenefitAmount,
-  SOFT_CARD_CLASS,
   SURFACE_CARD_CLASS,
 } from "./homeFeedHelpers";
 import {
@@ -35,6 +34,7 @@ import {
   APP_INNER_PANEL_CLASS,
   APP_PAGE_BG_CLASS,
   APP_PILL_INACTIVE_CLASS,
+  APP_SOFT_CARD_CLASS,
   APP_SUBTLE_TEXT_CLASS,
 } from "./designSystem";
 import {
@@ -55,6 +55,12 @@ const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
   weight: "700",
 });
+
+const HOME_WHITE_SURFACE_CLASS =
+  "rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] shadow-[0_24px_48px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur";
+
+const HOME_WHITE_SOFT_CLASS =
+  "rounded-[18px] border border-[#e1e8ed] bg-[linear-gradient(180deg,#ffffff_0%,#f6f9fb_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]";
 
 type PostRow = {
   id: number;
@@ -362,9 +368,9 @@ export default function HomeFeedClient({
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.62),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.28),transparent_20%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.16),transparent_32%)]" />
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.09)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.09)_1px,transparent_1px)] bg-[size:22px_22px] opacity-10" />
         <div className="relative z-10 mx-auto max-w-2xl space-y-4 pb-16 sm:space-y-5 sm:pb-24">
-        <section className={`relative overflow-hidden px-5 py-5 text-[#24323f] sm:px-7 sm:py-7 ${SURFACE_CARD_CLASS}`}>
+        <section className={`relative overflow-hidden px-5 py-5 text-[#24323f] sm:px-7 sm:py-7 ${HOME_WHITE_SURFACE_CLASS}`}>
           <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
-          <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#f5f9fcc7] blur-3xl" />
+          <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#ffffffb8] blur-3xl" />
 
           <div className="relative">
             <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 shadow-[0_10px_22px_rgba(136,142,148,0.08)] ${APP_PILL_INACTIVE_CLASS} ${APP_EYEBROW_CLASS}`}>
@@ -430,7 +436,7 @@ export default function HomeFeedClient({
           </div>
         </section>
 
-        <section className={`px-4 py-4 sm:px-5 ${SOFT_CARD_CLASS}`}>
+        <section className={`px-4 py-4 sm:px-5 ${HOME_WHITE_SOFT_CLASS}`}>
           <div className="flex items-start gap-3">
             <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#6c7b84] shadow-[0_10px_18px_rgba(118,126,133,0.08)]">
               <Sparkles className="h-4 w-4" />
@@ -568,7 +574,7 @@ export default function HomeFeedClient({
             </div>
           </div>
 
-          <div className={`${SOFT_CARD_CLASS} px-3 py-1.5 text-xs font-medium text-[#6f7a81] shadow-[0_10px_18px_rgba(118,126,133,0.07)]`}>
+          <div className={`${APP_SOFT_CARD_CLASS} px-3 py-1.5 text-xs font-medium text-[#6f7a81] shadow-[0_10px_18px_rgba(118,126,133,0.07)]`}>
             {posts.length} results
           </div>
         </div>

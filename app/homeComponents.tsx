@@ -326,7 +326,7 @@ export function FeaturedMeetupCard({
   targetText: string;
 }) {
   return (
-    <section className={`overflow-hidden ${APP_SURFACE_CARD_CLASS} shadow-[0_24px_48px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,1)]`}>
+    <section className="overflow-hidden rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] shadow-[0_24px_48px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur">
       <div className="border-b border-[#e3e6e8] px-5 py-4 sm:py-5">
         <div className="flex items-center justify-between gap-3">
           <div>
