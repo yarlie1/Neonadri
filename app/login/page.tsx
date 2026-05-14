@@ -9,15 +9,12 @@ import {
   APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
   APP_PAGE_BG_CLASS,
-  APP_PILL_INACTIVE_CLASS,
   APP_SUBTLE_TEXT_CLASS,
   APP_SURFACE_CARD_CLASS,
 } from "../designSystem";
 
 const INPUT_CLASS =
   "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30";
-const HERO_SURFACE_CLASS =
-  "relative overflow-hidden rounded-[24px] border border-[#dce5eb] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.99)_0%,rgba(241,246,249,0.96)_44%,rgba(225,232,237,0.95)_100%)] px-6 py-7 text-[#24323c] shadow-[0_24px_60px_rgba(118,126,133,0.14)] sm:px-8 sm:py-9";
 
 export default function LoginPage() {
   const supabase = createClient();
@@ -69,48 +66,7 @@ export default function LoginPage() {
 
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
-      <div className="mx-auto max-w-5xl">
-        <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-          <section className={HERO_SURFACE_CLASS}>
-            <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/45 blur-2xl" />
-            <div className="absolute bottom-0 right-0 h-28 w-28 rounded-full bg-[#d6e0e6]/45 blur-2xl" />
-            <div className="relative">
-              <div className={`inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}>
-                Welcome
-              </div>
-              <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[40px]">
-                Meet someone new, no pressure.
-              </h1>
-              <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-                Log in to continue.
-              </p>
-              <div className={`mt-4 inline-flex rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                Neonadri is for adults 18+ only.
-              </div>
-
-              <div className="mt-6 grid grid-cols-3 gap-2.5">
-                <div className={`${APP_SURFACE_CARD_CLASS} rounded-[22px] px-3 py-3 shadow-sm backdrop-blur`}>
-                  <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                    Vibe
-                  </div>
-                  <div className="mt-1 text-sm font-bold text-[#24323c]">Cozy</div>
-                </div>
-                <div className={`${APP_SURFACE_CARD_CLASS} rounded-[22px] px-3 py-3 shadow-sm backdrop-blur`}>
-                  <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                    Meetups
-                  </div>
-                  <div className="mt-1 text-sm font-bold text-[#24323c]">Nearby</div>
-                </div>
-                <div className={`${APP_SURFACE_CARD_CLASS} rounded-[22px] px-3 py-3 shadow-sm backdrop-blur`}>
-                  <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                    Mood
-                  </div>
-                  <div className="mt-1 text-sm font-bold text-[#24323c]">Warm</div>
-                </div>
-              </div>
-            </div>
-          </section>
-
+      <div className="mx-auto max-w-lg">
           <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
             <div className={APP_EYEBROW_CLASS}>
               Log In
@@ -194,7 +150,6 @@ export default function LoginPage() {
               </p>
             )}
           </section>
-        </div>
       </div>
     </main>
   );
