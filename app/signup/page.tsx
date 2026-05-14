@@ -169,6 +169,11 @@ function SignupPageContent() {
   const searchParams = useSearchParams();
   const initialIntentFromLink = searchParams.get("intent");
   const initialEmailFromLink = searchParams.get("email")?.trim().toLowerCase() || "";
+  const requestedNextPath = searchParams.get("next");
+  const redirectPath =
+    requestedNextPath && requestedNextPath.startsWith("/") && !requestedNextPath.startsWith("//")
+      ? requestedNextPath
+      : "/";
   const initialPostingBetaRequiredParam = searchParams.get("postingBetaRequired");
   const hasInitialPostingBetaRequired =
     initialPostingBetaRequiredParam === "0" ||
@@ -589,7 +594,7 @@ function SignupPageContent() {
       setMessage("Account created. Please log in to continue.");
 
       window.setTimeout(() => {
-        router.push("/login");
+        router.push(`/login?next=${encodeURIComponent(redirectPath)}`);
       }, 900);
     } catch (error) {
       console.error("Signup flow error:", error);
@@ -614,8 +619,8 @@ function SignupPageContent() {
             <div className="mt-6 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
               <PushNotificationButton
                 variant="choice"
-                onEnabled={() => router.push("/")}
-                onSkipped={() => router.push("/")}
+                onEnabled={() => router.push(redirectPath)}
+                onSkipped={() => router.push(redirectPath)}
               />
             </div>
           </section>

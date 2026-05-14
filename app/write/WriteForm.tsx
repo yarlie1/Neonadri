@@ -38,11 +38,12 @@ declare global {
   }
 }
 
-export default function WriteForm({ userId }: { userId: string }) {
+export default function WriteForm({ userId }: { userId: string | null }) {
   const router = useRouter();
 
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const autocompleteRef = useRef<any>(null);
+  const autoSubmitAttemptedRef = useRef(false);
 
   const [meetingPurpose, setMeetingPurpose] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
@@ -79,6 +80,7 @@ export default function WriteForm({ userId }: { userId: string }) {
       targetGender?: string;
       targetAgeGroup?: string;
       benefitAmount?: string;
+      benefitConfirmed?: boolean;
       latitude?: number | null;
       longitude?: number | null;
       locationConfirmed?: boolean;
@@ -94,6 +96,7 @@ export default function WriteForm({ userId }: { userId: string }) {
       setTargetGender(draft.targetGender || "");
       setTargetAgeGroup(draft.targetAgeGroup || "");
       setBenefitAmount(draft.benefitAmount || "");
+      setBenefitConfirmed(Boolean(draft.benefitConfirmed));
       setLatitude(typeof draft.latitude === "number" ? draft.latitude : null);
       setLongitude(typeof draft.longitude === "number" ? draft.longitude : null);
       setLocationConfirmed(Boolean(draft.locationConfirmed));
@@ -137,12 +140,14 @@ export default function WriteForm({ userId }: { userId: string }) {
       targetGender,
       targetAgeGroup,
       benefitAmount,
+      benefitConfirmed,
       latitude,
       longitude,
       locationConfirmed,
     }),
     [
       benefitAmount,
+      benefitConfirmed,
       confirmedAddress,
       durationMinutes,
       latitude,
@@ -159,7 +164,7 @@ export default function WriteForm({ userId }: { userId: string }) {
     ]
   );
 
-  const { draftReady, markReturnFromMap, clearDraft } = useCreateMeetupDraft({
+  const { draftReady, markReturnFromMap, markRestoreDraft, clearDraft } = useCreateMeetupDraft({
     draft: draftState,
     applyDraft,
     applyMapSelection,
@@ -171,10 +176,6 @@ export default function WriteForm({ userId }: { userId: string }) {
       setMeetingTime(getDefaultMeetingTime());
     }
   }, [draftReady, meetingTime]);
-
-  useEffect(() => {
-    setBenefitConfirmed(false);
-  }, [benefitAmount]);
 
   useEffect(() => {
     if (!draftReady) return;
@@ -272,11 +273,6 @@ export default function WriteForm({ userId }: { userId: string }) {
 
   const handleCreate = async () => {
     setMessage("");
-    if (!userId) {
-      setMessage("Please sign in first.");
-      return;
-    }
-
     if (
       !meetingPurpose.trim() ||
       !meetingTime.trim() ||
@@ -307,6 +303,12 @@ export default function WriteForm({ userId }: { userId: string }) {
       return;
     }
 
+    if (!userId) {
+      markRestoreDraft();
+      router.push(`/login?next=${encodeURIComponent("/write?submit=1")}`);
+      return;
+    }
+
     try {
       setSaving(true);
 
@@ -334,6 +336,12 @@ export default function WriteForm({ userId }: { userId: string }) {
       const result = await res.json();
 
         if (!res.ok) {
+          if (res.status === 401) {
+            markRestoreDraft();
+            router.push(`/login?next=${encodeURIComponent("/write?submit=1")}`);
+            return;
+          }
+
           setSaving(false);
           setMessage(result.error || "Failed to create meetup.");
         return;
@@ -347,6 +355,20 @@ export default function WriteForm({ userId }: { userId: string }) {
       setMessage(e instanceof Error ? e.message : "Something went wrong.");
     }
   };
+
+  useEffect(() => {
+    if (!draftReady || !userId || autoSubmitAttemptedRef.current) return;
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("submit") !== "1") return;
+
+    autoSubmitAttemptedRef.current = true;
+    params.delete("submit");
+    const nextQuery = params.toString();
+    window.history.replaceState({}, "", nextQuery ? `/write?${nextQuery}` : "/write");
+    void handleCreate();
+  }, [draftReady, userId]);
 
   return (
     <main className={`min-h-screen overflow-x-hidden ${APP_PAGE_BG_CLASS} px-4 py-5`}>
@@ -562,7 +584,10 @@ export default function WriteForm({ userId }: { userId: string }) {
             <select
               className={`${fieldClass} pr-10`}
               value={benefitAmount}
-              onChange={(e) => setBenefitAmount(e.target.value)}
+              onChange={(e) => {
+                setBenefitAmount(e.target.value);
+                setBenefitConfirmed(false);
+              }}
             >
               <option value="">Select cost</option>
               <option value="$0">$0</option>

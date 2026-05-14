@@ -17,6 +17,7 @@ type CreateMeetupDraft = {
   targetGender: string;
   targetAgeGroup: string;
   benefitAmount: string;
+  benefitConfirmed: boolean;
   latitude: number | null;
   longitude: number | null;
   locationConfirmed: boolean;
@@ -47,6 +48,7 @@ export function useCreateMeetupDraft({
     const savedDraft = window.sessionStorage.getItem(CREATE_DRAFT_KEY);
     const shouldRestoreDraft =
       params.has("location") ||
+      params.get("submit") === "1" ||
       window.sessionStorage.getItem(CREATE_DRAFT_RETURN_KEY) === "1";
 
     if (!shouldRestoreDraft) {
@@ -110,6 +112,12 @@ export function useCreateMeetupDraft({
     window.sessionStorage.setItem(CREATE_DRAFT_KEY, JSON.stringify(draft));
   };
 
+  const markRestoreDraft = () => {
+    if (typeof window === "undefined") return;
+    window.sessionStorage.setItem(CREATE_DRAFT_RETURN_KEY, "1");
+    window.sessionStorage.setItem(CREATE_DRAFT_KEY, JSON.stringify(draft));
+  };
+
   const clearDraft = () => {
     if (typeof window === "undefined") return;
     window.sessionStorage.removeItem(CREATE_DRAFT_KEY);
@@ -119,6 +127,7 @@ export function useCreateMeetupDraft({
   return {
     draftReady,
     markReturnFromMap,
+    markRestoreDraft,
     clearDraft,
   };
 }

@@ -43,6 +43,14 @@ export default function LoginPage() {
       : "/";
   }, [nextPath]);
 
+  const signupHref = useMemo(() => {
+    const params = new URLSearchParams({ postingBetaRequired: "0" });
+    if (redirectPath !== "/") {
+      params.set("next", redirectPath);
+    }
+    return `/signup?${params.toString()}`;
+  }, [redirectPath]);
+
   const handleLogin = async () => {
     setMessage("");
 
@@ -172,12 +180,12 @@ export default function LoginPage() {
                 Log In
               </button>
 
-              <a
-                href="/signup?postingBetaRequired=0"
+              <Link
+                href={signupHref}
                 className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
               >
                 Create account
-              </a>
+              </Link>
             </div>
 
             {message && (

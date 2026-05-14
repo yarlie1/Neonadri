@@ -9,7 +9,7 @@ import {
   getMeetingStatus,
   parseMeetingTime,
 } from "../lib/meetingTime";
-import { ArrowRight, Plus, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarPlus, Sparkles } from "lucide-react";
 import {
   FeaturedMeetupCard,
   HomeFilterCard,
@@ -367,7 +367,7 @@ export default function HomeFeedClient({
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7fafc_20%,#e8edf1_56%,#d7dfe5_100%)]" />
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.62),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.28),transparent_20%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.16),transparent_32%)]" />
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.09)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.09)_1px,transparent_1px)] bg-[size:22px_22px] opacity-10" />
-        <div className="relative z-10 mx-auto max-w-2xl space-y-4 pb-16 sm:space-y-5 sm:pb-24">
+        <div className="relative z-10 mx-auto max-w-2xl space-y-4 pb-28 sm:space-y-5 sm:pb-32">
         <section className={`relative overflow-hidden px-5 py-5 text-[#24323f] sm:px-7 sm:py-7 ${HOME_WHITE_SURFACE_CLASS}`}>
           <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
           <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#ffffffb8] blur-3xl" />
@@ -646,13 +646,30 @@ export default function HomeFeedClient({
         )}
         </div>
 
-        <Link
-          href={createHref}
-          className="fixed bottom-6 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-[24px] border border-[#d6e0e6] bg-[linear-gradient(135deg,#ffffff_0%,#e1eaef_100%)] text-[#5f7f8f] shadow-[0_24px_46px_rgba(118,126,133,0.18)] transition hover:scale-[1.02]"
-          aria-label="Create meetup"
-        >
-          <Plus className="h-6 w-6" />
-        </Link>
+        <div className="fixed inset-x-0 bottom-0 z-40 px-4 pb-[calc(env(safe-area-inset-bottom)+14px)] pt-3">
+          <div className="mx-auto max-w-2xl">
+            <Link
+              href={createHref}
+              className="flex min-h-[64px] items-center justify-between gap-4 rounded-[22px] border border-[#c8d4dc] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-5 py-3 text-[#24323f] shadow-[0_20px_44px_rgba(94,105,114,0.2),inset_0_1px_0_rgba(255,255,255,0.98)] backdrop-blur transition hover:-translate-y-0.5 hover:shadow-[0_24px_50px_rgba(94,105,114,0.22)]"
+              aria-label="Create meetup"
+            >
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[16px] border border-[#d6e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_100%)] text-[#60717c] shadow-[inset_0_1px_0_rgba(255,255,255,0.96)]">
+                  <CalendarPlus className="h-5 w-5" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7b8992]">
+                    Host a plan
+                  </span>
+                  <span className="block text-base font-black tracking-[-0.03em]">
+                    Create meetup
+                  </span>
+                </span>
+              </div>
+              <ArrowRight className="h-5 w-5 shrink-0 text-[#60717c]" />
+            </Link>
+          </div>
+        </div>
       </main>
     </>
   );

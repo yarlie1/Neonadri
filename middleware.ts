@@ -8,7 +8,6 @@ import { isAdultConfirmedUser } from "./lib/adultGate";
 
 const PROTECTED_PATHS = [
   "/dashboard",
-  "/write",
   "/account",
   "/reviews/write",
   "/matches",
@@ -17,6 +16,10 @@ const PROTECTED_PATHS = [
 const ADULT_CHECK_PATH = "/adult-check";
 
 function isProtectedPath(pathname: string) {
+  if (pathname.startsWith("/write/") && pathname !== "/write/location") {
+    return true;
+  }
+
   return PROTECTED_PATHS.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`)
   );
