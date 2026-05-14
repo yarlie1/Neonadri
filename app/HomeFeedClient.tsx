@@ -646,7 +646,7 @@ export default function HomeFeedClient({
         )}
         </div>
 
-        <div className="fixed inset-x-0 bottom-0 z-40 px-4 pb-[calc(env(safe-area-inset-bottom)+14px)] pt-3">
+        <div className="fixed inset-x-0 bottom-0 z-40 px-4 pb-[env(safe-area-inset-bottom)] pt-3">
           <div className="mx-auto max-w-2xl">
             <Link
               href={createHref}
