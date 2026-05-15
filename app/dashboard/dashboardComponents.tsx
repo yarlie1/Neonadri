@@ -1,12 +1,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { MeetupFeedCard } from "../homeComponents";
 import {
   Activity,
   Book,
   BookOpen,
   Cake,
   Camera,
+  Clock3,
+  Coins,
   Coffee,
   CookingPot,
   Dice5,
@@ -20,6 +21,7 @@ import {
   Smile,
   Target,
   Utensils,
+  UserRound,
 } from "lucide-react";
 import { formatMeetingTime } from "../../lib/meetingTime";
 import { getPublicLocationLabel } from "../../lib/locationPrivacy";
@@ -125,10 +127,10 @@ export function getPurposeIcon(purpose: string | null) {
 
 export function formatDuration(minutes: number | null) {
   if (!minutes) return "";
-  if (minutes === 60) return "1H";
-  if (minutes === 90) return "1.5H";
-  if (minutes === 120) return "2H";
-  return `${minutes}m`;
+  const hours = minutes / 60;
+  if (Number.isInteger(hours)) return `${hours}H`;
+  if (minutes % 60 === 30) return `${Math.floor(hours)}.5H`;
+  return `${minutes}M`;
 }
 
 export function getStatusBadgeClass(status: string) {
@@ -317,19 +319,31 @@ export function CompactActionButton({
   );
 }
 
-export function MiniPostPreview({
+export function DashboardCompactMeetupCard({
   post,
   timeZone,
-  hostLine,
+  title,
+  subtitle,
+  badgeLabel,
+  badgeClassName,
+  onClick,
+  className = "",
+  actions,
 }: {
   post?: PostRow;
   timeZone: string;
-  hostLine?: string;
+  title: string;
+  subtitle?: string;
+  badgeLabel: string;
+  badgeClassName: string;
+  onClick?: () => void;
+  className?: string;
+  actions?: ReactNode;
 }) {
   if (!post) {
     return (
-      <div className={`mt-3 ${SOFT_CARD_CLASS} px-4 py-3 text-sm text-[#78848c]`}>
-        Post details unavailable
+      <div className={`${SURFACE_CARD_CLASS} ${className} px-5 py-6 text-sm text-[#78848c]`}>
+        Details unavailable.
       </div>
     );
   }
@@ -338,26 +352,91 @@ export function MiniPostPreview({
   const durationLabel = formatDuration(post.duration_minutes);
   const postStatus = String(post.status || "open").toLowerCase();
   const isClosed = postStatus === "expired" || postStatus === "cancelled";
+  const timeLabel = post.meeting_time
+    ? formatMeetingTime(post.meeting_time, timeZone) || ""
+    : "";
+  const placeLabel =
+    post.place_name || getPublicLocationLabel(post.place_name, post.location) || "No place";
+  const guestLabel = `${post.target_gender || "Any"} / ${post.target_age_group || "Any"}`;
 
   return (
-    <MeetupFeedCard
-      postId={post.id}
-      href={null}
-      className="mt-3"
-      isExpired={isClosed}
-      hostName=""
-      hostMeta=""
-      hostLine={hostLine}
-      matchBadgeLabel={isClosed ? postStatus : "Open"}
-      matchBadgeClassName={getStatusBadgeClass(isClosed ? postStatus : "open")}
-      purposeIcon={getPurposeIcon(post.meeting_purpose)}
-      purposeName={post.meeting_purpose || "Meetup"}
-      durationLabel={durationLabel}
-      amountText={amount !== null ? `$${amount.toLocaleString()}` : ""}
-      whenText={post.meeting_time ? formatMeetingTime(post.meeting_time, timeZone) || "" : ""}
-      placeText={post.place_name || getPublicLocationLabel(post.place_name, post.location) || "No place"}
-      lookingForText={`${post.target_gender || "Any"} / ${post.target_age_group || "Any"}`}
-      distanceText=""
-    />
+    <div
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onClick={onClick}
+      onKeyDown={(event) => {
+        if (!onClick) return;
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onClick();
+        }
+      }}
+      className={`${SURFACE_CARD_CLASS} ${className} flex min-h-[250px] flex-col overflow-hidden p-4 text-left ${
+        onClick ? "cursor-pointer transition hover:-translate-y-0.5 hover:border-[#cfdae1]" : ""
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="line-clamp-2 text-lg font-black leading-tight tracking-[-0.04em] text-[#24323f]">
+            {title}
+          </div>
+          {subtitle ? (
+            <div className="mt-1 truncate text-xs font-medium text-[#7b8992]">{subtitle}</div>
+          ) : null}
+        </div>
+
+        <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${badgeClassName}`}>
+          {badgeLabel}
+        </span>
+      </div>
+
+      <div className="mt-4 grid gap-2 text-sm font-medium text-[#43525b]">
+        <div className={`${SOFT_CARD_CLASS} flex min-w-0 items-center gap-2 px-3 py-2`}>
+          {getPurposeIcon(post.meeting_purpose)}
+          <span className="min-w-0 truncate">{post.meeting_purpose || "Meetup"}</span>
+        </div>
+
+        <div className={`${SOFT_CARD_CLASS} flex min-w-0 items-center gap-2 px-3 py-2`}>
+          <MapPin className="h-4 w-4 shrink-0 text-[#82919a]" />
+          <span className="min-w-0 truncate">{placeLabel}</span>
+        </div>
+
+        <div className={`${SOFT_CARD_CLASS} flex min-w-0 items-center justify-between gap-2 px-3 py-2`}>
+          <span className="flex min-w-0 items-center gap-2">
+            <Clock3 className="h-4 w-4 shrink-0 text-[#82919a]" />
+            <span className="min-w-0 truncate">{timeLabel || "Time TBD"}</span>
+          </span>
+          {durationLabel ? (
+            <span className="shrink-0 rounded-full border border-[#d8e2e8] px-2 py-0.5 text-xs font-bold text-[#43525b]">
+              {durationLabel}
+            </span>
+          ) : null}
+        </div>
+
+        <div className={`${SOFT_CARD_CLASS} flex min-w-0 items-center justify-between gap-2 px-3 py-2`}>
+          <span className="flex min-w-0 items-center gap-2">
+            <UserRound className="h-4 w-4 shrink-0 text-[#82919a]" />
+            <span className="min-w-0 truncate">{guestLabel}</span>
+          </span>
+          {amount !== null ? (
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#d8e2e8] px-2 py-0.5 text-xs font-bold text-[#43525b]">
+              <Coins className="h-3.5 w-3.5" />
+              ${amount.toLocaleString()}
+            </span>
+          ) : null}
+        </div>
+      </div>
+
+      {actions ? (
+        <div
+          className="mt-auto flex flex-wrap gap-2 pt-4"
+          onClick={(event) => event.stopPropagation()}
+        >
+          {actions}
+        </div>
+      ) : null}
+
+      {isClosed ? <span className="sr-only">{postStatus}</span> : null}
+    </div>
   );
 }

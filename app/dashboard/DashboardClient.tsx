@@ -16,22 +16,15 @@ import {
 import type { MatchChatMetaRow, MatchRow, MatchRequestRow, PostRow } from "./page";
 import { getMeetingStatus, parseMeetingTime } from "../../lib/meetingTime";
 import {
-  getPublicLocationLabel,
-} from "../../lib/locationPrivacy";
-import { MeetupFeedCard } from "../homeComponents";
-import {
   CompactActionButton,
+  DashboardCompactMeetupCard,
   DashboardTabCard,
   FilterPill,
   getPostMatchState,
-  getPurposeIcon,
   getStatusBadgeClass,
-  MiniPostPreview,
-  parseBenefitAmount,
   SectionIntro,
   SOFT_CARD_CLASS,
   SURFACE_CARD_CLASS,
-  formatDuration,
 } from "./dashboardComponents";
 import {
   APP_BODY_TEXT_CLASS,
@@ -48,8 +41,8 @@ function PostsTabPanel({
   filteredPosts,
   matchSummaryMap,
   currentUserMeta,
+  userTimeZone,
   getPostLifecycleStatus,
-  formatTime,
   openPostDetail,
 }: {
   filteredPosts: PostRow[];
@@ -58,8 +51,8 @@ function PostsTabPanel({
     { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
   >;
   currentUserMeta: string;
+  userTimeZone: string;
   getPostLifecycleStatus: (post: PostRow | null | undefined) => "Upcoming" | "Expired" | "Cancelled";
-  formatTime: (meetingTime: string | null) => string;
   openPostDetail: (postId: number) => void;
 }) {
   return (
@@ -69,35 +62,18 @@ function PostsTabPanel({
           getPostLifecycleStatus(post),
           matchSummaryMap[post.id]
         );
-        const amount = parseBenefitAmount(post.benefit_amount);
-        const durationLabel = formatDuration(post.duration_minutes);
-        const isExpired = postStatus === "Expired" || postStatus === "Cancelled";
+        const pendingCount = matchSummaryMap[post.id]?.pendingRequestCount || 0;
 
         return (
-          <MeetupFeedCard
+          <DashboardCompactMeetupCard
             key={post.id}
-            postId={post.id}
-            href={null}
+            post={post}
+            timeZone={userTimeZone}
+            title={post.meeting_purpose || "Meetup"}
+            subtitle={`Hosted by you${currentUserMeta ? ` / ${currentUserMeta}` : ""}${pendingCount ? ` / ${pendingCount} pending` : ""}`}
+            badgeLabel={postStatus}
+            badgeClassName={getStatusBadgeClass(postStatus)}
             onClick={() => openPostDetail(post.id)}
-            isExpired={isExpired}
-            hostName="you"
-            hostMeta={currentUserMeta}
-            matchBadgeLabel={postStatus}
-            matchBadgeClassName={getStatusBadgeClass(postStatus)}
-            purposeIcon={getPurposeIcon(post.meeting_purpose)}
-            purposeName={post.meeting_purpose || "Meetup"}
-            durationLabel={durationLabel}
-            amountText={amount !== null ? `$${amount.toLocaleString()}` : ""}
-            whenText={post.meeting_time ? formatTime(post.meeting_time) : ""}
-            placeText={
-              post.place_name ||
-              getPublicLocationLabel(post.place_name, post.location) ||
-              "No place"
-            }
-            lookingForText={`${post.target_gender || "Any"} / ${post.target_age_group || "Any"}`}
-            distanceText=""
-            activityLabel="Requests"
-            activityText={`${matchSummaryMap[post.id]?.pendingRequestCount || 0} pending`}
           />
         );
       })}
@@ -218,25 +194,15 @@ function RecentChatsPanel({
 function ReceivedTabPanel({
   receivedItems,
   profileMap,
-  currentUserMeta,
   postMap,
   userTimeZone,
-  processingRequestId,
-  processingRequestAction,
-  updateRequestStatus,
   openPostDetail,
-  stopCardClick,
 }: {
   receivedItems: MatchRequestRow[];
   profileMap: Record<string, string>;
-  currentUserMeta: string;
   postMap: Record<number, PostRow>;
   userTimeZone: string;
-  processingRequestId: number | null;
-  processingRequestAction: "accepted" | "rejected" | null;
-  updateRequestStatus: (requestId: number, nextStatus: "accepted" | "rejected") => Promise<void>;
   openPostDetail: (postId: number) => void;
-  stopCardClick: (event: React.MouseEvent<HTMLElement>) => void;
 }) {
   return (
     <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
@@ -245,49 +211,27 @@ function ReceivedTabPanel({
         const relatedPost = postMap[item.post_id];
         const isCancelled =
           String(relatedPost?.status || "open").toLowerCase() === "cancelled";
-        const statusLine =
+        const title =
           isCancelled
-            ? "This meetup was cancelled."
+            ? "Meetup cancelled"
             : item.status === "pending"
-            ? `${requesterName} asked to join this meetup.`
+            ? `${requesterName} wants to join`
             : item.status === "accepted"
-            ? `You accepted ${requesterName}'s request.`
-            : `You declined ${requesterName}'s request.`;
+            ? `Accepted ${requesterName}`
+            : `Declined ${requesterName}`;
+        const badgeLabel = isCancelled ? "cancelled" : item.status;
 
         return (
-          <div
+          <DashboardCompactMeetupCard
             key={item.id}
+            post={relatedPost}
+            timeZone={userTimeZone}
+            title={title}
+            subtitle={new Date(item.created_at).toLocaleString()}
+            badgeLabel={badgeLabel}
+            badgeClassName={getStatusBadgeClass(badgeLabel)}
             onClick={() => openPostDetail(item.post_id)}
-            className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7f8990]">
-                  Incoming request
-                </div>
-                <div className="mt-2 text-lg font-semibold text-[#24323f]">{statusLine}</div>
-                <div className="mt-1 text-sm text-[#66727a]">From {requesterName}</div>
-                <div className="mt-1 text-sm text-[#7f8a92]">
-                  {new Date(item.created_at).toLocaleString()}
-                </div>
-              </div>
-
-              <span
-                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
-                  isCancelled ? "cancelled" : item.status
-                )}`}
-              >
-                {isCancelled ? "cancelled" : item.status}
-              </span>
-            </div>
-
-            <MiniPostPreview
-              post={postMap[item.post_id]}
-              timeZone={userTimeZone}
-              hostLine={`Hosted by you${currentUserMeta ? ` | ${currentUserMeta}` : ""}`}
-            />
-
-          </div>
+          />
         );
       })}
 
@@ -303,14 +247,12 @@ function ReceivedTabPanel({
 function SentTabPanel({
   requestsSent,
   profileMap,
-  profileMetaMap,
   postMap,
   userTimeZone,
   openPostDetail,
 }: {
   requestsSent: MatchRequestRow[];
   profileMap: Record<string, string>;
-  profileMetaMap: Record<string, string>;
   postMap: Record<number, PostRow>;
   userTimeZone: string;
   openPostDetail: (postId: number) => void;
@@ -319,7 +261,6 @@ function SentTabPanel({
     <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
       {requestsSent.map((item) => {
         const hostName = profileMap[item.post_owner_user_id] || "Unknown";
-        const hostMeta = profileMetaMap[item.post_owner_user_id] || "";
         const relatedPost = postMap[item.post_id];
         const isCancelled =
           String(relatedPost?.status || "open").toLowerCase() === "cancelled";
@@ -329,60 +270,33 @@ function SentTabPanel({
           getMeetingStatus(relatedPost?.meeting_time || null, userTimeZone) === "Upcoming";
         const acceptedMessage =
           !isCancelled && item.status === "accepted"
-            ? `${hostName} accepted your request.`
+            ? `Accepted by ${hostName}`
             : null;
-        const statusMessage =
+        const title =
           isCancelled
-            ? `${hostName} cancelled this meetup.`
+            ? `${hostName} cancelled`
             : item.status === "rejected"
-            ? `${hostName} closed this request.`
+            ? `Declined by ${hostName}`
+            : acceptedMessage
+            ? acceptedMessage
             : `Sent to ${hostName}`;
+        const badgeLabel = isCancelled
+          ? "cancelled"
+          : isUpcomingAccepted
+          ? "upcoming accepted"
+          : item.status;
 
         return (
-          <div
+          <DashboardCompactMeetupCard
             key={item.id}
+            post={relatedPost}
+            timeZone={userTimeZone}
+            title={title}
+            subtitle={new Date(item.created_at).toLocaleString()}
+            badgeLabel={badgeLabel}
+            badgeClassName={getStatusBadgeClass(isCancelled ? "cancelled" : item.status)}
             onClick={() => openPostDetail(item.post_id)}
-            className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7f8990]">
-                  Outgoing request
-                </div>
-                <div className="mt-2 text-lg font-semibold text-[#24323f]">
-                  You asked to join this meetup.
-                </div>
-                {acceptedMessage ? (
-                  <div className="mt-1 text-lg font-semibold text-[#24323f]">
-                    {acceptedMessage}
-                  </div>
-                ) : (
-                  <div className="mt-1 text-sm text-[#66727a]">{statusMessage}</div>
-                )}
-                <div className="mt-1 text-sm text-[#7f8a92]">
-                  {new Date(item.created_at).toLocaleString()}
-                </div>
-              </div>
-
-              <span
-                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
-                  isCancelled ? "cancelled" : item.status
-                )}`}
-              >
-                {isCancelled
-                  ? "cancelled"
-                  : isUpcomingAccepted
-                  ? "upcoming accepted"
-                  : item.status}
-              </span>
-            </div>
-
-            <MiniPostPreview
-              post={postMap[item.post_id]}
-              timeZone={userTimeZone}
-              hostLine={`Hosted by ${hostName}${hostMeta ? ` | ${hostMeta}` : ""}`}
-            />
-          </div>
+          />
         );
       })}
 
@@ -399,7 +313,6 @@ function MatchesTabPanel({
   filteredMatches,
   userId,
   profileMap,
-  profileMetaMap,
   postMap,
   reviewedMatchIds,
   cancellationFeedbackMatchIds,
@@ -407,12 +320,10 @@ function MatchesTabPanel({
   userTimeZone,
   getPostLifecycleStatus,
   openPostDetail,
-  stopCardClick,
 }: {
   filteredMatches: MatchRow[];
   userId: string;
   profileMap: Record<string, string>;
-  profileMetaMap: Record<string, string>;
   postMap: Record<number, PostRow>;
   reviewedMatchIds: number[];
   cancellationFeedbackMatchIds: number[];
@@ -420,7 +331,6 @@ function MatchesTabPanel({
   userTimeZone: string;
   getPostLifecycleStatus: (post: PostRow | null | undefined) => "Upcoming" | "Expired" | "Cancelled";
   openPostDetail: (postId: number) => void;
-  stopCardClick: (event: React.MouseEvent<HTMLElement>) => void;
 }) {
   return (
     <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
@@ -428,7 +338,7 @@ function MatchesTabPanel({
         const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
         const post = postMap[item.post_id];
         const hostName = post?.user_id ? profileMap[post.user_id] || "Unknown" : "Unknown";
-        const hostMeta = post?.user_id ? profileMetaMap[post.user_id] || "" : "";
+        const otherUserName = profileMap[otherUserId] || "Unknown";
         const alreadyReviewed = reviewedMatchIds.includes(item.id);
         const alreadyLeftCancellationFeedback =
           cancellationFeedbackMatchIds.includes(item.id);
@@ -449,93 +359,71 @@ function MatchesTabPanel({
           chatMeta?.last_chat_activity_at &&
             (!viewerLastSeen || chatMeta.last_chat_activity_at > viewerLastSeen)
         );
+        const badgeLabel =
+          meetupStatus === "upcoming"
+            ? "Matched"
+            : meetupStatus === "cancelled"
+            ? "Cancelled"
+            : "Expired";
+        const title =
+          meetupStatus === "cancelled"
+            ? `Cancelled by ${hostName}`
+            : `Matched with ${otherUserName}`;
 
         return (
-          <div
+          <DashboardCompactMeetupCard
             key={item.id}
+            post={post}
+            timeZone={userTimeZone}
+            title={title}
+            subtitle={`Matched ${new Date(item.created_at).toLocaleString()}`}
+            badgeLabel={badgeLabel}
+            badgeClassName={getStatusBadgeClass(meetupStatus)}
             onClick={() => openPostDetail(item.post_id)}
-            className={`cursor-pointer ${SURFACE_CARD_CLASS} p-5 sm:p-6`}
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7f8990]">
-                  Match status
-                </div>
-                <div className="mt-2 flex items-center gap-2 text-lg font-semibold text-[#24323f]">
-                  <HeartHandshake className="h-5 w-5 text-[#738690]" />
-                  <span>{meetupStatus === "cancelled" ? "Match cancelled" : "Match confirmed"}</span>
-                </div>
-                <div className="mt-1 text-sm text-[#66727a]">
-                  {meetupStatus === "cancelled"
-                    ? `${hostName} cancelled this meetup.`
-                    : `You are matched with ${profileMap[otherUserId] || "Unknown"}.`}
-                </div>
-                <div className="mt-1 text-sm text-[#7f8a92]">
-                  Matched on {new Date(item.created_at).toLocaleString()}
-                </div>
-              </div>
-
-              <span
-                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeClass(
-                  meetupStatus
-                )}`}
-              >
-                {meetupStatus === "upcoming"
-                  ? "Matched"
-                  : meetupStatus === "cancelled"
-                  ? "Cancelled"
-                  : "Expired"}
-              </span>
-            </div>
-
-            <MiniPostPreview
-              post={post}
-              timeZone={userTimeZone}
-              hostLine={`Hosted by ${hostName}${hostMeta ? ` | ${hostMeta}` : ""}`}
-            />
-
-            <div className="mt-5 flex flex-wrap gap-2" onClick={stopCardClick}>
-              <CompactActionButton href={`/matches/${item.id}/chat`}>
-                <HeartHandshake className="h-3.5 w-3.5" />
-                {meetupStatus === "cancelled" ? "Read Chat" : "Open Chat"}
-                {meetupStatus !== "cancelled" && hasNewMessage ? (
-                  <span className="inline-flex h-2.5 w-2.5 rounded-full bg-[#b56c57]" />
-                ) : null}
-              </CompactActionButton>
-
-              {canLeaveReview ? (
-                <CompactActionButton href={`/reviews/write/${item.id}`}>
-                  <Star className="h-3.5 w-3.5" />
-                  Leave Review
+            actions={
+              <>
+                <CompactActionButton href={`/matches/${item.id}/chat`}>
+                  <HeartHandshake className="h-3.5 w-3.5" />
+                  {meetupStatus === "cancelled" ? "Read Chat" : "Open Chat"}
+                  {meetupStatus !== "cancelled" && hasNewMessage ? (
+                    <span className="inline-flex h-2.5 w-2.5 rounded-full bg-[#b56c57]" />
+                  ) : null}
                 </CompactActionButton>
-              ) : canLeaveCancellationFeedback ? (
-                <CompactActionButton href={`/cancellation-feedback/write/${item.id}`}>
-                  <Star className="h-3.5 w-3.5" />
-                  Leave Feedback
-                </CompactActionButton>
-              ) : alreadyLeftCancellationFeedback ? (
-                <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                  <Star className="h-3.5 w-3.5" />
-                  Feedback submitted
-                </div>
-              ) : meetupStatus === "cancelled" ? (
-                <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                  <Star className="h-3.5 w-3.5" />
-                  Cancellation recorded
-                </div>
-              ) : alreadyReviewed ? (
-                <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                  <Star className="h-3.5 w-3.5" />
-                  Review submitted
-                </div>
-              ) : (
-                <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                  <Star className="h-3.5 w-3.5" />
-                  Review after meetup
-                </div>
-              )}
-            </div>
-          </div>
+
+                {canLeaveReview ? (
+                  <CompactActionButton href={`/reviews/write/${item.id}`}>
+                    <Star className="h-3.5 w-3.5" />
+                    Leave Review
+                  </CompactActionButton>
+                ) : canLeaveCancellationFeedback ? (
+                  <CompactActionButton href={`/cancellation-feedback/write/${item.id}`}>
+                    <Star className="h-3.5 w-3.5" />
+                    Leave Feedback
+                  </CompactActionButton>
+                ) : alreadyLeftCancellationFeedback ? (
+                  <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                    <Star className="h-3.5 w-3.5" />
+                    Feedback submitted
+                  </div>
+                ) : meetupStatus === "cancelled" ? (
+                  <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                    <Star className="h-3.5 w-3.5" />
+                    Cancellation recorded
+                  </div>
+                ) : alreadyReviewed ? (
+                  <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                    <Star className="h-3.5 w-3.5" />
+                    Review submitted
+                  </div>
+                ) : (
+                  <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                    <Star className="h-3.5 w-3.5" />
+                    Review after meetup
+                  </div>
+                )}
+              </>
+            }
+          />
         );
       })}
 
@@ -619,10 +507,6 @@ export default function DashboardClient({
     setSentFilter,
     matchFilter,
     setMatchFilter,
-    processingRequestId,
-    setProcessingRequestId,
-    processingRequestAction,
-    setProcessingRequestAction,
     showMatchSuccess,
     showReviewSuccess,
     showCancellationFeedbackSuccess,
@@ -713,72 +597,9 @@ export default function DashboardClient({
     })
     .slice(0, 3);
 
-  const stopCardClick = (event: { stopPropagation: () => void }) => {
-    event.stopPropagation();
-  };
-
   const openPostDetail = (postId?: number) => {
     if (!postId) return;
     router.push(`/posts/${postId}`);
-  };
-
-  const updateRequestStatus = async (
-    requestId: number,
-    nextStatus: "accepted" | "rejected"
-  ) => {
-    if (processingRequestId !== null) return;
-
-    const targetRequest = receivedItems.find((item) => item.id === requestId);
-    if (!targetRequest) return;
-
-    setProcessingRequestId(requestId);
-    setProcessingRequestAction(nextStatus);
-
-    try {
-      const response = await fetch("/api/match-requests/respond", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          requestId,
-          action: nextStatus,
-        }),
-      });
-
-      const result = (await response.json()) as { ok?: boolean; error?: string };
-
-      if (!response.ok || !result?.ok) {
-        alert(result?.error || "Failed to update request");
-        return;
-      }
-
-      if (nextStatus === "accepted") {
-        setReceivedItems((prev) =>
-          prev.map((item) =>
-            item.post_id === targetRequest.post_id
-              ? { ...item, status: item.id === requestId ? "accepted" : "rejected" }
-              : item
-          )
-        );
-        router.replace("/dashboard?tab=matches&success=1");
-        router.refresh();
-        return;
-      }
-
-      setReceivedItems((prev) =>
-        prev.map((item) =>
-          item.id === requestId ? { ...item, status: "rejected" } : item
-        )
-      );
-      router.refresh();
-    } catch (error) {
-      console.error("Dashboard request action failed", error);
-      alert("Failed to update request");
-    } finally {
-      setProcessingRequestId(null);
-      setProcessingRequestAction(null);
-    }
   };
 
   useEffect(() => {
@@ -1150,26 +971,17 @@ export default function DashboardClient({
             <div className="mt-4 grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
               {upcomingMatchedMeetups.map((item) => {
                 const countdown = formatTimeUntil(item.post.meeting_time);
-                const durationLabel = formatDuration(item.post.duration_minutes);
 
                 return (
-                  <MeetupFeedCard
+                  <DashboardCompactMeetupCard
                     key={item.match.id}
-                    postId={item.post.id}
-                    isExpired={false}
-                    hostName=""
-                    hostMeta=""
-                    hostLine="Next confirmed plan"
-                    matchBadgeLabel="Matched"
-                    matchBadgeClassName={getStatusBadgeClass("matched")}
-                    purposeIcon={getPurposeIcon(item.post.meeting_purpose)}
-                    purposeName={item.post.meeting_purpose || "Meetup"}
-                    durationLabel={durationLabel || countdown || "Soon"}
-                    amountText=""
-                    whenText={item.post.meeting_time ? formatTime(item.post.meeting_time) : ""}
-                    placeText={item.post.place_name || item.post.location || "Selected place"}
-                    lookingForText={`${item.post.target_gender || "Any"} / ${item.post.target_age_group || "Any"}`}
-                    distanceText=""
+                    post={item.post}
+                    timeZone={userTimeZone}
+                    title={item.post.meeting_purpose || "Next confirmed plan"}
+                    subtitle={countdown || "Next confirmed plan"}
+                    badgeLabel="Matched"
+                    badgeClassName={getStatusBadgeClass("matched")}
+                    onClick={() => openPostDetail(item.post.id)}
                   />
                 );
               })}
@@ -1419,8 +1231,8 @@ export default function DashboardClient({
             filteredPosts={filteredPosts}
             matchSummaryMap={liveMatchSummaryMap}
             currentUserMeta={currentUserMeta}
+            userTimeZone={userTimeZone}
             getPostLifecycleStatus={getPostLifecycleStatus}
-            formatTime={formatTime}
             openPostDetail={openPostDetail}
           />
         )}
@@ -1429,14 +1241,9 @@ export default function DashboardClient({
           <ReceivedTabPanel
             receivedItems={filteredReceived}
             profileMap={liveProfileMap}
-            currentUserMeta={currentUserMeta}
             postMap={livePostMap}
             userTimeZone={userTimeZone}
-            processingRequestId={processingRequestId}
-            processingRequestAction={processingRequestAction}
-            updateRequestStatus={updateRequestStatus}
             openPostDetail={openPostDetail}
-            stopCardClick={stopCardClick}
           />
         )}
 
@@ -1444,7 +1251,6 @@ export default function DashboardClient({
           <SentTabPanel
             requestsSent={filteredSent}
             profileMap={liveProfileMap}
-            profileMetaMap={liveProfileMetaMap}
             postMap={livePostMap}
             userTimeZone={userTimeZone}
             openPostDetail={openPostDetail}
@@ -1456,7 +1262,6 @@ export default function DashboardClient({
             filteredMatches={filteredMatches}
             userId={userId}
             profileMap={liveProfileMap}
-            profileMetaMap={liveProfileMetaMap}
             postMap={livePostMap}
             reviewedMatchIds={reviewedMatchIds}
             cancellationFeedbackMatchIds={cancellationFeedbackMatchIds}
@@ -1464,7 +1269,6 @@ export default function DashboardClient({
             userTimeZone={userTimeZone}
             getPostLifecycleStatus={getPostLifecycleStatus}
             openPostDetail={openPostDetail}
-            stopCardClick={stopCardClick}
           />
         )}
       </div>
