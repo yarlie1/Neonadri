@@ -66,7 +66,8 @@ export default async function AccountPage() {
 
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
-      <div className="mx-auto max-w-4xl space-y-4">
+      <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)] lg:items-start">
+        <div className="space-y-4">
         <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
           <div className={APP_EYEBROW_CLASS}>Account</div>
           <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
@@ -109,7 +110,9 @@ export default async function AccountPage() {
             />
           </div>
         </section>
+        </div>
 
+        <div className="space-y-4 lg:sticky lg:top-28">
         {postingBetaRequired ? (
           <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
             <div className={APP_EYEBROW_CLASS}>Posting access</div>
@@ -201,6 +204,7 @@ export default async function AccountPage() {
             </Link>
           </div>
         </section>
+        </div>
       </div>
     </main>
   );

@@ -432,7 +432,7 @@ export default function HomeFeedClient({
 
         {highlightedPost && (
           <FeaturedMeetupCard
-            className="mx-auto h-full w-full max-w-2xl lg:mx-0 lg:max-w-none"
+            className="hidden h-full w-full lg:mx-0 lg:block lg:max-w-none"
             postId={highlightedPost.id}
             placeLabel={
               highlightedPost.place_name ||
