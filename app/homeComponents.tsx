@@ -401,18 +401,6 @@ export function HomeFilterRail({
             Reset
           </button>
           <FilterSelect
-            label="Status"
-            value={matchState}
-            options={optionize(matchStateOptions, { All: "Any status" })}
-            onChange={onMatchState}
-          />
-          <FilterSelect
-            label="Audience"
-            value={audience}
-            options={optionize(audienceOptions, { All: "All guests" })}
-            onChange={onAudience}
-          />
-          <FilterSelect
             label="Guest gender"
             value={gender}
             options={optionize(genderOptions, { All: "Guest gender" })}
@@ -425,10 +413,22 @@ export function HomeFilterRail({
             onChange={onAgeGroup}
           />
           <FilterSelect
+            label="Fits"
+            value={audience}
+            options={optionize(audienceOptions, { All: "All guests", "Fits me": "Fits me" })}
+            onChange={onAudience}
+          />
+          <FilterSelect
             label="Distance"
             value={distance}
             options={distanceSelectOptions}
             onChange={onDistance}
+          />
+          <FilterSelect
+            label="Status"
+            value={matchState}
+            options={optionize(matchStateOptions, { All: "Any status" })}
+            onChange={onMatchState}
           />
           <FilterSelect
             label="Sort"

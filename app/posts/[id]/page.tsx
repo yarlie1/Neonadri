@@ -466,43 +466,47 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
-      <div className="mx-auto max-w-3xl space-y-5">
-        <UpcomingMeetupCard
-          isPostMatched={isPostMatched}
-          isViewerParticipant={isViewerParticipant}
-          meetupFinished={meetupFinished}
-          isCancelled={isCancelled}
-          purposeTheme={purposeTheme}
-          post={post}
-          meetupTimeLabel={meetupTimeLabel}
-          meetupCountdown={meetupCountdown}
-        />
-
-        <MeetupOverviewCard
-          isPostMatched={isPostMatched}
-          isCancelled={isCancelled}
-          purposeTheme={purposeTheme}
-          post={post}
-          meetupDurationLabel={meetupDurationLabel}
-          benefitExplanation={benefitExplanation}
-          hostIdentityLabel={hostIdentityLabel}
-          targetLabel={targetLabel}
-          meetupTimeLabel={meetupTimeLabel}
-          mapUrl={mapUrl}
-          placeDisplay={placeDisplay}
-          locationDisplay={locationDisplay}
-          locationHeading={locationHeading}
-          locationPrivacyNote={locationPrivacyNote}
-          distanceNote={
-            <PostDistanceNote
-              latitude={post.latitude}
-              longitude={post.longitude}
-            />
-          }
-        />
-
-        <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+      <div className="mx-auto max-w-7xl space-y-5">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)] lg:items-start">
           <div className="space-y-5">
+            <ScrollReveal>
+              <MeetupOverviewCard
+                isPostMatched={isPostMatched}
+                isCancelled={isCancelled}
+                purposeTheme={purposeTheme}
+                post={post}
+                meetupDurationLabel={meetupDurationLabel}
+                benefitExplanation={benefitExplanation}
+                hostIdentityLabel={hostIdentityLabel}
+                targetLabel={targetLabel}
+                meetupTimeLabel={meetupTimeLabel}
+                mapUrl={mapUrl}
+                placeDisplay={placeDisplay}
+                locationDisplay={locationDisplay}
+                locationHeading={locationHeading}
+                locationPrivacyNote={locationPrivacyNote}
+                distanceNote={
+                  <PostDistanceNote
+                    latitude={post.latitude}
+                    longitude={post.longitude}
+                  />
+                }
+              />
+            </ScrollReveal>
+          </div>
+
+          <div className="space-y-5 lg:sticky lg:top-36">
+            <UpcomingMeetupCard
+              isPostMatched={isPostMatched}
+              isViewerParticipant={isViewerParticipant}
+              meetupFinished={meetupFinished}
+              isCancelled={isCancelled}
+              purposeTheme={purposeTheme}
+              post={post}
+              meetupTimeLabel={meetupTimeLabel}
+              meetupCountdown={meetupCountdown}
+            />
+
             <ScrollReveal>
               <ProfileShowcaseCard
                 title="Host"
@@ -526,9 +530,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 />
               </ScrollReveal>
             )}
-          </div>
 
-          <div className="space-y-5 lg:sticky lg:top-36">
             {user && user.id === post.user_id ? (
               <ScrollReveal>
                 <OwnerMatchPanel

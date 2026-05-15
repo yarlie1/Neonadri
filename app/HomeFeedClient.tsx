@@ -616,11 +616,11 @@ export default function HomeFeedClient({
         )}
         </div>
 
-        <div className="fixed inset-x-0 bottom-0 z-40 px-4 pb-[env(safe-area-inset-bottom)] pt-3">
-          <div className="mx-auto max-w-2xl">
+        <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-40 sm:right-6">
+          <div className="w-[min(23rem,calc(100vw-2rem))]">
             <Link
               href={createHref}
-              className="flex min-h-[64px] items-center justify-between gap-4 rounded-[22px] border border-[#c8d4dc] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-5 py-3 text-[#24323f] shadow-[0_20px_44px_rgba(94,105,114,0.2),inset_0_1px_0_rgba(255,255,255,0.98)] backdrop-blur transition hover:-translate-y-0.5 hover:shadow-[0_24px_50px_rgba(94,105,114,0.22)]"
+              className="flex min-h-[58px] items-center justify-between gap-4 rounded-[22px] border border-[#c8d4dc] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-4 py-2.5 text-[#24323f] shadow-[0_20px_44px_rgba(94,105,114,0.2),inset_0_1px_0_rgba(255,255,255,0.98)] backdrop-blur transition hover:-translate-y-0.5 hover:shadow-[0_24px_50px_rgba(94,105,114,0.22)]"
               aria-label="Create meetup"
             >
               <div className="flex min-w-0 items-center gap-3">
