@@ -428,7 +428,7 @@ export default function TopNav({
   return (
     <header className="sticky top-0 z-50 border-b border-[#eef3f6] bg-[rgba(248,250,251,0.84)] backdrop-blur-xl">
       <div className="border-b border-[#eef3f6] bg-[linear-gradient(180deg,rgba(253,253,253,0.97),rgba(244,247,249,0.92))]">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"
