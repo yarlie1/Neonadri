@@ -24,7 +24,6 @@ import {
   APP_ROW_SURFACE_CLASS,
   APP_SOFT_CARD_CLASS,
   APP_SUBTLE_TEXT_CLASS,
-  APP_SURFACE_CARD_CLASS,
 } from "./designSystem";
 import type { DistanceUnit } from "./useDistanceUnit";
 
@@ -282,6 +281,168 @@ export function HomeFilterCard({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function FilterSelect({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: readonly { value: string; label: string }[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="relative inline-flex shrink-0 items-center">
+      <span className="sr-only">{label}</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-11 appearance-none rounded-full border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fa_100%)] pl-4 pr-10 text-sm font-semibold text-[#2f3f48] shadow-[0_10px_20px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.95)] outline-none transition hover:border-[#ccd8df] focus:border-[#aebdc6]"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-3 h-4 w-4 text-[#7c8a93]" />
+    </label>
+  );
+}
+
+export function HomeFilterRail({
+  matchState,
+  audience,
+  gender,
+  ageGroup,
+  distance,
+  distanceUnit,
+  sort,
+  matchStateOptions,
+  audienceOptions,
+  genderOptions,
+  ageGroupOptions,
+  distanceOptions,
+  sortOptions,
+  onMatchState,
+  onAudience,
+  onGender,
+  onAgeGroup,
+  onDistance,
+  onSort,
+  onReset,
+  locationStatus,
+}: {
+  matchState: string;
+  audience: string;
+  gender: string;
+  ageGroup: string;
+  distance: string;
+  distanceUnit: DistanceUnit;
+  sort: string;
+  matchStateOptions: string[];
+  audienceOptions: readonly string[];
+  genderOptions: string[];
+  ageGroupOptions: string[];
+  distanceOptions: readonly { value: string; label: string }[];
+  sortOptions: readonly { value: string; label: string }[];
+  onMatchState: (value: string) => void;
+  onAudience: (value: string) => void;
+  onGender: (value: string) => void;
+  onAgeGroup: (value: string) => void;
+  onDistance: (value: string) => void;
+  onSort: (value: string) => void;
+  onReset: () => void;
+  locationStatus: "idle" | "loading" | "granted" | "denied" | "unavailable";
+}) {
+  const optionize = (
+    options: readonly string[],
+    labels: Partial<Record<string, string>> = {}
+  ) => options.map((option) => ({ value: option, label: labels[option] || option }));
+  const distanceSelectOptions = distanceOptions.map((option) => ({
+    value: option.value,
+    label:
+      option.value === "all"
+        ? "Distance"
+        : getDistanceOptionLabel(
+            option.value as "nearby" | "within_5mi" | "within_10mi" | "within_20mi",
+            distanceUnit
+          ),
+  }));
+
+  const locationMessage =
+    sort === "distance" || distance !== "all"
+      ? locationStatus === "loading"
+        ? "Finding nearby meetups..."
+        : locationStatus === "denied"
+          ? "Location is off."
+          : locationStatus === "unavailable"
+            ? "Distance unavailable."
+            : locationStatus === "granted"
+              ? "Nearby ready."
+              : ""
+      : "";
+
+  return (
+    <div className="-mx-4 sm:mx-0">
+      <div className="overflow-x-auto border-y border-[#dfe7ec]/80 px-4 py-3 [scrollbar-width:none] sm:rounded-[24px] sm:border sm:bg-[rgba(255,255,255,0.42)] sm:px-4 sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] [&::-webkit-scrollbar]:hidden">
+        <div className="flex min-w-max items-center gap-2.5">
+          <button
+            type="button"
+            onClick={onReset}
+            className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-bold text-[#6f65d8] transition hover:bg-white/70"
+          >
+            <RotateCcw className="h-4 w-4" />
+            Reset
+          </button>
+          <FilterSelect
+            label="Status"
+            value={matchState}
+            options={optionize(matchStateOptions, { All: "Any status" })}
+            onChange={onMatchState}
+          />
+          <FilterSelect
+            label="Audience"
+            value={audience}
+            options={optionize(audienceOptions, { All: "All guests" })}
+            onChange={onAudience}
+          />
+          <FilterSelect
+            label="Guest gender"
+            value={gender}
+            options={optionize(genderOptions, { All: "Guest gender" })}
+            onChange={onGender}
+          />
+          <FilterSelect
+            label="Guest age"
+            value={ageGroup}
+            options={optionize(ageGroupOptions, { All: "Guest age" })}
+            onChange={onAgeGroup}
+          />
+          <FilterSelect
+            label="Distance"
+            value={distance}
+            options={distanceSelectOptions}
+            onChange={onDistance}
+          />
+          <FilterSelect
+            label="Sort"
+            value={sort}
+            options={sortOptions}
+            onChange={onSort}
+          />
+          {locationMessage ? (
+            <span className={`shrink-0 px-2 text-xs font-medium ${APP_SUBTLE_TEXT_CLASS}`}>
+              {locationMessage}
+            </span>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }

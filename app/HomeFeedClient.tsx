@@ -12,12 +12,11 @@ import {
 import { ArrowRight, CalendarPlus, Sparkles } from "lucide-react";
 import {
   FeaturedMeetupCard,
-  HomeFilterCard,
+  HomeFilterRail,
   HomePurposeRail,
   MeetupFeedCard,
 } from "./homeComponents";
 import {
-  FilterSummaryText,
   formatDistanceKm,
   formatDuration,
   getMatchBadge,
@@ -30,7 +29,6 @@ import {
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_PRIMARY_CLASS,
-  APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
   APP_INNER_PANEL_CLASS,
   APP_PAGE_BG_CLASS,
@@ -217,14 +215,8 @@ export default function HomeFeedClient({
     setDistance,
     sort,
     setSort,
-    isOpen,
-    setIsOpen,
-    isFilterPinned,
-    stickyTop,
-    filterRef,
     userLocation,
     locationStatus,
-    applyAndClose,
     applyAudience,
     resetAll,
   } = useHomeFeedFilters(viewerPreference);
@@ -369,7 +361,8 @@ export default function HomeFeedClient({
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.62),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.28),transparent_20%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.16),transparent_32%)]" />
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.09)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.09)_1px,transparent_1px)] bg-[size:22px_22px] opacity-10" />
         <div className="relative z-10 mx-auto max-w-7xl space-y-4 pb-28 sm:space-y-5 sm:pb-32">
-        <section className={`relative mx-auto max-w-2xl overflow-hidden px-5 py-5 text-[#24323f] sm:px-7 sm:py-7 lg:max-w-none ${HOME_WHITE_SURFACE_CLASS}`}>
+        <div className={`grid gap-4 lg:items-stretch ${highlightedPost ? "lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]" : ""}`}>
+        <section className={`relative mx-auto h-full max-w-2xl overflow-hidden px-5 py-5 text-[#24323f] sm:px-7 sm:py-7 lg:max-w-none ${HOME_WHITE_SURFACE_CLASS}`}>
           <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
           <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#ffffffb8] blur-3xl" />
 
@@ -437,6 +430,35 @@ export default function HomeFeedClient({
           </div>
         </section>
 
+        {highlightedPost && (
+          <FeaturedMeetupCard
+            className="mx-auto h-full max-w-2xl lg:max-w-none"
+            postId={highlightedPost.id}
+            placeLabel={
+              highlightedPost.place_name ||
+              getPublicLocationLabel(
+                highlightedPost.place_name,
+                highlightedPost.location
+              ) ||
+              "Meetup"
+            }
+            purposeIcon={getPurposeIcon(highlightedPost.meeting_purpose)}
+            purposeLabel={highlightedPost.meeting_purpose || "Meetup"}
+            purposeCopy={getPurposeLabel(highlightedPost.meeting_purpose)}
+            timeLabel={formatTime(highlightedPost.meeting_time) || "Time TBD"}
+            placeText={
+              highlightedPost.place_name ||
+              getPublicLocationLabel(
+                highlightedPost.place_name,
+                highlightedPost.location
+              ) ||
+              "Location TBD"
+            }
+            targetText={`${highlightedPost.target_gender || "Any"} / ${highlightedPost.target_age_group || "Any"}`}
+          />
+        )}
+        </div>
+
         <section className={`mx-auto max-w-2xl px-4 py-4 sm:px-5 lg:max-w-none ${HOME_WHITE_SOFT_CLASS}`}>
           <div className="flex items-start gap-3">
             <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#6c7b84] shadow-[0_10px_18px_rgba(118,126,133,0.08)]">
@@ -474,94 +496,35 @@ export default function HomeFeedClient({
           ) : null}
         </section>
 
-        {highlightedPost && (
-          <FeaturedMeetupCard
-            className="mx-auto max-w-2xl lg:max-w-none"
-            postId={highlightedPost.id}
-            placeLabel={
-              highlightedPost.place_name ||
-              getPublicLocationLabel(
-                highlightedPost.place_name,
-                highlightedPost.location
-              ) ||
-              "Meetup"
-            }
-            purposeIcon={getPurposeIcon(highlightedPost.meeting_purpose)}
-            purposeLabel={highlightedPost.meeting_purpose || "Meetup"}
-            purposeCopy={getPurposeLabel(highlightedPost.meeting_purpose)}
-            timeLabel={formatTime(highlightedPost.meeting_time) || "Time TBD"}
-            placeText={
-              highlightedPost.place_name ||
-              getPublicLocationLabel(
-                highlightedPost.place_name,
-                highlightedPost.location
-              ) ||
-              "Location TBD"
-            }
-            targetText={`${highlightedPost.target_gender || "Any"} / ${highlightedPost.target_age_group || "Any"}`}
-          />
-        )}
-
-        <div
-          ref={filterRef}
-          className="sticky z-20 mx-auto max-w-2xl lg:max-w-none"
-          style={{ top: `${stickyTop}px` }}
-        >
-          <div>
-            <HomeFilterCard
-              isPinned={isFilterPinned}
-              isOpen={isOpen}
-              onToggle={() => setIsOpen((v) => !v)}
-              summaryText={
-                <FilterSummaryText
-                  matchState={matchState}
-                  audience={audience}
-                  purpose={purpose}
-                  gender={gender}
-                  ageGroup={ageGroup}
-                  distance={distance}
-                  distanceUnit={distanceUnit}
-                  sort={sort}
-                />
-              }
-              matchState={matchState}
-              audience={audience}
-              gender={gender}
-              ageGroup={ageGroup}
-              distance={distance}
-              distanceUnit={distanceUnit}
-              sort={sort}
-              matchStateOptions={MATCH_STATE_OPTIONS}
-              audienceOptions={AUDIENCE_OPTIONS}
-              genderOptions={GENDER_OPTIONS}
-              ageGroupOptions={AGE_GROUP_OPTIONS}
-              distanceOptions={DISTANCE_OPTIONS}
-              distanceUnitOptions={["mi"]}
-              sortOptions={SORT_OPTIONS}
-              onMatchState={(option) => applyAndClose(() => setMatchState(option))}
-              onAudience={(option) => applyAndClose(() => applyAudience(option as (typeof AUDIENCE_OPTIONS)[number]))}
-              onGender={(option) =>
-                applyAndClose(() => {
-                  setAudience("All");
-                  setGender(option);
-                })
-              }
-              onAgeGroup={(option) =>
-                applyAndClose(() => {
-                  setAudience("All");
-                  setAgeGroup(option);
-                })
-              }
-              onDistance={(option) =>
-                applyAndClose(() => setDistance(option as (typeof DISTANCE_OPTIONS)[number]["value"]))
-              }
-              onDistanceUnit={setDistanceUnit}
-              onSort={(option) => applyAndClose(() => setSort(option as SortValue))}
-              onReset={resetAll}
-              locationStatus={locationStatus}
-            />
-          </div>
-        </div>
+        <HomeFilterRail
+          matchState={matchState}
+          audience={audience}
+          gender={gender}
+          ageGroup={ageGroup}
+          distance={distance}
+          distanceUnit={distanceUnit}
+          sort={sort}
+          matchStateOptions={MATCH_STATE_OPTIONS}
+          audienceOptions={AUDIENCE_OPTIONS}
+          genderOptions={GENDER_OPTIONS}
+          ageGroupOptions={AGE_GROUP_OPTIONS}
+          distanceOptions={DISTANCE_OPTIONS}
+          sortOptions={SORT_OPTIONS}
+          onMatchState={setMatchState}
+          onAudience={(option) => applyAudience(option as (typeof AUDIENCE_OPTIONS)[number])}
+          onGender={(option) => {
+            setAudience("All");
+            setGender(option);
+          }}
+          onAgeGroup={(option) => {
+            setAudience("All");
+            setAgeGroup(option);
+          }}
+          onDistance={(option) => setDistance(option as (typeof DISTANCE_OPTIONS)[number]["value"])}
+          onSort={(option) => setSort(option as SortValue)}
+          onReset={resetAll}
+          locationStatus={locationStatus}
+        />
 
         <HomePurposeRail
           purpose={purpose}
