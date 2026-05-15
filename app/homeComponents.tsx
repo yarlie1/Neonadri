@@ -479,7 +479,7 @@ export function MeetupFeedCard({
         <div className="mt-2.5 grid gap-1.5">
           <div className={`flex min-h-[40px] items-center gap-2.5 px-3 py-1.5 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
             <MapPin className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
-            <span className="min-w-0 flex-1 break-words font-semibold text-[#24323f]">{placeText}</span>
+            <span className="min-w-0 flex-1 truncate font-semibold text-[#24323f]">{placeText}</span>
           </div>
 
           {whenText && (
