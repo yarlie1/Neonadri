@@ -533,7 +533,7 @@ export default function EditMeetupForm({
         </div>
 
         <h2 className={`mt-6 text-sm font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
-          Guest & Host Covered Cost
+          Guest & Host-Covered Cost
         </h2>
 
         <div className="mt-3 space-y-3">
