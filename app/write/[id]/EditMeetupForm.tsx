@@ -544,7 +544,7 @@ export default function EditMeetupForm({
               value={targetGender}
               onChange={(e) => setTargetGender(e.target.value)}
             >
-              <option value="">Select gender</option>
+              <option value="">Guest gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="Any">Any</option>
@@ -558,7 +558,7 @@ export default function EditMeetupForm({
               value={targetAgeGroup}
               onChange={(e) => setTargetAgeGroup(e.target.value)}
             >
-              <option value="">Select age</option>
+              <option value="">Guest age</option>
               <option value="20s">20s</option>
               <option value="30s">30s</option>
               <option value="40s">40s</option>
@@ -586,7 +586,7 @@ export default function EditMeetupForm({
           </div>
 
           <div className={`${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}>
-            Activity costs only. Never pay for attendance, time, or companionship.
+            The host who creates the meetup must cover the listed activity cost. Activity costs only. Never pay for attendance, time, or companionship.
           </div>
 
           {benefitAmount && (
