@@ -545,7 +545,7 @@ export default function WriteForm({ userId }: { userId: string | null }) {
         </div>
 
         <h2 className={`mt-6 text-sm font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
-          Guest & Host-Covered Cost
+          Guest
         </h2>
 
         <div className="mt-3 space-y-3">
@@ -578,7 +578,13 @@ export default function WriteForm({ userId }: { userId: string | null }) {
               <option value="Any">Any</option>
             </select>
           </div>
+        </div>
 
+        <h2 className={`mt-6 text-sm font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
+          Host-Covered Cost
+        </h2>
+
+        <div className="mt-3 space-y-3">
           <div className="relative">
             <Coins className="absolute left-4 top-4 h-4 w-4 text-[#71828c]" />
             <select
