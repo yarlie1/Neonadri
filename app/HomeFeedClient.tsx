@@ -351,8 +351,8 @@ export default function HomeFeedClient({
     [posts, matchSummaryMap, sort, userTimeZone]
   );
   const feedPosts = posts;
-  const heroStatClass = `${APP_INNER_PANEL_CLASS} px-3.5 py-3.5 sm:py-4`;
-  const heroChipClass = `${APP_PILL_INACTIVE_CLASS} rounded-[15px] px-3 py-1.5 text-[11px] font-medium shadow-[0_8px_16px_rgba(118,126,133,0.06)]`;
+  const heroStatClass = `${APP_INNER_PANEL_CLASS} px-3 py-2.5 sm:py-3`;
+  const heroChipClass = `${APP_PILL_INACTIVE_CLASS} rounded-[15px] px-3 py-1 text-[11px] font-medium shadow-[0_8px_16px_rgba(118,126,133,0.06)]`;
 
   return (
     <>
@@ -362,7 +362,7 @@ export default function HomeFeedClient({
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.09)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.09)_1px,transparent_1px)] bg-[size:22px_22px] opacity-10" />
         <div className="relative z-10 mx-auto max-w-7xl space-y-4 pb-28 sm:space-y-5 sm:pb-32">
         <div className="grid gap-4 lg:grid-cols-3 lg:items-stretch">
-        <section className={`relative mx-auto h-full w-full max-w-2xl overflow-hidden px-5 py-5 text-[#24323f] sm:px-7 sm:py-7 lg:mx-0 lg:max-w-none ${highlightedPost ? "lg:col-span-2" : "lg:col-span-3"} ${HOME_WHITE_SURFACE_CLASS}`}>
+        <section className={`relative mx-auto h-full w-full max-w-2xl overflow-hidden px-5 py-4 text-[#24323f] sm:px-7 sm:py-5 lg:mx-0 lg:max-w-none ${highlightedPost ? "lg:col-span-2" : "lg:col-span-3"} ${HOME_WHITE_SURFACE_CLASS}`}>
           <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
           <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#ffffffb8] blur-3xl" />
 
@@ -372,22 +372,22 @@ export default function HomeFeedClient({
               1:1 social meetups
             </div>
 
-            <h1 className={`mt-3 max-w-[18ch] text-[34px] font-bold leading-[0.98] text-[#223039] sm:mt-4 sm:text-[42px] ${instrumentSans.className}`}>
+            <h1 className={`mt-2 max-w-[18ch] text-[32px] font-bold leading-[0.98] text-[#223039] sm:mt-3 sm:text-[38px] ${instrumentSans.className}`}>
               Meet someone new,
               <br />
               no pressure.
             </h1>
 
-            <p className={`mt-3 max-w-xl text-[14px] sm:mt-4 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
+            <p className={`mt-2 max-w-xl text-[14px] sm:mt-3 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
               Browse nearby plans. Join when it feels right.
             </p>
 
-            <div className="mt-5 grid grid-cols-3 gap-2.5 sm:mt-7 sm:gap-3">
+            <div className="mt-4 grid grid-cols-3 gap-2.5 sm:mt-5 sm:gap-3">
               <div className={heroStatClass}>
                 <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
                   Plans
                 </div>
-                <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
+                <div className="mt-1 text-[26px] font-black tracking-[-0.05em] text-[#24323f]">
                   {upcomingCount}
                 </div>
                 <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Upcoming</div>
@@ -397,7 +397,7 @@ export default function HomeFeedClient({
                 <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
                   People
                 </div>
-                <div className="mt-1.5 text-[30px] font-black tracking-[-0.05em] text-[#24323f]">
+                <div className="mt-1 text-[26px] font-black tracking-[-0.05em] text-[#24323f]">
                   {hostCount}
                 </div>
                 <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Nearby hosts</div>
@@ -416,7 +416,7 @@ export default function HomeFeedClient({
               </div>
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-2 sm:mt-6 sm:gap-2.5">
+            <div className="mt-3 flex flex-wrap gap-2 sm:mt-4 sm:gap-2.5">
               <span className={heroChipClass}>
                 Not dating
               </span>

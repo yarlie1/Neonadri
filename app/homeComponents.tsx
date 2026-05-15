@@ -555,14 +555,14 @@ export function FeaturedMeetupCard({
 }) {
   return (
     <section className={`overflow-hidden rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] shadow-[0_24px_48px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur ${className}`}>
-      <div className="border-b border-[#e3e6e8] px-5 py-4 sm:py-5">
+      <div className="border-b border-[#e3e6e8] px-5 py-3 sm:py-4">
         <div className="flex items-center justify-between gap-3">
           <div>
             <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] ${APP_SUBTLE_TEXT_CLASS}`}>
               <Search className="h-3.5 w-3.5" />
               Featured moment
             </div>
-            <div className="mt-2 text-[28px] font-black tracking-[-0.05em] text-[#24323f]">
+            <div className="mt-1.5 text-[25px] font-black tracking-[-0.05em] text-[#24323f]">
               {placeLabel}
             </div>
           </div>
@@ -577,36 +577,36 @@ export function FeaturedMeetupCard({
         </div>
       </div>
 
-      <div className="grid gap-2.5 px-4 py-4 sm:px-5 sm:py-5">
-        <div className={`relative overflow-hidden px-4 py-3.5 text-[#24323f] sm:py-4 ${APP_INNER_PANEL_CLASS}`}>
-          <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+      <div className="grid gap-2 px-4 py-3 sm:px-5 sm:py-4">
+        <div className={`relative overflow-hidden px-4 py-3 text-[#24323f] ${APP_INNER_PANEL_CLASS}`}>
+          <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
             {purposeIcon}
             {purposeLabel}
           </div>
 
-          <div className="mt-3 text-[30px] font-black leading-[0.98] tracking-[-0.05em] sm:mt-4">
+          <div className="mt-2 text-[25px] font-black leading-[0.98] tracking-[-0.05em]">
             {purposeCopy}
           </div>
 
-          <div className={`mt-2.5 max-w-md sm:mt-3 ${APP_BODY_TEXT_CLASS}`}>
+          <div className={`mt-2 max-w-md text-sm ${APP_BODY_TEXT_CLASS}`}>
             A 1:1 social meetup with room to breathe.
           </div>
         </div>
 
-        <div className="grid gap-2.5">
-          <div className={`flex min-h-[44px] items-center gap-2.5 px-3 py-2 text-sm text-[#38434b] ${APP_ROW_SURFACE_CLASS}`}>
+        <div className="grid gap-2">
+          <div className={`flex min-h-[38px] items-center gap-2.5 px-3 py-1.5 text-sm text-[#38434b] ${APP_ROW_SURFACE_CLASS}`}>
             <Clock3 className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
             <span>{timeLabel}</span>
           </div>
 
-          <div className={`flex min-h-[44px] min-w-0 items-center gap-2.5 px-3 py-2 text-sm ${APP_ROW_SURFACE_CLASS}`}>
+          <div className={`flex min-h-[38px] min-w-0 items-center gap-2.5 px-3 py-1.5 text-sm ${APP_ROW_SURFACE_CLASS}`}>
             <MapPin className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
             <span className="min-w-0 flex-1 truncate font-semibold text-[#24323f]">
               {placeText}
             </span>
           </div>
 
-          <div className={`flex min-h-[44px] items-center gap-2.5 px-3 py-2 text-sm text-[#38434b] ${APP_ROW_SURFACE_CLASS}`}>
+          <div className={`flex min-h-[38px] items-center gap-2.5 px-3 py-1.5 text-sm text-[#38434b] ${APP_ROW_SURFACE_CLASS}`}>
             <Search className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
             <span className="truncate">{targetText}</span>
           </div>
