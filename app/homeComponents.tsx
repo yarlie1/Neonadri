@@ -295,7 +295,7 @@ export function HomePurposeRail({
 }) {
   return (
     <div className="relative -mx-4 sm:mx-0">
-      <div className="overflow-x-auto border-y border-[#dfe7ec]/80 px-4 py-3 [scrollbar-width:none] sm:border sm:bg-[rgba(255,255,255,0.34)] sm:px-5 sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] [&::-webkit-scrollbar]:hidden">
+      <div className="overflow-x-auto border-y border-[#dfe7ec]/80 px-4 py-3 [scrollbar-width:none] sm:border sm:bg-[rgba(255,255,255,0.34)] sm:px-5 sm:pb-4 sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] sm:[scrollbar-color:#cbd6dd_transparent] sm:[scrollbar-width:thin] [&::-webkit-scrollbar]:hidden sm:[&::-webkit-scrollbar]:block sm:[&::-webkit-scrollbar]:h-2 sm:[&::-webkit-scrollbar-thumb]:rounded-full sm:[&::-webkit-scrollbar-thumb]:bg-[#cbd6dd] sm:[&::-webkit-scrollbar-track]:bg-transparent">
         <div className="flex min-w-max items-stretch gap-6 sm:gap-8 lg:gap-10">
           {purposeOptions.map((option) => {
             const active = purpose === option;
