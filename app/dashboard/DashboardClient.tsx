@@ -63,7 +63,7 @@ function PostsTabPanel({
   openPostDetail: (postId: number) => void;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
       {filteredPosts.map((post) => {
         const postStatus = getPostMatchState(
           getPostLifecycleStatus(post),
@@ -103,7 +103,7 @@ function PostsTabPanel({
       })}
 
       {filteredPosts.length === 0 && (
-        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#78848c]`}>
+        <div className={`col-span-full ${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#78848c]`}>
           No meetups in this filter.
         </div>
       )}
@@ -239,7 +239,7 @@ function ReceivedTabPanel({
   stopCardClick: (event: React.MouseEvent<HTMLElement>) => void;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
       {receivedItems.map((item) => {
         const requesterName = profileMap[item.requester_user_id] || "Unknown";
         const relatedPost = postMap[item.post_id];
@@ -292,7 +292,7 @@ function ReceivedTabPanel({
       })}
 
       {receivedItems.length === 0 && (
-        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#7f8a92]`}>
+        <div className={`col-span-full ${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#7f8a92]`}>
           No requests received.
         </div>
       )}
@@ -316,7 +316,7 @@ function SentTabPanel({
   openPostDetail: (postId: number) => void;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
       {requestsSent.map((item) => {
         const hostName = profileMap[item.post_owner_user_id] || "Unknown";
         const hostMeta = profileMetaMap[item.post_owner_user_id] || "";
@@ -387,7 +387,7 @@ function SentTabPanel({
       })}
 
       {requestsSent.length === 0 && (
-        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#7f8a92]`}>
+        <div className={`col-span-full ${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#7f8a92]`}>
           No requests sent.
         </div>
       )}
@@ -423,7 +423,7 @@ function MatchesTabPanel({
   stopCardClick: (event: React.MouseEvent<HTMLElement>) => void;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
       {filteredMatches.map((item) => {
         const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
         const post = postMap[item.post_id];
@@ -540,7 +540,7 @@ function MatchesTabPanel({
       })}
 
       {filteredMatches.length === 0 && (
-        <div className={`${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#7f8a92]`}>
+        <div className={`col-span-full ${SURFACE_CARD_CLASS} px-6 py-10 text-center text-[#7f8a92]`}>
           No matches in this filter.
         </div>
       )}
@@ -1069,7 +1069,7 @@ export default function DashboardClient({
 
   return (
     <main className={`min-h-screen px-4 py-5 sm:py-6 ${APP_PAGE_BG_CLASS}`}>
-      <div className="mx-auto max-w-2xl space-y-4 sm:space-y-5">
+      <div className="mx-auto max-w-7xl space-y-4 sm:space-y-5">
         {showMatchSuccess && (
           <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#52616a] shadow-sm`}>
             Match created successfully.
@@ -1147,7 +1147,7 @@ export default function DashboardClient({
               </div>
             </div>
 
-            <div className="mt-4 space-y-3">
+            <div className="mt-4 grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
               {upcomingMatchedMeetups.map((item) => {
                 const countdown = formatTimeUntil(item.post.meeting_time);
                 const durationLabel = formatDuration(item.post.duration_minutes);
@@ -1181,7 +1181,7 @@ export default function DashboardClient({
 
         <div>
           <div className={`${APP_EYEBROW_CLASS} mb-3 px-1`}>Manage your meetup activity</div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <DashboardTabCard
             active={activeTab === "posts"}
             label="My Posts"

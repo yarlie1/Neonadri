@@ -616,22 +616,22 @@ export default function HomeFeedClient({
         )}
         </div>
 
-        <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-40 sm:right-6">
-          <div className="w-[min(23rem,calc(100vw-2rem))]">
+        <div className="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-4 z-40 sm:right-6">
+          <div className="w-[min(12.5rem,calc(100vw-2rem))]">
             <Link
               href={createHref}
-              className="flex min-h-[58px] items-center justify-between gap-4 rounded-[22px] border border-[#c8d4dc] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-4 py-2.5 text-[#24323f] shadow-[0_20px_44px_rgba(94,105,114,0.2),inset_0_1px_0_rgba(255,255,255,0.98)] backdrop-blur transition hover:-translate-y-0.5 hover:shadow-[0_24px_50px_rgba(94,105,114,0.22)]"
+              className="flex min-h-[56px] items-center justify-between gap-3 rounded-[22px] border border-[#c8d4dc] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-3 py-2.5 text-[#24323f] shadow-[0_20px_44px_rgba(94,105,114,0.2),inset_0_1px_0_rgba(255,255,255,0.98)] backdrop-blur transition hover:-translate-y-0.5 hover:shadow-[0_24px_50px_rgba(94,105,114,0.22)]"
               aria-label="Create meetup"
             >
               <div className="flex min-w-0 items-center gap-3">
-                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[16px] border border-[#d6e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_100%)] text-[#60717c] shadow-[inset_0_1px_0_rgba(255,255,255,0.96)]">
+                <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[15px] border border-[#d6e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_100%)] text-[#60717c] shadow-[inset_0_1px_0_rgba(255,255,255,0.96)]">
                   <CalendarPlus className="h-5 w-5" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7b8992]">
+                  <span className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-[#7b8992]">
                     Host a plan
                   </span>
-                  <span className="block text-base font-black tracking-[-0.03em]">
+                  <span className="block text-sm font-black tracking-[-0.03em]">
                     Create meetup
                   </span>
                 </span>

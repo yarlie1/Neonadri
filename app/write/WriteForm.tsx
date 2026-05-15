@@ -372,8 +372,8 @@ export default function WriteForm({ userId }: { userId: string | null }) {
 
   return (
     <main className={`min-h-screen overflow-x-hidden ${APP_PAGE_BG_CLASS} px-4 py-5`}>
-      <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)] lg:items-start">
-        <section className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-5 py-6 sm:px-6 sm:py-7 lg:col-start-2 lg:row-start-1 lg:sticky lg:top-28`}>
+      <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[minmax(280px,1fr)_minmax(0,2fr)] lg:items-start">
+        <section className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-5 py-6 sm:px-6 sm:py-7 lg:col-start-1 lg:row-start-1 lg:sticky lg:top-28`}>
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/42 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#cfd8de]/35 blur-2xl" />
           <div className="relative">
@@ -389,7 +389,7 @@ export default function WriteForm({ userId }: { userId: string | null }) {
           </div>
         </section>
 
-        <div className={`${APP_SURFACE_CARD_CLASS} p-4 sm:p-6 lg:col-start-1 lg:row-start-1`}>
+        <div className={`${APP_SURFACE_CARD_CLASS} p-4 sm:p-6 lg:col-start-2 lg:row-start-1`}>
         <div className="flex items-start gap-4">
           <div>
             <div className={APP_EYEBROW_CLASS}>
