@@ -13,6 +13,7 @@ import { ArrowRight, CalendarPlus, Sparkles } from "lucide-react";
 import {
   FeaturedMeetupCard,
   HomeFilterCard,
+  HomePurposeRail,
   MeetupFeedCard,
 } from "./homeComponents";
 import {
@@ -525,7 +526,6 @@ export default function HomeFeedClient({
               }
               matchState={matchState}
               audience={audience}
-              purpose={purpose}
               gender={gender}
               ageGroup={ageGroup}
               distance={distance}
@@ -533,7 +533,6 @@ export default function HomeFeedClient({
               sort={sort}
               matchStateOptions={MATCH_STATE_OPTIONS}
               audienceOptions={AUDIENCE_OPTIONS}
-              purposeOptions={PURPOSE_OPTIONS}
               genderOptions={GENDER_OPTIONS}
               ageGroupOptions={AGE_GROUP_OPTIONS}
               distanceOptions={DISTANCE_OPTIONS}
@@ -541,7 +540,6 @@ export default function HomeFeedClient({
               sortOptions={SORT_OPTIONS}
               onMatchState={(option) => applyAndClose(() => setMatchState(option))}
               onAudience={(option) => applyAndClose(() => applyAudience(option as (typeof AUDIENCE_OPTIONS)[number]))}
-              onPurpose={(option) => applyAndClose(() => setPurpose(option))}
               onGender={(option) =>
                 applyAndClose(() => {
                   setAudience("All");
@@ -564,6 +562,12 @@ export default function HomeFeedClient({
             />
           </div>
         </div>
+
+        <HomePurposeRail
+          purpose={purpose}
+          purposeOptions={PURPOSE_OPTIONS}
+          onPurpose={(option) => setPurpose(option)}
+        />
 
         <div className="flex items-center justify-between px-1 pt-1">
           <div>

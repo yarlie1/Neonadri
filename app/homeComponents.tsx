@@ -12,7 +12,7 @@ import {
   SlidersHorizontal,
   UserRound,
 } from "lucide-react";
-import { getDistanceOptionLabel, getPurposeLabel } from "./homeFeedHelpers";
+import { getDistanceOptionLabel, getPurposeIcon, getPurposeLabel } from "./homeFeedHelpers";
 import {
   APP_BODY_TEXT_CLASS,
   APP_BUTTON_SECONDARY_CLASS,
@@ -55,7 +55,6 @@ type HomeFilterCardProps = {
   summaryText: ReactNode;
   matchState: string;
   audience: string;
-  purpose: string;
   gender: string;
   ageGroup: string;
   distance: string;
@@ -63,7 +62,6 @@ type HomeFilterCardProps = {
   sort: string;
   matchStateOptions: string[];
   audienceOptions: readonly string[];
-  purposeOptions: string[];
   genderOptions: string[];
   ageGroupOptions: string[];
   distanceOptions: readonly { value: string; label: string }[];
@@ -71,7 +69,6 @@ type HomeFilterCardProps = {
   sortOptions: readonly { value: string; label: string }[];
   onMatchState: (value: string) => void;
   onAudience: (value: string) => void;
-  onPurpose: (value: string) => void;
   onGender: (value: string) => void;
   onAgeGroup: (value: string) => void;
   onDistance: (value: string) => void;
@@ -88,7 +85,6 @@ export function HomeFilterCard({
   summaryText,
   matchState,
   audience,
-  purpose,
   gender,
   ageGroup,
   distance,
@@ -96,7 +92,6 @@ export function HomeFilterCard({
   sort,
   matchStateOptions,
   audienceOptions,
-  purposeOptions,
   genderOptions,
   ageGroupOptions,
   distanceOptions,
@@ -104,7 +99,6 @@ export function HomeFilterCard({
   sortOptions,
   onMatchState,
   onAudience,
-  onPurpose,
   onGender,
   onAgeGroup,
   onDistance,
@@ -172,22 +166,6 @@ export function HomeFilterCard({
                   active={audience === option}
                   label={option}
                   onClick={() => onAudience(option)}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <div className={`mb-2 text-xs font-medium uppercase tracking-[0.08em] ${APP_SUBTLE_TEXT_CLASS}`}>
-              Purpose
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {purposeOptions.map((option) => (
-                <FilterPill
-                  key={option}
-                  active={purpose === option}
-                  label={option}
-                  onClick={() => onPurpose(option)}
                 />
               ))}
             </div>
@@ -302,6 +280,63 @@ export function HomeFilterCard({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+export function HomePurposeRail({
+  purpose,
+  purposeOptions,
+  onPurpose,
+}: {
+  purpose: string;
+  purposeOptions: string[];
+  onPurpose: (value: string) => void;
+}) {
+  return (
+    <div className="relative -mx-4 sm:mx-0">
+      <div className="overflow-x-auto border-y border-[#dfe7ec]/80 px-4 py-3 [scrollbar-width:none] sm:border sm:bg-[rgba(255,255,255,0.34)] sm:px-5 sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] [&::-webkit-scrollbar]:hidden">
+        <div className="flex min-w-max items-stretch gap-6 sm:gap-8 lg:gap-10">
+          {purposeOptions.map((option) => {
+            const active = purpose === option;
+            const icon =
+              option === "All" ? (
+                <Search className="h-5 w-5" />
+              ) : (
+                getPurposeIcon(option, "h-5 w-5")
+              );
+
+            return (
+              <button
+                key={option}
+                type="button"
+                onClick={() => onPurpose(option)}
+                className={`group relative flex w-[74px] shrink-0 flex-col items-center gap-2 px-1 pb-2 pt-1 text-center transition ${
+                  active ? "text-[#24323f]" : "text-[#78868f] hover:text-[#43505a]"
+                }`}
+              >
+                <span
+                  className={`inline-flex h-8 w-8 items-center justify-center rounded-[12px] border transition ${
+                    active
+                      ? "border-[#c5d0d8] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] shadow-[0_10px_18px_rgba(118,126,133,0.14)]"
+                      : "border-transparent bg-transparent"
+                  }`}
+                >
+                  {icon}
+                </span>
+                <span className="line-clamp-2 min-h-[28px] text-[11px] font-semibold leading-[1.15]">
+                  {option === "All" ? "All" : option}
+                </span>
+                <span
+                  className={`absolute bottom-0 left-2 right-2 h-[2px] rounded-full transition ${
+                    active ? "bg-[#24323f]" : "bg-transparent"
+                  }`}
+                />
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
