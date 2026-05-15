@@ -577,7 +577,7 @@ export function FeaturedMeetupCard({
         </div>
       </div>
 
-      <div className="grid gap-3 px-4 py-4 sm:grid-cols-[1.45fr_0.95fr] sm:px-5 sm:py-5">
+      <div className="grid gap-2.5 px-4 py-4 sm:px-5 sm:py-5">
         <div className={`relative overflow-hidden px-4 py-3.5 text-[#24323f] sm:py-4 ${APP_INNER_PANEL_CLASS}`}>
           <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
             {purposeIcon}
@@ -593,22 +593,22 @@ export function FeaturedMeetupCard({
           </div>
         </div>
 
-        <div className={`relative overflow-hidden space-y-2 px-4 py-3.5 text-[#38434b] sm:space-y-2.5 sm:py-4 ${APP_INNER_PANEL_CLASS}`}>
-          <div className="flex items-center gap-2 text-sm">
-            <Clock3 className={`h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
+        <div className="grid gap-2.5">
+          <div className={`flex min-h-[44px] items-center gap-2.5 px-3 py-2 text-sm text-[#38434b] ${APP_ROW_SURFACE_CLASS}`}>
+            <Clock3 className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
             <span>{timeLabel}</span>
           </div>
 
-          <div className="flex min-w-0 items-start gap-2 text-sm">
-            <MapPin className={`mt-0.5 h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
-            <span className="block min-w-0 flex-1 break-words font-semibold text-[#24323f] line-clamp-2">
+          <div className={`flex min-h-[44px] min-w-0 items-center gap-2.5 px-3 py-2 text-sm ${APP_ROW_SURFACE_CLASS}`}>
+            <MapPin className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
+            <span className="min-w-0 flex-1 truncate font-semibold text-[#24323f]">
               {placeText}
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-sm">
-            <Search className={`h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
-            <span>{targetText}</span>
+          <div className={`flex min-h-[44px] items-center gap-2.5 px-3 py-2 text-sm text-[#38434b] ${APP_ROW_SURFACE_CLASS}`}>
+            <Search className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
+            <span className="truncate">{targetText}</span>
           </div>
         </div>
       </div>
