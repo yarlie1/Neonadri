@@ -646,7 +646,7 @@ export default function HomeFeedClient({
           <div>
             <Link
               href={createHref}
-              className="flex min-h-[64px] w-full items-center justify-between gap-4 rounded-t-[24px] border border-b-0 border-[#c8d4dc] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-5 py-3 text-[#24323f] shadow-[0_-18px_42px_rgba(94,105,114,0.16),inset_0_1px_0_rgba(255,255,255,0.98)] backdrop-blur transition hover:bg-white"
+              className="flex min-h-[64px] w-full items-center justify-between gap-4 rounded-[24px] border border-[#c8d4dc] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-5 py-3 text-[#24323f] shadow-[0_-18px_42px_rgba(94,105,114,0.16),inset_0_1px_0_rgba(255,255,255,0.98)] backdrop-blur transition hover:bg-white"
               aria-label="Create meetup"
             >
               <div className="flex min-w-0 items-center gap-3">
