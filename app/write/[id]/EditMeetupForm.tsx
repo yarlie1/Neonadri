@@ -600,7 +600,7 @@ export default function EditMeetupForm({
               <span className="min-w-0 flex-1 leading-6">
                 I understand that{" "}
                 <span className="font-semibold text-[#24323f]">{benefitAmount}</span>{" "}
-                covers meetup costs only.
+                is only for direct activity costs.
               </span>
             </label>
           )}
