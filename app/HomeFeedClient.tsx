@@ -353,6 +353,29 @@ export default function HomeFeedClient({
   const feedPosts = posts;
   const heroStatClass = `${APP_INNER_PANEL_CLASS} px-3 py-2.5 sm:py-3`;
   const heroChipClass = `${APP_PILL_INACTIVE_CLASS} rounded-[15px] px-3 py-1 text-[11px] font-medium shadow-[0_8px_16px_rgba(118,126,133,0.06)]`;
+  const [footerOffset, setFooterOffset] = useState(0);
+
+  useEffect(() => {
+    const syncFooterOffset = () => {
+      const footer = document.querySelector("footer");
+      if (!footer) {
+        setFooterOffset(0);
+        return;
+      }
+
+      const footerTop = footer.getBoundingClientRect().top;
+      setFooterOffset(Math.max(0, window.innerHeight - footerTop));
+    };
+
+    syncFooterOffset();
+    window.addEventListener("scroll", syncFooterOffset, { passive: true });
+    window.addEventListener("resize", syncFooterOffset);
+
+    return () => {
+      window.removeEventListener("scroll", syncFooterOffset);
+      window.removeEventListener("resize", syncFooterOffset);
+    };
+  }, []);
 
   return (
     <>
@@ -616,11 +639,14 @@ export default function HomeFeedClient({
         )}
         </div>
 
-        <div className="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-4 z-40 sm:right-6">
-          <div className="w-[min(12.5rem,calc(100vw-2rem))]">
+        <div
+          className="fixed left-1/2 z-40 w-full max-w-7xl -translate-x-1/2 px-4 transition-[bottom] duration-150 sm:px-6"
+          style={{ bottom: `calc(${footerOffset}px + env(safe-area-inset-bottom))` }}
+        >
+          <div>
             <Link
               href={createHref}
-              className="flex min-h-[56px] items-center justify-between gap-3 rounded-[22px] border border-[#c8d4dc] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-3 py-2.5 text-[#24323f] shadow-[0_20px_44px_rgba(94,105,114,0.2),inset_0_1px_0_rgba(255,255,255,0.98)] backdrop-blur transition hover:-translate-y-0.5 hover:shadow-[0_24px_50px_rgba(94,105,114,0.22)]"
+              className="flex min-h-[64px] w-full items-center justify-between gap-4 rounded-t-[24px] border border-b-0 border-[#c8d4dc] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-5 py-3 text-[#24323f] shadow-[0_-18px_42px_rgba(94,105,114,0.16),inset_0_1px_0_rgba(255,255,255,0.98)] backdrop-blur transition hover:bg-white"
               aria-label="Create meetup"
             >
               <div className="flex min-w-0 items-center gap-3">
