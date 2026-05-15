@@ -492,7 +492,7 @@ export default function WriteForm({ userId }: { userId: string | null }) {
               value={durationMinutes}
               onChange={(e) => setDurationMinutes(e.target.value)}
             >
-              <option value="">Select duration</option>
+              <option value="">Duration</option>
               <option value="30">30 min</option>
               <option value="60">1 hour</option>
               <option value="90">1 hour 30 min</option>
@@ -545,7 +545,7 @@ export default function WriteForm({ userId }: { userId: string | null }) {
         </div>
 
         <h2 className={`mt-6 text-sm font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
-          Guest & Covered Cost
+          Guest & Host Covered Cost
         </h2>
 
         <div className="mt-3 space-y-3">
@@ -589,7 +589,7 @@ export default function WriteForm({ userId }: { userId: string | null }) {
                 setBenefitConfirmed(false);
               }}
             >
-              <option value="">Select cost</option>
+              <option value="">Host-covered cost</option>
               <option value="$0">$0</option>
               <option value="$10">$10</option>
               <option value="$20">$20</option>
