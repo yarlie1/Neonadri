@@ -475,8 +475,6 @@ export default async function ProfilePage({ params }: PageProps) {
               )}
             </div>
           </section>
-        </div>
-
         {!isMyProfile && user ? (
           <section className={`${APP_SURFACE_CARD_CLASS} p-5`}>
             <div className={APP_EYEBROW_CLASS}>Safety</div>
