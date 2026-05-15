@@ -361,8 +361,8 @@ export default function HomeFeedClient({
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.62),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.28),transparent_20%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.16),transparent_32%)]" />
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.09)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.09)_1px,transparent_1px)] bg-[size:22px_22px] opacity-10" />
         <div className="relative z-10 mx-auto max-w-7xl space-y-4 pb-28 sm:space-y-5 sm:pb-32">
-        <div className={`grid gap-4 lg:items-stretch ${highlightedPost ? "lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]" : ""}`}>
-        <section className={`relative mx-auto h-full max-w-2xl overflow-hidden px-5 py-5 text-[#24323f] sm:px-7 sm:py-7 lg:max-w-none ${HOME_WHITE_SURFACE_CLASS}`}>
+        <div className="grid gap-4 lg:grid-cols-3 lg:items-stretch">
+        <section className={`relative mx-auto h-full w-full max-w-2xl overflow-hidden px-5 py-5 text-[#24323f] sm:px-7 sm:py-7 lg:mx-0 lg:max-w-none ${highlightedPost ? "lg:col-span-2" : "lg:col-span-3"} ${HOME_WHITE_SURFACE_CLASS}`}>
           <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
           <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#ffffffb8] blur-3xl" />
 
@@ -432,7 +432,7 @@ export default function HomeFeedClient({
 
         {highlightedPost && (
           <FeaturedMeetupCard
-            className="mx-auto h-full max-w-2xl lg:max-w-none"
+            className="mx-auto h-full w-full max-w-2xl lg:mx-0 lg:max-w-none"
             postId={highlightedPost.id}
             placeLabel={
               highlightedPost.place_name ||
