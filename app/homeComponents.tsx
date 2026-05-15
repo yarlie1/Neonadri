@@ -1,8 +1,10 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import {
   ArrowUpRight,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Clock3,
   Coins,
   LocateFixed,
@@ -293,9 +295,29 @@ export function HomePurposeRail({
   purposeOptions: string[];
   onPurpose: (value: string) => void;
 }) {
+  const railRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollRail = (direction: "left" | "right") => {
+    railRef.current?.scrollBy({
+      left: direction === "left" ? -420 : 420,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className="relative -mx-4 sm:mx-0">
-      <div className="overflow-x-auto border-y border-[#dfe7ec]/80 px-4 py-3 [scrollbar-width:none] sm:border sm:bg-[rgba(255,255,255,0.34)] sm:px-5 sm:pb-4 sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] sm:[scrollbar-color:#cbd6dd_transparent] sm:[scrollbar-width:thin] [&::-webkit-scrollbar]:hidden sm:[&::-webkit-scrollbar]:block sm:[&::-webkit-scrollbar]:h-2 sm:[&::-webkit-scrollbar-thumb]:rounded-full sm:[&::-webkit-scrollbar-thumb]:bg-[#cbd6dd] sm:[&::-webkit-scrollbar-track]:bg-transparent">
+      <button
+        type="button"
+        aria-label="Previous meetup types"
+        onClick={() => scrollRail("left")}
+        className="absolute left-2 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-[#24323f] text-white shadow-[0_12px_24px_rgba(36,50,63,0.2)] transition hover:bg-[#1b2630] sm:inline-flex"
+      >
+        <ChevronLeft className="h-5 w-5" />
+      </button>
+      <div
+        ref={railRef}
+        className="overflow-x-auto border-y border-[#dfe7ec]/80 px-4 py-3 [scrollbar-width:none] sm:border sm:bg-[rgba(255,255,255,0.34)] sm:px-14 sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] [&::-webkit-scrollbar]:hidden"
+      >
         <div className="flex min-w-max items-stretch gap-6 sm:gap-8 lg:gap-10">
           {purposeOptions.map((option) => {
             const active = purpose === option;
@@ -337,6 +359,14 @@ export function HomePurposeRail({
           })}
         </div>
       </div>
+      <button
+        type="button"
+        aria-label="Next meetup types"
+        onClick={() => scrollRail("right")}
+        className="absolute right-2 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-[#24323f] text-white shadow-[0_12px_24px_rgba(36,50,63,0.2)] transition hover:bg-[#1b2630] sm:inline-flex"
+      >
+        <ChevronRight className="h-5 w-5" />
+      </button>
     </div>
   );
 }
