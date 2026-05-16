@@ -368,7 +368,7 @@ export function HomeFilterRail({
     value: option.value,
     label:
       option.value === "all"
-        ? "Distance"
+        ? "All Distance"
         : getDistanceOptionLabel(
             option.value as "nearby" | "within_5mi" | "within_10mi" | "within_20mi",
             distanceUnit
@@ -427,7 +427,7 @@ export function HomeFilterRail({
           <FilterSelect
             label="Status"
             value={matchState}
-            options={optionize(matchStateOptions, { All: "Any status" })}
+            options={optionize(matchStateOptions, { All: "All Status" })}
             onChange={onMatchState}
           />
           <FilterSelect
