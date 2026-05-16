@@ -28,7 +28,6 @@ import {
 } from "./homeFeedHelpers";
 import {
   APP_BODY_TEXT_CLASS,
-  APP_BUTTON_PRIMARY_CLASS,
   APP_EYEBROW_CLASS,
   APP_INNER_PANEL_CLASS,
   APP_PAGE_BG_CLASS,
@@ -169,7 +168,6 @@ export default function HomeFeedClient({
   viewerPreference,
   initialUserTimeZone,
   isLoggedIn,
-  postingBetaRequired,
   initialCreateHref,
 }: {
   initialPosts: PostRow[];
@@ -183,9 +181,6 @@ export default function HomeFeedClient({
 }) {
   const userTimeZone = useMemo(() => initialUserTimeZone, [initialUserTimeZone]);
   const createHref = useCreateMeetupHref(isLoggedIn, initialCreateHref);
-  const signupHref = postingBetaRequired
-    ? "/signup?postingBetaRequired=1"
-    : "/signup?postingBetaRequired=0";
 
   const formatTime = (meetingTime: string | null) =>
     formatMeetingTime(meetingTime, userTimeZone) || "";
@@ -497,26 +492,6 @@ export default function HomeFeedClient({
               </p>
             </div>
           </div>
-          {!isLoggedIn ? (
-            <div className="mt-4">
-              <Link
-                href={signupHref}
-                className={`inline-flex min-h-[76px] w-full items-center justify-between gap-4 rounded-[24px] border px-5 py-3.5 text-left shadow-[0_18px_34px_rgba(118,126,133,0.16)] transition ${APP_BUTTON_PRIMARY_CLASS}`}
-              >
-                <div className="flex min-w-0 items-center gap-4">
-                  <div className="shrink-0 text-[18px] font-black uppercase tracking-[0.03em] leading-[0.98]">
-                    JOIN
-                    <br />
-                    NOW
-                  </div>
-                  <div className="min-w-0 text-[13px] font-bold uppercase tracking-[0.18em] leading-[1.12] opacity-80">
-                    Browse 1:1 meetups
-                  </div>
-                </div>
-                <ArrowRight className="h-5 w-5 shrink-0" />
-              </Link>
-            </div>
-          ) : null}
         </section>
 
         <HomeFilterRail

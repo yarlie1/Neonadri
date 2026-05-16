@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRef, type ReactNode } from "react";
 import {
+  ArrowUpDown,
   ArrowUpRight,
   ChevronDown,
   ChevronLeft,
@@ -289,20 +290,29 @@ function FilterSelect({
   label,
   value,
   options,
+  icon,
   onChange,
 }: {
   label: string;
   value: string;
   options: readonly { value: string; label: string }[];
+  icon?: ReactNode;
   onChange: (value: string) => void;
 }) {
   return (
     <label className="relative inline-flex shrink-0 items-center">
       <span className="sr-only">{label}</span>
+      {icon ? (
+        <span className="pointer-events-none absolute left-3 text-[#7c8a93]">
+          {icon}
+        </span>
+      ) : null}
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 appearance-none rounded-full border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fa_100%)] pl-4 pr-10 text-sm font-semibold text-[#2f3f48] shadow-[0_10px_20px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.95)] outline-none transition hover:border-[#ccd8df] focus:border-[#aebdc6]"
+        className={`h-11 appearance-none rounded-full border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fa_100%)] pr-10 text-sm font-semibold text-[#2f3f48] shadow-[0_10px_20px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.95)] outline-none transition hover:border-[#ccd8df] focus:border-[#aebdc6] ${
+          icon ? "pl-9" : "pl-4"
+        }`}
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -434,6 +444,7 @@ export function HomeFilterRail({
             label="Sort"
             value={sort}
             options={sortOptions}
+            icon={<ArrowUpDown className="h-4 w-4" />}
             onChange={onSort}
           />
           {locationMessage ? (
