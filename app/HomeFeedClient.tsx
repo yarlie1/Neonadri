@@ -615,7 +615,7 @@ export default function HomeFeedClient({
         </div>
 
         <div
-          className="fixed left-1/2 z-40 w-full max-w-7xl -translate-x-1/2 px-4 transition-[bottom] duration-150 sm:px-6"
+          className="fixed left-1/2 z-40 w-[calc(100%-2rem)] max-w-7xl -translate-x-1/2 transition-[bottom] duration-150 sm:w-[calc(100%-3rem)]"
           style={{ bottom: `calc(${footerOffset}px + env(safe-area-inset-bottom))` }}
         >
           <div>
