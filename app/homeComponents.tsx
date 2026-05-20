@@ -687,12 +687,14 @@ export function MeetupFeedCard({
           <div className="min-w-0 truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
             {purposeName}
           </div>
-          <div className="col-start-3 row-span-2 row-start-1 flex flex-col items-end gap-1.5 self-start">
+          <div className="col-start-3 row-start-1 flex items-start justify-end self-start">
             {dateBadgeText ? (
-              <div className="shrink-0 px-1 text-right text-[13px] font-black leading-none tracking-[-0.02em] text-[#3a4a54]">
+              <div className="shrink-0 rounded-[14px] border border-[#d5e0e7] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-2.5 py-1 text-right text-[16px] font-black leading-none tracking-[-0.04em] text-[#24323f] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.9)]">
                 {dateBadgeText}
               </div>
             ) : null}
+          </div>
+          <div className="col-start-3 row-start-2 flex items-start justify-end self-start">
             <div
               className={`shrink-0 rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${matchBadgeClassName}`}
             >
