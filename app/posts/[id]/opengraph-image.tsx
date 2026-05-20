@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { createClient } from "../../../lib/supabase/server";
+import { formatAudienceMeta } from "../../../lib/genderLabels";
 
 export const dynamic = "force-dynamic";
 
@@ -77,9 +78,7 @@ export default async function PostOpenGraphImage({ params }: ImageProps) {
   const purpose = post?.meeting_purpose?.trim() || "Meetup";
   const place = post?.place_name?.trim() || "Neonadri";
   const location = post?.location?.trim() || "Discover nearby plans";
-  const audience = [post?.target_gender?.trim(), post?.target_age_group?.trim()]
-    .filter(Boolean)
-    .join(" / ");
+  const audience = formatAudienceMeta(post?.target_gender, post?.target_age_group);
   const statusLabel =
     String(post?.status || "open").toLowerCase() === "cancelled"
       ? "Cancelled"

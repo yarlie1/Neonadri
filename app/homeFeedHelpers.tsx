@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import type { DistanceValue, SortValue } from "./useHomeFeedFilters";
 import type { DistanceUnit } from "./useDistanceUnit";
+import { formatAudienceGenderLabel } from "../lib/genderLabels";
 import {
   APP_BODY_TEXT_CLASS,
   APP_PILL_ACTIVE_CLASS,
@@ -344,7 +345,7 @@ export function FilterSummaryText({
   if (matchState !== "All") parts.push(matchState);
   if (audience !== "All") parts.push(audience);
   if (purpose !== "All") parts.push(purpose);
-  if (gender !== "All") parts.push(gender);
+  if (gender !== "All") parts.push(formatAudienceGenderLabel(gender));
   if (ageGroup !== "All") parts.push(ageGroup);
   if (sort !== "newest") {
     const label = getSortSummaryLabel(sort);

@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { formatMeetingTime } from "../../lib/meetingTime";
 import { getPublicLocationLabel } from "../../lib/locationPrivacy";
+import { formatAudienceMeta } from "../../lib/genderLabels";
 import type { PostRow } from "./page";
 import {
   APP_BUTTON_PRIMARY_CLASS,
@@ -357,7 +358,7 @@ export function DashboardCompactMeetupCard({
     : "";
   const placeLabel =
     post.place_name || getPublicLocationLabel(post.place_name, post.location) || "No place";
-  const guestLabel = `${post.target_gender || "Any"} / ${post.target_age_group || "Any"}`;
+  const guestLabel = formatAudienceMeta(post.target_gender, post.target_age_group);
 
   return (
     <div

@@ -21,6 +21,7 @@ import {
   USER_TIME_ZONE_COOKIE,
 } from "../../../lib/userTimeZone";
 import { computeReviewTrustMetrics, type ReviewTrustRow } from "../../../lib/reviewTrust";
+import { formatPersonMeta } from "../../../lib/genderLabels";
 import {
   APP_EYEBROW_CLASS,
   APP_MUTED_TEXT_CLASS,
@@ -330,7 +331,7 @@ export default async function ProfilePage({ params }: PageProps) {
                   <InfoItem
                     icon={<UserRound className="h-3.5 w-3.5 text-[#71828c]" />}
                     label="Identity"
-                    value={[profile.gender, profile.age_group].filter(Boolean).join(" / ")}
+                    value={formatPersonMeta(profile.gender, profile.age_group)}
                   />
                 )}
 

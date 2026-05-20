@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import type { MatchChatMetaRow, MatchRow, MatchRequestRow, PostRow } from "./page";
 import { getMeetingStatus, parseMeetingTime } from "../../lib/meetingTime";
+import { formatPersonMeta } from "../../lib/genderLabels";
 import {
   CompactActionButton,
   DashboardCompactMeetupCard,
@@ -681,7 +682,7 @@ export default function DashboardClient({
         nextProfileMap[profile.id] = profile.display_name || "Unknown";
         nextProfileMetaMap[profile.id] =
           profile.gender || profile.age_group
-            ? `${profile.gender || "Unknown"}${profile.age_group ? ` / ${profile.age_group}` : ""}`
+            ? formatPersonMeta(profile.gender || "Unknown", profile.age_group)
             : "";
       });
 

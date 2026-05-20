@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { createClient } from "../../lib/supabase/server";
 import { isPostingAccessAllowedForEmail, isPostingBetaRequired } from "../../lib/postingAccess";
 import { normalizeUserTimeZone, USER_TIME_ZONE_COOKIE } from "../../lib/userTimeZone";
+import { formatPersonMeta } from "../../lib/genderLabels";
 import DashboardClient from "./DashboardClient";
 
 export type PostRow = {
@@ -205,7 +206,7 @@ export default async function DashboardPage() {
       const ageGroup = profile.age_group || "";
       profileMetaMap[profile.id] =
         gender || ageGroup
-          ? `${gender || "Unknown"}${ageGroup ? ` / ${ageGroup}` : ""}`
+          ? formatPersonMeta(gender || "Unknown", ageGroup)
           : "";
     });
   }

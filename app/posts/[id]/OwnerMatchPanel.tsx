@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { formatPersonMeta } from "../../../lib/genderLabels";
 import {
   CheckCircle2,
   Clock3,
@@ -168,9 +169,7 @@ export default function OwnerMatchPanel({
                         {request.requesterName}
                       </div>
                       <div className="mt-1 text-sm text-[#64717a]">
-                        {[request.requesterGender || "Unknown", request.requesterAgeGroup || null]
-                          .filter(Boolean)
-                          .join(" / ")}
+                        {formatPersonMeta(request.requesterGender || "Unknown", request.requesterAgeGroup)}
                       </div>
                       <div className="mt-2 text-sm text-[#86929a]">
                         {new Date(request.createdAt).toLocaleString()}

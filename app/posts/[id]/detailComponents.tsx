@@ -11,6 +11,7 @@ import {
   APP_SURFACE_CARD_CLASS,
 } from "../../designSystem";
 import { PURPOSE_HELP_TEXT } from "../../write/meetupFormShared";
+import { formatPersonMeta } from "../../../lib/genderLabels";
 import {
   Activity,
   Book,
@@ -280,9 +281,7 @@ export function ProfileShowcaseCard({
     : "No introduction yet.";
   const roundedAverage = Math.round(data.averageRating);
   const hasRating = data.reviewCount > 0;
-  const identityLine = `${data.gender || "Unknown"}${
-    data.gender && data.ageGroup ? " / " : ""
-  }${data.ageGroup || ""}`;
+  const identityLine = formatPersonMeta(data.gender || "Unknown", data.ageGroup);
 
   const cardContent = summaryOnly ? (
     <div className={`${APP_SURFACE_CARD_CLASS} px-5 py-4 transition hover:-translate-y-0.5 hover:shadow-[0_18px_34px_rgba(118,126,133,0.14)]`}>

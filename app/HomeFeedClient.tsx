@@ -48,6 +48,7 @@ import {
 } from "./useHomeFeedFilters";
 import { useDistanceUnit } from "./useDistanceUnit";
 import { useCreateMeetupHref } from "./useCreateMeetupHref";
+import { formatAudienceMeta, formatPersonMeta } from "../lib/genderLabels";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -483,7 +484,7 @@ export default function HomeFeedClient({
               ) ||
               "Location TBD"
             }
-            targetText={`${highlightedPost.target_gender || "Any"} / ${highlightedPost.target_age_group || "Any"}`}
+            targetText={formatAudienceMeta(highlightedPost.target_gender, highlightedPost.target_age_group)}
           />
         )}
         </div>
@@ -591,7 +592,7 @@ export default function HomeFeedClient({
               hostName={host.displayName}
               hostMeta={
                 host.gender || host.ageGroup
-                  ? `${host.gender || "Unknown"}${host.ageGroup ? ` / ${host.ageGroup}` : ""}`
+                  ? formatPersonMeta(host.gender || "Unknown", host.ageGroup)
                   : ""
               }
               matchBadgeLabel={matchBadge.label}
@@ -607,7 +608,7 @@ export default function HomeFeedClient({
                 getPublicLocationLabel(post.place_name, post.location) ||
                 "No place"
               }
-              lookingForText={`${post.target_gender || "Any"} / ${post.target_age_group || "Any"}`}
+              lookingForText={formatAudienceMeta(post.target_gender, post.target_age_group)}
               distanceText={distanceText}
             />
           );

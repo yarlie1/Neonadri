@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { MapPost } from "../map/page";
 import { getPublicLocationLabel } from "../../lib/locationPrivacy";
+import { formatAudienceMeta } from "../../lib/genderLabels";
 import { Coins } from "lucide-react";
 import {
   APP_BODY_TEXT_CLASS,
@@ -419,8 +420,7 @@ export default function HomePostsMap({ posts }: Props) {
               )}
 
               <div className={`mt-1 text-sm ${APP_BODY_TEXT_CLASS}`}>
-                Target: {selectedPost.target_gender || "Any"} /{" "}
-                {selectedPost.target_age_group || "Any"}
+                Target: {formatAudienceMeta(selectedPost.target_gender, selectedPost.target_age_group)}
               </div>
 
               <div className={`mt-2 flex flex-wrap items-center justify-between gap-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
