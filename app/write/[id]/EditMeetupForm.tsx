@@ -578,7 +578,10 @@ export default function EditMeetupForm({
             <select
               className={`${fieldClass} pr-10`}
               value={benefitAmount}
-              onChange={(e) => setBenefitAmount(e.target.value)}
+              onChange={(e) => {
+                setBenefitAmount(e.target.value);
+                setBenefitConfirmed(false);
+              }}
             >
               <option value="">Host-covered cost</option>
               <option value="$0">$0</option>
