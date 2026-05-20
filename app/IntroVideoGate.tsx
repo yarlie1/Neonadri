@@ -50,7 +50,7 @@ const slides = [
   {
     eyebrow: "Quick notice",
     title: "Respect and care",
-    body: "Meet in public places, keep plans clear, and use reports when something feels off.",
+    body: "Meet in public places, keep plans clear, and respect each other's time.",
     icon: ShieldCheck,
   },
 ] as const;
