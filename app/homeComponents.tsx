@@ -689,7 +689,7 @@ export function MeetupFeedCard({
           </div>
           <div className="col-start-3 row-start-1 flex items-start justify-end self-start">
             {dateBadgeText ? (
-              <div className="shrink-0 rounded-[14px] border border-[#d5e0e7] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-2.5 py-1 text-right text-[16px] font-black leading-none tracking-[-0.04em] text-[#24323f] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.9)]">
+              <div className="shrink-0 rounded-[14px] border border-[#dbe4ea] bg-[linear-gradient(180deg,#ffffff_0%,#f4f7f9_100%)] px-2.5 py-1 text-right text-[15px] font-bold leading-none tracking-[-0.03em] text-[#5f6f78] shadow-[0_6px_12px_rgba(118,126,133,0.06),inset_0_1px_0_rgba(255,255,255,0.9)]">
                 {dateBadgeText}
               </div>
             ) : null}
