@@ -636,7 +636,7 @@ export function MeetupFeedCard({
   hostName,
   hostMeta,
   hostLine,
-  isFeatured,
+  dateBadgeText,
   matchBadgeLabel,
   matchBadgeClassName,
   purposeIcon,
@@ -658,7 +658,7 @@ export function MeetupFeedCard({
   hostName: string;
   hostMeta: string;
   hostLine?: string;
-  isFeatured?: boolean;
+  dateBadgeText?: string;
   matchBadgeLabel: string;
   matchBadgeClassName: string;
   purposeIcon: ReactNode;
@@ -688,18 +688,16 @@ export function MeetupFeedCard({
             {purposeName}
           </div>
           <div className="col-start-3 row-span-2 row-start-1 flex flex-col items-end gap-1.5 self-start">
+            {dateBadgeText ? (
+              <div className="shrink-0 px-1 text-right text-[13px] font-black leading-none tracking-[-0.02em] text-[#3a4a54]">
+                {dateBadgeText}
+              </div>
+            ) : null}
             <div
               className={`shrink-0 rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${matchBadgeClassName}`}
             >
               {matchBadgeLabel}
             </div>
-            {isFeatured ? (
-              <span
-                className={`shrink-0 rounded-[12px] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.88)] ${APP_PILL_INACTIVE_CLASS}`}
-              >
-                Featured
-              </span>
-            ) : null}
           </div>
           <div
             className={`col-start-2 row-start-2 min-w-0 pr-1 line-clamp-2 text-[12px] leading-[1.15] ${APP_SUBTLE_TEXT_CLASS}`}

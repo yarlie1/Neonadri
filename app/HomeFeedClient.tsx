@@ -161,6 +161,17 @@ function getFeaturedPost(
   return bestPost;
 }
 
+function formatCardDate(meetingTime: string | null, userTimeZone: string) {
+  const parsed = parseMeetingTime(meetingTime, userTimeZone);
+  if (!parsed) return "";
+
+  return parsed.toLocaleDateString("en-US", {
+    timeZone: userTimeZone,
+    month: "numeric",
+    day: "numeric",
+  });
+}
+
 export default function HomeFeedClient({
   initialPosts,
   hostProfileMap,
@@ -585,6 +596,7 @@ export default function HomeFeedClient({
               }
               matchBadgeLabel={matchBadge.label}
               matchBadgeClassName={matchBadge.className}
+              dateBadgeText={formatCardDate(post.meeting_time, userTimeZone)}
               purposeIcon={getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}
               purposeName={post.meeting_purpose || "Social meetup"}
               durationLabel={formatDuration(post.duration_minutes)}
@@ -597,7 +609,6 @@ export default function HomeFeedClient({
               }
               lookingForText={`${post.target_gender || "Any"} / ${post.target_age_group || "Any"}`}
               distanceText={distanceText}
-              isFeatured={highlightedPost?.id === post.id}
             />
           );
         })}
