@@ -14,11 +14,11 @@ export function formatPersonGenderLabel(value: string | null | undefined) {
 export function formatAudienceGenderLabel(value: string | null | undefined) {
   switch ((value || "").trim()) {
     case "Male":
-      return "Men";
+      return "For a man";
     case "Female":
-      return "Women";
+      return "For a woman";
     case "Any":
-      return "Any gender";
+      return "For anyone";
     case "Prefer not to say":
       return "Not specified";
     default:
