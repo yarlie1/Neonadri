@@ -35,7 +35,8 @@ export function formatPersonMeta(gender: string | null | undefined, ageGroup: st
 
 export function formatAudienceMeta(gender: string | null | undefined, ageGroup: string | null | undefined) {
   const genderLabel = formatAudienceGenderLabel(gender || "Any");
-  const ageLabel = (ageGroup || "Any age").trim();
+  const rawAgeLabel = (ageGroup || "Any age").trim();
+  const ageLabel = rawAgeLabel === "Any" ? "Any age" : rawAgeLabel;
 
   return [genderLabel, ageLabel].filter(Boolean).join(" / ");
 }
