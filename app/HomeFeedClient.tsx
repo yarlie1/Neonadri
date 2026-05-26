@@ -386,11 +386,11 @@ export default function HomeFeedClient({
 
   return (
     <>
-      <main className={`relative isolate min-h-[100dvh] px-4 py-5 ${APP_PAGE_BG_CLASS}`}>
+      <main className={`relative isolate min-h-[100dvh] overflow-x-hidden px-4 py-5 ${APP_PAGE_BG_CLASS}`}>
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7fafc_20%,#e8edf1_56%,#d7dfe5_100%)]" />
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.62),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.28),transparent_20%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.16),transparent_32%)]" />
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.09)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.09)_1px,transparent_1px)] bg-[size:22px_22px] opacity-10" />
-        <div className="relative z-10 mx-auto max-w-7xl space-y-4 pb-28 sm:space-y-5 sm:pb-32">
+        <div className="relative z-10 mx-auto max-w-7xl min-w-0 space-y-4 pb-28 sm:space-y-5 sm:pb-32">
         <div className="grid gap-4 lg:grid-cols-3 lg:items-stretch">
         <section className={`relative mx-auto h-full w-full max-w-2xl overflow-hidden px-5 py-4 text-[#24323f] sm:px-7 sm:py-5 lg:mx-0 lg:max-w-none ${highlightedPost ? "lg:col-span-2" : "lg:col-span-3"} ${HOME_WHITE_SURFACE_CLASS}`}>
           <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
@@ -557,7 +557,7 @@ export default function HomeFeedClient({
           </div>
         </div>
 
-        <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
+        <div className="grid min-w-0 gap-3 lg:grid-cols-2 xl:grid-cols-4">
         {feedPosts.map((post) => {
           const amount = parseBenefitAmount(post.benefit_amount);
           const host = hostProfileMap[post.user_id] || {
@@ -691,7 +691,7 @@ function ViewportMeetupFeedCard(
         opacity,
         transform: `translateY(${translateY}px)`,
       }}
-      className="transition-[opacity,transform] duration-300 ease-out will-change-[opacity,transform]"
+      className="min-w-0 max-w-full transition-[opacity,transform] duration-300 ease-out will-change-[opacity,transform]"
     >
       <MeetupFeedCard {...props} />
     </div>

@@ -672,19 +672,19 @@ export function MeetupFeedCard({
   activityLabel?: string;
   activityText?: string;
 }) {
-  const cardClassName = `block overflow-hidden rounded-[24px] border p-2.5 shadow-[0_18px_30px_rgba(118,126,133,0.12)] transition active:scale-[0.995] sm:p-3 ${
+  const cardClassName = `block w-full max-w-full overflow-hidden rounded-[24px] border p-2.5 shadow-[0_18px_30px_rgba(118,126,133,0.12)] transition active:scale-[0.995] sm:p-3 ${
         isExpired
           ? "border-[#d8e0e6] bg-[linear-gradient(180deg,rgba(250,252,253,0.99)_0%,rgba(241,245,247,0.98)_100%)]"
           : "border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] hover:-translate-y-0.5 hover:shadow-[0_20px_34px_rgba(118,126,133,0.15)]"
       } ${onClick ? "w-full cursor-pointer text-left" : ""} ${className}`;
   const resolvedHref = href === undefined ? `/posts/${postId}` : href;
   const content = (
-      <div className={`px-3.5 py-3 ${APP_INNER_PANEL_CLASS}`}>
-        <div className="grid grid-cols-[46px_minmax(0,1fr)_auto] grid-rows-[auto_auto] items-center gap-x-2.5 gap-y-1">
-          <div className="row-span-2 inline-flex h-11 w-11 items-center justify-center self-center rounded-[16px] border border-white/70 bg-[radial-gradient(circle_at_28%_18%,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.72)_26%,rgba(226,235,241,0.74)_58%,rgba(185,199,209,0.68)_100%)] text-[#60717c] shadow-[0_14px_26px_rgba(118,126,133,0.18),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-10px_18px_rgba(142,157,169,0.16)] backdrop-blur-md">
+      <div className={`min-w-0 px-2.5 py-3 sm:px-3.5 ${APP_INNER_PANEL_CLASS}`}>
+        <div className="grid min-w-0 grid-cols-[40px_minmax(0,1fr)_auto] grid-rows-[auto_auto] items-center gap-x-2 gap-y-1 sm:grid-cols-[46px_minmax(0,1fr)_auto] sm:gap-x-2.5">
+          <div className="row-span-2 inline-flex h-10 w-10 items-center justify-center self-center rounded-[16px] border border-white/70 bg-[radial-gradient(circle_at_28%_18%,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.72)_26%,rgba(226,235,241,0.74)_58%,rgba(185,199,209,0.68)_100%)] text-[#60717c] shadow-[0_14px_26px_rgba(118,126,133,0.18),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-10px_18px_rgba(142,157,169,0.16)] backdrop-blur-md sm:h-11 sm:w-11">
             {purposeIcon}
           </div>
-          <div className="min-w-0 truncate pt-[1px] text-[24px] font-black leading-none tracking-[-0.05em] text-[#1f2b34]">
+          <div className="min-w-0 truncate pt-[1px] text-[22px] font-black leading-none tracking-[-0.05em] text-[#1f2b34] sm:text-[24px]">
             {purposeName}
           </div>
           <div className="col-start-3 row-start-1 flex items-start justify-end self-start">
@@ -713,16 +713,16 @@ export function MeetupFeedCard({
           </div>
         </div>
 
-        <div className="mt-2.5 grid gap-1.5">
-          <div className={`flex min-h-[40px] items-center gap-2.5 px-3 py-1.5 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
+        <div className="mt-2.5 grid min-w-0 gap-1.5">
+          <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
             <MapPin className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
             <span className="min-w-0 flex-1 truncate font-semibold text-[#24323f]">{placeText}</span>
           </div>
 
           {whenText && (
-            <div className={`flex min-h-[40px] items-center gap-2.5 px-3 py-1.5 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
+            <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
               <Clock3 className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
-              <span className="truncate">{whenText}</span>
+              <span className="min-w-0 flex-1 truncate">{whenText}</span>
               {durationLabel ? (
                 <span className="ml-auto rounded-[14px] border border-[#cbd4db] bg-[linear-gradient(180deg,#ffffff_0%,#eceff2_100%)] px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#3b4c56] shadow-[0_8px_14px_rgba(118,126,133,0.12)]">
                   {durationLabel}
@@ -731,13 +731,13 @@ export function MeetupFeedCard({
             </div>
           )}
 
-          <div className={`flex min-h-[40px] items-center justify-between gap-2.5 px-3 py-1.5 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
-            <span className="inline-flex min-w-0 items-center gap-2 text-[#55646e]">
+          <div className={`flex min-h-[40px] min-w-0 items-center justify-between gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
+            <span className="inline-flex min-w-0 flex-1 items-center gap-2 text-[#55646e]">
               <UserRound className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
               <span className="truncate">{lookingForText}</span>
             </span>
             {amountText ? (
-              <span className="inline-flex shrink-0 items-center gap-2 rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-3 py-1.5 font-semibold text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)]">
+              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-2 py-1.5 font-semibold text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)] sm:gap-2 sm:px-3">
                 <Coins className={`h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
                 <span className="flex flex-col text-[8px] font-bold uppercase leading-[0.95] tracking-[0.1em] text-[#7a8790]">
                   <span>Host</span>
@@ -749,9 +749,9 @@ export function MeetupFeedCard({
           </div>
 
           {distanceText && (
-            <div className={`flex min-h-[40px] items-center gap-2.5 px-3 py-1.5 text-sm text-[#364149] ${APP_ROW_SURFACE_CLASS}`}>
+            <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
               <LocateFixed className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
-              <span>{distanceText}</span>
+              <span className="min-w-0 truncate">{distanceText}</span>
             </div>
           )}
         </div>
