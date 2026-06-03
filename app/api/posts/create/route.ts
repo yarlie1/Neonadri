@@ -8,6 +8,7 @@ import {
   isPostingAccessAllowedForEmail,
   POSTING_ACCESS_ERROR_MESSAGE,
 } from "../../../../lib/postingAccess";
+import { buildPostPath } from "../../../../lib/postUrl";
 
 export async function POST(req: Request) {
   try {
@@ -74,7 +75,16 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({ data }, { status: 200 });
+    const createdPost = Array.isArray(data) ? data[0] : data;
+    const postUrl = createdPost
+      ? buildPostPath(
+          createdPost.id,
+          createdPost.meeting_purpose,
+          createdPost.place_name || createdPost.location
+        )
+      : null;
+
+    return NextResponse.json({ data, postUrl }, { status: 200 });
   } catch (e) {
     console.error("Post create route unexpected error", e);
     return NextResponse.json(

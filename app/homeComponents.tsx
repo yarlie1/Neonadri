@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRef, type ReactNode } from "react";
+import { buildPostPath } from "../lib/postUrl";
 import {
   ArrowUpDown,
   ArrowUpRight,
@@ -579,7 +580,7 @@ export function FeaturedMeetupCard({
           </div>
 
           <Link
-            href={`/posts/${postId}`}
+            href={buildPostPath(postId, purposeLabel, placeText || placeLabel)}
             className={`inline-flex h-10 w-10 items-center justify-center rounded-[18px] shadow-[0_12px_22px_rgba(118,126,133,0.08)] transition ${APP_BUTTON_SECONDARY_CLASS}`}
             aria-label="Open featured meetup"
           >
@@ -677,7 +678,8 @@ export function MeetupFeedCard({
           ? "border-[#d8e0e6] bg-[linear-gradient(180deg,rgba(250,252,253,0.99)_0%,rgba(241,245,247,0.98)_100%)]"
           : "border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] hover:-translate-y-0.5 hover:shadow-[0_20px_34px_rgba(118,126,133,0.15)]"
       } ${onClick ? "w-full cursor-pointer text-left" : ""} ${className}`;
-  const resolvedHref = href === undefined ? `/posts/${postId}` : href;
+  const resolvedHref =
+    href === undefined ? buildPostPath(postId, purposeName, placeText) : href;
   const content = (
       <div className={`min-w-0 px-2.5 py-3 sm:px-3.5 ${APP_INNER_PANEL_CLASS}`}>
         <div className="grid min-w-0 grid-cols-[40px_minmax(0,1fr)_auto] grid-rows-[auto_auto] items-center gap-x-2 gap-y-1 sm:grid-cols-[46px_minmax(0,1fr)_auto] sm:gap-x-2.5">

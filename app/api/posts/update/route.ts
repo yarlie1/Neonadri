@@ -7,6 +7,7 @@ import {
 import { getOwnedPostEditLockState } from "../../../../lib/postEditAccess";
 import { sendPushNotificationToUser } from "../../../../lib/pushNotifications";
 import { sendEmailNotificationToUser } from "../../../../lib/emailNotifications";
+import { buildPostPath } from "../../../../lib/postUrl";
 
 export async function POST(req: Request) {
   try {
@@ -159,6 +160,11 @@ export async function POST(req: Request) {
       payload.place_name ||
       payload.location ||
       "a meetup";
+    const postUrl = buildPostPath(
+      postId,
+      payload.meeting_purpose,
+      payload.place_name || payload.location
+    );
 
     await Promise.all(
       recipientIds.map((recipientId) =>
@@ -166,7 +172,7 @@ export async function POST(req: Request) {
           sendPushNotificationToUser(recipientId, {
             title: "Meetup updated",
             body: `${meetupLabel} details were updated by the host.`,
-            url: `/posts/${postId}`,
+            url: postUrl,
             tag: `meetup-updated-${postId}`,
           }).catch((pushError) => {
             console.error("Post update push notification failed", {
@@ -179,7 +185,7 @@ export async function POST(req: Request) {
             subject: "A Neonadri meetup was updated",
             headline: "Meetup updated",
             body: `${meetupLabel} details were updated by the host.`,
-            url: `/posts/${postId}`,
+            url: postUrl,
             buttonLabel: "View meetup",
           }).catch((emailError) => {
             console.error("Post update email notification failed", {

@@ -11,6 +11,7 @@ import {
   Users,
 } from "lucide-react";
 import { getAdminOverviewData } from "../../../lib/adminOverview";
+import { buildPostPath } from "../../../lib/postUrl";
 import { createClient } from "../../../lib/supabase/server";
 import {
   APP_BODY_TEXT_CLASS,
@@ -243,7 +244,7 @@ export default async function AdminOverviewPage() {
                     overview.reviewDueMatches.map((item) => (
                       <Link
                         key={item.id}
-                        href={`/posts/${item.postId}`}
+                        href={buildPostPath(item.postId, item.meetingPurpose, item.placeName)}
                         className={`${APP_SOFT_CARD_CLASS} block px-4 py-4 transition hover:bg-white/90`}
                       >
                         <div className="text-sm font-semibold text-[#24323c]">
@@ -321,7 +322,7 @@ export default async function AdminOverviewPage() {
                     overview.recentMeetups.map((item) => (
                       <Link
                         key={item.id}
-                        href={`/posts/${item.id}`}
+                        href={buildPostPath(item.id, item.meetingPurpose, item.placeName)}
                         className={`${APP_SOFT_CARD_CLASS} block px-4 py-4 transition hover:bg-white/90`}
                       >
                         <div className="flex flex-wrap items-start justify-between gap-3">

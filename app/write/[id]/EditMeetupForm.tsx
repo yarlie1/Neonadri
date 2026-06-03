@@ -32,6 +32,7 @@ import {
   APP_SUBTLE_TEXT_CLASS,
   APP_SURFACE_CARD_CLASS,
 } from "../../designSystem";
+import { buildPostPath } from "../../../lib/postUrl";
 
 declare global {
   interface Window {
@@ -355,7 +356,9 @@ export default function EditMeetupForm({
       }
 
       clearDraft();
-      window.location.replace(`/posts/${postId}`);
+      window.location.replace(
+        buildPostPath(postId, meetingPurpose, placeName || location)
+      );
     } catch (error) {
       setMessage(
         error instanceof Error ? error.message : "Failed to save meetup."
@@ -626,7 +629,9 @@ export default function EditMeetupForm({
 
             <button
               type="button"
-              onClick={() => router.push(`/posts/${postId}`)}
+              onClick={() =>
+                router.push(buildPostPath(postId, meetingPurpose, placeName || location))
+              }
               className={`rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-5 py-4 text-sm font-medium transition`}
             >
               Cancel

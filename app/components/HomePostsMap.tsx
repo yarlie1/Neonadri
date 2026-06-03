@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { MapPost } from "../map/page";
 import { getPublicLocationLabel } from "../../lib/locationPrivacy";
 import { formatAudienceMeta } from "../../lib/genderLabels";
+import { buildPostPath } from "../../lib/postUrl";
 import { Coins } from "lucide-react";
 import {
   APP_BODY_TEXT_CLASS,
@@ -444,7 +445,11 @@ export default function HomePostsMap({ posts }: Props) {
 
             <div className="mt-4">
               <Link
-                href={`/posts/${selectedPost.id}`}
+                href={buildPostPath(
+                  selectedPost.id,
+                  selectedPost.meeting_purpose,
+                  selectedPost.place_name || selectedPost.location
+                )}
                 className={`inline-flex rounded-xl px-4 py-2 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
               >
                 View Meetup

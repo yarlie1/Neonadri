@@ -16,6 +16,7 @@ import {
 import type { MatchChatMetaRow, MatchRow, MatchRequestRow, PostRow } from "./page";
 import { getMeetingStatus, parseMeetingTime } from "../../lib/meetingTime";
 import { formatPersonMeta } from "../../lib/genderLabels";
+import { buildPostPath } from "../../lib/postUrl";
 import {
   CompactActionButton,
   DashboardCompactMeetupCard,
@@ -600,7 +601,14 @@ export default function DashboardClient({
 
   const openPostDetail = (postId?: number) => {
     if (!postId) return;
-    router.push(`/posts/${postId}`);
+    const post = livePostMap[postId];
+    router.push(
+      buildPostPath(
+        postId,
+        post?.meeting_purpose,
+        post?.place_name || post?.location
+      )
+    );
   };
 
   useEffect(() => {

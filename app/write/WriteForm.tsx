@@ -12,6 +12,7 @@ import {
   Check,
 } from "lucide-react";
 import { useCreateMeetupDraft } from "./useCreateMeetupDraft";
+import { buildPostPath } from "../../lib/postUrl";
 import {
   combineDateAndTime,
   getDatePart,
@@ -347,8 +348,19 @@ export default function WriteForm({ userId }: { userId: string | null }) {
         return;
       }
 
+      const createdPost = Array.isArray(result?.data) ? result.data[0] : result?.data;
+      const nextPath =
+        result?.postUrl ||
+        (createdPost
+          ? buildPostPath(
+              createdPost.id,
+              createdPost.meeting_purpose,
+              createdPost.place_name || createdPost.location
+            )
+          : "/dashboard");
+
       clearDraft();
-      router.push("/dashboard");
+      router.push(nextPath);
       router.refresh();
     } catch (e) {
       setSaving(false);

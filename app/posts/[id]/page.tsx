@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import { Sparkles } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
+import { buildPostPath, extractPostIdParam } from "../../../lib/postUrl";
 import { getBlockedUserIdsForViewer } from "../../../lib/safety";
 import { isConfirmedMatchStatus } from "../../../lib/matches/status";
 import { OG_IMAGE_VERSION } from "../../../lib/socialPreview";
@@ -56,13 +57,16 @@ type PageProps = {
 const APP_URL = process.env.APP_BASE_URL?.trim() || "https://neonadri.net";
 
 async function getPostMetadataRecord(id: string) {
+  const postId = extractPostIdParam(id);
+  if (!postId) return null;
+
   const supabase = await createClient();
   const { data } = await supabase
     .from("posts")
     .select(
       "id, place_name, location, meeting_purpose, target_gender, target_age_group, status"
     )
-    .eq("id", id)
+    .eq("id", postId)
     .maybeSingle();
 
   return data as
@@ -103,7 +107,12 @@ export async function generateMetadata({
       : "View details and request to join on Neonadri.",
   ].filter(Boolean);
   const description = descriptionParts.join(" • ");
-  const url = `${APP_URL.replace(/\/+$/, "")}/posts/${post.id}`;
+  const postPath = buildPostPath(
+    post.id,
+    post.meeting_purpose,
+    post.place_name || post.location
+  );
+  const url = `${APP_URL.replace(/\/+$/, "")}${postPath}`;
 
   return {
     title,
@@ -115,7 +124,7 @@ export async function generateMetadata({
       type: "article",
       images: [
         {
-          url: `/posts/${post.id}/opengraph-image?${OG_IMAGE_VERSION}`,
+          url: `${postPath}/opengraph-image?${OG_IMAGE_VERSION}`,
           width: 1200,
           height: 630,
           alt: title,
@@ -126,7 +135,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [`/posts/${post.id}/opengraph-image?${OG_IMAGE_VERSION}`],
+      images: [`${postPath}/opengraph-image?${OG_IMAGE_VERSION}`],
     },
   };
 }
@@ -137,7 +146,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const userTimeZone = normalizeUserTimeZone(
     cookieStore.get(USER_TIME_ZONE_COOKIE)?.value
   );
-  const id = params.id;
+  const id = extractPostIdParam(params.id);
+  if (!id) {
+    notFound();
+  }
 
   const {
     data: { user },

@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { createClient } from "../../../lib/supabase/server";
 import { formatAudienceMeta } from "../../../lib/genderLabels";
+import { extractPostIdParam } from "../../../lib/postUrl";
 
 export const dynamic = "force-dynamic";
 
@@ -54,12 +55,13 @@ function SparkleMark() {
 
 export default async function PostOpenGraphImage({ params }: ImageProps) {
   const supabase = await createClient();
+  const postId = extractPostIdParam(params.id);
   const { data } = await supabase
     .from("posts")
     .select(
       "id, place_name, location, meeting_purpose, meeting_time, target_gender, target_age_group, status"
     )
-    .eq("id", params.id)
+    .eq("id", postId)
     .maybeSingle();
 
   const post = data as

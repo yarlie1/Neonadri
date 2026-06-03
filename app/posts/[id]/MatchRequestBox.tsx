@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Send, CheckCircle2, AlertCircle, XCircle } from "lucide-react";
 import {
   APP_BODY_TEXT_CLASS,
@@ -39,6 +39,7 @@ export default function MatchRequestBox({
   meetupFinished,
 }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const [loading, setLoading] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
@@ -100,7 +101,7 @@ export default function MatchRequestBox({
       const payload = await response.json().catch(() => null);
 
       if (response.status === 401) {
-        router.push(`/login?next=${encodeURIComponent(`/posts/${postId}`)}`);
+        router.push(`/login?next=${encodeURIComponent(pathname || `/posts/${postId}`)}`);
         return;
       }
 
@@ -139,7 +140,7 @@ export default function MatchRequestBox({
       const payload = await response.json().catch(() => null);
 
       if (response.status === 401) {
-        router.push(`/login?next=${encodeURIComponent(`/posts/${postId}`)}`);
+        router.push(`/login?next=${encodeURIComponent(pathname || `/posts/${postId}`)}`);
         return;
       }
 
