@@ -3,8 +3,8 @@ function slugPart(value: string | number | null | undefined) {
     .trim()
     .normalize("NFC")
     .toLowerCase()
-    .replace(/['’]/g, "")
-    .replace(/[^\p{L}\p{N}]+/gu, "-")
+    .replace(/'/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
