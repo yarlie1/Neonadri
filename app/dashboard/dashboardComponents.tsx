@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { formatMeetingTime } from "../../lib/meetingTime";
 import { getPublicLocationLabel } from "../../lib/locationPrivacy";
-import { formatAudienceMeta } from "../../lib/genderLabels";
+import { formatCompactMeetupAudience } from "../../lib/genderLabels";
 import type { PostRow } from "./page";
 import {
   APP_BUTTON_PRIMARY_CLASS,
@@ -327,6 +327,8 @@ export function DashboardCompactMeetupCard({
   subtitle,
   badgeLabel,
   badgeClassName,
+  hostGender,
+  hostAgeGroup,
   onClick,
   className = "",
   actions,
@@ -337,6 +339,8 @@ export function DashboardCompactMeetupCard({
   subtitle?: string;
   badgeLabel: string;
   badgeClassName: string;
+  hostGender?: string | null;
+  hostAgeGroup?: string | null;
   onClick?: () => void;
   className?: string;
   actions?: ReactNode;
@@ -358,7 +362,12 @@ export function DashboardCompactMeetupCard({
     : "";
   const placeLabel =
     post.place_name || getPublicLocationLabel(post.place_name, post.location) || "No place";
-  const guestLabel = formatAudienceMeta(post.target_gender, post.target_age_group);
+  const guestLabel = formatCompactMeetupAudience({
+    hostGender,
+    hostAgeGroup,
+    guestGender: post.target_gender,
+    guestAgeGroup: post.target_age_group,
+  });
 
   return (
     <div

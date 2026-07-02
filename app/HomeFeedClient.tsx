@@ -48,7 +48,11 @@ import {
 } from "./useHomeFeedFilters";
 import { useDistanceUnit } from "./useDistanceUnit";
 import { useCreateMeetupHref } from "./useCreateMeetupHref";
-import { formatAudienceMeta, formatPersonMeta } from "../lib/genderLabels";
+import {
+  formatAudienceMeta,
+  formatCompactMeetupAudience,
+  formatPersonMeta,
+} from "../lib/genderLabels";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -596,7 +600,12 @@ export default function HomeFeedClient({
                 getPublicLocationLabel(post.place_name, post.location) ||
                 "No place"
               }
-              lookingForText={formatAudienceMeta(post.target_gender, post.target_age_group)}
+              lookingForText={formatCompactMeetupAudience({
+                hostGender: host.gender,
+                hostAgeGroup: host.ageGroup,
+                guestGender: post.target_gender,
+                guestAgeGroup: post.target_age_group,
+              })}
               distanceText={distanceText}
             />
           );

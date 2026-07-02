@@ -192,6 +192,7 @@ export default async function DashboardPage() {
 
   let profileMap: Record<string, string> = {};
   let profileMetaMap: Record<string, string> = {};
+  let profileIdentityMap: Record<string, { gender: string | null; ageGroup: string | null }> = {};
   let postMap: Record<number, PostRow> = {};
 
   if (profileUserIds.length > 0) {
@@ -204,6 +205,10 @@ export default async function DashboardPage() {
       profileMap[profile.id] = profile.display_name || "Unknown";
       const gender = profile.gender || "";
       const ageGroup = profile.age_group || "";
+      profileIdentityMap[profile.id] = {
+        gender: profile.gender,
+        ageGroup: profile.age_group,
+      };
       profileMetaMap[profile.id] =
         gender || ageGroup
           ? formatPersonMeta(gender || "Unknown", ageGroup)
@@ -263,6 +268,7 @@ export default async function DashboardPage() {
       matches={matches}
       profileMap={profileMap}
       profileMetaMap={profileMetaMap}
+      profileIdentityMap={profileIdentityMap}
       postMap={postMap}
       matchSummaryMap={matchSummaryMap}
       reviewedMatchIds={reviewedMatchIds}

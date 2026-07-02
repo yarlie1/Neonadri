@@ -43,6 +43,7 @@ function PostsTabPanel({
   filteredPosts,
   matchSummaryMap,
   currentUserMeta,
+  currentUserIdentity,
   userTimeZone,
   getPostLifecycleStatus,
   openPostDetail,
@@ -53,6 +54,7 @@ function PostsTabPanel({
     { isMatched: boolean; pendingRequestCount: number; totalRequestCount: number }
   >;
   currentUserMeta: string;
+  currentUserIdentity?: { gender: string | null; ageGroup: string | null };
   userTimeZone: string;
   getPostLifecycleStatus: (post: PostRow | null | undefined) => "Upcoming" | "Expired" | "Cancelled";
   openPostDetail: (postId: number) => void;
@@ -75,6 +77,8 @@ function PostsTabPanel({
             subtitle={`Hosted by you${currentUserMeta ? ` / ${currentUserMeta}` : ""}${pendingCount ? ` / ${pendingCount} pending` : ""}`}
             badgeLabel={postStatus}
             badgeClassName={getStatusBadgeClass(postStatus)}
+            hostGender={currentUserIdentity?.gender}
+            hostAgeGroup={currentUserIdentity?.ageGroup}
             onClick={() => openPostDetail(post.id)}
           />
         );
@@ -196,12 +200,14 @@ function RecentChatsPanel({
 function ReceivedTabPanel({
   receivedItems,
   profileMap,
+  profileIdentityMap,
   postMap,
   userTimeZone,
   openPostDetail,
 }: {
   receivedItems: MatchRequestRow[];
   profileMap: Record<string, string>;
+  profileIdentityMap: Record<string, { gender: string | null; ageGroup: string | null }>;
   postMap: Record<number, PostRow>;
   userTimeZone: string;
   openPostDetail: (postId: number) => void;
@@ -211,6 +217,9 @@ function ReceivedTabPanel({
       {receivedItems.map((item) => {
         const requesterName = profileMap[item.requester_user_id] || "Unknown";
         const relatedPost = postMap[item.post_id];
+        const hostIdentity = relatedPost?.user_id
+          ? profileIdentityMap[relatedPost.user_id]
+          : undefined;
         const isCancelled =
           String(relatedPost?.status || "open").toLowerCase() === "cancelled";
         const title =
@@ -232,6 +241,8 @@ function ReceivedTabPanel({
             subtitle={new Date(item.created_at).toLocaleString()}
             badgeLabel={badgeLabel}
             badgeClassName={getStatusBadgeClass(badgeLabel)}
+            hostGender={hostIdentity?.gender}
+            hostAgeGroup={hostIdentity?.ageGroup}
             onClick={() => openPostDetail(item.post_id)}
           />
         );
@@ -249,12 +260,14 @@ function ReceivedTabPanel({
 function SentTabPanel({
   requestsSent,
   profileMap,
+  profileIdentityMap,
   postMap,
   userTimeZone,
   openPostDetail,
 }: {
   requestsSent: MatchRequestRow[];
   profileMap: Record<string, string>;
+  profileIdentityMap: Record<string, { gender: string | null; ageGroup: string | null }>;
   postMap: Record<number, PostRow>;
   userTimeZone: string;
   openPostDetail: (postId: number) => void;
@@ -264,6 +277,9 @@ function SentTabPanel({
       {requestsSent.map((item) => {
         const hostName = profileMap[item.post_owner_user_id] || "Unknown";
         const relatedPost = postMap[item.post_id];
+        const hostIdentity = relatedPost?.user_id
+          ? profileIdentityMap[relatedPost.user_id]
+          : undefined;
         const isCancelled =
           String(relatedPost?.status || "open").toLowerCase() === "cancelled";
         const isUpcomingAccepted =
@@ -297,6 +313,8 @@ function SentTabPanel({
             subtitle={new Date(item.created_at).toLocaleString()}
             badgeLabel={badgeLabel}
             badgeClassName={getStatusBadgeClass(isCancelled ? "cancelled" : item.status)}
+            hostGender={hostIdentity?.gender}
+            hostAgeGroup={hostIdentity?.ageGroup}
             onClick={() => openPostDetail(item.post_id)}
           />
         );
@@ -315,6 +333,7 @@ function MatchesTabPanel({
   filteredMatches,
   userId,
   profileMap,
+  profileIdentityMap,
   postMap,
   reviewedMatchIds,
   cancellationFeedbackMatchIds,
@@ -326,6 +345,7 @@ function MatchesTabPanel({
   filteredMatches: MatchRow[];
   userId: string;
   profileMap: Record<string, string>;
+  profileIdentityMap: Record<string, { gender: string | null; ageGroup: string | null }>;
   postMap: Record<number, PostRow>;
   reviewedMatchIds: number[];
   cancellationFeedbackMatchIds: number[];
@@ -340,6 +360,7 @@ function MatchesTabPanel({
         const otherUserId = item.user_a === userId ? item.user_b : item.user_a;
         const post = postMap[item.post_id];
         const hostName = post?.user_id ? profileMap[post.user_id] || "Unknown" : "Unknown";
+        const hostIdentity = post?.user_id ? profileIdentityMap[post.user_id] : undefined;
         const otherUserName = profileMap[otherUserId] || "Unknown";
         const alreadyReviewed = reviewedMatchIds.includes(item.id);
         const alreadyLeftCancellationFeedback =
@@ -381,6 +402,8 @@ function MatchesTabPanel({
             subtitle={`Matched ${new Date(item.created_at).toLocaleString()}`}
             badgeLabel={badgeLabel}
             badgeClassName={getStatusBadgeClass(meetupStatus)}
+            hostGender={hostIdentity?.gender}
+            hostAgeGroup={hostIdentity?.ageGroup}
             onClick={() => openPostDetail(item.post_id)}
             actions={
               <>
@@ -446,6 +469,7 @@ export default function DashboardClient({
   matches,
   profileMap,
   profileMetaMap,
+  profileIdentityMap,
   postMap,
   matchSummaryMap,
   reviewedMatchIds,
@@ -461,6 +485,7 @@ export default function DashboardClient({
   matches: MatchRow[];
   profileMap: Record<string, string>;
   profileMetaMap: Record<string, string>;
+  profileIdentityMap: Record<string, { gender: string | null; ageGroup: string | null }>;
   postMap: Record<number, PostRow>;
   matchSummaryMap: Record<
     number,
@@ -484,6 +509,7 @@ export default function DashboardClient({
   const [livePostMap, setLivePostMap] = useState(postMap);
   const [liveProfileMap, setLiveProfileMap] = useState(profileMap);
   const [liveProfileMetaMap, setLiveProfileMetaMap] = useState(profileMetaMap);
+  const [liveProfileIdentityMap, setLiveProfileIdentityMap] = useState(profileIdentityMap);
   const [liveMatchSummaryMap, setLiveMatchSummaryMap] = useState(matchSummaryMap);
   const [liveMatchChatMetaMap, setLiveMatchChatMetaMap] = useState(matchChatMetaMap);
   const {
@@ -679,6 +705,10 @@ export default function DashboardClient({
 
       const nextProfileMap: Record<string, string> = {};
       const nextProfileMetaMap: Record<string, string> = {};
+      const nextProfileIdentityMap: Record<
+        string,
+        { gender: string | null; ageGroup: string | null }
+      > = {};
       (
         (profilesRes.data || []) as Array<{
           id: string;
@@ -688,6 +718,10 @@ export default function DashboardClient({
         }>
       ).forEach((profile) => {
         nextProfileMap[profile.id] = profile.display_name || "Unknown";
+        nextProfileIdentityMap[profile.id] = {
+          gender: profile.gender,
+          ageGroup: profile.age_group,
+        };
         nextProfileMetaMap[profile.id] =
           profile.gender || profile.age_group
             ? formatPersonMeta(profile.gender || "Unknown", profile.age_group)
@@ -726,6 +760,7 @@ export default function DashboardClient({
       setPosts((hostPostsRes.data || []) as PostRow[]);
       setLiveProfileMap(nextProfileMap);
       setLiveProfileMetaMap(nextProfileMetaMap);
+      setLiveProfileIdentityMap(nextProfileIdentityMap);
       setLivePostMap(nextPostMap);
       setLiveMatchChatMetaMap(nextChatMetaMap);
       setLiveMatchSummaryMap(nextSummaryMap);
@@ -1240,6 +1275,7 @@ export default function DashboardClient({
             filteredPosts={filteredPosts}
             matchSummaryMap={liveMatchSummaryMap}
             currentUserMeta={currentUserMeta}
+            currentUserIdentity={liveProfileIdentityMap[userId]}
             userTimeZone={userTimeZone}
             getPostLifecycleStatus={getPostLifecycleStatus}
             openPostDetail={openPostDetail}
@@ -1250,6 +1286,7 @@ export default function DashboardClient({
           <ReceivedTabPanel
             receivedItems={filteredReceived}
             profileMap={liveProfileMap}
+            profileIdentityMap={liveProfileIdentityMap}
             postMap={livePostMap}
             userTimeZone={userTimeZone}
             openPostDetail={openPostDetail}
@@ -1260,6 +1297,7 @@ export default function DashboardClient({
           <SentTabPanel
             requestsSent={filteredSent}
             profileMap={liveProfileMap}
+            profileIdentityMap={liveProfileIdentityMap}
             postMap={livePostMap}
             userTimeZone={userTimeZone}
             openPostDetail={openPostDetail}
@@ -1271,6 +1309,7 @@ export default function DashboardClient({
             filteredMatches={filteredMatches}
             userId={userId}
             profileMap={liveProfileMap}
+            profileIdentityMap={liveProfileIdentityMap}
             postMap={livePostMap}
             reviewedMatchIds={reviewedMatchIds}
             cancellationFeedbackMatchIds={cancellationFeedbackMatchIds}

@@ -40,3 +40,48 @@ export function formatAudienceMeta(gender: string | null | undefined, ageGroup: 
 
   return [genderLabel, ageLabel].filter(Boolean).join(" / ");
 }
+
+function formatCompactAge(value: string | null | undefined) {
+  const normalized = (value || "").trim();
+  if (!normalized || normalized === "Any" || normalized === "Any age") return "";
+  return normalized.replace(/s\b/i, "");
+}
+
+function formatCompactGender(value: string | null | undefined, fallback = "A") {
+  switch ((value || "").trim()) {
+    case "Male":
+      return "M";
+    case "Female":
+      return "F";
+    case "Any":
+      return "A";
+    case "Other":
+      return "O";
+    case "Prefer not to say":
+      return fallback;
+    default:
+      return fallback;
+  }
+}
+
+export function formatCompactMeetupAudience({
+  hostGender,
+  hostAgeGroup,
+  guestGender,
+  guestAgeGroup,
+}: {
+  hostGender: string | null | undefined;
+  hostAgeGroup: string | null | undefined;
+  guestGender: string | null | undefined;
+  guestAgeGroup: string | null | undefined;
+}) {
+  const hostAge = formatCompactAge(hostAgeGroup);
+  const hostGenderLabel = formatCompactGender(hostGender, "");
+  const guestAge = formatCompactAge(guestAgeGroup);
+  const guestGenderLabel = formatCompactGender(guestGender || "Any", "A");
+
+  const hostLabel = `${hostAge}${hostGenderLabel}` || "Host";
+  const guestLabel = `${guestAge}${guestGenderLabel}` || "A";
+
+  return `${hostLabel} for ${guestLabel}`;
+}
