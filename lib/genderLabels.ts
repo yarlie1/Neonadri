@@ -44,7 +44,7 @@ export function formatAudienceMeta(gender: string | null | undefined, ageGroup: 
 function formatCompactAge(value: string | null | undefined) {
   const normalized = (value || "").trim();
   if (!normalized || normalized === "Any" || normalized === "Any age") return "";
-  return normalized.replace(/s\b/i, "");
+  return normalized;
 }
 
 function formatCompactGender(value: string | null | undefined, fallback = "A") {
