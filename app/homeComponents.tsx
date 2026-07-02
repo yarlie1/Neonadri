@@ -637,7 +637,6 @@ export function MeetupFeedCard({
   hostName,
   hostMeta,
   hostLine,
-  dateBadgeText,
   matchBadgeLabel,
   matchBadgeClassName,
   purposeIcon,
@@ -659,7 +658,6 @@ export function MeetupFeedCard({
   hostName: string;
   hostMeta: string;
   hostLine?: string;
-  dateBadgeText?: string;
   matchBadgeLabel: string;
   matchBadgeClassName: string;
   purposeIcon: ReactNode;
@@ -686,15 +684,8 @@ export function MeetupFeedCard({
           <div className="row-span-2 inline-flex h-10 w-10 items-center justify-center self-center rounded-[16px] border border-white/70 bg-[radial-gradient(circle_at_28%_18%,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.72)_26%,rgba(226,235,241,0.74)_58%,rgba(185,199,209,0.68)_100%)] text-[#60717c] shadow-[0_14px_26px_rgba(118,126,133,0.18),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-10px_18px_rgba(142,157,169,0.16)] backdrop-blur-md sm:h-11 sm:w-11">
             {purposeIcon}
           </div>
-          <div className="min-w-0 truncate pt-[1px] text-[22px] font-black leading-none tracking-[-0.05em] text-[#1f2b34] sm:text-[24px]">
+          <div className="col-span-2 min-w-0 truncate pt-[1px] text-[22px] font-black leading-none tracking-[-0.05em] text-[#1f2b34] sm:text-[24px]">
             {placeText}
-          </div>
-          <div className="col-start-3 row-start-1 flex items-start justify-end self-start">
-            {dateBadgeText ? (
-              <div className="shrink-0 rounded-[13px] border border-[#e3e9ee] bg-white/55 px-2.5 py-1 text-right text-[17px] font-extrabold leading-none tracking-[-0.04em] text-[#24323f] shadow-[inset_0_1px_0_rgba(255,255,255,0.86)]">
-                {dateBadgeText}
-              </div>
-            ) : null}
           </div>
           <div className="col-start-3 row-start-2 flex items-start justify-end self-start">
             <div
