@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { createClient } from "../../lib/supabase/client";
 import {
   APP_BODY_TEXT_CLASS,
@@ -12,67 +12,9 @@ import {
   APP_EYEBROW_CLASS,
   APP_PAGE_BG_CLASS,
   APP_PILL_INACTIVE_CLASS,
-  APP_SOFT_CARD_CLASS,
-  APP_SUBTLE_TEXT_CLASS,
   APP_SURFACE_CARD_CLASS,
 } from "../designSystem";
-import {
-  ABOUT_ME_RESTRICTION_MESSAGE,
-  validateAboutMeContent,
-} from "../../lib/profileContent";
-import PushNotificationButton from "../components/PushNotificationButton";
 
-const LANGUAGE_OPTIONS = [
-  "English",
-  "Korean",
-  "Spanish",
-  "Japanese",
-  "Chinese",
-  "French",
-];
-
-const MEETING_STYLE_OPTIONS = [
-  "Friendly and relaxed",
-  "Thoughtful and calm",
-  "Casual and easygoing",
-  "Focused and productive",
-  "Energetic and social",
-  "Quiet and comfortable",
-];
-
-const INTEREST_OPTIONS = [
-  "Coffee",
-  "Walk",
-  "Study",
-  "Board Games",
-  "Meal",
-  "Dessert",
-  "Movie",
-  "Karaoke",
-  "Workout",
-  "Books",
-  "Travel",
-  "Language Exchange",
-  "Networking",
-  "Photography",
-];
-
-const RESPONSE_NOTE_OPTIONS = [
-  "Usually replies within a few hours",
-  "Usually replies within a day",
-  "Usually replies within 2 days",
-  "Replies may be slow on weekdays",
-  "Usually replies in the evening",
-];
-
-const STEPS = [
-  { number: 1, label: "Basics" },
-  { number: 2, label: "Vibe" },
-  { number: 3, label: "Account" },
-];
-
-const DEFAULT_ABOUT_ME =
-  "I like clear plans, easy conversation, and low-pressure meetups.";
 const DISPLAY_NAME_MAX_LENGTH = 24;
 const PASSWORD_MIN_LENGTH = 8;
 const DISPLAY_NAME_LENGTH_MESSAGE = `Display name must be ${DISPLAY_NAME_MAX_LENGTH} characters or fewer.`;
@@ -87,81 +29,6 @@ const BETA_ACTION_CLASS =
 const SIGNUP_HERO_TITLE = "Join or create meetups.";
 const SIGNUP_HERO_BODY =
   "Set up your profile. Browse, request, or host.";
-
-function formatNaturalList(values: string[]) {
-  if (values.length === 0) return "";
-  if (values.length === 1) return values[0];
-  if (values.length === 2) return `${values[0]} and ${values[1]}`;
-  return `${values.slice(0, -1).join(", ")}, and ${values[values.length - 1]}`;
-}
-
-function toInterestPhrase(interests: string[]) {
-  const topInterests = interests.slice(0, 2).map((item) => item.toLowerCase());
-
-  if (topInterests.length === 0) {
-    return "easy plans that feel comfortable to settle into";
-  }
-
-  return formatNaturalList(topInterests);
-}
-
-function toLanguagePhrase(languages: string[]) {
-  const topLanguages = languages.slice(0, 2);
-
-  if (topLanguages.length === 0) return "English";
-
-  return formatNaturalList(topLanguages);
-}
-
-function buildAboutMeOptions({
-  meetingStyle,
-  interests,
-  languages,
-  responseTimeNote,
-}: {
-  meetingStyle: string;
-  interests: string[];
-  languages: string[];
-  responseTimeNote: string;
-}) {
-  const styleText = meetingStyle || "Friendly and relaxed";
-  const interestText = toInterestPhrase(interests);
-  const languageText = toLanguagePhrase(languages);
-  const responseText = responseTimeNote
-    ? `${responseTimeNote.charAt(0).toLowerCase()}${responseTimeNote.slice(1)}`
-    : "I usually appreciate clear communication";
-
-  return [
-    `I usually enjoy ${interestText}, and I tend to bring a ${styleText.toLowerCase()} energy to meetups. I am comfortable chatting in ${languageText}, and ${responseText}.`,
-    `I am usually happiest meeting through ${interestText} when the vibe feels ${styleText.toLowerCase()}. I can connect in ${languageText}, and ${responseText}.`,
-    `My ideal meetup is built around ${interestText} with a ${styleText.toLowerCase()} feel. I usually communicate in ${languageText}, and ${responseText}.`,
-  ];
-}
-
-function ToggleChip({
-  label,
-  selected,
-  onClick,
-}: {
-  label: string;
-  selected: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2.5 text-sm font-medium transition ${
-        selected
-          ? "border-[#8698a4] bg-[linear-gradient(180deg,#ffffff_0%,#d5e0e7_100%)] text-[#1d2c35] shadow-[0_14px_26px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.98)] ring-2 ring-[#dbe4ea]"
-          : APP_PILL_INACTIVE_CLASS
-      }`}
-    >
-      {selected ? <Check className="h-4 w-4" /> : null}
-      {label}
-    </button>
-  );
-}
 
 function SignupPageContent() {
   const supabase = createClient();
@@ -181,7 +48,6 @@ function SignupPageContent() {
   const initialPostingBetaRequired =
     initialPostingBetaRequiredParam === "0" ? false : true;
 
-  const [step, setStep] = useState(1);
   const [signupIntent, setSignupIntent] = useState<"guest" | "host" | null>(
     initialIntentFromLink === "guest" || initialIntentFromLink === "host"
       ? initialIntentFromLink
@@ -198,18 +64,13 @@ function SignupPageContent() {
   );
   const [message, setMessage] = useState("");
   const [signupCompleteWithSession, setSignupCompleteWithSession] = useState(false);
+  const [completedUserId, setCompletedUserId] = useState("");
 
   const [email, setEmail] = useState(initialEmailFromLink);
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
-  const [aboutMe, setAboutMe] = useState(DEFAULT_ABOUT_ME);
-  const [aboutMeTouched, setAboutMeTouched] = useState(false);
-  const [languages, setLanguages] = useState<string[]>(["English"]);
-  const [meetingStyle, setMeetingStyle] = useState("");
-  const [interests, setInterests] = useState<string[]>([]);
-  const [responseTimeNote, setResponseTimeNote] = useState("");
   const [isAdultConfirmed, setIsAdultConfirmed] = useState(false);
 
   const resolvedSignupIntent =
@@ -223,77 +84,16 @@ function SignupPageContent() {
   const showSignupForm =
     resolvedSignupIntent === "guest" || hostSignupOpen || betaAccessAllowed;
 
-  const canMoveNext = useMemo(() => {
-    if (step === 1) {
-      return (
-        displayName.trim().length > 0 &&
-        gender.trim().length > 0 &&
-        ageGroup.trim().length > 0
-      );
-    }
-
-    if (step === 2) {
-      return (
-        aboutMe.trim().length > 0 &&
-        meetingStyle.trim().length > 0 &&
-        interests.length > 0
-      );
-    }
-
-    if (step === 3) {
-      return (
-        email.trim().length > 0 &&
-        password.trim().length >= PASSWORD_MIN_LENGTH &&
-        isAdultConfirmed
-      );
-    }
-
-    return false;
-  }, [
-    aboutMe,
-    ageGroup,
-    displayName,
-    email,
-    gender,
-    interests.length,
-    isAdultConfirmed,
-    meetingStyle,
-    password,
-    step,
-  ]);
-
-  const profileSummary = useMemo(() => {
-    const normalized = aboutMe.replace(/\s+/g, " ").trim();
-
-    if (!normalized) return "";
-
-    if (normalized.length <= 110) {
-      return normalized;
-    }
-
-    return `${normalized.slice(0, 107).trimEnd()}...`;
-  }, [aboutMe]);
-
-  const aboutMeOptions = useMemo(
+  const canCreateAccount = useMemo(
     () =>
-      buildAboutMeOptions({
-        meetingStyle,
-        interests,
-        languages,
-        responseTimeNote,
-      }),
-    [interests, languages, meetingStyle, responseTimeNote]
+      displayName.trim().length > 0 &&
+      gender.trim().length > 0 &&
+      ageGroup.trim().length > 0 &&
+      email.trim().length > 0 &&
+      password.trim().length >= PASSWORD_MIN_LENGTH &&
+      isAdultConfirmed,
+    [ageGroup, displayName, email, gender, isAdultConfirmed, password]
   );
-
-  useEffect(() => {
-    if (aboutMeTouched) return;
-
-    const nextDefault =
-      aboutMeOptions[Math.floor(Math.random() * aboutMeOptions.length)] ||
-      DEFAULT_ABOUT_ME;
-
-    setAboutMe(nextDefault);
-  }, [aboutMeOptions, aboutMeTouched]);
 
   useEffect(() => {
     if (hasInitialPostingBetaRequired) return;
@@ -326,76 +126,16 @@ function SignupPageContent() {
     });
   }, [signupCompleteWithSession]);
 
-  const toggleArrayValue = (
-    value: string,
-    current: string[],
-    setter: (next: string[]) => void
-  ) => {
-    if (current.includes(value)) {
-      setter(current.filter((item) => item !== value));
-      return;
-    }
-
-    setter([...current, value]);
-  };
-
   const handleSelectIntent = (nextIntent: "guest" | "host") => {
     setSignupIntent(nextIntent);
-    setStep(1);
     setBetaAccessAllowed(false);
     setMessage("");
   };
 
   const handleResetIntent = () => {
     setSignupIntent(null);
-    setStep(1);
     setBetaAccessAllowed(false);
     setMessage("");
-  };
-
-  const handleNext = async () => {
-    if (!canMoveNext || step >= STEPS.length) return;
-    setMessage("");
-
-    if (step === 1) {
-      const normalizedDisplayName = displayName.trim();
-
-      if (normalizedDisplayName.length > DISPLAY_NAME_MAX_LENGTH) {
-        setMessage(DISPLAY_NAME_LENGTH_MESSAGE);
-        return;
-      }
-
-      const { data: existingProfile, error: existingProfileError } = await supabase
-        .from("profiles")
-        .select("id")
-        .ilike("display_name", normalizedDisplayName)
-        .limit(1)
-        .maybeSingle();
-
-      if (existingProfileError) {
-        console.error("Display name availability check failed", {
-          message: existingProfileError.message,
-          details: existingProfileError.details,
-          hint: existingProfileError.hint,
-          code: existingProfileError.code,
-        });
-        setMessage("We couldn't check that display name right now.");
-        return;
-      }
-
-      if (existingProfile) {
-        setMessage(DISPLAY_NAME_IN_USE_MESSAGE);
-        return;
-      }
-    }
-
-    setStep((current) => current + 1);
-  };
-
-  const handleBack = () => {
-    if (step <= 1) return;
-    setMessage("");
-    setStep((current) => current - 1);
   };
 
   const handleBetaAccessCheck = async () => {
@@ -433,7 +173,6 @@ function SignupPageContent() {
       }
 
       setBetaAccessAllowed(true);
-      setStep(1);
       setPostingBetaRequired(betaCheckPayload.postingBetaRequired !== false);
       setMessage(
         betaCheckPayload.postingBetaRequired === false
@@ -462,6 +201,18 @@ function SignupPageContent() {
 
       if (displayName.trim().length > DISPLAY_NAME_MAX_LENGTH) {
         setMessage(DISPLAY_NAME_LENGTH_MESSAGE);
+        setSubmitting(false);
+        return;
+      }
+
+      if (!displayName.trim() || !gender || !ageGroup || !email.trim()) {
+        setMessage("Complete the required fields.");
+        setSubmitting(false);
+        return;
+      }
+
+      if (password.trim().length < PASSWORD_MIN_LENGTH) {
+        setMessage(`Password must be at least ${PASSWORD_MIN_LENGTH} characters.`);
         setSubmitting(false);
         return;
       }
@@ -506,10 +257,28 @@ function SignupPageContent() {
         }
       }
 
-      const aboutMeValidation = validateAboutMeContent(aboutMe);
+      const normalizedDisplayName = displayName.trim();
+      const { data: existingProfile, error: existingProfileError } = await supabase
+        .from("profiles")
+        .select("id")
+        .ilike("display_name", normalizedDisplayName)
+        .limit(1)
+        .maybeSingle();
 
-      if (!aboutMeValidation.ok) {
-        setMessage(ABOUT_ME_RESTRICTION_MESSAGE);
+      if (existingProfileError) {
+        console.error("Display name availability check failed", {
+          message: existingProfileError.message,
+          details: existingProfileError.details,
+          hint: existingProfileError.hint,
+          code: existingProfileError.code,
+        });
+        setMessage("We couldn't check that display name right now.");
+        setSubmitting(false);
+        return;
+      }
+
+      if (existingProfile) {
+        setMessage(DISPLAY_NAME_IN_USE_MESSAGE);
         setSubmitting(false);
         return;
       }
@@ -519,8 +288,8 @@ function SignupPageContent() {
         password,
         options: {
           data: {
-            full_name: displayName.trim(),
-            display_name: displayName.trim(),
+            full_name: normalizedDisplayName,
+            display_name: normalizedDisplayName,
             is_adult_confirmed: true,
             age_gate_confirmed_at: new Date().toISOString(),
             signup_intent: resolvedSignupIntent,
@@ -553,17 +322,17 @@ function SignupPageContent() {
       if (hasSession) {
         const payload = {
           id: userId,
-          display_name: displayName.trim(),
-          bio: profileSummary || null,
-          about_me: aboutMe.trim() || null,
+          display_name: normalizedDisplayName,
+          bio: null,
+          about_me: null,
           avatar_url: null,
           gender: gender || null,
           age_group: ageGroup || null,
           preferred_area: null,
-          languages: languages.length > 0 ? languages : null,
-          meeting_style: meetingStyle || null,
-          interests: interests.length > 0 ? interests : null,
-          response_time_note: responseTimeNote.trim() || null,
+          languages: null,
+          meeting_style: null,
+          interests: null,
+          response_time_note: null,
           signup_intent: resolvedSignupIntent,
         };
 
@@ -585,6 +354,7 @@ function SignupPageContent() {
       }
 
       if (hasSession) {
+        setCompletedUserId(userId);
         setSignupCompleteWithSession(true);
         setSubmitting(false);
         setMessage("");
@@ -604,24 +374,37 @@ function SignupPageContent() {
   };
 
   if (signupCompleteWithSession) {
+    const profileEditPath = completedUserId
+      ? `/profile/${completedUserId}/edit`
+      : redirectPath;
+
     return (
       <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
         <div className="mx-auto max-w-2xl">
           <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
             <div className={APP_EYEBROW_CLASS}>Account created</div>
             <h1 className="mt-3 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-              Turn on notifications?
+              What would you like to do next?
             </h1>
             <p className={`mt-3 ${APP_BODY_TEXT_CLASS}`}>
-              Get request and chat alerts?
+              Your required account details are saved.
             </p>
 
-            <div className="mt-6 rounded-[24px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
-              <PushNotificationButton
-                variant="choice"
-                onEnabled={() => router.push(redirectPath)}
-                onSkipped={() => router.push(redirectPath)}
-              />
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => router.push(redirectPath)}
+                className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
+              >
+                Continue
+              </button>
+              <button
+                type="button"
+                onClick={() => router.push(profileEditPath)}
+                className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+              >
+                Edit profile
+              </button>
             </div>
           </section>
         </div>
@@ -723,44 +506,16 @@ function SignupPageContent() {
                   </button>
                 </div>
               ) : showSignupForm || awaitingSignupMode ? (
-                <div className="mt-7 space-y-3">
-                  {STEPS.map((item) => {
-                    const active = step === item.number;
-                    const complete = step > item.number;
-
-                    return (
-                      <div
-                        key={item.number}
-                        className={`flex items-center gap-3 rounded-[22px] border px-4 py-3 transition ${
-                          active
-                            ? "border-[#cbd6dd] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(232,238,242,0.94)_100%)] shadow-[0_12px_24px_rgba(118,126,133,0.12)]"
-                            : "border-[#e0e7ec] bg-white/60"
-                        }`}
-                      >
-                        <div
-                          className={`inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${
-                            complete
-                              ? "bg-[#273640] text-white"
-                              : active
-                              ? "bg-[#2f3c46] text-white"
-                              : "bg-white/80 text-[#6e7d86]"
-                          }`}
-                        >
-                          {complete ? <Check className="h-4 w-4" /> : item.number}
-                        </div>
-                        <div>
-                          <div className="text-sm font-semibold text-[#24323c]">
-                            {item.label}
-                          </div>
-                          <div className="text-xs text-[#67747c]">
-                            {item.number === 1 && "Name, gender, and age group"}
-                            {item.number === 2 && "About you, style, and interests"}
-                            {item.number === 3 && "Email and password"}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div className="mt-7 rounded-[22px] border border-[#dce5eb] bg-white/65 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]">
+                  <div className="text-sm font-semibold text-[#24323c]">
+                    Required details first
+                  </div>
+                  <div className="mt-1 text-xs leading-6 text-[#67747c]">
+                    Email, password, display name, gender, age group, and 18+ confirmation.
+                  </div>
+                  <div className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#60707a]">
+                    Profile details can come next
+                  </div>
                 </div>
               ) : showBetaGate ? null : (
                 <div className="mt-7 rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
@@ -894,308 +649,153 @@ function SignupPageContent() {
                   <div>
                     <div className={APP_EYEBROW_CLASS}>Sign Up</div>
                     <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-                      Step {step} of {STEPS.length}
+                      Create your account
                     </h2>
                   </div>
                   <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                    {STEPS[step - 1].label}
+                    Required
                   </div>
                 </div>
 
                 <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  {step === 1 &&
-                    "Add the basics."}
-                  {step === 2 &&
-                    "Keep it activity-based."}
-                  {step === 3 &&
-                    "Set your password."}
+                  Save the details Neonadri needs to work.
                 </p>
 
-                <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#e8eef2]">
-                  <div
-                    className="h-full rounded-full bg-[linear-gradient(90deg,#d9e2e8,#aab8c1)] transition-all"
-                    style={{ width: `${(step / STEPS.length) * 100}%` }}
-                  />
-                </div>
-
                 <div className="mt-6 space-y-4">
-                  {step === 1 && (
-                    <>
-                      <div>
-                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                          Display Name
-                        </label>
-                        <input
-                          value={displayName}
-                          onChange={(e) =>
-                            setDisplayName(e.target.value.slice(0, DISPLAY_NAME_MAX_LENGTH))
-                          }
-                          maxLength={DISPLAY_NAME_MAX_LENGTH}
-                          className={INPUT_CLASS}
-                          placeholder="How people will see you"
-                        />
-                      </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                      Display name
+                    </label>
+                    <input
+                      value={displayName}
+                      onChange={(e) =>
+                        setDisplayName(e.target.value.slice(0, DISPLAY_NAME_MAX_LENGTH))
+                      }
+                      maxLength={DISPLAY_NAME_MAX_LENGTH}
+                      className={INPUT_CLASS}
+                      placeholder="How people will see you"
+                    />
+                  </div>
 
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                            Gender
-                          </label>
-                          <select
-                            value={gender}
-                            onChange={(e) => setGender(e.target.value)}
-                            className={INPUT_CLASS}
-                          >
-                            <option value="">Select gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                            <option value="Prefer not to say">Prefer not to say</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                            Age Group
-                          </label>
-                          <select
-                            value={ageGroup}
-                            onChange={(e) => setAgeGroup(e.target.value)}
-                            className={INPUT_CLASS}
-                          >
-                            <option value="">Select age group</option>
-                            <option value="20s">20s</option>
-                            <option value="30s">30s</option>
-                            <option value="40s">40s</option>
-                            <option value="50s+">50s+</option>
-                          </select>
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  {step === 2 && (
-                    <>
-                      <div>
-                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                          Languages
-                        </label>
-                        <div className={`${APP_SOFT_CARD_CLASS} flex flex-wrap gap-2 p-3`}>
-                          {LANGUAGE_OPTIONS.map((item) => (
-                            <ToggleChip
-                              key={item}
-                              label={item}
-                              selected={languages.includes(item)}
-                              onClick={() =>
-                                toggleArrayValue(item, languages, setLanguages)
-                              }
-                            />
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                          Meeting Style
-                        </label>
-                        <select
-                          value={meetingStyle}
-                          onChange={(e) => setMeetingStyle(e.target.value)}
-                          className={INPUT_CLASS}
-                        >
-                          <option value="">Select meeting style</option>
-                          {MEETING_STYLE_OPTIONS.map((item) => (
-                            <option key={item} value={item}>
-                              {item}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                          Interests
-                        </label>
-                        <div className={`${APP_SOFT_CARD_CLASS} flex flex-wrap gap-2 p-3`}>
-                          {INTEREST_OPTIONS.map((item) => (
-                            <ToggleChip
-                              key={item}
-                              label={item}
-                              selected={interests.includes(item)}
-                              onClick={() =>
-                                toggleArrayValue(item, interests, setInterests)
-                              }
-                            />
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                          Response Note
-                        </label>
-                        <select
-                          value={responseTimeNote}
-                          onChange={(e) => setResponseTimeNote(e.target.value)}
-                          className={INPUT_CLASS}
-                        >
-                          <option value="">Select response note</option>
-                          {RESPONSE_NOTE_OPTIONS.map((item) => (
-                            <option key={item} value={item}>
-                              {item}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                          About Me
-                        </label>
-                        <textarea
-                          value={aboutMe}
-                          onChange={(e) => {
-                            setAboutMeTouched(true);
-                            setAboutMe(e.target.value);
-                          }}
-                          rows={4}
-                          className={INPUT_CLASS}
-                        />
-                        <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                          Keep it activity-based. Avoid unsafe sexual content.
-                        </p>
-                      </div>
-                    </>
-                  )}
-
-                  {step === 3 && (
-                    <>
-                      <div>
-                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                          {requiresPostingBeta ? "Approved Email" : "Email"}
-                        </label>
-                        <input
-                          type="email"
-                          className={
-                            requiresPostingBeta
-                              ? `${INPUT_CLASS} bg-[#f4f7f9] text-[#64727a]`
-                              : INPUT_CLASS
-                          }
-                          value={email}
-                          readOnly={requiresPostingBeta}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                        {requiresPostingBeta ? (
-                          <button
-                            type="button"
-                            onClick={handleResetBetaAccess}
-                            className="mt-2 text-xs font-medium text-[#55656e] underline underline-offset-2 transition hover:text-[#24323c]"
-                          >
-                            Use a different email
-                          </button>
-                        ) : null}
-                      </div>
-
-                      <div>
-                        <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                          Password
-                        </label>
-                        <input
-                          type="password"
-                          placeholder={`At least ${PASSWORD_MIN_LENGTH} characters`}
-                          className={INPUT_CLASS}
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                        {password.trim().length > 0 &&
-                        password.trim().length < PASSWORD_MIN_LENGTH ? (
-                          <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                            Password must be at least {PASSWORD_MIN_LENGTH} characters.
-                          </p>
-                        ) : null}
-                      </div>
-
-                      <label className={`${APP_SOFT_CARD_CLASS} grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 p-4 text-sm ${APP_BODY_TEXT_CLASS}`}>
-                        <input
-                          type="checkbox"
-                          checked={isAdultConfirmed}
-                          onChange={(e) => setIsAdultConfirmed(e.target.checked)}
-                          className="!mt-0.5 !h-4 !w-4 !appearance-auto !rounded !border-[#c7d2d9] !p-0 !shadow-none !outline-none !ring-0 accent-[#8fa1ac]"
-                        />
-                        <span className="min-w-0 leading-6">
-                          I confirm that I am 18 or older and understand that
-                          Neonadri is for adults only.
-                        </span>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                        Gender
                       </label>
-                      {!isAdultConfirmed ? (
-                        <p className={`text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                          You need to confirm you are 18 or older to create an account.
-                        </p>
-                      ) : null}
-                    </>
-                  )}
+                      <select
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                        className={INPUT_CLASS}
+                      >
+                        <option value="">Select gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                        <option value="Prefer not to say">Prefer not to say</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                        Age group
+                      </label>
+                      <select
+                        value={ageGroup}
+                        onChange={(e) => setAgeGroup(e.target.value)}
+                        className={INPUT_CLASS}
+                      >
+                        <option value="">Select age group</option>
+                        <option value="20s">20s</option>
+                        <option value="30s">30s</option>
+                        <option value="40s">40s</option>
+                        <option value="50s+">50s+</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                      {requiresPostingBeta ? "Approved email" : "Email"}
+                    </label>
+                    <input
+                      type="email"
+                      className={
+                        requiresPostingBeta
+                          ? `${INPUT_CLASS} bg-[#f4f7f9] text-[#64727a]`
+                          : INPUT_CLASS
+                      }
+                      value={email}
+                      readOnly={requiresPostingBeta}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    {requiresPostingBeta ? (
+                      <button
+                        type="button"
+                        onClick={handleResetBetaAccess}
+                        className="mt-2 text-xs font-medium text-[#55656e] underline underline-offset-2 transition hover:text-[#24323c]"
+                      >
+                        Use a different email
+                      </button>
+                    ) : null}
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      placeholder={`At least ${PASSWORD_MIN_LENGTH} characters`}
+                      className={INPUT_CLASS}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                    {password.trim().length > 0 &&
+                    password.trim().length < PASSWORD_MIN_LENGTH ? (
+                      <p className="mt-2 text-xs text-[#6e7d86]">
+                        Password must be at least {PASSWORD_MIN_LENGTH} characters.
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <label className="grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] p-4 text-sm text-[#55626a]">
+                    <input
+                      type="checkbox"
+                      checked={isAdultConfirmed}
+                      onChange={(e) => setIsAdultConfirmed(e.target.checked)}
+                      className="!mt-0.5 !h-4 !w-4 !appearance-auto !rounded !border-[#c7d2d9] !p-0 !shadow-none !outline-none !ring-0 accent-[#8fa1ac]"
+                    />
+                    <span className="min-w-0 leading-6">
+                      I confirm that I am 18 or older and understand that Neonadri is for adults only.
+                    </span>
+                  </label>
                 </div>
 
                 <div className="mt-6 flex flex-wrap gap-3">
-                  {step === 2 && !canMoveNext && (
-                    <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                      Pick a style and interest.
-                    </p>
-                  )}
-                  {step === 3 && !isAdultConfirmed && (
-                    <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                      Confirm that you are 18 or older to continue.
-                    </p>
-                  )}
-                  {step === 3 && (
-                    <p className={`w-full text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-                      {"By creating an account, you agree to Neonadri's "}
-                      <Link href="/terms" className="underline underline-offset-2 transition hover:text-[#24323c]">
-                        Terms
-                      </Link>
-                      ,{" "}
-                      <Link href="/privacy" className="underline underline-offset-2 transition hover:text-[#24323c]">
-                        Privacy Policy
-                      </Link>
-                      , and{" "}
-                      <Link href="/community" className="underline underline-offset-2 transition hover:text-[#24323c]">
-                        Community Guidelines
-                      </Link>
-                      .
-                    </p>
-                  )}
+                  <p className="w-full text-xs text-[#6e7d86]">
+                    {"By creating an account, you agree to Neonadri's "}
+                    <Link href="/terms" className="underline underline-offset-2 transition hover:text-[#24323c]">
+                      Terms
+                    </Link>
+                    ,{" "}
+                    <Link href="/privacy" className="underline underline-offset-2 transition hover:text-[#24323c]">
+                      Privacy Policy
+                    </Link>
+                    , and{" "}
+                    <Link href="/community" className="underline underline-offset-2 transition hover:text-[#24323c]">
+                      Community Guidelines
+                    </Link>
+                    .
+                  </p>
 
-                  {step > 1 ? (
-                    <button
-                      type="button"
-                      onClick={handleBack}
-                      className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                      Back
-                    </button>
-                  ) : null}
-
-                  {step < STEPS.length ? (
-                    <button
-                      type="button"
-                      onClick={handleNext}
-                      disabled={!canMoveNext}
-                      className={`inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
-                    >
-                      Next
-                      <ArrowRight className="h-4 w-4" />
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={handleSignup}
-                      disabled={submitting}
-                      className={`rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
-                    >
-                      {submitting ? "Creating account..." : "Create account"}
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={handleSignup}
+                    disabled={submitting || !canCreateAccount}
+                    className={`rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
+                  >
+                    {submitting ? "Creating account..." : "Create account"}
+                  </button>
                 </div>
               </>
             )}
