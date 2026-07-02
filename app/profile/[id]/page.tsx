@@ -354,15 +354,17 @@ export default async function ProfilePage({ params }: PageProps) {
                   </div>
                 )}
 
-                <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
-                  <div className={`flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                    <MessageSquareText className="h-4 w-4 shrink-0 text-[#71828c]" />
-                    <span>About me</span>
+                {hasAboutMe && (
+                  <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
+                    <div className={`flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
+                      <MessageSquareText className="h-4 w-4 shrink-0 text-[#71828c]" />
+                      <span>About me</span>
+                    </div>
+                    <div className={`mt-2 text-sm leading-7 ${APP_MUTED_TEXT_CLASS}`}>
+                      {profile.about_me}
+                    </div>
                   </div>
-                  <div className={`mt-2 text-sm leading-7 ${APP_MUTED_TEXT_CLASS}`}>
-                    {hasAboutMe ? profile.about_me : "No introduction yet."}
-                  </div>
-                </div>
+                )}
 
                 {hasLanguages && (
                   <InfoItem

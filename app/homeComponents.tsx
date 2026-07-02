@@ -687,7 +687,7 @@ export function MeetupFeedCard({
             {purposeIcon}
           </div>
           <div className="min-w-0 truncate pt-[1px] text-[22px] font-black leading-none tracking-[-0.05em] text-[#1f2b34] sm:text-[24px]">
-            {purposeName}
+            {placeText}
           </div>
           <div className="col-start-3 row-start-1 flex items-start justify-end self-start">
             {dateBadgeText ? (
@@ -716,11 +716,6 @@ export function MeetupFeedCard({
         </div>
 
         <div className="mt-2.5 grid min-w-0 gap-1.5">
-          <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
-            <MapPin className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
-            <span className="min-w-0 flex-1 truncate font-semibold text-[#24323f]">{placeText}</span>
-          </div>
-
           {whenText && (
             <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
               <Clock3 className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
