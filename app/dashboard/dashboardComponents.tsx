@@ -422,9 +422,12 @@ export function DashboardCompactMeetupCard({
         </div>
 
         {amount !== null ? (
-          <div className={`${SOFT_CARD_CLASS} flex min-w-0 items-center justify-end px-3 py-2`}>
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#d8e2e8] px-2 py-0.5 text-xs font-bold text-[#43525b]">
-              <Coins className="h-3.5 w-3.5" />
+          <div className={`${SOFT_CARD_CLASS} flex min-w-0 items-center justify-between gap-2 px-3 py-2`}>
+            <span className="flex min-w-0 items-center gap-2">
+              <Coins className="h-4 w-4 shrink-0 text-[#82919a]" />
+              <span className="min-w-0 truncate">Host covers</span>
+            </span>
+            <span className="shrink-0 font-semibold text-[#43525b]">
               ${amount.toLocaleString()}
             </span>
           </div>
