@@ -68,6 +68,7 @@ function SignupPageContent() {
 
   const [email, setEmail] = useState(initialEmailFromLink);
   const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
@@ -83,6 +84,8 @@ function SignupPageContent() {
   const showBetaGate = requiresPostingBeta && !betaAccessAllowed;
   const showSignupForm =
     resolvedSignupIntent === "guest" || hostSignupOpen || betaAccessAllowed;
+  const passwordsMatch =
+    password.length >= PASSWORD_MIN_LENGTH && password === passwordConfirmation;
 
   const canCreateAccount = useMemo(
     () =>
@@ -91,8 +94,9 @@ function SignupPageContent() {
       ageGroup.trim().length > 0 &&
       email.trim().length > 0 &&
       password.trim().length >= PASSWORD_MIN_LENGTH &&
+      passwordsMatch &&
       isAdultConfirmed,
-    [ageGroup, displayName, email, gender, isAdultConfirmed, password]
+    [ageGroup, displayName, email, gender, isAdultConfirmed, password, passwordsMatch]
   );
 
   useEffect(() => {
@@ -213,6 +217,12 @@ function SignupPageContent() {
 
       if (password.trim().length < PASSWORD_MIN_LENGTH) {
         setMessage(`Password must be at least ${PASSWORD_MIN_LENGTH} characters.`);
+        setSubmitting(false);
+        return;
+      }
+
+      if (password !== passwordConfirmation) {
+        setMessage("Passwords do not match.");
         setSubmitting(false);
         return;
       }
@@ -511,7 +521,7 @@ function SignupPageContent() {
                     Required details first
                   </div>
                   <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                    Email, password, display name, gender, age group, and 18+ confirmation.
+                    Email, password, confirmation, display name, gender, age group, and 18+ confirmation.
                   </div>
                   <div className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#60707a]">
                     Profile details can come next
@@ -664,6 +674,69 @@ function SignupPageContent() {
                 <div className="mt-6 space-y-4">
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                      {requiresPostingBeta ? "Approved email" : "Email"}
+                    </label>
+                    <input
+                      type="email"
+                      className={
+                        requiresPostingBeta
+                          ? `${INPUT_CLASS} bg-[#f4f7f9] text-[#64727a]`
+                          : INPUT_CLASS
+                      }
+                      value={email}
+                      readOnly={requiresPostingBeta}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    {requiresPostingBeta ? (
+                      <button
+                        type="button"
+                        onClick={handleResetBetaAccess}
+                        className="mt-2 text-xs font-medium text-[#55656e] underline underline-offset-2 transition hover:text-[#24323c]"
+                      >
+                        Use a different email
+                      </button>
+                    ) : null}
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      placeholder={`At least ${PASSWORD_MIN_LENGTH} characters`}
+                      className={INPUT_CLASS}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                    {password.trim().length > 0 &&
+                    password.trim().length < PASSWORD_MIN_LENGTH ? (
+                      <p className="mt-2 text-xs text-[#6e7d86]">
+                        Password must be at least {PASSWORD_MIN_LENGTH} characters.
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                      Confirm password
+                    </label>
+                    <input
+                      type="password"
+                      placeholder="Enter password again"
+                      className={INPUT_CLASS}
+                      value={passwordConfirmation}
+                      onChange={(e) => setPasswordConfirmation(e.target.value)}
+                    />
+                    {passwordConfirmation.length > 0 && password !== passwordConfirmation ? (
+                      <p className="mt-2 text-xs text-[#6e7d86]">
+                        Passwords do not match.
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
                       Display name
                     </label>
                     <input
@@ -711,51 +784,6 @@ function SignupPageContent() {
                         <option value="50s+">50s+</option>
                       </select>
                     </div>
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      {requiresPostingBeta ? "Approved email" : "Email"}
-                    </label>
-                    <input
-                      type="email"
-                      className={
-                        requiresPostingBeta
-                          ? `${INPUT_CLASS} bg-[#f4f7f9] text-[#64727a]`
-                          : INPUT_CLASS
-                      }
-                      value={email}
-                      readOnly={requiresPostingBeta}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                    {requiresPostingBeta ? (
-                      <button
-                        type="button"
-                        onClick={handleResetBetaAccess}
-                        className="mt-2 text-xs font-medium text-[#55656e] underline underline-offset-2 transition hover:text-[#24323c]"
-                      >
-                        Use a different email
-                      </button>
-                    ) : null}
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      placeholder={`At least ${PASSWORD_MIN_LENGTH} characters`}
-                      className={INPUT_CLASS}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    {password.trim().length > 0 &&
-                    password.trim().length < PASSWORD_MIN_LENGTH ? (
-                      <p className="mt-2 text-xs text-[#6e7d86]">
-                        Password must be at least {PASSWORD_MIN_LENGTH} characters.
-                      </p>
-                    ) : null}
                   </div>
 
                   <label className="grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] p-4 text-sm text-[#55626a]">
