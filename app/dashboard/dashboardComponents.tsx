@@ -411,6 +411,13 @@ export function DashboardCompactMeetupCard({
           <span className="min-w-0 truncate">{placeLabel}</span>
         </div>
 
+        <div className={`${SOFT_CARD_CLASS} flex min-w-0 items-center gap-2 px-3 py-2`}>
+          <span className="flex min-w-0 items-center gap-2">
+            <UserRound className="h-4 w-4 shrink-0 text-[#82919a]" />
+            <span className="min-w-0 truncate font-semibold text-[#435760]">{guestLabel}</span>
+          </span>
+        </div>
+
         <div className={`${SOFT_CARD_CLASS} flex min-w-0 items-center justify-between gap-2 px-3 py-2`}>
           <span className="flex min-w-0 items-center gap-2">
             <Clock3 className="h-4 w-4 shrink-0 text-[#82919a]" />
@@ -421,13 +428,6 @@ export function DashboardCompactMeetupCard({
               {durationLabel}
             </span>
           ) : null}
-        </div>
-
-        <div className={`${SOFT_CARD_CLASS} flex min-w-0 items-center gap-2 px-3 py-2`}>
-          <span className="flex min-w-0 items-center gap-2">
-            <UserRound className="h-4 w-4 shrink-0 text-[#82919a]" />
-            <span className="min-w-0 truncate font-semibold text-[#435760]">{guestLabel}</span>
-          </span>
         </div>
 
         {amount !== null ? (

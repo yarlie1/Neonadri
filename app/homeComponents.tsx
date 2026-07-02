@@ -704,6 +704,13 @@ export function MeetupFeedCard({
         </div>
 
         <div className="mt-2.5 grid min-w-0 gap-1.5">
+          <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
+            <span className="inline-flex min-w-0 flex-1 items-center gap-2 text-[#55646e]">
+              <UserRound className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
+              <span className="truncate font-semibold text-[#435760]">{lookingForText}</span>
+            </span>
+          </div>
+
           {whenText && (
             <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
               <Clock3 className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
@@ -715,13 +722,6 @@ export function MeetupFeedCard({
               ) : null}
             </div>
           )}
-
-          <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
-            <span className="inline-flex min-w-0 flex-1 items-center gap-2 text-[#55646e]">
-              <UserRound className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
-              <span className="truncate font-semibold text-[#435760]">{lookingForText}</span>
-            </span>
-          </div>
 
           {amountText ? (
             <div className={`flex min-h-[40px] min-w-0 items-center justify-between gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
