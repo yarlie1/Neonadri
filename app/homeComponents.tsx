@@ -719,12 +719,15 @@ export function MeetupFeedCard({
             </div>
           )}
 
-          <div className={`flex min-h-[40px] min-w-0 items-center justify-between gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
+          <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
             <span className="inline-flex min-w-0 flex-1 items-center gap-2 text-[#55646e]">
               <UserRound className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
               <span className="truncate">{lookingForText}</span>
             </span>
-            {amountText ? (
+          </div>
+
+          {amountText ? (
+            <div className={`flex min-h-[40px] min-w-0 items-center justify-end px-2.5 py-1.5 text-sm text-[#364149] sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
               <span className="inline-flex shrink-0 items-center gap-1.5 rounded-[14px] border border-[#c7d2da] bg-[linear-gradient(180deg,#ffffff_0%,#ebf0f4_100%)] px-2 py-1.5 font-semibold text-[#435760] shadow-[0_10px_18px_rgba(118,126,133,0.12)] sm:gap-2 sm:px-3">
                 <Coins className={`h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
                 <span className="flex flex-col text-[8px] font-bold uppercase leading-[0.95] tracking-[0.1em] text-[#7a8790]">
@@ -733,8 +736,8 @@ export function MeetupFeedCard({
                 </span>
                 {amountText}
               </span>
-            ) : null}
-          </div>
+            </div>
+          ) : null}
 
           {distanceText && (
             <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
