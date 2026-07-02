@@ -51,7 +51,6 @@ import { useCreateMeetupHref } from "./useCreateMeetupHref";
 import {
   formatAudienceMeta,
   formatCompactMeetupAudience,
-  formatPersonMeta,
 } from "../lib/genderLabels";
 
 const instrumentSans = Instrument_Sans({
@@ -583,11 +582,6 @@ export default function HomeFeedClient({
               postId={post.id}
               isExpired={isExpired}
               hostName={host.displayName}
-              hostMeta={
-                host.gender || host.ageGroup
-                  ? formatPersonMeta(host.gender || "Unknown", host.ageGroup)
-                  : ""
-              }
               matchBadgeLabel={matchBadge.label}
               matchBadgeClassName={matchBadge.className}
               purposeIcon={getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}

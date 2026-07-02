@@ -635,7 +635,6 @@ export function MeetupFeedCard({
   className = "",
   isExpired,
   hostName,
-  hostMeta,
   hostLine,
   matchBadgeLabel,
   matchBadgeClassName,
@@ -656,7 +655,6 @@ export function MeetupFeedCard({
   className?: string;
   isExpired: boolean;
   hostName: string;
-  hostMeta: string;
   hostLine?: string;
   matchBadgeLabel: string;
   matchBadgeClassName: string;
@@ -700,7 +698,6 @@ export function MeetupFeedCard({
             {hostLine || (
               <>
                 Hosted by {hostName}
-                {hostMeta ? ` | ${hostMeta}` : ""}
               </>
             )}
           </div>
