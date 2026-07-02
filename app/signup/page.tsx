@@ -403,17 +403,17 @@ function SignupPageContent() {
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               <button
                 type="button"
-                onClick={() => router.push(redirectPath)}
+                onClick={() => router.push(profileEditPath)}
                 className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
               >
-                Continue
+                Edit profile
               </button>
               <button
                 type="button"
-                onClick={() => router.push(profileEditPath)}
+                onClick={() => router.push(redirectPath)}
                 className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
               >
-                Edit profile
+                Just continue
               </button>
             </div>
           </section>
