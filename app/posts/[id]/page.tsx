@@ -64,10 +64,12 @@ async function getPostMetadataRecord(id: string) {
   const { data } = await supabase
     .from("posts")
     .select(
-      "id, place_name, location, meeting_purpose, target_gender, target_age_group, status"
+      "id, place_name, location, meeting_purpose, target_gender, target_age_group, status, admin_hidden"
     )
     .eq("id", postId)
     .maybeSingle();
+
+  if (data?.admin_hidden) return null;
 
   return data as
     | {
@@ -78,6 +80,7 @@ async function getPostMetadataRecord(id: string) {
         target_gender: string | null;
         target_age_group: string | null;
         status: string | null;
+        admin_hidden: boolean | null;
       }
     | null;
 }
@@ -159,7 +162,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const { data: postData, error: postError } = await supabase
     .from("posts")
     .select(
-      "id, user_id, created_at, place_name, location, meeting_time, duration_minutes, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude, status, cancelled_at, cancelled_by_user_id"
+      "id, user_id, created_at, place_name, location, meeting_time, duration_minutes, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude, status, cancelled_at, cancelled_by_user_id, admin_hidden"
     )
     .eq("id", id)
     .maybeSingle();
@@ -170,6 +173,24 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   const post = postData as PostRow;
   const isCancelled = String(post.status || "open").toLowerCase() === "cancelled";
+
+  if (post.admin_hidden) {
+    let viewerIsAdmin = false;
+
+    if (user?.id) {
+      const { data: viewerProfile } = await supabase
+        .from("profiles")
+        .select("is_admin")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      viewerIsAdmin = !!viewerProfile?.is_admin;
+    }
+
+    if (!viewerIsAdmin) {
+      notFound();
+    }
+  }
 
   if (blockedUserIds.has(post.user_id)) {
     return (

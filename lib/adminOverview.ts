@@ -19,6 +19,9 @@ type PostRow = {
   meeting_time: string | null;
   meeting_purpose: string | null;
   status: string | null;
+  admin_hidden: boolean | null;
+  admin_hidden_at: string | null;
+  admin_hidden_reason: string | null;
   created_at: string;
 };
 
@@ -122,7 +125,7 @@ export async function getAdminOverviewData(admin: SupabaseClient) {
       admin
         .from("posts")
         .select(
-          "id, user_id, place_name, location, meeting_time, meeting_purpose, status, created_at"
+          "id, user_id, place_name, location, meeting_time, meeting_purpose, status, admin_hidden, admin_hidden_at, admin_hidden_reason, created_at"
         )
         .order("created_at", { ascending: false }),
       admin
@@ -164,7 +167,7 @@ export async function getAdminOverviewData(admin: SupabaseClient) {
     (item) => item.status === "pending"
   );
   const upcomingMeetups = posts.filter(
-    (post) => getPostLifecycleStatus(post) === "Upcoming"
+    (post) => !post.admin_hidden && getPostLifecycleStatus(post) === "Upcoming"
   );
   const matchesThisWeek = matches.filter(
     (match) => match.created_at >= weekAgoIso
@@ -210,6 +213,9 @@ export async function getAdminOverviewData(admin: SupabaseClient) {
       meetingPurpose: post.meeting_purpose || "Meetup",
       createdAt: post.created_at,
       status: getPostLifecycleStatus(post),
+      adminHidden: !!post.admin_hidden,
+      adminHiddenAt: post.admin_hidden_at,
+      adminHiddenReason: post.admin_hidden_reason,
     })),
     pendingBetaApplications: pendingBetaApplications
       .slice(0, RECENT_ITEM_LIMIT)

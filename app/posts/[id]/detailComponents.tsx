@@ -98,6 +98,7 @@ export type PostRow = {
   status: string | null;
   cancelled_at: string | null;
   cancelled_by_user_id: string | null;
+  admin_hidden?: boolean | null;
 };
 
 const PURPOSE_ICON_CLASS = "h-[19px] w-[19px] shrink-0 text-[#71828c]";

@@ -63,7 +63,7 @@ export async function POST(req: Request) {
       await Promise.all([
         supabase
           .from("posts")
-          .select("user_id, target_gender, target_age_group, meeting_time, status, meeting_purpose, place_name, location")
+          .select("user_id, target_gender, target_age_group, meeting_time, status, meeting_purpose, place_name, location, admin_hidden")
           .eq("id", postId)
           .maybeSingle(),
         supabase
@@ -89,6 +89,13 @@ export async function POST(req: Request) {
 
     if (String(postData.user_id || "") !== postOwnerUserId) {
       return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+    }
+
+    if (postData.admin_hidden) {
+      return NextResponse.json(
+        { error: "This meetup is no longer available." },
+        { status: 409 }
+      );
     }
 
     if (String(postData.status || "open").toLowerCase() === "cancelled") {

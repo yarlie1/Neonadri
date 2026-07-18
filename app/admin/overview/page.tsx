@@ -11,6 +11,7 @@ import {
   Users,
 } from "lucide-react";
 import { getAdminOverviewData } from "../../../lib/adminOverview";
+import AdminPostVisibilityButton from "./AdminPostVisibilityButton";
 import { buildPostPath } from "../../../lib/postUrl";
 import { createClient } from "../../../lib/supabase/server";
 import {
@@ -320,16 +321,18 @@ export default async function AdminOverviewPage() {
                 <div className="mt-4 space-y-3">
                   {overview.recentMeetups.length > 0 ? (
                     overview.recentMeetups.map((item) => (
-                      <Link
+                      <div
                         key={item.id}
-                        href={buildPostPath(item.id, item.meetingPurpose, item.placeName)}
-                        className={`${APP_SOFT_CARD_CLASS} block px-4 py-4 transition hover:bg-white/90`}
+                        className={`${APP_SOFT_CARD_CLASS} px-4 py-4`}
                       >
                         <div className="flex flex-wrap items-start justify-between gap-3">
-                          <div>
-                            <div className="text-sm font-semibold text-[#24323c]">
+                          <div className="min-w-0">
+                            <Link
+                              href={buildPostPath(item.id, item.meetingPurpose, item.placeName)}
+                              className="text-sm font-semibold text-[#24323c] transition hover:underline"
+                            >
                               {item.meetingPurpose}
-                            </div>
+                            </Link>
                             <div className="mt-1 text-sm text-[#5f6c75]">
                               {item.placeName}
                             </div>
@@ -341,16 +344,27 @@ export default async function AdminOverviewPage() {
                           </div>
                           <div className="text-right">
                             <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#6f7d86]">
-                              {item.status}
+                              {item.adminHidden ? "Hidden" : item.status}
                             </div>
                             <div
                               className={`mt-1 text-xs ${APP_SUBTLE_TEXT_CLASS}`}
                             >
                               {formatDateTime(item.createdAt)}
                             </div>
+                            {item.adminHiddenReason ? (
+                              <div className={`mt-1 max-w-[180px] text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+                                {item.adminHiddenReason}
+                              </div>
+                            ) : null}
+                            <div className="mt-2 flex justify-end">
+                              <AdminPostVisibilityButton
+                                postId={item.id}
+                                hidden={item.adminHidden}
+                              />
+                            </div>
                           </div>
                         </div>
-                      </Link>
+                      </div>
                     ))
                   ) : (
                     <div

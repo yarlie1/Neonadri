@@ -103,6 +103,7 @@ export default async function HomePage() {
     .select(
       "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, latitude, longitude, status"
     )
+    .eq("admin_hidden", false)
     .order("created_at", { ascending: false });
 
   if (postsError) {

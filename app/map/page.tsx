@@ -70,6 +70,7 @@ export default async function MapPage() {
     .select(
       "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, latitude, longitude, target_gender, target_age_group, status"
     )
+    .eq("admin_hidden", false)
     .not("latitude", "is", null)
     .not("longitude", "is", null)
     .order("created_at", { ascending: false });
