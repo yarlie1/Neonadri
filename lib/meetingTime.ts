@@ -110,13 +110,22 @@ export function formatMeetingTime(
   const date = parseMeetingTime(meetingTime, timeZone);
   if (!date) return null;
 
-  return `${date.toLocaleDateString(MEETING_DISPLAY_LOCALE, {
+  const weekday = date.toLocaleDateString(MEETING_DISPLAY_LOCALE, {
     timeZone,
-  })} ${date.toLocaleTimeString(MEETING_DISPLAY_LOCALE, {
+    weekday: "short",
+  });
+  const monthDay = date.toLocaleDateString(MEETING_DISPLAY_LOCALE, {
     timeZone,
-    hour: "2-digit",
+    month: "short",
+    day: "numeric",
+  });
+  const time = date.toLocaleTimeString(MEETING_DISPLAY_LOCALE, {
+    timeZone,
+    hour: "numeric",
     minute: "2-digit",
-  })}`;
+  });
+
+  return `${weekday}, ${monthDay} at ${time}`;
 }
 
 export function formatMeetingCountdown(
