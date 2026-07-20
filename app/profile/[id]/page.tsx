@@ -280,11 +280,7 @@ export default async function ProfilePage({ params }: PageProps) {
                         {averageRating.toFixed(1)}
                       </span>
                     </div>
-                  ) : (
-                    <div className={`inline-flex items-center rounded-full ${APP_ROW_SURFACE_CLASS} px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#52616a] shadow-[0_6px_14px_rgba(118,126,133,0.08)]`}>
-                      No reviews yet
-                    </div>
-                  )}
+                  ) : null}
                 </div>
 
                 <div className="border-t border-[#dbe3e8]/80" />
