@@ -117,10 +117,12 @@ function InfoItem({
   icon,
   label,
   value,
+  valueClassName = APP_MUTED_TEXT_CLASS,
 }: {
   icon: React.ReactNode;
   label: string;
   value: string;
+  valueClassName?: string;
 }) {
   return (
     <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
@@ -128,7 +130,7 @@ function InfoItem({
         {icon}
         <span>{label}</span>
       </div>
-      <div className={`mt-2 text-sm leading-7 ${APP_MUTED_TEXT_CLASS}`}>
+      <div className={`mt-2 text-sm leading-7 ${valueClassName}`}>
         {value}
       </div>
     </div>
@@ -328,6 +330,7 @@ export async function ProfilePageContent({ params }: PageProps) {
                     icon={<UserRound className="h-3.5 w-3.5 text-[#71828c]" />}
                     label="Identity"
                     value={formatPersonMeta(profile.gender, profile.age_group)}
+                    valueClassName="text-[#26323a]"
                   />
                 )}
 
