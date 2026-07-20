@@ -170,6 +170,12 @@ export default async function AccountPage() {
                 Open admin overview
               </Link>
               <Link
+                href="/admin/posts"
+                className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+              >
+                Open all meetups
+              </Link>
+              <Link
                 href="/admin/reports"
                 className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
               >
