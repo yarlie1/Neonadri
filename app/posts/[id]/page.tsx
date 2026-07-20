@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Sparkles } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import { buildPostPath, extractPostIdParam } from "../../../lib/postUrl";
+import { buildProfilePath } from "../../../lib/profileUrl";
 import { getBlockedUserIdsForViewer } from "../../../lib/safety";
 import { isConfirmedMatchStatus } from "../../../lib/matches/status";
 import { OG_IMAGE_VERSION } from "../../../lib/socialPreview";
@@ -109,7 +110,7 @@ export async function generateMetadata({
       ? "Cancelled meetup"
       : "View details and request to join on Neonadri.",
   ].filter(Boolean);
-  const description = descriptionParts.join(" • ");
+  const description = descriptionParts.join(" ??");
   const postPath = buildPostPath(
     post.id,
     post.meeting_purpose,
@@ -225,6 +226,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   let ownerInterests: string[] = [];
   let ownerResponseNote = "";
   let ownerAvatarUrl: string | null = null;
+  let ownerUsername = "";
 
   let ownerAverageRating = 0;
   let ownerReviewCount = 0;
@@ -248,6 +250,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     ownerInterests = ownerData.interests;
     ownerResponseNote = ownerData.responseNote;
     ownerAvatarUrl = ownerData.avatarUrl;
+    ownerUsername = ownerData.username;
     ownerAverageRating = ownerData.averageRating;
     ownerReviewCount = ownerData.reviewCount;
     ownerCompletedMeetups = ownerData.completedMeetups;
@@ -414,7 +417,9 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   );
   const requesterProfileMap = await fetchRequesterProfileMap(supabase, requesterIds);
 
-  const ownerProfileHref = post.user_id ? `/profile/${post.user_id}` : "#";
+  const ownerProfileHref = post.user_id
+    ? buildProfilePath({ id: post.user_id, username: ownerUsername })
+    : "#";
   const { chatClosed } = getChatWindowState(post.meeting_time, userTimeZone);
   const {
     mapUrl,
@@ -446,6 +451,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     userId: post.user_id,
     displayName: ownerName,
     avatarUrl: ownerAvatarUrl,
+    username: ownerUsername,
     aboutMe: ownerAboutMe,
     gender: ownerGender,
     ageGroup: ownerAgeGroup,
@@ -471,6 +477,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       requesterName: profile?.displayName || "Unknown",
       requesterGender: profile?.gender || "",
       requesterAgeGroup: profile?.ageGroup || "",
+      profileHref: buildProfilePath({
+        id: request.requester_user_id,
+        username: profile?.username,
+      }),
       createdAt: request.created_at,
       status: request.status,
     };
@@ -556,7 +566,12 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 <ProfileShowcaseCard
                   title="Guest"
                   subtitle="Confirmed guest for this meetup"
-                  profileHref={matchedGuestUserId ? `/profile/${matchedGuestUserId}` : undefined}
+                  profileHref={matchedGuestUserId
+                    ? buildProfilePath({
+                        id: matchedGuestUserId,
+                        username: guestProfileData.username,
+                      })
+                    : undefined}
                   data={guestProfileData}
                   isCurrentUser={user?.id === matchedGuestUserId}
                   summaryOnly

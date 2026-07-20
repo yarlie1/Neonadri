@@ -33,6 +33,7 @@ type ProfileRow = {
   response_time_note: string | null;
   is_public: boolean | null;
   avatar_url: string | null;
+  username?: string | null;
 };
 
 const LANGUAGE_OPTIONS = [
@@ -370,7 +371,7 @@ export default function ProfileEditForm({
       }
 
       setMessage("Profile saved. Redirecting...");
-      window.location.replace(`/profile/${profile.id}`);
+      window.location.replace(result.profilePath || `/profile/${profile.id}`);
     } catch (err) {
       console.error(err);
       setMessage("Something went wrong while saving.");
@@ -602,7 +603,7 @@ export default function ProfileEditForm({
           </button>
 
           <Link
-            href={`/profile/${profile.id}`}
+            href={profile.username ? `/@${profile.username}` : `/profile/${profile.id}`}
             className={`touch-manipulation inline-flex min-h-[48px] items-center rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
           >
             Cancel

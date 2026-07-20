@@ -64,6 +64,7 @@ export type ProfileCardData = {
   userId: string;
   displayName: string;
   avatarUrl: string | null;
+  username?: string | null;
   aboutMe: string;
   gender: string;
   ageGroup: string;

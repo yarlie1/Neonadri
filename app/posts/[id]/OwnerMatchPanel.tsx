@@ -27,6 +27,7 @@ type RequesterRow = {
   requesterName: string;
   requesterGender: string;
   requesterAgeGroup: string;
+  profileHref: string;
   createdAt: string;
   status: string;
 };
@@ -183,7 +184,7 @@ export default function OwnerMatchPanel({
 
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Link
-                      href={`/profile/${request.requesterUserId}`}
+                      href={request.profileHref}
                       className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                     >
                       <UserCircle2 className="h-4 w-4" />

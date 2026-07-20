@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { buildProfilePath } from "../../lib/profileUrl";
 import { createClient } from "../../lib/supabase/server";
 
 export default async function MyProfileRedirectPage() {
@@ -11,5 +12,11 @@ export default async function MyProfileRedirectPage() {
     redirect("/login");
   }
 
-  redirect(`/profile/${user.id}`);
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  redirect(buildProfilePath({ id: user.id, username: profile?.username }));
 }

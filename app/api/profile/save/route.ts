@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
+import { buildProfilePath } from "../../../../lib/profileUrl";
+import { generateUniqueProfileUsername } from "../../../../lib/profileUsername";
 import {
   ABOUT_ME_RESTRICTION_MESSAGE,
   validateAboutMeContent,
@@ -133,9 +135,26 @@ export async function POST(req: Request) {
       );
     }
 
+    let username = "";
+
+    try {
+      username = await generateUniqueProfileUsername(
+        supabase,
+        displayNameValue,
+        user.id
+      );
+    } catch (error) {
+      console.error("Profile username generation failed", error);
+      return NextResponse.json(
+        { error: "Failed to prepare profile link." },
+        { status: 500 }
+      );
+    }
+
     const payload = {
       id: user.id,
       display_name: displayNameValue || null,
+      username,
       bio:
         typeof body.bio === "string" && body.bio.trim() ? body.bio.trim() : null,
       about_me: aboutMeValue || null,
@@ -192,7 +211,10 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({ ok: true }, { status: 200 });
+    return NextResponse.json(
+      { ok: true, username, profilePath: buildProfilePath({ id: user.id, username }) },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Profile save route unexpected error", error);
     return NextResponse.json(

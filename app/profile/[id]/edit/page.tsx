@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { createClient } from "../../../../lib/supabase/server";
+import { buildProfilePath } from "../../../../lib/profileUrl";
 import ProfileEditForm from "../ProfileEditForm";
 import {
   APP_BODY_TEXT_CLASS,
@@ -30,6 +31,7 @@ type ProfileRow = {
   response_time_note: string | null;
   is_public: boolean | null;
   avatar_url: string | null;
+  username: string | null;
 };
 
 export default async function EditProfilePage({ params }: PageProps) {
@@ -63,7 +65,8 @@ export default async function EditProfilePage({ params }: PageProps) {
         interests,
         response_time_note,
         is_public,
-        avatar_url
+        avatar_url,
+        username
       `
     )
     .eq("id", userId)
@@ -73,6 +76,8 @@ export default async function EditProfilePage({ params }: PageProps) {
     notFound();
   }
 
+  const profilePath = buildProfilePath({ id: userId, username: profile.username });
+
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6`}>
       <div className="mx-auto max-w-2xl space-y-5">
@@ -81,7 +86,7 @@ export default async function EditProfilePage({ params }: PageProps) {
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#d6e0e6]/35 blur-2xl" />
           <div className="relative">
             <Link
-              href={`/profile/${userId}`}
+              href={profilePath}
               className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium shadow-sm backdrop-blur transition ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               <ChevronLeft className="h-4 w-4" />

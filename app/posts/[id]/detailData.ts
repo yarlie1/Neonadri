@@ -30,6 +30,7 @@ export type ProfileRow = {
   interests: string[] | null;
   response_time_note: string | null;
   avatar_url: string | null;
+  username: string | null;
 };
 
 export type MatchRequestRow = {
@@ -78,6 +79,7 @@ export type LoadedProfileData = {
   hostReliabilityRate: number | null;
   hostReliabilityCount: number;
   recentReviews: ReviewRow[];
+  username: string;
   profileCardData: ProfileCardData;
 };
 
@@ -107,7 +109,7 @@ export async function fetchProfileShowcaseData(
     supabase
       .from("profiles")
       .select(
-        "id, display_name, bio, about_me, gender, age_group, preferred_area, languages, meeting_style, interests, response_time_note, avatar_url"
+        "id, display_name, bio, about_me, gender, age_group, preferred_area, languages, meeting_style, interests, response_time_note, avatar_url, username"
       )
       .eq("id", userId)
       .maybeSingle(),
@@ -142,6 +144,7 @@ export async function fetchProfileShowcaseData(
   const interests = profile?.interests || [];
   const responseNote = profile?.response_time_note || "";
   const avatarUrl = profile?.avatar_url || null;
+  const username = profile?.username || "";
   const averageRating = Number(stats?.average_rating ?? 0);
   const reviewCount = Number(stats?.review_count ?? 0);
   const completedMeetups = Number(stats?.completed_meetups ?? 0);
@@ -156,6 +159,7 @@ export async function fetchProfileShowcaseData(
     interests,
     responseNote,
     avatarUrl,
+    username,
     averageRating,
     reviewCount,
     completedMeetups,
@@ -168,6 +172,7 @@ export async function fetchProfileShowcaseData(
       userId,
       displayName,
       avatarUrl,
+      username,
       aboutMe,
       gender,
       ageGroup,
@@ -193,7 +198,7 @@ export async function fetchRequesterProfileMap(
 ) {
   const requesterProfileMap = new Map<
     string,
-    { displayName: string; gender: string; ageGroup: string }
+    { displayName: string; gender: string; ageGroup: string; username: string }
   >();
 
   if (requesterIds.length === 0) {
@@ -202,7 +207,7 @@ export async function fetchRequesterProfileMap(
 
   const { data: requesterProfiles } = await supabase
     .from("profiles")
-    .select("id, display_name, gender, age_group")
+    .select("id, display_name, gender, age_group, username")
     .in("id", requesterIds);
 
   ((requesterProfiles || []) as Array<{
@@ -210,11 +215,13 @@ export async function fetchRequesterProfileMap(
     display_name: string | null;
     gender: string | null;
     age_group: string | null;
+    username: string | null;
   }>).forEach((profile) => {
     requesterProfileMap.set(profile.id, {
       displayName: profile.display_name || "Unknown",
       gender: profile.gender || "",
       ageGroup: profile.age_group || "",
+      username: profile.username || "",
     });
   });
 
