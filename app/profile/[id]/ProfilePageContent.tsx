@@ -356,7 +356,7 @@ export async function ProfilePageContent({ params }: PageProps) {
                       <MessageSquareText className="h-4 w-4 shrink-0 text-[#71828c]" />
                       <span>About me</span>
                     </div>
-                    <div className={`mt-2 text-sm leading-7 ${APP_MUTED_TEXT_CLASS}`}>
+                    <div className="mt-2 text-sm leading-7 text-[#26323a]">
                       {profile.about_me}
                     </div>
                   </div>
