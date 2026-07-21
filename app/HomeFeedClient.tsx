@@ -61,9 +61,6 @@ const instrumentSans = Instrument_Sans({
 const HOME_WHITE_SURFACE_CLASS =
   "rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] shadow-[0_24px_48px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur";
 
-const HOME_WHITE_SOFT_CLASS =
-  "rounded-[18px] border border-[#e1e8ed] bg-[linear-gradient(180deg,#ffffff_0%,#f6f9fb_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]";
-
 type PostRow = {
   id: number;
   user_id: string;
@@ -480,23 +477,6 @@ export default function HomeFeedClient({
           />
         )}
         </div>
-
-        <section className={`mx-auto max-w-2xl px-4 py-4 sm:px-5 lg:max-w-none ${HOME_WHITE_SOFT_CLASS}`}>
-          <div className="flex items-start gap-3">
-            <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#6c7b84] shadow-[0_10px_18px_rgba(118,126,133,0.08)]">
-              <Sparkles className="h-4 w-4" />
-            </div>
-            <div className="min-w-0">
-              <div className={APP_EYEBROW_CLASS}>Beta Notice</div>
-              <div className="mt-1 text-base font-semibold tracking-[-0.03em] text-[#24323f]">
-                Free during beta.
-              </div>
-              <p className={`mt-2 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
-                Use Neonadri free during beta. Hosts must honor the cost support they list.
-              </p>
-            </div>
-          </div>
-        </section>
 
         <HomeFilterRail
           matchState={matchState}
