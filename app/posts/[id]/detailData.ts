@@ -8,7 +8,7 @@ import {
   getVisibleLocationLabel,
 } from "../../../lib/locationPrivacy";
 import { computeReviewTrustMetrics, type ReviewTrustRow } from "../../../lib/reviewTrust";
-import { formatAudienceMeta, formatPersonMeta } from "../../../lib/genderLabels";
+import { formatAudienceMetaAgeFirst, formatPersonMetaAgeFirst } from "../../../lib/genderLabels";
 import {
   formatDuration,
   getPurposeTheme,
@@ -288,8 +288,8 @@ export function buildDetailViewModel({
     ? `https://www.google.com/maps/search/?api=1&query=${post.latitude},${post.longitude}`
     : "";
 
-  const targetLabel = formatAudienceMeta(post.target_gender, post.target_age_group);
-  const hostIdentityLabel = formatPersonMeta(ownerGender || "Unknown", ownerAgeGroup);
+  const targetLabel = formatAudienceMetaAgeFirst(post.target_gender, post.target_age_group);
+  const hostIdentityLabel = formatPersonMetaAgeFirst(ownerGender || "Unknown", ownerAgeGroup);
   const meetupTimeLabel =
     formatMeetingTime(post.meeting_time, userTimeZone) || "Time not set";
   const meetupDurationLabel = formatDuration(post.duration_minutes) || "Flexible";

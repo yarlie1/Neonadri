@@ -41,6 +41,21 @@ export function formatAudienceMeta(gender: string | null | undefined, ageGroup: 
   return [genderLabel, ageLabel].filter(Boolean).join(" / ");
 }
 
+export function formatPersonMetaAgeFirst(gender: string | null | undefined, ageGroup: string | null | undefined) {
+  const genderLabel = formatPersonGenderLabel(gender);
+  const ageLabel = (ageGroup || "").trim();
+
+  return [ageLabel, genderLabel].filter(Boolean).join(" / ");
+}
+
+export function formatAudienceMetaAgeFirst(gender: string | null | undefined, ageGroup: string | null | undefined) {
+  const genderLabel = formatAudienceGenderLabel(gender || "Any");
+  const rawAgeLabel = (ageGroup || "Any age").trim();
+  const ageLabel = rawAgeLabel === "Any" ? "Any age" : rawAgeLabel;
+
+  return [ageLabel, genderLabel].filter(Boolean).join(" / ");
+}
+
 function formatCompactAge(value: string | null | undefined) {
   const normalized = (value || "").trim();
   if (!normalized || normalized === "Any" || normalized === "Any age") return "";

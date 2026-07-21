@@ -289,13 +289,13 @@ export async function ProfilePageContent({ params }: PageProps) {
 
                 <div className={`grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 py-2 ${APP_MUTED_TEXT_CLASS}`}>
                   <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#71828c]" />
-                  <span>{hasMeetingStyle ? profile.meeting_style : "No meetup style yet"}</span>
+                  <span className="text-[#26323a]">{hasMeetingStyle ? profile.meeting_style : "No meetup style yet"}</span>
                   <span />
                 </div>
 
                 <div className={`grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#dbe3e8]/80 py-2 ${APP_MUTED_TEXT_CLASS}`}>
                   <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#71828c]" />
-                  <span>{hasResponseNote ? profile.response_time_note : "No response note yet"}</span>
+                  <span className="text-[#26323a]">{hasResponseNote ? profile.response_time_note : "No response note yet"}</span>
                   <span />
                 </div>
 
