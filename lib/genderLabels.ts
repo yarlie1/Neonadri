@@ -49,7 +49,7 @@ export function formatPersonMetaAgeFirst(gender: string | null | undefined, ageG
 }
 
 export function formatAudienceMetaAgeFirst(gender: string | null | undefined, ageGroup: string | null | undefined) {
-  const genderLabel = formatAudienceGenderLabel(gender || "Any");
+  const genderLabel = formatPersonGenderLabel(gender || "Any");
   const rawAgeLabel = (ageGroup || "Any age").trim();
   const ageLabel = rawAgeLabel === "Any" ? "Any age" : rawAgeLabel;
 
