@@ -201,8 +201,8 @@ export default function IntroVideoGate() {
 
       <div className="relative z-10 flex max-h-screen min-h-screen items-center justify-center overflow-y-auto px-4 pb-[11.5rem] pt-20 sm:px-6 sm:pb-32 sm:pt-16">
         <div className="grid w-full max-w-6xl gap-5 md:grid-cols-[0.92fr_1.08fr] md:items-center">
-          <section className="relative overflow-hidden rounded-[24px] border border-[#dce5eb] bg-white/72 p-5 shadow-[0_28px_80px_rgba(118,126,133,0.16)] backdrop-blur-xl sm:p-7 md:order-2">
-            <ActiveIcon className="pointer-events-none absolute -right-4 top-8 h-40 w-40 text-[#dce5eb]/55 sm:-right-8 sm:top-4 sm:h-60 sm:w-60" />
+          <section className="relative min-h-[260px] overflow-hidden rounded-[24px] border border-[#dce5eb] bg-white/72 p-5 shadow-[0_28px_80px_rgba(118,126,133,0.16)] backdrop-blur-xl sm:p-7 md:order-2 md:min-h-[320px] md:p-8 lg:min-h-[340px] lg:p-10">
+            <ActiveIcon className="pointer-events-none absolute -right-4 top-8 h-40 w-40 text-[#dce5eb]/55 sm:-right-8 sm:top-4 sm:h-60 sm:w-60 md:-right-14 md:top-auto md:-bottom-16 md:h-80 md:w-80" />
             <div className="relative inline-flex items-center gap-2 rounded-[18px] border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-4 py-2 text-[16px] font-black uppercase tracking-[0.08em] text-[#31414a] sm:text-[18px]">
               <ActiveIcon className="h-3.5 w-3.5" />
               {activeSlide.eyebrow}
