@@ -684,6 +684,12 @@ export function MeetupOverviewCard({
               <p>{purposeHelpText}</p>
             </div>
           ) : null}
+          <div className={`mt-3 flex items-start gap-2 ${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm ${APP_MUTED_TEXT_CLASS}`}>
+            <HeartHandshake className="mt-0.5 h-4 w-4 shrink-0" />
+            <p>
+              This is a platonic, non-romantic social meetup. There are no dating or romantic expectations.
+            </p>
+          </div>
           <p className={`mt-3 ml-auto max-w-2xl text-right text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
             {benefitExplanation}
           </p>

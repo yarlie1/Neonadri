@@ -50,8 +50,8 @@ export function formatPersonMetaAgeFirst(gender: string | null | undefined, ageG
 
 export function formatAudienceMetaAgeFirst(gender: string | null | undefined, ageGroup: string | null | undefined) {
   const genderLabel = formatPersonGenderLabel(gender || "Any");
-  const rawAgeLabel = (ageGroup || "Any age").trim();
-  const ageLabel = rawAgeLabel === "Any" ? "Any age" : rawAgeLabel;
+  const rawAgeLabel = (ageGroup || "20s~50s+").trim();
+  const ageLabel = rawAgeLabel === "Any" || rawAgeLabel === "Any age" ? "20s~50s+" : rawAgeLabel;
 
   return [ageLabel, genderLabel].filter(Boolean).join(" / ");
 }
