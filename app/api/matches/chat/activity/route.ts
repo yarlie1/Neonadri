@@ -30,7 +30,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!isAdultConfirmedUser(user)) {
+  if (!(await isAdultConfirmedUser(supabase, user.id))) {
     return NextResponse.json(
       { error: "Please confirm that you are 18 or older before using match chat." },
       { status: 403 }
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!isAdultConfirmedUser(user)) {
+  if (!(await isAdultConfirmedUser(supabase, user.id))) {
     return NextResponse.json(
       { error: "Please confirm that you are 18 or older before using match chat." },
       { status: 403 }

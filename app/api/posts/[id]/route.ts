@@ -28,7 +28,7 @@ export async function DELETE(_req: Request, { params }: RouteContext) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!isAdultConfirmedUser(user)) {
+    if (!(await isAdultConfirmedUser(supabase, user.id))) {
       return NextResponse.json(
         { error: ADULT_MEETUP_MUTATION_REQUIRED_MESSAGE },
         { status: 403 }

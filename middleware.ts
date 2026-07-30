@@ -78,6 +78,9 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const adultConfirmed = user
+    ? await isAdultConfirmedUser(supabase, user.id)
+    : false;
 
   if (!user && isProtectedPath(request.nextUrl.pathname)) {
     const redirectUrl = request.nextUrl.clone();
@@ -88,7 +91,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (user && isProtectedPath(request.nextUrl.pathname) && !isAdultConfirmedUser(user)) {
+  if (user && isProtectedPath(request.nextUrl.pathname) && !adultConfirmed) {
     const redirectUrl = request.nextUrl.clone();
     const requestedPath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
     redirectUrl.pathname = ADULT_CHECK_PATH;
@@ -100,7 +103,7 @@ export async function middleware(request: NextRequest) {
   if (
     user &&
     request.nextUrl.pathname === ADULT_CHECK_PATH &&
-    isAdultConfirmedUser(user)
+    adultConfirmed
   ) {
     const requestedNext = request.nextUrl.searchParams.get("next") || "/";
     const safeNext =

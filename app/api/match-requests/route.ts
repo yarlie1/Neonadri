@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!isAdultConfirmedUser(user)) {
+    if (!(await isAdultConfirmedUser(supabase, user.id))) {
       return NextResponse.json(
         { error: "Please confirm that you are 18 or older before using meetup requests." },
         { status: 403 }
@@ -273,7 +273,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!isAdultConfirmedUser(user)) {
+    if (!(await isAdultConfirmedUser(supabase, user.id))) {
       return NextResponse.json(
         { error: "Please confirm that you are 18 or older before using meetup requests." },
         { status: 403 }

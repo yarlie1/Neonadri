@@ -300,8 +300,6 @@ function SignupPageContent() {
           data: {
             full_name: normalizedDisplayName,
             display_name: normalizedDisplayName,
-            is_adult_confirmed: true,
-            age_gate_confirmed_at: new Date().toISOString(),
             signup_intent: resolvedSignupIntent,
           },
         },
@@ -358,6 +356,22 @@ function SignupPageContent() {
 
         if (!response.ok) {
           setMessage(result.error || "Failed to save your profile.");
+          setSubmitting(false);
+          return;
+        }
+
+        const adultConfirmationResponse = await fetch("/api/account/confirm-adult", {
+          method: "POST",
+        });
+        const adultConfirmationResult = await adultConfirmationResponse
+          .json()
+          .catch(() => ({}));
+
+        if (!adultConfirmationResponse.ok) {
+          setMessage(
+            adultConfirmationResult.error ||
+              "We couldn't update your age confirmation right now."
+          );
           setSubmitting(false);
           return;
         }

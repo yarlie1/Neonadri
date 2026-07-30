@@ -24,7 +24,7 @@ export default async function EditMeetupPage({ params }: PageProps) {
     redirect("/");
   }
 
-  if (!isAdultConfirmedUser(user)) {
+  if (!(await isAdultConfirmedUser(supabase, user.id))) {
     redirect(getAdultGateRedirectPath(`/write/${params.id}`));
   }
 

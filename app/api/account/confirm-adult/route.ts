@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
+import { createAdminClient } from "../../../../lib/supabase/admin";
 
 export async function POST() {
   try {
@@ -13,13 +14,16 @@ export async function POST() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { error } = await supabase.auth.updateUser({
-      data: {
-        ...user.user_metadata,
+    const adminSupabase = createAdminClient() as any;
+    const { data, error } = await adminSupabase
+      .from("profiles")
+      .update({
         is_adult_confirmed: true,
         age_gate_confirmed_at: new Date().toISOString(),
-      },
-    });
+      })
+      .eq("id", user.id)
+      .select("id")
+      .maybeSingle();
 
     if (error) {
       console.error("Adult confirmation update failed", {
@@ -30,6 +34,13 @@ export async function POST() {
       return NextResponse.json(
         { error: "We couldn't update your age confirmation right now." },
         { status: 500 }
+      );
+    }
+
+    if (!data) {
+      return NextResponse.json(
+        { error: "Please finish your profile before continuing." },
+        { status: 409 }
       );
     }
 

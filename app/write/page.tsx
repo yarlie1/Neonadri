@@ -17,7 +17,7 @@ export default async function WritePage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (user && !isAdultConfirmedUser(user)) {
+  if (user && !(await isAdultConfirmedUser(supabase, user.id))) {
     const submitQuery = searchParams?.submit === "1" ? "?submit=1" : "";
     redirect(getAdultGateRedirectPath(`/write${submitQuery}`));
   }

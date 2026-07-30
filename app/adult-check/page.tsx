@@ -29,7 +29,7 @@ export default async function AdultCheckPage({
       ? searchParams.next
       : "/";
 
-  if (isAdultConfirmedUser(user)) {
+  if (await isAdultConfirmedUser(supabase, user.id)) {
     redirect(nextPath);
   }
 
