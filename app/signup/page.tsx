@@ -29,6 +29,49 @@ const BETA_ACTION_CLASS =
 const SIGNUP_HERO_TITLE = "Join or create meetups.";
 const SIGNUP_HERO_BODY =
   "Set up your profile. Browse, request, or host.";
+const SIGNUP_STEP_TIMEOUT_MS = 30000;
+
+function isAbortError(error: unknown) {
+  return error instanceof DOMException && error.name === "AbortError";
+}
+
+function withTimeout<T>(promise: PromiseLike<T>, timeoutMessage: string) {
+  return new Promise<T>((resolve, reject) => {
+    const timer = window.setTimeout(() => {
+      reject(new Error(timeoutMessage));
+    }, SIGNUP_STEP_TIMEOUT_MS);
+
+    Promise.resolve(promise).then(
+      (value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        window.clearTimeout(timer);
+        reject(error);
+      }
+    );
+  });
+}
+
+async function fetchWithTimeout(input: RequestInfo | URL, init: RequestInit, timeoutMessage: string) {
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), SIGNUP_STEP_TIMEOUT_MS);
+
+  try {
+    return await fetch(input, {
+      ...init,
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (isAbortError(error)) {
+      throw new Error(timeoutMessage);
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
 
 function SignupPageContent() {
   const supabase = createClient();
@@ -240,13 +283,18 @@ function SignupPageContent() {
       }
 
       if (requiresPostingBeta) {
-        const betaCheckResponse = await fetch("/api/beta/check-email", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        setMessage("Checking create access...");
+        const betaCheckResponse = await fetchWithTimeout(
+          "/api/beta/check-email",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: email.trim() }),
           },
-          body: JSON.stringify({ email: email.trim() }),
-        });
+          "Create access check is taking too long. Please try again."
+        );
 
         const betaCheckPayload = await betaCheckResponse.json().catch(() => ({}));
 
@@ -259,21 +307,23 @@ function SignupPageContent() {
         }
 
         if (!betaCheckPayload.allowed) {
-          setMessage(
-            "Apply to host first."
-          );
+          setMessage("Apply to host first.");
           setSubmitting(false);
           return;
         }
       }
 
       const normalizedDisplayName = displayName.trim();
-      const { data: existingProfile, error: existingProfileError } = await supabase
-        .from("profiles")
-        .select("id")
-        .ilike("display_name", normalizedDisplayName)
-        .limit(1)
-        .maybeSingle();
+      setMessage("Checking profile name...");
+      const { data: existingProfile, error: existingProfileError } = await withTimeout(
+        supabase
+          .from("profiles")
+          .select("id")
+          .ilike("display_name", normalizedDisplayName)
+          .limit(1)
+          .maybeSingle(),
+        "Checking the profile name is taking too long. Please try again."
+      );
 
       if (existingProfileError) {
         console.error("Display name availability check failed", {
@@ -293,17 +343,21 @@ function SignupPageContent() {
         return;
       }
 
-      const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: {
-          data: {
-            full_name: normalizedDisplayName,
-            display_name: normalizedDisplayName,
-            signup_intent: resolvedSignupIntent,
+      setMessage("Creating your login...");
+      const { data, error } = await withTimeout(
+        supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: {
+            data: {
+              full_name: normalizedDisplayName,
+              display_name: normalizedDisplayName,
+              signup_intent: resolvedSignupIntent,
+            },
           },
-        },
-      });
+        }),
+        "Creating your login is taking too long. If you receive a confirmation email, use Log in instead."
+      );
 
       if (error) {
         const normalizedAuthMessage = String(error.message || "").toLowerCase();
@@ -344,13 +398,18 @@ function SignupPageContent() {
           signup_intent: resolvedSignupIntent,
         };
 
-        const response = await fetch("/api/profile/save", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        setMessage("Saving your profile...");
+        const response = await fetchWithTimeout(
+          "/api/profile/save",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
           },
-          body: JSON.stringify(payload),
-        });
+          "Saving your profile is taking too long. Please try again."
+        );
 
         const result = await response.json().catch(() => ({}));
 
@@ -360,9 +419,14 @@ function SignupPageContent() {
           return;
         }
 
-        const adultConfirmationResponse = await fetch("/api/account/confirm-adult", {
-          method: "POST",
-        });
+        setMessage("Saving age confirmation...");
+        const adultConfirmationResponse = await fetchWithTimeout(
+          "/api/account/confirm-adult",
+          {
+            method: "POST",
+          },
+          "Saving age confirmation is taking too long. Please try again."
+        );
         const adultConfirmationResult = await adultConfirmationResponse
           .json()
           .catch(() => ({}));
@@ -392,11 +456,14 @@ function SignupPageContent() {
       }, 900);
     } catch (error) {
       console.error("Signup flow error:", error);
-      setMessage("Something went wrong while creating your account.");
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while creating your account."
+      );
       setSubmitting(false);
     }
   };
-
   if (signupCompleteWithSession) {
     const profileEditPath = completedUserId
       ? `/profile/${completedUserId}/edit`
