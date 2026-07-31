@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createAdminClient } from "../../../../lib/supabase/admin";
 import { createClient } from "../../../../lib/supabase/server";
 import { buildProfilePath } from "../../../../lib/profileUrl";
 import { generateUniqueProfileUsername } from "../../../../lib/profileUsername";
@@ -81,7 +82,8 @@ export async function POST(req: Request) {
     }
 
     if (displayNameValue) {
-      const { data: existingProfile, error: existingProfileError } = await supabase
+      const adminSupabase = createAdminClient() as any;
+      const { data: existingProfile, error: existingProfileError } = await adminSupabase
         .from("profiles")
         .select("id")
         .ilike("display_name", displayNameValue)

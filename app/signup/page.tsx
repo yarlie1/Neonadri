@@ -315,29 +315,26 @@ function SignupPageContent() {
 
       const normalizedDisplayName = displayName.trim();
       setMessage("Checking profile name...");
-      const { data: existingProfile, error: existingProfileError } = await withTimeout(
-        supabase
-          .from("profiles")
-          .select("id")
-          .ilike("display_name", normalizedDisplayName)
-          .limit(1)
-          .maybeSingle(),
+      const displayNameResponse = await fetchWithTimeout(
+        "/api/profile/display-name",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ display_name: normalizedDisplayName }),
+        },
         "Checking the profile name is taking too long. Please try again."
       );
+      const displayNameResult = await displayNameResponse.json().catch(() => ({}));
 
-      if (existingProfileError) {
-        console.error("Display name availability check failed", {
-          message: existingProfileError.message,
-          details: existingProfileError.details,
-          hint: existingProfileError.hint,
-          code: existingProfileError.code,
-        });
-        setMessage("We couldn't check that display name right now.");
+      if (!displayNameResponse.ok) {
+        setMessage(displayNameResult.error || "We couldn't check that display name right now.");
         setSubmitting(false);
         return;
       }
 
-      if (existingProfile) {
+      if (!displayNameResult.available) {
         setMessage(DISPLAY_NAME_IN_USE_MESSAGE);
         setSubmitting(false);
         return;
