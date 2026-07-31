@@ -61,6 +61,8 @@ export function useHomeFeedFilters(viewerPreference: {
     "All"
   );
   const [purpose, setPurpose] = useState("All");
+  const [hostGender, setHostGender] = useState("All");
+  const [hostAgeGroup, setHostAgeGroup] = useState("All");
   const [gender, setGender] = useState("All");
   const [ageGroup, setAgeGroup] = useState("All");
   const [distance, setDistance] = useState<DistanceValue>("all");
@@ -164,6 +166,8 @@ export function useHomeFeedFilters(viewerPreference: {
     setMatchState("All");
     setAudience("All");
     setPurpose("All");
+    setHostGender("All");
+    setHostAgeGroup("All");
     setGender("All");
     setAgeGroup("All");
     setDistance("all");
@@ -178,6 +182,10 @@ export function useHomeFeedFilters(viewerPreference: {
     setAudience,
     purpose,
     setPurpose,
+    hostGender,
+    setHostGender,
+    hostAgeGroup,
+    setHostAgeGroup,
     gender,
     setGender,
     ageGroup,

@@ -58,6 +58,8 @@ type HomeFilterCardProps = {
   summaryText: ReactNode;
   matchState: string;
   audience: string;
+  hostGender: string;
+  hostAgeGroup: string;
   gender: string;
   ageGroup: string;
   distance: string;
@@ -72,6 +74,8 @@ type HomeFilterCardProps = {
   sortOptions: readonly { value: string; label: string }[];
   onMatchState: (value: string) => void;
   onAudience: (value: string) => void;
+  onHostGender: (value: string) => void;
+  onHostAgeGroup: (value: string) => void;
   onGender: (value: string) => void;
   onAgeGroup: (value: string) => void;
   onDistance: (value: string) => void;
@@ -88,6 +92,8 @@ export function HomeFilterCard({
   summaryText,
   matchState,
   audience,
+  hostGender,
+  hostAgeGroup,
   gender,
   ageGroup,
   distance,
@@ -102,6 +108,8 @@ export function HomeFilterCard({
   sortOptions,
   onMatchState,
   onAudience,
+  onHostGender,
+  onHostAgeGroup,
   onGender,
   onAgeGroup,
   onDistance,
@@ -329,6 +337,8 @@ function FilterSelect({
 export function HomeFilterRail({
   matchState,
   audience,
+  hostGender,
+  hostAgeGroup,
   gender,
   ageGroup,
   distance,
@@ -342,6 +352,8 @@ export function HomeFilterRail({
   sortOptions,
   onMatchState,
   onAudience,
+  onHostGender,
+  onHostAgeGroup,
   onGender,
   onAgeGroup,
   onDistance,
@@ -351,6 +363,8 @@ export function HomeFilterRail({
 }: {
   matchState: string;
   audience: string;
+  hostGender: string;
+  hostAgeGroup: string;
   gender: string;
   ageGroup: string;
   distance: string;
@@ -364,6 +378,8 @@ export function HomeFilterRail({
   sortOptions: readonly { value: string; label: string }[];
   onMatchState: (value: string) => void;
   onAudience: (value: string) => void;
+  onHostGender: (value: string) => void;
+  onHostAgeGroup: (value: string) => void;
   onGender: (value: string) => void;
   onAgeGroup: (value: string) => void;
   onDistance: (value: string) => void;
@@ -412,16 +428,28 @@ export function HomeFilterRail({
             Reset
           </button>
           <FilterSelect
-            label="Guest gender"
-            value={gender}
-            options={optionize(genderOptions, { All: "Guest gender" })}
-            onChange={onGender}
+            label="Host age"
+            value={hostAgeGroup}
+            options={optionize(ageGroupOptions, { All: "Host age" })}
+            onChange={onHostAgeGroup}
+          />
+          <FilterSelect
+            label="Host gender"
+            value={hostGender}
+            options={optionize(genderOptions, { All: "Host gender" })}
+            onChange={onHostGender}
           />
           <FilterSelect
             label="Guest age"
             value={ageGroup}
             options={optionize(ageGroupOptions, { All: "Guest age" })}
             onChange={onAgeGroup}
+          />
+          <FilterSelect
+            label="Guest gender"
+            value={gender}
+            options={optionize(genderOptions, { All: "Guest gender" })}
+            onChange={onGender}
           />
           <FilterSelect
             label="Fits"

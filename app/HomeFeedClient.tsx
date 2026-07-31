@@ -203,6 +203,10 @@ export default function HomeFeedClient({
     setAudience,
     purpose,
     setPurpose,
+    hostGender,
+    setHostGender,
+    hostAgeGroup,
+    setHostAgeGroup,
     gender,
     setGender,
     ageGroup,
@@ -225,6 +229,15 @@ export default function HomeFeedClient({
         (matchState === "Matched" && isMatched) ||
         (matchState === "Open" && !isMatched);
       const purposeMatch = purpose === "All" || post.meeting_purpose === purpose;
+      const host = hostProfileMap[post.user_id] || {
+        displayName: "Unknown",
+        gender: "",
+        ageGroup: "",
+      };
+      const hostGenderMatch =
+        hostGender === "All" || host.gender === hostGender;
+      const hostAgeGroupMatch =
+        hostAgeGroup === "All" || host.ageGroup === hostAgeGroup;
       const genderMatch = gender === "All" || post.target_gender === gender;
       const ageGroupMatch =
         ageGroup === "All" || post.target_age_group === ageGroup;
@@ -250,6 +263,8 @@ export default function HomeFeedClient({
       return (
         matchStateMatch &&
         purposeMatch &&
+        hostGenderMatch &&
+        hostAgeGroupMatch &&
         genderMatch &&
         ageGroupMatch &&
         distanceMatch
@@ -320,6 +335,9 @@ export default function HomeFeedClient({
     ageGroup,
     distance,
     gender,
+    hostAgeGroup,
+    hostGender,
+    hostProfileMap,
     initialPosts,
     matchState,
     matchSummaryMap,
@@ -481,6 +499,8 @@ export default function HomeFeedClient({
         <HomeFilterRail
           matchState={matchState}
           audience={audience}
+          hostGender={hostGender}
+          hostAgeGroup={hostAgeGroup}
           gender={gender}
           ageGroup={ageGroup}
           distance={distance}
@@ -494,6 +514,8 @@ export default function HomeFeedClient({
           sortOptions={SORT_OPTIONS}
           onMatchState={setMatchState}
           onAudience={(option) => applyAudience(option as (typeof AUDIENCE_OPTIONS)[number])}
+          onHostGender={setHostGender}
+          onHostAgeGroup={setHostAgeGroup}
           onGender={(option) => {
             setAudience("All");
             setGender(option);
