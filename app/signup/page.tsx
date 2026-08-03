@@ -129,6 +129,11 @@ function SignupPageContent() {
     resolvedSignupIntent === "guest" || hostSignupOpen || betaAccessAllowed;
   const passwordsMatch =
     password.length >= PASSWORD_MIN_LENGTH && password === passwordConfirmation;
+  const showCreateAccountCue =
+    redirectPath.startsWith("/posts/") ||
+    searchParams.get("utm_source")?.toLowerCase() === "reddit" ||
+    !!searchParams.get("utm_medium")?.toLowerCase().includes("reddit") ||
+    !!searchParams.get("utm_campaign")?.toLowerCase().includes("reddit");
 
   const canCreateAccount = useMemo(
     () =>
@@ -502,6 +507,16 @@ function SignupPageContent() {
 
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
+      <style jsx global>{`
+        @keyframes neonadri-create-account-pulse {
+          0%, 100% {
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.98), 0 0 0 7px rgba(45, 212, 191, 0.38), 0 0 30px rgba(14, 165, 233, 0.45);
+          }
+          50% {
+            box-shadow: 0 0 0 5px rgba(255, 255, 255, 1), 0 0 0 12px rgba(45, 212, 191, 0.2), 0 0 46px rgba(14, 165, 233, 0.72);
+          }
+        }
+      `}</style>
       <div className={`mx-auto ${showBetaGate ? "max-w-2xl" : "max-w-6xl"}`}>
         <div className={showBetaGate ? "" : "grid gap-4 lg:grid-cols-[1.02fr_0.98fr]"}>
           {!showBetaGate ? (
@@ -894,14 +909,29 @@ function SignupPageContent() {
                     .
                   </p>
 
-                  <button
-                    type="button"
-                    onClick={handleSignup}
-                    disabled={submitting || !canCreateAccount}
-                    className={`rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
-                  >
-                    {submitting ? "Creating account..." : "Create account"}
-                  </button>
+                  <div className="relative inline-flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+                    {showCreateAccountCue ? (
+                      <div className="max-w-[270px] rounded-[18px] border-2 border-[#38bdf8] bg-[linear-gradient(180deg,#ffffff_0%,#ecfeff_100%)] px-4 py-3 text-sm leading-5 text-[#17424a] shadow-[0_18px_34px_rgba(14,165,233,0.24)] sm:absolute sm:bottom-[calc(100%+12px)] sm:left-0 sm:z-10">
+                        <div className="font-semibold text-[#0f3f46]">Fill this out first</div>
+                        <div className="mt-1 text-[#3f6d74]">
+                          Complete the details above, then tap Create account to request this meetup.
+                        </div>
+                        <div className="absolute -bottom-2 left-7 hidden h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#38bdf8] bg-[#ecfeff] sm:block" />
+                      </div>
+                    ) : null}
+                    <button
+                      type="button"
+                      onClick={handleSignup}
+                      disabled={submitting || !canCreateAccount}
+                      className={`rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-75 ${APP_BUTTON_PRIMARY_CLASS} ${
+                        showCreateAccountCue
+                          ? "border-[#0891b2] ring-4 ring-[#67e8f9]/55 shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_34px_rgba(14,165,233,0.68)] [animation:neonadri-create-account-pulse_1.45s_ease-in-out_infinite]"
+                          : ""
+                      }`}
+                    >
+                      {submitting ? "Creating account..." : "Create account"}
+                    </button>
+                  </div>
                 </div>
               </>
             )}
