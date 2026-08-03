@@ -909,16 +909,7 @@ function SignupPageContent() {
                     .
                   </p>
 
-                  <div className="relative inline-flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-                    {showCreateAccountCue ? (
-                      <div className="max-w-[270px] rounded-[18px] border-2 border-[#38bdf8] bg-[linear-gradient(180deg,#ffffff_0%,#ecfeff_100%)] px-4 py-3 text-sm leading-5 text-[#17424a] shadow-[0_18px_34px_rgba(14,165,233,0.24)] sm:absolute sm:bottom-[calc(100%+12px)] sm:left-0 sm:z-10">
-                        <div className="font-semibold text-[#0f3f46]">Fill this out first</div>
-                        <div className="mt-1 text-[#3f6d74]">
-                          Complete the details above, then tap Create account to request this meetup.
-                        </div>
-                        <div className="absolute -bottom-2 left-7 hidden h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#38bdf8] bg-[#ecfeff] sm:block" />
-                      </div>
-                    ) : null}
+                  <div className="inline-flex flex-col items-start gap-3">
                     <button
                       type="button"
                       onClick={handleSignup}
@@ -931,6 +922,15 @@ function SignupPageContent() {
                     >
                       {submitting ? "Creating account..." : "Create account"}
                     </button>
+                    {showCreateAccountCue ? (
+                      <div className="relative max-w-[320px] rounded-[18px] border-2 border-[#38bdf8] bg-[linear-gradient(180deg,#ffffff_0%,#ecfeff_100%)] px-4 py-3 text-sm leading-5 text-[#17424a] shadow-[0_18px_34px_rgba(14,165,233,0.24)]">
+                        <div className="absolute -top-2 left-7 h-4 w-4 rotate-45 border-l-2 border-t-2 border-[#38bdf8] bg-white" />
+                        <div className="relative font-semibold text-[#0f3f46]">Fill this out first</div>
+                        <div className="relative mt-1 text-[#3f6d74]">
+                          Complete the details above, then tap Create account to request this meetup.
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </>
