@@ -473,6 +473,16 @@ function SignupPageContent() {
 
     return (
       <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
+        <style jsx global>{`
+          @keyframes neonadri-create-account-pulse {
+            0%, 100% {
+              box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.98), 0 0 0 7px rgba(45, 212, 191, 0.38), 0 0 30px rgba(14, 165, 233, 0.45);
+            }
+            50% {
+              box-shadow: 0 0 0 5px rgba(255, 255, 255, 1), 0 0 0 12px rgba(45, 212, 191, 0.2), 0 0 46px rgba(14, 165, 233, 0.72);
+            }
+          }
+        `}</style>
         <div className="mx-auto max-w-2xl">
           <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
             <div className={APP_EYEBROW_CLASS}>Account created</div>
@@ -483,21 +493,35 @@ function SignupPageContent() {
               Your required account details are saved.
             </p>
 
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              <button
-                type="button"
-                onClick={() => router.push(profileEditPath)}
-                className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
-              >
-                Edit profile
-              </button>
-              <button
-                type="button"
-                onClick={() => router.push(redirectPath)}
-                className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-              >
-                Just continue
-              </button>
+            <div className="mt-6 grid gap-5 sm:grid-cols-2">
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => router.push(profileEditPath)}
+                  className={`w-full rounded-full px-5 py-3 text-sm font-medium transition border-[#0891b2] ring-4 ring-[#67e8f9]/55 shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_34px_rgba(14,165,233,0.68)] [animation:neonadri-create-account-pulse_1.45s_ease-in-out_infinite] ${APP_BUTTON_PRIMARY_CLASS}`}
+                >
+                  Edit profile
+                </button>
+                <div className="relative mt-4 rounded-[18px] border-2 border-[#38bdf8] bg-[#f0fdfa] px-4 py-3 text-left text-sm leading-6 text-[#31545d] shadow-[0_16px_30px_rgba(14,165,233,0.18)]">
+                  <div className="font-bold text-[#24323c]">Add profile first</div>
+                  <div>Fill out your profile, then request to join.</div>
+                  <div className="absolute -top-2 left-8 h-4 w-4 rotate-45 border-l-2 border-t-2 border-[#38bdf8] bg-[#f0fdfa]" />
+                </div>
+              </div>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => router.push(redirectPath)}
+                  className={`w-full rounded-full px-5 py-3 text-sm font-medium transition border-[#0891b2] ring-4 ring-[#67e8f9]/55 shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_34px_rgba(14,165,233,0.68)] [animation:neonadri-create-account-pulse_1.45s_ease-in-out_infinite] ${APP_BUTTON_SECONDARY_CLASS}`}
+                >
+                  Just continue
+                </button>
+                <div className="relative mt-4 rounded-[18px] border-2 border-[#38bdf8] bg-[#f0fdfa] px-4 py-3 text-left text-sm leading-6 text-[#31545d] shadow-[0_16px_30px_rgba(14,165,233,0.18)]">
+                  <div className="font-bold text-[#24323c]">Request now</div>
+                  <div>Skip profile details and request to join right away.</div>
+                  <div className="absolute -top-2 left-8 h-4 w-4 rotate-45 border-l-2 border-t-2 border-[#38bdf8] bg-[#f0fdfa]" />
+                </div>
+              </div>
             </div>
           </section>
         </div>
