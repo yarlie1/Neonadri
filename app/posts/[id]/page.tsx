@@ -110,7 +110,7 @@ export async function generateMetadata({
       ? "Cancelled meetup"
       : "View details and request to join on Neonadri.",
   ].filter(Boolean);
-  const description = descriptionParts.join(" ??");
+  const description = descriptionParts.join(" - ");
   const postPath = buildPostPath(
     post.id,
     post.meeting_purpose,
