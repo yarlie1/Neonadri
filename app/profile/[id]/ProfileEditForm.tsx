@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ImagePlus, Save, Trash2 } from "lucide-react";
 import {
   ABOUT_ME_RESTRICTION_MESSAGE,
@@ -201,6 +202,8 @@ export default function ProfileEditForm({
 }: {
   profile: ProfileRow;
 }) {
+  const searchParams = useSearchParams();
+  const showSaveCue = searchParams.get("profileCue") === "1";
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
@@ -381,6 +384,16 @@ export default function ProfileEditForm({
 
   return (
     <div className={`overflow-hidden rounded-[24px] ${APP_SURFACE_CARD_CLASS} backdrop-blur`}>
+      <style jsx global>{`
+        @keyframes neonadri-profile-save-pulse {
+          0%, 100% {
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.98), 0 0 0 7px rgba(45, 212, 191, 0.38), 0 0 30px rgba(14, 165, 233, 0.45);
+          }
+          50% {
+            box-shadow: 0 0 0 5px rgba(255, 255, 255, 1), 0 0 0 12px rgba(45, 212, 191, 0.2), 0 0 46px rgba(14, 165, 233, 0.72);
+          }
+        }
+      `}</style>
       <div className="bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fa_100%)] px-6 py-5">
         <div className={APP_EYEBROW_CLASS}>
           Edit profile
@@ -591,16 +604,29 @@ export default function ProfileEditForm({
       </div>
 
       <div className="border-t border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fa_100%)] px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
-        <div className="flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving}
-            className={`touch-manipulation inline-flex min-h-[48px] items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
-          >
-            <Save className="h-4 w-4" />
-            {saving ? "Saving..." : "Save"}
-          </button>
+        <div className="flex flex-wrap items-start gap-3">
+          <div className="flex flex-col items-start">
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saving}
+              className={`touch-manipulation inline-flex min-h-[48px] items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS} ${
+                showSaveCue
+                  ? "border-[#0891b2] ring-4 ring-[#67e8f9]/55 shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_34px_rgba(14,165,233,0.68)] [animation:neonadri-profile-save-pulse_1.45s_ease-in-out_infinite]"
+                  : ""
+              }`}
+            >
+              <Save className="h-4 w-4" />
+              {saving ? "Saving..." : "Save"}
+            </button>
+            {showSaveCue ? (
+              <div className="relative mt-4 max-w-[280px] rounded-[18px] border-2 border-[#38bdf8] bg-[#f0fdfa] px-4 py-3 text-left text-sm leading-6 text-[#31545d] shadow-[0_16px_30px_rgba(14,165,233,0.18)]">
+                <div className="font-bold text-[#24323c]">Save your profile</div>
+                <div>Fill in what you want, then tap Save before requesting to join.</div>
+                <div className="absolute -top-2 left-8 h-4 w-4 rotate-45 border-l-2 border-t-2 border-[#38bdf8] bg-[#f0fdfa]" />
+              </div>
+            ) : null}
+          </div>
 
           <Link
             href={profile.username ? `/@${profile.username}` : `/profile/${profile.id}`}

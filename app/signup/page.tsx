@@ -467,9 +467,12 @@ function SignupPageContent() {
     }
   };
   if (signupCompleteWithSession) {
-    const profileEditPath = completedUserId
+    const profileEditBasePath = completedUserId
       ? `/profile/${completedUserId}/edit`
       : redirectPath;
+    const profileEditPath = profileEditBasePath.startsWith("/profile/")
+      ? `${profileEditBasePath}?profileCue=1`
+      : profileEditBasePath;
     const continuePath = redirectPath.startsWith("/posts/")
       ? `${redirectPath}${redirectPath.includes("?") ? "&" : "?"}joinCue=1`
       : redirectPath;
