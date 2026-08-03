@@ -103,7 +103,7 @@ export async function generateMetadata({
   ].filter(Boolean);
   const title = titleParts.join(" at ");
   const descriptionParts = [
-    post.location?.trim(),
+    post.place_name?.trim() || "Meetup location",
     post.target_gender?.trim(),
     post.target_age_group?.trim(),
     String(post.status || "open").toLowerCase() === "cancelled"
