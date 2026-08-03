@@ -190,10 +190,10 @@ export default function MatchRequestBox({
       <style jsx global>{`
         @keyframes neonadri-request-pulse {
           0%, 100% {
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.96), 0 0 24px rgba(104, 126, 139, 0.36);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.98), 0 0 0 7px rgba(45, 212, 191, 0.38), 0 0 30px rgba(14, 165, 233, 0.45);
           }
           50% {
-            box-shadow: 0 0 0 5px rgba(255, 255, 255, 1), 0 0 38px rgba(104, 126, 139, 0.68);
+            box-shadow: 0 0 0 5px rgba(255, 255, 255, 1), 0 0 0 12px rgba(45, 212, 191, 0.2), 0 0 46px rgba(14, 165, 233, 0.72);
           }
         }
       `}</style>
@@ -283,12 +283,12 @@ export default function MatchRequestBox({
         ) : (
           <div className="relative inline-flex flex-col items-start gap-3 sm:flex-row sm:items-center">
             {showRedditRequestCue ? (
-              <div className="max-w-[240px] rounded-[18px] border border-[#b9c7d0] bg-white px-4 py-3 text-sm leading-5 text-[#43525b] shadow-[0_18px_34px_rgba(92,110,122,0.18)] sm:absolute sm:bottom-[calc(100%+12px)] sm:left-0 sm:z-10">
-                <div className="font-semibold text-[#263640]">Ready to join?</div>
-                <div className="mt-1 text-[#66747d]">
+              <div className="max-w-[240px] rounded-[18px] border-2 border-[#38bdf8] bg-[linear-gradient(180deg,#ffffff_0%,#ecfeff_100%)] px-4 py-3 text-sm leading-5 text-[#17424a] shadow-[0_18px_34px_rgba(14,165,233,0.24)] sm:absolute sm:bottom-[calc(100%+12px)] sm:left-0 sm:z-10">
+                <div className="font-semibold text-[#0f3f46]">Ready to join?</div>
+                <div className="mt-1 text-[#3f6d74]">
                   Tap here to send your request to the host.
                 </div>
-                <div className="absolute -bottom-2 left-7 hidden h-4 w-4 rotate-45 border-b border-r border-[#b9c7d0] bg-white sm:block" />
+                <div className="absolute -bottom-2 left-7 hidden h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#38bdf8] bg-[#ecfeff] sm:block" />
               </div>
             ) : null}
             <button
@@ -297,7 +297,7 @@ export default function MatchRequestBox({
               disabled={loading}
               className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS} ${
                 showRedditRequestCue
-                  ? "border-[#93a9b6] ring-4 ring-[#d7e5ec] shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_28px_rgba(104,126,139,0.48)] [animation:neonadri-request-pulse_1.45s_ease-in-out_infinite]"
+                  ? "border-[#0891b2] ring-4 ring-[#67e8f9]/55 shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_34px_rgba(14,165,233,0.68)] [animation:neonadri-request-pulse_1.45s_ease-in-out_infinite]"
                   : ""
               }`}
             >
