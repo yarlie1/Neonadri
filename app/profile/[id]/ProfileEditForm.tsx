@@ -204,6 +204,16 @@ export default function ProfileEditForm({
 }) {
   const searchParams = useSearchParams();
   const showSaveCue = searchParams.get("profileCue") === "1";
+  const requestedNextPath = searchParams.get("next");
+  const safeNextPath =
+    requestedNextPath &&
+    requestedNextPath.startsWith("/posts/") &&
+    !requestedNextPath.startsWith("//")
+      ? requestedNextPath
+      : "";
+  const postSaveRedirectPath = safeNextPath
+    ? `${safeNextPath}${safeNextPath.includes("?") ? "&" : "?"}joinCue=1`
+    : "";
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
@@ -374,7 +384,7 @@ export default function ProfileEditForm({
       }
 
       setMessage("Profile saved. Redirecting...");
-      window.location.replace(result.profilePath || `/profile/${profile.id}`);
+      window.location.replace(postSaveRedirectPath || result.profilePath || `/profile/${profile.id}`);
     } catch (err) {
       console.error(err);
       setMessage("Something went wrong while saving.");

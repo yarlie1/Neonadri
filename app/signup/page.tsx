@@ -471,7 +471,7 @@ function SignupPageContent() {
       ? `/profile/${completedUserId}/edit`
       : redirectPath;
     const profileEditPath = profileEditBasePath.startsWith("/profile/")
-      ? `${profileEditBasePath}?profileCue=1`
+      ? `/profile/${completedUserId}/edit?profileCue=1&next=${encodeURIComponent(redirectPath)}`
       : profileEditBasePath;
     const continuePath = redirectPath.startsWith("/posts/")
       ? `${redirectPath}${redirectPath.includes("?") ? "&" : "?"}joinCue=1`
