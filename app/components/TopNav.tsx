@@ -312,7 +312,7 @@ export default function TopNav({
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       try {
         if (!mounted) return;
 
@@ -330,24 +330,16 @@ export default function TopNav({
 
         if (loggingOutRef.current) return;
 
-        const nextUser = session?.user
-          ? { id: session.user.id, email: session.user.email }
-          : null;
+        const nextUser = { id: session.user.id, email: session.user.email };
 
         setUser(nextUser);
         setMenuOpen(false);
 
-        if (session?.user) {
+        window.setTimeout(() => {
+          if (!mounted || loggingOutRef.current) return;
           attachRefreshChannel(session.user.id);
-          await refreshIndicators(session.user.id);
-        } else {
-          refreshChannel?.unsubscribe();
-          refreshChannel = null;
-          setPendingCount(0);
-          setAcceptedSentCount(0);
-          setUpcomingMatchCount(0);
-          setHasNewChatActivity(false);
-        }
+          void refreshIndicators(session.user.id);
+        }, 0);
       } catch (error) {
         console.error("TopNav auth change error:", error);
       }
