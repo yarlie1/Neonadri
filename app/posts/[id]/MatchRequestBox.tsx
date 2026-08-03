@@ -55,7 +55,8 @@ export default function MatchRequestBox({
     const referrer = document.referrer.toLowerCase();
 
     setIsRedditVisitor(
-      utmSource === "reddit" ||
+      searchParams.get("joinCue") === "1" ||
+        utmSource === "reddit" ||
         !!utmMedium?.includes("reddit") ||
         !!utmCampaign?.includes("reddit") ||
         referrer.includes("reddit.com")

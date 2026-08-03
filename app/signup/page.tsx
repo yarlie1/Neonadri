@@ -470,6 +470,9 @@ function SignupPageContent() {
     const profileEditPath = completedUserId
       ? `/profile/${completedUserId}/edit`
       : redirectPath;
+    const continuePath = redirectPath.startsWith("/posts/")
+      ? `${redirectPath}${redirectPath.includes("?") ? "&" : "?"}joinCue=1`
+      : redirectPath;
 
     return (
       <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
@@ -511,7 +514,7 @@ function SignupPageContent() {
               <div className="relative">
                 <button
                   type="button"
-                  onClick={() => router.push(redirectPath)}
+                  onClick={() => router.push(continuePath)}
                   className={`w-full rounded-full px-5 py-3 text-sm font-medium transition border-[#0891b2] ring-4 ring-[#67e8f9]/55 shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_34px_rgba(14,165,233,0.68)] [animation:neonadri-create-account-pulse_1.45s_ease-in-out_infinite] ${APP_BUTTON_SECONDARY_CLASS}`}
                 >
                   Just continue
