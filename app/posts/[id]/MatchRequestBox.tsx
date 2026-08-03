@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Send, CheckCircle2, AlertCircle, XCircle } from "lucide-react";
 import {
   APP_BODY_TEXT_CLASS,
@@ -40,11 +40,27 @@ export default function MatchRequestBox({
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const [loading, setLoading] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "info">("info");
+  const [isRedditVisitor, setIsRedditVisitor] = useState(false);
+
+  useEffect(() => {
+    const utmSource = searchParams.get("utm_source")?.toLowerCase();
+    const utmMedium = searchParams.get("utm_medium")?.toLowerCase();
+    const utmCampaign = searchParams.get("utm_campaign")?.toLowerCase();
+    const referrer = document.referrer.toLowerCase();
+
+    setIsRedditVisitor(
+      utmSource === "reddit" ||
+        !!utmMedium?.includes("reddit") ||
+        !!utmCampaign?.includes("reddit") ||
+        referrer.includes("reddit.com")
+    );
+  }, [searchParams]);
 
   const normalizedStatus = String(myRequestStatus || "").toLowerCase();
   const hasPendingRequest = normalizedStatus === "pending" && !!myRequestId;
@@ -159,9 +175,28 @@ export default function MatchRequestBox({
 
   const requestCountLabel =
     requestCount === 1 ? "1 request so far" : `${requestCount} requests so far`;
+  const showRedditRequestCue =
+    isRedditVisitor &&
+    !loading &&
+    !hasPendingRequest &&
+    !isRejectedRequest &&
+    !isUnavailableBecauseCancelled &&
+    !isUnavailableBecauseExpired &&
+    !isUnavailableBecauseMatched &&
+    !hasMatchedRequest;
 
   return (
     <div className={`${APP_SURFACE_CARD_CLASS} px-6 py-6`}>
+      <style jsx global>{`
+        @keyframes neonadri-request-pulse {
+          0%, 100% {
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.96), 0 0 24px rgba(104, 126, 139, 0.36);
+          }
+          50% {
+            box-shadow: 0 0 0 5px rgba(255, 255, 255, 1), 0 0 38px rgba(104, 126, 139, 0.68);
+          }
+        }
+      `}</style>
       <div className="flex items-center gap-3">
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)]">
           <Send className="h-5 w-5 text-[#71828c]" />
@@ -246,15 +281,30 @@ export default function MatchRequestBox({
             Request declined
           </div>
         ) : (
-          <button
+          <div className="relative inline-flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            {showRedditRequestCue ? (
+              <div className="max-w-[240px] rounded-[18px] border border-[#b9c7d0] bg-white px-4 py-3 text-sm leading-5 text-[#43525b] shadow-[0_18px_34px_rgba(92,110,122,0.18)] sm:absolute sm:bottom-[calc(100%+12px)] sm:left-0 sm:z-10">
+                <div className="font-semibold text-[#263640]">Ready to join?</div>
+                <div className="mt-1 text-[#66747d]">
+                  Tap here to send your request to the host.
+                </div>
+                <div className="absolute -bottom-2 left-7 hidden h-4 w-4 rotate-45 border-b border-r border-[#b9c7d0] bg-white sm:block" />
+              </div>
+            ) : null}
+            <button
               type="button"
               onClick={handleRequestMatch}
               disabled={loading}
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
+              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS} ${
+                showRedditRequestCue
+                  ? "border-[#93a9b6] ring-4 ring-[#d7e5ec] shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_28px_rgba(104,126,139,0.48)] [animation:neonadri-request-pulse_1.45s_ease-in-out_infinite]"
+                  : ""
+              }`}
             >
               <Send className="h-4 w-4" />
               {loading ? "Sending..." : "Request to join"}
             </button>
+          </div>
         )}
       </div>
 
