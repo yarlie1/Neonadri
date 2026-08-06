@@ -6,7 +6,7 @@ export default function PrivacyPage() {
       eyebrow="Privacy"
       title="Privacy Policy"
       intro="This page explains the kinds of information Neonadri uses to run the service, support adults-only social meetup flows, reduce abuse, and manage account safety."
-      lastUpdated="2026-05-05"
+      lastUpdated="2026-08-06"
       sections={[
         {
           title: "1. Information we collect",
@@ -33,6 +33,7 @@ export default function PrivacyPage() {
             "To display profiles, meetups, requests, matches, and related product flows.",
             "To support ranking, discovery, and map placement.",
             "To enable chat, requests, reviews, and related product features.",
+            "To contact users for optional product feedback, user research, service improvement, or non-essential service communications.",
             "To investigate abuse, fraud, unsafe behavior, inappropriate cost support, and rule violations.",
             "To enforce adults-only access, public-location expectations, and platform restrictions against dating, matchmaking, romantic, sexual, or financial expectations.",
           ],
@@ -59,6 +60,7 @@ export default function PrivacyPage() {
             "Users may be able to block other users.",
             "Users may be able to delete their account.",
             "Users may be able to report unsafe behavior, inappropriate payment requests, or other rule violations where reporting tools are available.",
+            "Users may opt out of non-essential product feedback or research emails by contacting us.",
           ],
         },
         {
