@@ -5,11 +5,9 @@ import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import {
   APP_BODY_TEXT_CLASS,
-  APP_BUTTON_PRIMARY_CLASS,
   APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
   APP_PAGE_BG_CLASS,
-  APP_SUBTLE_TEXT_CLASS,
   APP_SURFACE_CARD_CLASS,
 } from "../designSystem";
 
@@ -148,7 +146,7 @@ export default function LoginPage() {
                     </div>
                     <Link
                       href={signupHref}
-                      className={`inline-flex min-h-[52px] w-full items-center justify-center rounded-[8px] border px-5 py-3 text-base font-black transition ${APP_BUTTON_PRIMARY_CLASS} border-[#111111] [animation:neonadri-signup-pulse_1.45s_ease-in-out_infinite]`}
+                      className="inline-flex min-h-[52px] w-full items-center justify-center rounded-[8px] border border-[#111111] bg-[#111111] px-5 py-3 text-base font-black text-white shadow-none transition hover:bg-[#333333] [animation:neonadri-signup-pulse_1.45s_ease-in-out_infinite]"
                     >
                       Create account
                     </Link>
@@ -164,7 +162,7 @@ export default function LoginPage() {
                 <>
                   <button
                     onClick={handleLogin}
-                    className={`inline-flex min-h-[52px] items-center justify-center rounded-[8px] border px-5 py-3 text-base font-black transition ${APP_BUTTON_PRIMARY_CLASS}`}
+                    className="inline-flex min-h-[52px] items-center justify-center rounded-[8px] border border-[#111111] bg-[#111111] px-5 py-3 text-base font-black text-white shadow-none transition hover:bg-[#333333]"
                   >
                     Log In
                   </button>
