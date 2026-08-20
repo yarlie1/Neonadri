@@ -335,36 +335,13 @@ export default function HomeFeedClient({
   ]);
 
   const feedPosts = posts;
-  const [footerOffset, setFooterOffset] = useState(0);
-
-  useEffect(() => {
-    const syncFooterOffset = () => {
-      const footer = document.querySelector("footer");
-      if (!footer) {
-        setFooterOffset(0);
-        return;
-      }
-
-      const footerTop = footer.getBoundingClientRect().top;
-      setFooterOffset(Math.max(0, window.innerHeight - footerTop));
-    };
-
-    syncFooterOffset();
-    window.addEventListener("scroll", syncFooterOffset, { passive: true });
-    window.addEventListener("resize", syncFooterOffset);
-
-    return () => {
-      window.removeEventListener("scroll", syncFooterOffset);
-      window.removeEventListener("resize", syncFooterOffset);
-    };
-  }, []);
 
   return (
     <>
       <main className={`relative isolate min-h-[100dvh] overflow-x-hidden px-4 py-5 ${APP_PAGE_BG_CLASS}`}>
 
-        <div className="relative z-10 mx-auto max-w-7xl min-w-0 space-y-4 pb-48 sm:space-y-5 sm:pb-56">
-        <section className={`relative mx-auto w-full max-w-4xl overflow-hidden px-5 py-5 text-[#111111] sm:px-7 sm:py-6 ${HOME_WHITE_SURFACE_CLASS}`}>
+        <div className="relative z-10 mx-auto max-w-5xl min-w-0 space-y-4 pb-16 sm:space-y-5 sm:pb-20">
+        <section className={`relative w-full overflow-hidden px-5 py-5 text-[#111111] sm:px-7 sm:py-6 ${HOME_WHITE_SURFACE_CLASS}`}>
           <div className="relative">
             <div className={`inline-flex items-center gap-2 rounded-[8px] px-3 py-1 ${APP_PILL_INACTIVE_CLASS} ${APP_EYEBROW_CLASS}`}>
               <Sparkles className="h-3.5 w-3.5" />
@@ -429,7 +406,7 @@ export default function HomeFeedClient({
           </div>
         </div>
 
-        <div className="grid max-w-5xl min-w-0 gap-4 sm:grid-cols-2">
+        <div className="grid min-w-0 gap-4 sm:grid-cols-2">
         {feedPosts.map((post) => {
           const amount = parseBenefitAmount(post.benefit_amount);
           const host = hostProfileMap[post.user_id] || {
@@ -493,35 +470,29 @@ export default function HomeFeedClient({
             {"No meetups match this view right now."}
           </div>
         )}
+
+        <Link
+          href={createHref}
+          className="flex min-h-[64px] w-full items-center justify-between gap-4 rounded-[8px] border border-[#111111] bg-white px-5 py-3 text-[#111111] shadow-none transition hover:bg-[#f5f5f5]"
+          aria-label="Create meetup"
+        >
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] border border-[#111111] bg-white text-[#111111] shadow-none">
+              <CalendarPlus className="h-5 w-5" />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-[#7b8992]">
+                Host a plan
+              </span>
+              <span className="block text-sm font-black tracking-[-0.03em]">
+                Create meetup
+              </span>
+            </span>
+          </div>
+          <ArrowRight className="h-5 w-5 shrink-0 text-[#60717c]" />
+        </Link>
         </div>
 
-        <div
-          className="fixed left-1/2 z-40 w-[calc(100%-2rem)] max-w-5xl -translate-x-1/2 transition-[bottom] duration-150 sm:w-[calc(100%-3rem)]"
-          style={{ bottom: `calc(${footerOffset}px + env(safe-area-inset-bottom))` }}
-        >
-          <div>
-            <Link
-              href={createHref}
-              className="flex min-h-[64px] w-full items-center justify-between gap-4 rounded-[8px] border border-[#111111] bg-white px-5 py-3 text-[#111111] shadow-none transition hover:bg-[#f5f5f5]"
-              aria-label="Create meetup"
-            >
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] border border-[#111111] bg-white text-[#111111] shadow-none">
-                  <CalendarPlus className="h-5 w-5" />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-[#7b8992]">
-                    Host a plan
-                  </span>
-                  <span className="block text-sm font-black tracking-[-0.03em]">
-                    Create meetup
-                  </span>
-                </span>
-              </div>
-              <ArrowRight className="h-5 w-5 shrink-0 text-[#60717c]" />
-            </Link>
-          </div>
-        </div>
       </main>
     </>
   );
