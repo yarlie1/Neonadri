@@ -398,9 +398,6 @@ export default function TopNav({
                   <NewChatBadge visible={hasNewChatActivity} />
                 </span>
               </Link>
-              <Link href={createHref} className={topPrimary} onClick={closeMenu}>
-                Create
-              </Link>
             </>
           ) : (
             <>
@@ -444,6 +441,9 @@ export default function TopNav({
                   </Link>
                   <Link href="/account" onClick={closeMenu} className={menuItem}>
                     Account
+                  </Link>
+                  <Link href={createHref} onClick={closeMenu} className={menuItem}>
+                    Create meetup
                   </Link>
                   <button
                     type="button"
