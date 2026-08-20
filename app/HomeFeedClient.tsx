@@ -259,7 +259,7 @@ export default function HomeFeedClient({
           <div className="flex items-end justify-between gap-4 px-1 pt-2">
             <div>
               <h1 className="text-[30px] font-black leading-none text-[#111111] sm:text-[36px]">
-                Available meetups
+                Meetups
               </h1>
               <div className="mt-1 text-sm font-medium text-[#555555]">
                 {posts.length} results
