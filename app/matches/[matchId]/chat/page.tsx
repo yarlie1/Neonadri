@@ -62,11 +62,11 @@ function MatchChatErrorState({ code }: { code: string }) {
 
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
-      <div className={`mx-auto max-w-2xl rounded-[24px] p-5 backdrop-blur ${APP_SURFACE_CARD_CLASS}`}>
+      <div className={`mx-auto max-w-2xl rounded-[8px] p-5  ${APP_SURFACE_CARD_CLASS}`}>
         <div className={APP_EYEBROW_CLASS}>
           Chat unavailable
         </div>
-        <div className="mt-2 text-xl font-bold tracking-[-0.03em] text-[#24323c]">
+        <div className="mt-2 text-xl font-bold tracking-[-0.03em] text-[#111111]">
           {body}
         </div>
         <p className={`mt-3 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
@@ -75,7 +75,7 @@ function MatchChatErrorState({ code }: { code: string }) {
         <div className="mt-5">
           <Link
             href="/dashboard?tab=matches"
-            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+            className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
           >
             Back to Matches
           </Link>

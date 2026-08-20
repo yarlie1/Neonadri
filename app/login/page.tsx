@@ -14,7 +14,7 @@ import {
 } from "../designSystem";
 
 const INPUT_CLASS =
-  "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30";
+  "w-full rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#111111] outline-none transition focus:border-[#111111] focus:ring-1 focus:/30";
 
 export default function LoginPage() {
   const supabase = createClient();
@@ -94,7 +94,7 @@ export default function LoginPage() {
             <div className={APP_EYEBROW_CLASS}>
               Log In
             </div>
-            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
+            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#111111]">
               Continue to request
             </h2>
             <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
@@ -104,20 +104,20 @@ export default function LoginPage() {
               By using Neonadri, you confirm that you are 18 or older.
             </p>
             <div className={`mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-              <Link href="/terms" className="transition hover:text-[#24323c]">
+              <Link href="/terms" className="transition hover:text-[#111111]">
                 Terms
               </Link>
-              <Link href="/privacy" className="transition hover:text-[#24323c]">
+              <Link href="/privacy" className="transition hover:text-[#111111]">
                 Privacy
               </Link>
-              <Link href="/community" className="transition hover:text-[#24323c]">
+              <Link href="/community" className="transition hover:text-[#111111]">
                 Community
               </Link>
             </div>
 
             <div className="mt-6 space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                <label className="mb-2 block text-sm font-medium text-[#333333]">
                   Email
                 </label>
                 <input
@@ -131,12 +131,12 @@ export default function LoginPage() {
 
               <div>
                 <div className="mb-2 flex items-center justify-between gap-3">
-                  <label className="block text-sm font-medium text-[#52616a]">
+                  <label className="block text-sm font-medium text-[#333333]">
                     Password
                   </label>
                   <Link
                     href="/forgot-password"
-                    className="text-xs font-medium text-[#6a7a84] transition hover:text-[#24323c]"
+                    className="text-xs font-medium text-[#6a7a84] transition hover:text-[#111111]"
                   >
                     Forgot password?
                   </Link>

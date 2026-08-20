@@ -54,7 +54,7 @@ export default function AccountDeletePanel() {
         Remove profile, meetups, requests, and matches.
       </p>
 
-      <div className="mt-4 rounded-[18px] border border-[#eaded8] bg-[linear-gradient(180deg,#fffdfc_0%,#f7f0ed_100%)] px-4 py-3 text-sm text-[#775f55]">
+      <div className="mt-4 rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#775f55]">
         This cannot be undone.
       </div>
 
@@ -63,7 +63,7 @@ export default function AccountDeletePanel() {
           <button
             type="button"
             onClick={() => setConfirmDelete(true)}
-            className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+            className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
           >
             <Trash2 className="h-4 w-4" />
             Delete account
@@ -71,7 +71,7 @@ export default function AccountDeletePanel() {
           <button
             type="button"
             onClick={() => router.push("/account")}
-            className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+            className={`inline-flex items-center rounded-[8px] px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
           >
             Back to account
           </button>
@@ -86,7 +86,7 @@ export default function AccountDeletePanel() {
               type="button"
               onClick={() => void handleDeleteAccount()}
               disabled={isDeleting}
-              className="inline-flex items-center gap-2 rounded-full border border-[#dfcfc8] bg-[linear-gradient(180deg,#fff9f7_0%,#f4e5df_100%)] px-4 py-2.5 text-sm font-medium text-[#7d584b] transition disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-[8px] border border-[#111111] bg-white px-4 py-2.5 text-sm font-medium text-[#7d584b] transition disabled:opacity-60"
             >
               <Trash2 className="h-4 w-4" />
               {isDeleting ? "Deleting..." : "Confirm delete"}
@@ -95,7 +95,7 @@ export default function AccountDeletePanel() {
               type="button"
               onClick={() => setConfirmDelete(false)}
               disabled={isDeleting}
-              className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+              className={`inline-flex items-center rounded-[8px] px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               Cancel
             </button>
@@ -105,10 +105,10 @@ export default function AccountDeletePanel() {
 
       {deleteMessage ? (
         <div
-          className={`mt-4 rounded-[18px] px-4 py-3 text-sm font-medium ${
+          className={`mt-4 rounded-[8px] px-4 py-3 text-sm font-medium ${
             deleteMessageTone === "danger"
-              ? "border border-[#eaded8] bg-[linear-gradient(180deg,#fffdfc_0%,#f7f0ed_100%)] text-[#775f55]"
-              : `${APP_SOFT_CARD_CLASS} text-[#55626a]`
+              ? "border border-[#111111] bg-white text-[#775f55]"
+              : `${APP_SOFT_CARD_CLASS} text-[#333333]`
           }`}
         >
           {deleteMessage}

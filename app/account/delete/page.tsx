@@ -8,7 +8,7 @@ import {
 import AccountDeletePanel from "../AccountDeletePanel";
 
 const HERO_SURFACE_CLASS =
-  "relative overflow-hidden rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] px-6 py-7 text-[#24323c] shadow-[0_24px_48px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)] sm:px-8 sm:py-8";
+  "relative overflow-hidden rounded-[8px] border border-[#111111] bg-white px-6 py-7 text-[#111111] shadow-none sm:px-8 sm:py-8";
 
 export default async function AccountDeletePage() {
   const supabase = await createClient();
@@ -23,12 +23,9 @@ export default async function AccountDeletePage() {
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
       <div className="mx-auto max-w-3xl space-y-4">
-        <section className={HERO_SURFACE_CLASS}>
-          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/45 blur-2xl" />
-          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#d6e0e6]/45 blur-2xl" />
-          <div className="relative">
+        <section className={HERO_SURFACE_CLASS}>          <div className="relative">
             <div
-              className={`inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}
+              className={`inline-flex items-center rounded-[8px] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}
             >
               Account
             </div>

@@ -104,7 +104,7 @@ export default function PushNotificationButton({
           <button
             type="button"
             onClick={onSkipped}
-            className="inline-flex items-center justify-center rounded-full border border-[#dce4e9] bg-[linear-gradient(180deg,#ffffff_0%,#f4f7f9_100%)] px-5 py-3 text-sm font-medium text-[#5d6b74] transition hover:bg-[#f7fafb] hover:text-[#2f3f48]"
+            className="inline-flex items-center justify-center rounded-[8px] border border-[#111111] bg-white px-5 py-3 text-sm font-medium text-[#333333] transition hover:bg-white hover:text-[#111111]"
           >
             Continue to Neonadri
           </button>
@@ -218,7 +218,7 @@ export default function PushNotificationButton({
               void enableNotifications();
             }}
             disabled={busy || denied}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#bac7d0] bg-[linear-gradient(180deg,#ffffff_0%,#dce6ec_100%)] px-5 py-3 text-sm font-bold text-[#24323c] shadow-[0_16px_30px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.98)] transition hover:border-[#a8b8c2] hover:text-[#17242d] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex items-center justify-center gap-2 rounded-[8px] border border-[#bac7d0] bg-white px-5 py-3 text-sm font-bold text-[#111111] shadow-none transition hover:border-[#111111] hover:text-[#17242d] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {busy ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Bell className="h-4 w-4" />}
             {subscribed ? "Yes, continue with alerts on" : "Yes, turn on alerts"}
@@ -227,7 +227,7 @@ export default function PushNotificationButton({
             type="button"
             onClick={onSkipped}
             disabled={busy}
-            className="inline-flex items-center justify-center rounded-full border border-[#dce4e9] bg-[linear-gradient(180deg,#ffffff_0%,#f4f7f9_100%)] px-5 py-3 text-sm font-medium text-[#5d6b74] transition hover:bg-[#f7fafb] hover:text-[#2f3f48] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex items-center justify-center rounded-[8px] border border-[#111111] bg-white px-5 py-3 text-sm font-medium text-[#333333] transition hover:bg-white hover:text-[#111111] disabled:cursor-not-allowed disabled:opacity-60"
           >
             No, continue
           </button>
@@ -248,7 +248,7 @@ export default function PushNotificationButton({
     return (
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-sm font-semibold text-[#24323c]">
+          <div className="text-sm font-semibold text-[#111111]">
             Device notifications
           </div>
           <div className="mt-1 text-xs font-medium text-[#728089]">
@@ -261,16 +261,16 @@ export default function PushNotificationButton({
           aria-checked={subscribed}
           onClick={subscribed ? disableNotifications : enableNotifications}
           disabled={busy || denied}
-          className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full border transition disabled:cursor-not-allowed disabled:opacity-60 ${
+          className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-[8px] border transition disabled:cursor-not-allowed disabled:opacity-60 ${
             subscribed
-              ? "border-[#b8c6cf] bg-[linear-gradient(180deg,#dce7ed_0%,#aebdc7_100%)]"
-              : "border-[#d9e2e8] bg-[linear-gradient(180deg,#ffffff_0%,#edf2f5_100%)]"
+              ? "border-[#b8c6cf] bg-white"
+              : "border-[#111111] bg-white"
           }`}
           title={label}
           aria-label={label}
         >
           <span
-            className={`inline-flex h-6 w-6 items-center justify-center rounded-full bg-white text-[#64727a] shadow-[0_6px_14px_rgba(118,126,133,0.22)] transition ${
+            className={`inline-flex h-6 w-6 items-center justify-center rounded-[8px] bg-white text-[#333333] shadow-none transition ${
               subscribed ? "translate-x-7" : "translate-x-1"
             }`}
           >
@@ -293,7 +293,7 @@ export default function PushNotificationButton({
         type="button"
         onClick={subscribed ? disableNotifications : enableNotifications}
         disabled={busy || denied}
-        className="inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-medium text-[#728089] transition hover:bg-[#eef4f7] hover:text-[#33434c] disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex items-center gap-1.5 rounded-[8px] px-2 py-1.5 text-xs font-medium text-[#728089] transition hover:bg-white hover:text-[#33434c] disabled:cursor-not-allowed disabled:opacity-60"
         title={label}
         aria-label={label}
       >

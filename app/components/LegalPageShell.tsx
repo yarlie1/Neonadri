@@ -31,14 +31,11 @@ export default function LegalPageShell({
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
       <div className="mx-auto max-w-3xl space-y-5">
-        <section className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-5 py-6 sm:px-6 sm:py-7`}>
-          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/42 blur-2xl" />
-          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#cfd8de]/35 blur-2xl" />
-          <div className="relative">
-            <div className={`inline-flex items-center rounded-full ${APP_SOFT_CARD_CLASS} px-3 py-1.5 ${APP_EYEBROW_CLASS}`}>
+        <section className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-5 py-6 sm:px-6 sm:py-7`}>          <div className="relative">
+            <div className={`inline-flex items-center rounded-[8px] ${APP_SOFT_CARD_CLASS} px-3 py-1.5 ${APP_EYEBROW_CLASS}`}>
               {eyebrow}
             </div>
-            <h1 className="mt-4 max-w-2xl text-[32px] font-black leading-[0.98] tracking-[-0.05em] text-[#24323f] sm:text-[38px]">
+            <h1 className="mt-4 max-w-2xl text-[32px] font-black leading-[0.98] tracking-[-0.05em] text-[#111111] sm:text-[38px]">
               {title}
             </h1>
             <p className={`mt-3 max-w-2xl text-sm leading-6 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
@@ -54,7 +51,7 @@ export default function LegalPageShell({
           <div className="space-y-6">
             {sections.map((section) => (
               <div key={section.title} className="space-y-3">
-                <h2 className="text-lg font-bold tracking-[-0.03em] text-[#24323f]">
+                <h2 className="text-lg font-bold tracking-[-0.03em] text-[#111111]">
                   {section.title}
                 </h2>
                 {section.paragraphs?.map((paragraph) => (
@@ -79,31 +76,31 @@ export default function LegalPageShell({
           <div className="mt-8 flex flex-wrap gap-2">
             <Link
               href="/"
-              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+              className={`inline-flex items-center rounded-[8px] px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               Back home
             </Link>
             <Link
               href="/faq"
-              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+              className={`inline-flex items-center rounded-[8px] px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               FAQ
             </Link>
             <Link
               href="/community"
-              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+              className={`inline-flex items-center rounded-[8px] px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               Community
             </Link>
             <Link
               href="/privacy"
-              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+              className={`inline-flex items-center rounded-[8px] px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               Privacy
             </Link>
             <Link
               href="/terms"
-              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+              className={`inline-flex items-center rounded-[8px] px-4 py-2 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               Terms
             </Link>

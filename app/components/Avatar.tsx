@@ -31,7 +31,7 @@ export default function Avatar({
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#dce5eb] bg-[radial-gradient(circle_at_top,_#ffffff,_#d9e1e6_78%)] text-[#52616a] shadow-[0_12px_24px_rgba(118,126,133,0.14)] ${sizeClasses[size]} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-[8px] border border-[#111111] bg-white text-[#333333] shadow-none ${sizeClasses[size]} ${className}`}
       aria-label={label}
     >
       {src ? (

@@ -102,7 +102,7 @@ export type PostRow = {
   admin_hidden?: boolean | null;
 };
 
-const PURPOSE_ICON_CLASS = "h-[19px] w-[19px] shrink-0 text-[#71828c]";
+const PURPOSE_ICON_CLASS = "h-[19px] w-[19px] shrink-0 text-[#444444]";
 
 export const getPurposeIcon = (purpose: string | null, className?: string) => {
   const iconClassName = className || PURPOSE_ICON_CLASS;
@@ -155,7 +155,7 @@ export const getPurposeIcon = (purpose: string | null, className?: string) => {
 
 export const getPurposeTheme = (_purpose: string | null) => ({
   bandClass:
-    "border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#24323f]",
+    "border border-[#111111] bg-white text-[#111111]",
 });
 
 export const formatDuration = (minutes: number | null) => {
@@ -184,7 +184,7 @@ function StarRating({
             key={n}
             className={`${iconClass} ${
               filled
-                ? "fill-[#71828c] text-[#71828c]"
+                ? "fill-[#71828c] text-[#444444]"
                 : "text-[#d3dce2]"
             }`}
           />
@@ -203,7 +203,7 @@ function InfoItem({
   value: string;
 }) {
   return (
-    <div className="rounded-[18px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-3 shadow-[0_10px_18px_rgba(118,126,133,0.07),inset_0_1px_0_rgba(255,255,255,0.98)]">
+    <div className="rounded-[8px] border border-[#111111] bg-white px-4 py-3 shadow-none">
       <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.08em] text-[#849099]">
         {icon}
         <span>{label}</span>
@@ -223,11 +223,11 @@ function StatCard({
   value: string;
 }) {
   return (
-    <div className="rounded-[22px] border border-[#e3e9ee] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-4 text-center shadow-sm">
+    <div className="rounded-[8px] border border-[#111111] bg-white px-4 py-4 text-center shadow-none">
       <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#849099]">
         {label}
       </div>
-      <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#24323f]">
+      <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#111111]">
         {value}
       </div>
     </div>
@@ -244,11 +244,11 @@ function TrustStatCard({
   detail: string;
 }) {
   return (
-    <div className="rounded-[18px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] shadow-[0_10px_18px_rgba(118,126,133,0.07),inset_0_1px_0_rgba(255,255,255,0.98)] px-4 py-2.5">
+    <div className="rounded-[8px] border border-[#111111] bg-white shadow-none px-4 py-2.5">
       <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#849099]">
         {label}
       </div>
-      <div className="mt-1 text-sm font-semibold text-[#52616a]">{value}</div>
+      <div className="mt-1 text-sm font-semibold text-[#333333]">{value}</div>
       <div className="mt-0.5 text-[11px] text-[#849099]">{detail}</div>
     </div>
   );
@@ -286,7 +286,7 @@ export function ProfileShowcaseCard({
   const identityLine = formatPersonMetaAgeFirst(data.gender || "Unknown", data.ageGroup);
 
   const cardContent = summaryOnly ? (
-    <div className={`${APP_SURFACE_CARD_CLASS} px-5 py-4 transition hover:-translate-y-0.5 hover:shadow-[0_18px_34px_rgba(118,126,133,0.14)]`}>
+    <div className={`${APP_SURFACE_CARD_CLASS} px-5 py-4 transition hover:-translate-y-0.5 hover:shadow-none`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7f8990]">
@@ -295,29 +295,29 @@ export function ProfileShowcaseCard({
           <div className="mt-2 flex items-center justify-between gap-3">
             <div className="flex min-w-0 items-center gap-2">
               <Avatar src={data.avatarUrl} name={data.displayName} size="sm" />
-              <div className="truncate text-[1.15rem] font-black tracking-[-0.03em] text-[#24323f]">
+              <div className="truncate text-[1.15rem] font-black tracking-[-0.03em] text-[#111111]">
                 {data.displayName}
               </div>
               {isCurrentUser && (
-                <span className="shrink-0 rounded-full border border-[#d8e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-[#6b7b84]">
+                <span className="shrink-0 rounded-[8px] border border-[#111111] bg-white px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-[#444444]">
                   You
                 </span>
               )}
             </div>
             <div className="ml-auto flex shrink-0 items-center gap-2">
               {hasRating ? (
-                <span className="inline-flex items-center gap-1 rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2.5 py-1 text-[11px] font-medium text-[#5f7480]">
-                  <Star className="h-3.5 w-3.5 fill-current text-[#71828c]" />
+                <span className="inline-flex items-center gap-1 rounded-[8px] border border-[#111111] bg-white px-2.5 py-1 text-[11px] font-medium text-[#5f7480]">
+                  <Star className="h-3.5 w-3.5 fill-current text-[#444444]" />
                   {data.averageRating.toFixed(1)}
                 </span>
               ) : (
-                <span className="inline-flex items-center rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2.5 py-1 text-[11px] font-medium text-[#5f7480]">
+                <span className="inline-flex items-center rounded-[8px] border border-[#111111] bg-white px-2.5 py-1 text-[11px] font-medium text-[#5f7480]">
                   No reviews yet
                 </span>
               )}
             </div>
           </div>
-          <div className="mt-2 text-sm text-[#52616a]">{identityLine}</div>
+          <div className="mt-2 text-sm text-[#333333]">{identityLine}</div>
           {title === "Host" && hasAboutMe ? (
             <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#6a7680]">
               {summary}
@@ -327,10 +327,7 @@ export function ProfileShowcaseCard({
       </div>
     </div>
   ) : (
-    <div className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-6 py-6`}>
-      <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/45 blur-2xl" />
-      <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#cfd8de]/35 blur-2xl" />
-      <div className="relative">
+    <div className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-6 py-6`}>      <div className="relative">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7f8990]">
@@ -343,17 +340,17 @@ export function ProfileShowcaseCard({
                   {profileHref ? (
                     <Link
                       href={profileHref}
-                      className="block truncate text-[1.7rem] font-black tracking-[-0.04em] text-[#24323f] underline-offset-4 transition hover:text-[#52616a] hover:underline"
+                      className="block truncate text-[1.7rem] font-black tracking-[-0.04em] text-[#111111] underline-offset-4 transition hover:text-[#333333] hover:underline"
                     >
                       {data.displayName}
                     </Link>
                   ) : (
-                    <div className="truncate text-[1.7rem] font-black tracking-[-0.04em] text-[#24323f]">
+                    <div className="truncate text-[1.7rem] font-black tracking-[-0.04em] text-[#111111]">
                       {data.displayName}
                     </div>
                   )}
                   {isCurrentUser && (
-                    <span className="rounded-full border border-white/60 bg-white/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b7b84]">
+                    <span className="rounded-[8px] border border-white/60 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#444444]">
                       You
                     </span>
                   )}
@@ -362,7 +359,7 @@ export function ProfileShowcaseCard({
               </div>
             </div>
           </div>
-          <div className="rounded-full border border-white/60 bg-white/60 px-4 py-2 text-sm font-medium text-[#52616a] backdrop-blur">
+          <div className="rounded-[8px] border border-white/60 bg-white px-4 py-2 text-sm font-medium text-[#333333] ">
             {hasRating
               ? `${data.averageRating.toFixed(1)} rating / ${data.reviewCount} reviews`
               : "No reviews yet"}
@@ -372,28 +369,28 @@ export function ProfileShowcaseCard({
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           {(data.gender || data.ageGroup) && (
             <InfoItem
-              icon={<UserRound className="h-3.5 w-3.5 text-[#71828c]" />}
+              icon={<UserRound className="h-3.5 w-3.5 text-[#444444]" />}
               label={title.includes("Guest") ? "Guest" : "Host"}
               value={identityLine}
             />
           )}
           {hasLanguages && (
             <InfoItem
-              icon={<Languages className="h-3.5 w-3.5 text-[#71828c]" />}
+              icon={<Languages className="h-3.5 w-3.5 text-[#444444]" />}
               label="Languages"
               value={data.languages.join(", ")}
             />
           )}
           {hasMeetingStyle && (
             <InfoItem
-              icon={<HeartHandshake className="h-3.5 w-3.5 text-[#71828c]" />}
+              icon={<HeartHandshake className="h-3.5 w-3.5 text-[#444444]" />}
               label="Meeting Style"
               value={data.meetingStyle}
             />
           )}
           {hasResponseNote && (
             <InfoItem
-              icon={<Clock3 className="h-3.5 w-3.5 text-[#71828c]" />}
+              icon={<Clock3 className="h-3.5 w-3.5 text-[#444444]" />}
               label="Response Note"
               value={data.responseNote}
             />
@@ -402,7 +399,7 @@ export function ProfileShowcaseCard({
 
         <div className={`mt-4 ${APP_SOFT_CARD_CLASS} px-4 py-4`}>
           <div className="flex items-start gap-3">
-            <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#71828c]" />
+            <MessageSquareText className="mt-0.5 h-5 w-5 shrink-0 text-[#444444]" />
             <div>
               <div className="text-xs font-medium uppercase tracking-[0.14em] text-[#849099]">
                 About Me
@@ -415,14 +412,14 @@ export function ProfileShowcaseCard({
         {!compact && hasInterests && (
           <div className="mt-4">
             <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[#849099]">
-              <Sparkles className="h-3.5 w-3.5 text-[#71828c]" />
+              <Sparkles className="h-3.5 w-3.5 text-[#444444]" />
               Interests
             </div>
             <div className="flex flex-wrap gap-2">
               {data.interests.map((item) => (
                 <span
                   key={item}
-                  className="rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-3 py-1.5 text-xs font-medium text-[#52616a]"
+                  className="rounded-[8px] border border-[#111111] bg-white px-3 py-1.5 text-xs font-medium text-[#333333]"
                 >
                   {item}
                 </span>
@@ -436,22 +433,22 @@ export function ProfileShowcaseCard({
             <div className="text-xs text-[#849099]">Rating</div>
             {hasRating ? (
               <>
-                <div className="mt-1 text-xl font-bold text-[#24323f]">{data.averageRating.toFixed(1)}</div>
+                <div className="mt-1 text-xl font-bold text-[#111111]">{data.averageRating.toFixed(1)}</div>
                 <div className="mt-1 flex justify-center">
                   <StarRating value={roundedAverage} size="sm" />
                 </div>
               </>
             ) : (
-              <div className="mt-2 text-sm font-semibold text-[#52616a]">No reviews yet</div>
+              <div className="mt-2 text-sm font-semibold text-[#333333]">No reviews yet</div>
             )}
           </div>
           <div className={`${APP_SOFT_CARD_CLASS} p-3 text-center`}>
             <div className="text-xs text-[#849099]">Reviews</div>
-            <div className="mt-2 text-xl font-bold text-[#24323f]">{data.reviewCount}</div>
+            <div className="mt-2 text-xl font-bold text-[#111111]">{data.reviewCount}</div>
           </div>
           <div className={`${APP_SOFT_CARD_CLASS} p-3 text-center`}>
             <div className="text-xs text-[#849099]">Meetups</div>
-            <div className="mt-2 text-xl font-bold text-[#24323f]">{data.completedMeetups}</div>
+            <div className="mt-2 text-xl font-bold text-[#111111]">{data.completedMeetups}</div>
           </div>
         </div>
 
@@ -486,7 +483,7 @@ export function ProfileShowcaseCard({
 
         {!compact && (
           <div className={`mt-4 ${APP_SOFT_CARD_CLASS} px-4 py-4`}>
-            <div className="text-sm font-semibold text-[#24323f]">Recent Reviews</div>
+            <div className="text-sm font-semibold text-[#111111]">Recent Reviews</div>
             <div className="mt-3 space-y-3">
               {data.recentReviews.length === 0 ? (
                 <div className="text-sm text-[#849099]">No reviews yet.</div>
@@ -502,7 +499,7 @@ export function ProfileShowcaseCard({
                         {new Date(review.created_at).toLocaleDateString()}
                       </div>
                     </div>
-                    <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#52616a]">
+                    <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#333333]">
                       {review.review_text || "No comment."}
                     </p>
                   </div>
@@ -554,7 +551,7 @@ export function UpcomingMeetupCard({
           <div className={APP_EYEBROW_CLASS}>
             Upcoming meetup
           </div>
-          <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#24323f]">
+          <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#111111]">
             Upcoming matched meetup
           </div>
           <div className={`mt-2 text-sm leading-6 ${APP_MUTED_TEXT_CLASS}`}>
@@ -566,7 +563,7 @@ export function UpcomingMeetupCard({
       <div className={`mt-4 ${APP_INNER_PANEL_CLASS} p-4`}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div
-            className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] shadow-sm ${purposeTheme.bandClass}`}
+            className={`inline-flex items-center gap-2 rounded-[8px] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] shadow-none ${purposeTheme.bandClass}`}
           >
             {getPurposeIcon(post.meeting_purpose)}
             {post.meeting_purpose || "Meetup"}
@@ -579,17 +576,17 @@ export function UpcomingMeetupCard({
 
         <div className={`mt-3 ${APP_ROW_SURFACE_CLASS} px-4 py-3`}>
           <div className="flex items-start justify-between gap-3">
-            <div className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-[#24323f]">
-              <Clock3 className="h-4 w-4 shrink-0 text-[#71828c]" />
+            <div className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-[#111111]">
+              <Clock3 className="h-4 w-4 shrink-0 text-[#444444]" />
               <span className="truncate">{meetupTimeLabel}</span>
             </div>
-            <div className="shrink-0 rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#5f7480]">
+            <div className="shrink-0 rounded-[8px] border border-[#111111] bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#5f7480]">
               {meetupCountdown || "Soon"}
             </div>
           </div>
 
-          <div className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#52616a]">
-            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#71828c]" />
+          <div className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#333333]">
+            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#444444]" />
             <span className="min-w-0 break-words line-clamp-2">
               {post.place_name || post.location || "Selected place"}
             </span>
@@ -638,40 +635,37 @@ export function MeetupOverviewCard({
     : "";
 
   return (
-    <div className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-6 py-6`}>
-      <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/42 blur-2xl" />
-      <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#cfd8de]/35 blur-2xl" />
-      <div className="relative">
+    <div className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-6 py-6`}>      <div className="relative">
         <div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className={APP_EYEBROW_CLASS}>Meetup overview</div>
-            <span className="ml-auto rounded-full border border-white/60 bg-white/55 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b7b84]">
+            <span className="ml-auto rounded-[8px] border border-white/60 bg-white/55 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#444444]">
               {isCancelled ? "Cancelled" : isPostMatched ? "Matched" : "Open"}
             </span>
           </div>
           <div className="mt-4 flex flex-wrap items-stretch gap-2.5">
             <div
-              className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[18px] px-4 py-3.5 shadow-[0_10px_20px_rgba(118,126,133,0.09)] ${purposeTheme.bandClass}`}
+              className={`inline-flex min-w-0 flex-1 items-center gap-3 rounded-[8px] px-4 py-3.5 shadow-none ${purposeTheme.bandClass}`}
             >
-                <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/55 bg-[linear-gradient(180deg,#ffffff_0%,#e2e9ee_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
+                <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border border-white/55 bg-white shadow-none">
                   {getPurposeIcon(
                     post.meeting_purpose,
-                    "h-[18px] w-[18px] shrink-0 text-[#71828c]"
+                    "h-[18px] w-[18px] shrink-0 text-[#444444]"
                   )}
                 </div>
               <div className="min-w-0">
-                <div className="truncate text-[1.18rem] font-black tracking-[-0.03em] text-[#24323f] sm:text-[1.28rem]">
+                <div className="truncate text-[1.18rem] font-black tracking-[-0.03em] text-[#111111] sm:text-[1.28rem]">
                   {post.meeting_purpose || "Meetup"}
                 </div>
               </div>
             </div>
-            <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-1 py-2 text-center text-[#52616a] shadow-sm">
+            <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[8px] border border-[#111111] bg-white px-1 py-2 text-center text-[#333333] shadow-none">
               <Clock3 className="h-3.5 w-3.5 text-[#7e8d96]" />
               <span className="mt-1 text-sm font-extrabold tracking-[-0.03em] text-[#23333d]">
                 {meetupDurationLabel}
               </span>
             </div>
-            <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[16px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-1 py-2 text-center text-[#52616a] shadow-sm">
+            <div className="inline-flex w-[58px] shrink-0 flex-col items-center justify-center rounded-[8px] border border-[#111111] bg-white px-1 py-2 text-center text-[#333333] shadow-none">
               <UserStar className="h-3.5 w-3.5 text-[#7e8d96]" />
               <span className="mt-1.5 text-sm font-extrabold leading-tight tracking-[-0.03em] text-[#23333d]">
                 {post.benefit_amount || "N/A"}
@@ -712,18 +706,18 @@ export function MeetupOverviewCard({
                 href={mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex shrink-0 items-center gap-2 rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-3 py-1.5 text-[11px] font-medium transition`}
+                className={`inline-flex shrink-0 items-center gap-2 rounded-[8px] ${APP_BUTTON_SECONDARY_CLASS} px-3 py-1.5 text-[11px] font-medium transition`}
               >
                 Open in Maps
               </a>
             )}
           </div>
-          <div className="mt-3 text-[15px] text-[#52616a]">
+          <div className="mt-3 text-[15px] text-[#333333]">
             <div className="space-y-3">
               {locationDisplay && (
                 <div className="min-w-0">
                   <div className="flex min-w-0 items-center gap-2">
-                    <MapPin className="h-4 w-4 shrink-0 text-[#71828c]" />
+                    <MapPin className="h-4 w-4 shrink-0 text-[#444444]" />
                     <div className="text-[11px] font-semibold uppercase leading-none tracking-[0.12em] text-[#849099]">
                       {locationHeading}
                     </div>
@@ -777,16 +771,16 @@ export function MatchReviewPanel({
           <div className={APP_EYEBROW_CLASS}>
             Reviews
           </div>
-          <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#24323f]">
+          <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#111111]">
             Match review
           </div>
         </div>
         {canLeaveReview && (
           <Link
             href={`/reviews/write/${matchedRecordId}`}
-            className={`inline-flex shrink-0 items-center gap-2 rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
+            className={`inline-flex shrink-0 items-center gap-2 rounded-[8px] ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
           >
-            <Star className="h-4 w-4 text-[#71828c]" />
+            <Star className="h-4 w-4 text-[#444444]" />
             Leave Review
           </Link>
         )}
@@ -859,16 +853,16 @@ export function CancellationFeedbackPanel({
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className={APP_EYEBROW_CLASS}>Cancellation feedback</div>
-          <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#24323f]">
+          <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#111111]">
             How was the cancellation handled?
           </div>
         </div>
         {canLeaveCancellationFeedback ? (
           <Link
             href={`/cancellation-feedback/write/${matchedRecordId}`}
-            className={`inline-flex shrink-0 items-center gap-2 rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
+            className={`inline-flex shrink-0 items-center gap-2 rounded-[8px] ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
           >
-            <MessageSquareText className="h-4 w-4 text-[#71828c]" />
+            <MessageSquareText className="h-4 w-4 text-[#444444]" />
             Leave Feedback
           </Link>
         ) : null}
@@ -932,7 +926,7 @@ export function MatchedChatPanel({
           <div className={APP_EYEBROW_CLASS}>
             Chat
           </div>
-          <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#24323f]">
+          <div className="mt-2 text-lg font-bold tracking-[-0.03em] text-[#111111]">
             {heading}
           </div>
           <div className="mt-2 text-sm leading-6 text-[#66727a]">
@@ -946,19 +940,19 @@ export function MatchedChatPanel({
         </div>
 
         {chatClosed && !isCancelled ? (
-          <div className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-2 text-sm font-medium text-[#6b7981]">
-            <MessageSquare className="h-4 w-4 text-[#738690]" />
+          <div className="inline-flex shrink-0 items-center gap-2 rounded-[8px] border border-[#111111] bg-white px-4 py-2 text-sm font-medium text-[#6b7981]">
+            <MessageSquare className="h-4 w-4 text-[#444444]" />
             Closed
           </div>
         ) : (
           <Link
             href={`/matches/${matchedRecordId}/chat`}
-            className={`inline-flex shrink-0 items-center gap-2 rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
+            className={`inline-flex shrink-0 items-center gap-2 rounded-[8px] ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
           >
-            <MessageSquare className="h-4 w-4 text-[#738690]" />
+            <MessageSquare className="h-4 w-4 text-[#444444]" />
             {isCancelled ? "Read Chat" : "Open Chat"}
             {!isCancelled && hasNewChatMessage ? (
-              <span className="rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#5f7480]">
+              <span className="rounded-[8px] border border-[#111111] bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#5f7480]">
                 New
               </span>
             ) : null}

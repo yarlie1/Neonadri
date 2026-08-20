@@ -41,7 +41,7 @@ export default function EmailNotificationToggle({
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <div className="text-sm font-semibold text-[#24323c]">
+        <div className="text-sm font-semibold text-[#111111]">
           Email notifications
         </div>
         <div className="mt-1 text-xs font-medium text-[#728089]">
@@ -54,16 +54,16 @@ export default function EmailNotificationToggle({
         aria-checked={enabled}
         onClick={handleToggle}
         disabled={busy}
-        className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full border transition disabled:cursor-not-allowed disabled:opacity-60 ${
+        className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-[8px] border transition disabled:cursor-not-allowed disabled:opacity-60 ${
           enabled
-            ? "border-[#b8c6cf] bg-[linear-gradient(180deg,#dce7ed_0%,#aebdc7_100%)]"
-            : "border-[#d9e2e8] bg-[linear-gradient(180deg,#ffffff_0%,#edf2f5_100%)]"
+            ? "border-[#b8c6cf] bg-white"
+            : "border-[#111111] bg-white"
         }`}
         title={enabled ? "Email notifications on" : "Email notifications off"}
         aria-label={enabled ? "Email notifications on" : "Email notifications off"}
       >
         <span
-          className={`inline-flex h-6 w-6 items-center justify-center rounded-full bg-white text-[#64727a] shadow-[0_6px_14px_rgba(118,126,133,0.22)] transition ${
+          className={`inline-flex h-6 w-6 items-center justify-center rounded-[8px] bg-white text-[#64727a] shadow-none transition ${
             enabled ? "translate-x-7" : "translate-x-1"
           }`}
         >

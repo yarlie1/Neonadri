@@ -81,7 +81,7 @@ function RatingStar({
 
   return (
     <div className="flex items-center">
-      <Star className={`${iconClass} fill-[#71828c] text-[#71828c]`} />
+      <Star className={`${iconClass} fill-[#71828c] text-[#444444]`} />
     </div>
   );
 }
@@ -104,7 +104,7 @@ function StarRating({
           <Star
             key={n}
             className={`${iconClass} ${
-              filled ? "fill-[#71828c] text-[#71828c]" : "text-[#d3dce2]"
+              filled ? "fill-[#71828c] text-[#444444]" : "text-[#d3dce2]"
             }`}
           />
         );
@@ -251,14 +251,14 @@ export async function ProfilePageContent({ params }: PageProps) {
         <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-5`}>
           <div className="flex flex-col gap-3.5">
               <div className="flex items-center justify-between gap-3">
-              <div className={`inline-flex items-center gap-2 rounded-full ${APP_ROW_SURFACE_CLASS} px-3 py-[0.28rem] text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-[#6b7b84]`}>
+              <div className={`inline-flex items-center gap-2 rounded-[8px] ${APP_ROW_SURFACE_CLASS} px-3 py-[0.28rem] text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-[#444444]`}>
                 <UserCircle2 className="h-3.5 w-3.5" />
                 <span>Profile</span>
               </div>
               {isMyProfile && (
                 <Link
                   href={`/profile/${profile.id}/edit`}
-                  className={`inline-flex items-center gap-2 whitespace-nowrap rounded-full ${APP_ROW_SURFACE_CLASS} px-3.5 py-[0.42rem] text-[11px] font-medium leading-none text-[#52616a] transition`}
+                  className={`inline-flex items-center gap-2 whitespace-nowrap rounded-[8px] ${APP_ROW_SURFACE_CLASS} px-3.5 py-[0.42rem] text-[11px] font-medium leading-none text-[#333333] transition`}
                 >
                   Edit Profile
                 </Link>
@@ -272,11 +272,11 @@ export async function ProfilePageContent({ params }: PageProps) {
                     src={profile.avatar_url}
                     name={profile.display_name}
                   />
-                  <h1 className="min-w-0 truncate text-3xl font-black tracking-[-0.05em] text-[#24323f] sm:text-[2.6rem]">
+                  <h1 className="min-w-0 truncate text-3xl font-black tracking-[-0.05em] text-[#111111] sm:text-[2.6rem]">
                     {profile.display_name || "Unknown"}
                   </h1>
                   {hasRating ? (
-                    <div className={`inline-flex items-center gap-2 rounded-full ${APP_ROW_SURFACE_CLASS} px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#52616a] shadow-[0_6px_14px_rgba(118,126,133,0.08)]`}>
+                    <div className={`inline-flex items-center gap-2 rounded-[8px] ${APP_ROW_SURFACE_CLASS} px-3 py-[0.3125rem] text-sm font-medium leading-none text-[#333333] shadow-none`}>
                       <RatingStar size="sm" />
                       <span className="font-semibold text-[#3c4850]">
                         {averageRating.toFixed(1)}
@@ -285,38 +285,38 @@ export async function ProfilePageContent({ params }: PageProps) {
                   ) : null}
                 </div>
 
-                <div className="border-t border-[#dbe3e8]/80" />
+                <div className="border-t border-[#111111]/80" />
 
                 <div className={`grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 py-2 ${APP_MUTED_TEXT_CLASS}`}>
-                  <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#71828c]" />
+                  <HeartHandshake className="h-3.5 w-3.5 shrink-0 text-[#444444]" />
                   <span className="text-[#26323a]">{hasMeetingStyle ? profile.meeting_style : "No meetup style yet"}</span>
                   <span />
                 </div>
 
-                <div className={`grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#dbe3e8]/80 py-2 ${APP_MUTED_TEXT_CLASS}`}>
-                  <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#71828c]" />
+                <div className={`grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#111111]/80 py-2 ${APP_MUTED_TEXT_CLASS}`}>
+                  <Clock3 className="h-3.5 w-3.5 shrink-0 text-[#444444]" />
                   <span className="text-[#26323a]">{hasResponseNote ? profile.response_time_note : "No response note yet"}</span>
                   <span />
                 </div>
 
-                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#dbe3e8]/80 py-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[#71828c]" />
+                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#111111]/80 py-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[#444444]" />
                   <span className={`text-xs font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
                     Attendance
                   </span>
-                  <span className="justify-self-end font-semibold text-[#24323f]">
+                  <span className="justify-self-end font-semibold text-[#111111]">
                     {trustMetrics.attendanceRate === null
                       ? "No data yet"
                       : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#dbe3e8]/80 py-2">
-                  <DollarSign className="h-3.5 w-3.5 shrink-0 text-[#71828c]" />
+                <div className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-x-2 border-t border-[#111111]/80 py-2">
+                  <DollarSign className="h-3.5 w-3.5 shrink-0 text-[#444444]" />
                   <span className={`text-xs font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
                     Payout reliability
                   </span>
-                  <span className="justify-self-end font-semibold text-[#24323f]">
+                  <span className="justify-self-end font-semibold text-[#111111]">
                     {trustMetrics.hostReliabilityRate === null
                       ? "No data yet"
                       : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
@@ -327,7 +327,7 @@ export async function ProfilePageContent({ params }: PageProps) {
               <div className="mt-4 grid gap-3">
                 {(profile.gender || profile.age_group) && (
                   <InfoItem
-                    icon={<UserRound className="h-3.5 w-3.5 text-[#71828c]" />}
+                    icon={<UserRound className="h-3.5 w-3.5 text-[#444444]" />}
                     label="Identity"
                     value={formatPersonMetaAgeFirst(profile.gender, profile.age_group)}
                     valueClassName="text-[#26323a]"
@@ -337,14 +337,14 @@ export async function ProfilePageContent({ params }: PageProps) {
                 {hasInterests && (
                   <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
                     <div className={`mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                      <Sparkles className="h-3.5 w-3.5 text-[#71828c]" />
+                      <Sparkles className="h-3.5 w-3.5 text-[#444444]" />
                       Interests
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {profile.interests!.map((item) => (
                         <span
                           key={item}
-                          className="rounded-full border border-[#dde6ec] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_100%)] px-3 py-1.5 text-xs font-medium text-[#52616a]"
+                          className="rounded-[8px] border border-[#111111] bg-white px-3 py-1.5 text-xs font-medium text-[#333333]"
                         >
                           {item}
                         </span>
@@ -356,7 +356,7 @@ export async function ProfilePageContent({ params }: PageProps) {
                 {hasAboutMe && (
                   <div className={`${APP_SOFT_CARD_CLASS} px-3.5 py-4`}>
                     <div className={`flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                      <MessageSquareText className="h-4 w-4 shrink-0 text-[#71828c]" />
+                      <MessageSquareText className="h-4 w-4 shrink-0 text-[#444444]" />
                       <span>About me</span>
                     </div>
                     <div className="mt-2 text-sm leading-7 text-[#26323a]">
@@ -367,7 +367,7 @@ export async function ProfilePageContent({ params }: PageProps) {
 
                 {hasLanguages && (
                   <InfoItem
-                    icon={<Languages className="h-3.5 w-3.5 text-[#71828c]" />}
+                    icon={<Languages className="h-3.5 w-3.5 text-[#444444]" />}
                     label="Languages"
                     value={profile.languages!.join(", ")}
                   />
@@ -382,7 +382,7 @@ export async function ProfilePageContent({ params }: PageProps) {
           <section className={`${APP_SURFACE_CARD_CLASS} p-5`}>
             <div className="flex items-center justify-between gap-3">
               <div>
-                <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#24323f]">
+                <h2 className="text-[1.7rem] font-black tracking-[-0.04em] text-[#111111]">
                   Reviews
                 </h2>
                 <p className={`mt-1 text-sm ${APP_MUTED_TEXT_CLASS}`}>
@@ -396,16 +396,16 @@ export async function ProfilePageContent({ params }: PageProps) {
                 {hasRating ? (
                   <div className="flex items-center gap-3">
                     <StarRating value={roundedAverage} size="md" />
-                    <div className="text-2xl font-black tracking-[-0.04em] text-[#24323f]">
+                    <div className="text-2xl font-black tracking-[-0.04em] text-[#111111]">
                       {averageRating.toFixed(1)}
                     </div>
                   </div>
                 ) : (
-                  <div className="text-lg font-semibold text-[#52616a]">
+                  <div className="text-lg font-semibold text-[#333333]">
                     No reviews yet
                   </div>
                 )}
-                <div className={`rounded-full ${APP_ROW_SURFACE_CLASS} px-3 py-1 text-xs font-medium text-[#52616a]`}>
+                <div className={`rounded-[8px] ${APP_ROW_SURFACE_CLASS} px-3 py-1 text-xs font-medium text-[#333333]`}>
                   {reviewCount > 0 ? "Reviewed by meetup partners" : "No written reviews yet"}
                 </div>
               </div>
@@ -415,7 +415,7 @@ export async function ProfilePageContent({ params }: PageProps) {
                   <div className={`text-[10px] font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
                     Attendance
                   </div>
-                  <div className="mt-1 text-sm font-semibold text-[#52616a]">
+                  <div className="mt-1 text-sm font-semibold text-[#333333]">
                     {trustMetrics.attendanceRate === null
                       ? "No data yet"
                       : `${Math.round(trustMetrics.attendanceRate * 100)}%`}
@@ -430,7 +430,7 @@ export async function ProfilePageContent({ params }: PageProps) {
                   <div className={`text-[10px] font-semibold uppercase tracking-[0.14em] ${APP_SUBTLE_TEXT_CLASS}`}>
                     Payout reliability
                   </div>
-                  <div className="mt-1 text-sm font-semibold text-[#52616a]">
+                  <div className="mt-1 text-sm font-semibold text-[#333333]">
                     {trustMetrics.hostReliabilityRate === null
                       ? "No data yet"
                       : `${Math.round(trustMetrics.hostReliabilityRate * 100)}%`}
@@ -458,7 +458,7 @@ export async function ProfilePageContent({ params }: PageProps) {
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <StarRating value={review.rating} size="md" />
-                        <div className="text-sm font-semibold text-[#52616a]">
+                        <div className="text-sm font-semibold text-[#333333]">
                           {review.rating}.0 / 5
                         </div>
                       </div>

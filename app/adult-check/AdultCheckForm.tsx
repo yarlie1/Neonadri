@@ -41,12 +41,12 @@ export default function AdultCheckForm({ nextPath }: { nextPath: string }) {
 
   return (
     <div className="mt-6">
-      <label className="grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 rounded-[24px] border border-[#dbe3e8] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-4 py-4 text-sm text-[#55636b] shadow-[inset_0_1px_0_rgba(255,255,255,0.92)]">
+      <label className="grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 rounded-[8px] border border-[#111111] bg-white px-4 py-4 text-sm text-[#55636b] shadow-none">
         <input
           type="checkbox"
           checked={confirmed}
           onChange={(event) => setConfirmed(event.target.checked)}
-          className="!mt-0.5 !h-4 !w-4 !appearance-auto !rounded !border-[#c7d2d9] !p-0 !shadow-none !outline-none !ring-0 accent-[#8fa1ac]"
+          className="!mt-0.5 !h-4 !w-4 !appearance-auto !rounded !border-[#111111] !p-0 !shadow-none !outline-none !ring-0 accent-[#8fa1ac]"
         />
         <span className="leading-6">
           I confirm that I am 18 or older and understand that Neonadri is for adults only.
@@ -64,21 +64,21 @@ export default function AdultCheckForm({ nextPath }: { nextPath: string }) {
           type="button"
           onClick={handleConfirm}
           disabled={!confirmed || submitting}
-          className={`rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
+          className={`rounded-[8px] border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
         >
           {submitting ? "Saving..." : "Continue"}
         </button>
 
         <a
           href="/api/auth/logout?redirect=%2Flogin"
-          className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+          className={`rounded-[8px] px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
         >
           Log out
         </a>
       </div>
 
       {message ? (
-        <p className={`mt-4 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+        <p className={`mt-4 rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
           {message}
         </p>
       ) : null}

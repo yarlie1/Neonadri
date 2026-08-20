@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Instrument_Sans } from "next/font/google";
+
 import { getPublicLocationLabel } from "../lib/locationPrivacy";
 import {
   formatMeetingTime,
@@ -53,13 +53,8 @@ import {
   formatCompactMeetupAudience,
 } from "../lib/genderLabels";
 
-const instrumentSans = Instrument_Sans({
-  subsets: ["latin"],
-  weight: "700",
-});
-
 const HOME_WHITE_SURFACE_CLASS =
-  "rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] shadow-[0_24px_48px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur";
+  "rounded-[8px] border border-[#111111] bg-white shadow-none";
 
 type PostRow = {
   id: number;
@@ -366,7 +361,7 @@ export default function HomeFeedClient({
   );
   const feedPosts = posts;
   const heroStatClass = `${APP_INNER_PANEL_CLASS} px-3 py-2.5 sm:py-3`;
-  const heroChipClass = `${APP_PILL_INACTIVE_CLASS} rounded-[15px] px-3 py-1 text-[11px] font-medium shadow-[0_8px_16px_rgba(118,126,133,0.06)]`;
+  const heroChipClass = `${APP_PILL_INACTIVE_CLASS} rounded-[8px] px-3 py-1 text-[11px] font-medium `;
   const [footerOffset, setFooterOffset] = useState(0);
 
   useEffect(() => {
@@ -394,22 +389,17 @@ export default function HomeFeedClient({
   return (
     <>
       <main className={`relative isolate min-h-[100dvh] overflow-x-hidden px-4 py-5 ${APP_PAGE_BG_CLASS}`}>
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7fafc_20%,#e8edf1_56%,#d7dfe5_100%)]" />
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.62),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(255,255,255,0.28),transparent_20%),radial-gradient(circle_at_60%_100%,rgba(223,229,235,0.16),transparent_32%)]" />
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.09)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.09)_1px,transparent_1px)] bg-[size:22px_22px] opacity-10" />
+
         <div className="relative z-10 mx-auto max-w-7xl min-w-0 space-y-4 pb-28 sm:space-y-5 sm:pb-32">
         <div className="grid gap-4 lg:grid-cols-3 lg:items-stretch">
-        <section className={`relative mx-auto h-full w-full max-w-2xl overflow-hidden px-5 py-4 text-[#24323f] sm:px-7 sm:py-5 lg:mx-0 lg:max-w-none ${highlightedPost ? "lg:col-span-2" : "lg:col-span-3"} ${HOME_WHITE_SURFACE_CLASS}`}>
-          <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-[#ffffffeb] blur-3xl" />
-          <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-[#ffffffb8] blur-3xl" />
-
+        <section className={`relative mx-auto h-full w-full max-w-2xl overflow-hidden px-5 py-4 text-[#111111] sm:px-7 sm:py-5 lg:mx-0 lg:max-w-none ${highlightedPost ? "lg:col-span-2" : "lg:col-span-3"} ${HOME_WHITE_SURFACE_CLASS}`}>
           <div className="relative">
-            <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 shadow-[0_10px_22px_rgba(136,142,148,0.08)] ${APP_PILL_INACTIVE_CLASS} ${APP_EYEBROW_CLASS}`}>
+            <div className={`inline-flex items-center gap-2 rounded-[8px] px-3 py-1 ${APP_PILL_INACTIVE_CLASS} ${APP_EYEBROW_CLASS}`}>
               <Sparkles className="h-3.5 w-3.5" />
               1:1 social meetups
             </div>
 
-            <h1 className={`mt-2 max-w-[18ch] text-[32px] font-bold leading-[0.98] text-[#223039] sm:mt-3 sm:text-[38px] ${instrumentSans.className}`}>
+            <h1 className={`mt-2 max-w-[18ch] text-[32px] font-bold leading-[0.98] text-[#111111] sm:mt-3 sm:text-[38px]`}>
               Meet someone new,
               <br />
               no pressure.
@@ -424,7 +414,7 @@ export default function HomeFeedClient({
                 <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
                   Plans
                 </div>
-                <div className="mt-1 text-[26px] font-black tracking-[-0.05em] text-[#24323f]">
+                <div className="mt-1 text-[26px] font-black tracking-[-0.05em] text-[#111111]">
                   {upcomingCount}
                 </div>
                 <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Upcoming</div>
@@ -434,7 +424,7 @@ export default function HomeFeedClient({
                 <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
                   People
                 </div>
-                <div className="mt-1 text-[26px] font-black tracking-[-0.05em] text-[#24323f]">
+                <div className="mt-1 text-[26px] font-black tracking-[-0.05em] text-[#111111]">
                   {hostCount}
                 </div>
                 <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Nearby hosts</div>
@@ -444,7 +434,7 @@ export default function HomeFeedClient({
                 <div className={`text-[11px] uppercase tracking-[0.16em] ${APP_SUBTLE_TEXT_CLASS}`}>
                   Mode
                 </div>
-                <div className="mt-1.5 text-sm font-bold leading-5 text-[#24323f]">
+                <div className="mt-1.5 text-sm font-bold leading-5 text-[#111111]">
                   Social
                   <br />
                   1:1
@@ -541,12 +531,12 @@ export default function HomeFeedClient({
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#848d93]">
               Discover
             </div>
-            <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#24323f]">
+            <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#111111]">
               Nearby meetups
             </div>
           </div>
 
-          <div className={`${APP_SOFT_CARD_CLASS} px-3 py-1.5 text-xs font-medium text-[#6f7a81] shadow-[0_10px_18px_rgba(118,126,133,0.07)]`}>
+          <div className={`${APP_SOFT_CARD_CLASS} px-3 py-1.5 text-xs font-medium text-[#6f7a81] shadow-none`}>
             {posts.length} results
           </div>
         </div>
@@ -626,11 +616,11 @@ export default function HomeFeedClient({
           <div>
             <Link
               href={createHref}
-              className="flex min-h-[64px] w-full items-center justify-between gap-4 rounded-[24px] border border-[#c8d4dc] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-5 py-3 text-[#24323f] shadow-[0_-18px_42px_rgba(94,105,114,0.16),inset_0_1px_0_rgba(255,255,255,0.98)] backdrop-blur transition hover:bg-white"
+              className="flex min-h-[64px] w-full items-center justify-between gap-4 rounded-[8px] border border-[#111111] bg-white px-5 py-3 text-[#111111] shadow-none transition hover:bg-[#f5f5f5]"
               aria-label="Create meetup"
             >
               <div className="flex min-w-0 items-center gap-3">
-                <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[15px] border border-[#d6e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_100%)] text-[#60717c] shadow-[inset_0_1px_0_rgba(255,255,255,0.96)]">
+                <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] border border-[#111111] bg-white text-[#111111] shadow-none">
                   <CalendarPlus className="h-5 w-5" />
                 </span>
                 <span className="min-w-0">

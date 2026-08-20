@@ -45,7 +45,7 @@ function CountBadge({ count }: { count: number }) {
 
   return (
     <span
-      className={`inline-flex min-w-[18px] items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-extrabold leading-none shadow-[0_10px_18px_rgba(118,126,133,0.16)] ${APP_PILL_ACTIVE_CLASS}`}
+      className={`inline-flex min-w-[18px] items-center justify-center rounded-[8px] px-1.5 py-0.5 text-[10px] font-extrabold leading-none shadow-none ${APP_PILL_ACTIVE_CLASS}`}
     >
       {count > 99 ? "99+" : count}
     </span>
@@ -57,12 +57,12 @@ function NewChatBadge({ visible }: { visible: boolean }) {
 
   return (
     <span
-      className={`relative inline-flex h-5 w-5 items-center justify-center rounded-full ${APP_PILL_INACTIVE_CLASS}`}
+      className={`relative inline-flex h-5 w-5 items-center justify-center rounded-[8px] ${APP_PILL_INACTIVE_CLASS}`}
       aria-label="New chat activity"
       title="New chat activity"
     >
       <MessageCircleMore className="h-3 w-3" />
-      <span className="absolute -right-0.5 -top-0.5 inline-flex h-2.5 w-2.5 rounded-full border border-white bg-[#7b8790]" />
+      <span className="absolute -right-0.5 -top-0.5 inline-flex h-2.5 w-2.5 rounded-[8px] border border-white bg-[#7b8790]" />
     </span>
   );
 }
@@ -403,34 +403,32 @@ export default function TopNav({
   const closeMenu = () => setMenuOpen(false);
 
   const navBtn = (active: boolean) =>
-    `inline-flex items-center gap-2 rounded-[18px] border px-3 py-2.5 text-sm font-medium transition ${
+    `inline-flex items-center gap-2 rounded-[8px] border px-3 py-2.5 text-sm font-medium transition ${
       active
-        ? "border-[#e6edf1] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(240,244,246,0.995)_100%)] text-[#26343d] shadow-[0_12px_24px_rgba(118,126,133,0.11),inset_0_1px_0_rgba(255,255,255,0.99)]"
-        : "border-[#e6edf1] bg-[linear-gradient(180deg,rgba(253,253,253,0.98)_0%,rgba(243,246,248,0.98)_100%)] text-[#4f5f68] shadow-[0_8px_18px_rgba(118,126,133,0.06)] hover:border-[#dbe3e8] hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(245,248,250,1)_100%)] hover:text-[#33434c]"
+        ? "border-[#111111] bg-white text-[#111111] shadow-none"
+        : "border-[#111111] bg-white text-[#111111] shadow-none hover:border-[#111111] hover:bg-white hover:text-[#111111]"
     }`;
 
   const primary =
-    "inline-flex items-center gap-2 rounded-[18px] border border-[#e6edf1] bg-[linear-gradient(135deg,#ffffff_0%,#eef3f6_100%)] px-3 py-2.5 text-sm font-medium text-[#2f3f48] shadow-[0_14px_28px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.99)] transition hover:border-[#dbe3e8] hover:text-[#223039]";
+    "inline-flex items-center gap-2 rounded-[8px] border border-[#111111] bg-white px-3 py-2.5 text-sm font-medium text-[#111111] shadow-none transition hover:border-[#111111] hover:text-[#111111]";
   const subtleLink =
-    "inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-medium text-[#728089] transition hover:bg-[#eef4f7] hover:text-[#33434c]";
+    "inline-flex items-center gap-1.5 rounded-[8px] px-2 py-1.5 text-xs font-medium text-[#333333] transition hover:bg-white hover:text-[#111111]";
 
   const mobileItem =
-    "inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-sm font-medium text-[#52616a] transition hover:bg-[#f4f7f9] hover:text-[#33434c]";
+    "inline-flex items-center gap-2 rounded-[8px] px-3 py-2.25 text-sm font-medium text-[#333333] transition hover:bg-[#f5f5f5] hover:text-[#111111]";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#eef3f6] bg-[rgba(248,250,251,0.84)] backdrop-blur-xl">
-      <div className="border-b border-[#eef3f6] bg-[linear-gradient(180deg,rgba(253,253,253,0.97),rgba(244,247,249,0.92))]">
+    <header className="sticky top-0 z-50 border-b border-[#111111] bg-white">
+      <div className="border-b border-[#111111] bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"
-              className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/90 bg-[radial-gradient(circle_at_31%_20%,#ffffff_0%,#edf3f7_31%,#cbd5dd_62%,#85929d_100%)] text-base font-black tracking-[-0.06em] text-[#1f2c36] shadow-[0_18px_34px_rgba(118,126,133,0.22),inset_0_1px_1px_rgba(255,255,255,0.98),inset_0_-7px_14px_rgba(70,84,96,0.18)] ring-1 ring-[#d7e0e6]/80 transition hover:scale-[1.015]"
+              className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[8px] border border-[#111111] bg-white text-base font-black tracking-[-0.06em] text-[#111111] shadow-none transition hover:scale-[1.015]"
               onClick={closeMenu}
               aria-label="Neonadri home"
             >
-              <span className="pointer-events-none absolute inset-[3px] rounded-full border border-white/55 bg-[linear-gradient(145deg,rgba(255,255,255,0.58)_0%,rgba(255,255,255,0.14)_42%,rgba(73,88,101,0.14)_100%)]" />
-              <span className="pointer-events-none absolute left-2.5 top-1.5 h-2.5 w-3.5 rounded-full bg-white/70 blur-[6px]" />
-              <span className="relative translate-y-[0.5px] text-[17px] font-black leading-none text-[#1f2c36] drop-shadow-[0_1px_0_rgba(255,255,255,0.72)]">
+              <span className="pointer-events-none absolute inset-[3px] rounded-[8px] border border-[#111111] bg-white" />              <span className="relative translate-y-[0.5px] text-[17px] font-black leading-none text-[#111111] drop-shadow-none">
                 N
               </span>
             </Link>
@@ -440,23 +438,19 @@ export default function TopNav({
                 <Link
                   href="/"
                   className="block w-full"
-                  style={{
-                    textShadow:
-                      "0 1px 0 rgba(255,255,255,0.9), 0 0 16px rgba(255,255,255,0.22)",
-                  }}
                   onClick={closeMenu}
                 >
                   <span className="inline-flex items-start gap-1.5">
-                    <span className="text-[20px] font-extrabold leading-none tracking-[-0.05em] text-[#303b44] sm:text-[24px]">
+                    <span className="text-[20px] font-extrabold leading-none tracking-[-0.05em] text-[#111111] sm:text-[24px]">
                       Neonadri
                     </span>
-                    <span className="mt-0 rounded-full border border-[#d4dfe6] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] px-1 py-[0.04rem] text-[6px] font-extrabold uppercase leading-none tracking-[0.12em] text-[#61717a] shadow-[0_8px_16px_rgba(118,126,133,0.08)] sm:mt-0.5 sm:px-1.5 sm:text-[7px]">
+                    <span className="mt-0 rounded-[8px] border border-[#111111] bg-white px-1 py-[0.04rem] text-[6px] font-extrabold uppercase leading-none tracking-[0.12em] text-[#333333] shadow-none sm:mt-0.5 sm:px-1.5 sm:text-[7px]">
                       Beta
                     </span>
                   </span>
                 </Link>
                 <div
-                  className="block text-[9px] font-medium uppercase leading-none tracking-[0.16em] text-[#80898f] sm:text-[10px] sm:tracking-[0.16em]"
+                  className="block text-[9px] font-medium uppercase leading-none tracking-[0.16em] text-[#444444] sm:text-[10px] sm:tracking-[0.16em]"
                 >
                   AI-generated social space
                 </div>
@@ -544,18 +538,18 @@ export default function TopNav({
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-[18px] border border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] text-[#68767e] shadow-[0_10px_22px_rgba(118,126,133,0.09)] transition hover:bg-[#f6f9fb]"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#111111] bg-white text-[#333333] shadow-none transition hover:bg-[#f6f9fb]"
             >
               {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 top-12 z-50 w-[15.25rem] overflow-hidden rounded-[22px] border border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] shadow-[0_24px_46px_rgba(118,126,133,0.16)]">
-                <div className="border-b border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff,#f5f8fa)] px-3.5 py-2.5">
+              <div className="absolute right-0 top-12 z-50 w-[15.25rem] overflow-hidden rounded-[8px] border border-[#111111] bg-white shadow-none">
+                <div className="border-b border-[#111111] bg-white px-3.5 py-2.5">
                   <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#78838b]">
                     Neonadri
                   </div>
-                  <div className="mt-1 text-[15px] font-semibold text-[#26343d]">
+                  <div className="mt-1 text-[15px] font-semibold text-[#111111]">
                     AI-softened social discovery.
                   </div>
                   <div className="mt-1 text-[13px] leading-5 text-[#6f7a82]">
@@ -564,7 +558,7 @@ export default function TopNav({
                   <button
                     type="button"
                     onClick={openIntroVideo}
-                    className="mt-2 inline-flex items-center gap-1.5 text-[13px] leading-5 text-[#6f7a82] transition hover:text-[#33434c]"
+                    className="mt-2 inline-flex items-center gap-1.5 text-[13px] leading-5 text-[#6f7a82] transition hover:text-[#111111]"
                   >
                     <Play className="h-3.5 w-3.5" />
                     Watch intro
@@ -577,7 +571,7 @@ export default function TopNav({
                     onClick={closeMenu}
                     className={`${mobileItem} ${
                       isActivePath(pathname, "/")
-                        ? "bg-[#eef4f7] text-[#33434c]"
+                        ? "bg-white text-[#33434c]"
                         : ""
                     }`}
                   >
@@ -591,7 +585,7 @@ export default function TopNav({
                         onClick={closeMenu}
                         className={`w-full justify-between ${mobileItem} ${
                           isActivePath(pathname, "/dashboard")
-                            ? "bg-[#eef4f7] text-[#33434c]"
+                            ? "bg-white text-[#33434c]"
                             : ""
                         }`}
                         >
@@ -609,7 +603,7 @@ export default function TopNav({
                         onClick={closeMenu}
                         className={`${mobileItem} ${
                           pathname === "/profile" || pathname.startsWith("/profile/")
-                            ? "bg-[#eef4f7] text-[#33434c]"
+                            ? "bg-white text-[#33434c]"
                             : ""
                         }`}
                       >
@@ -621,7 +615,7 @@ export default function TopNav({
                         onClick={closeMenu}
                         className={`${mobileItem} ${
                           isActivePath(pathname, "/account")
-                            ? "bg-[#eef4f7] text-[#33434c]"
+                            ? "bg-white text-[#33434c]"
                             : ""
                         }`}
                       >
@@ -631,19 +625,19 @@ export default function TopNav({
                       <Link
                         href={createHref}
                         onClick={closeMenu}
-                        className="mt-1 inline-flex items-center gap-2 rounded-[16px] border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] px-3 py-2.25 text-sm font-medium text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] transition hover:bg-[#f7fafb]"
+                        className="mt-1 inline-flex items-center gap-2 rounded-[8px] border border-[#111111] bg-white px-3 py-2.25 text-sm font-medium text-[#34424b] shadow-none transition hover:bg-white"
                       >
                         <Plus className="h-4 w-4" />
                         Create Meetup
                       </Link>
 
-                      <div className="my-1 border-t border-[#eef3f6]" />
+                      <div className="my-1 border-t border-[#111111]" />
 
                       <button
                         type="button"
                         onClick={handleLogout}
                         disabled={isLoggingOut}
-                        className={`inline-flex items-center gap-2 rounded-[16px] px-3 py-2.25 text-left text-sm font-medium text-[#52616a] transition hover:bg-[#f3f6f8] ${
+                        className={`inline-flex items-center gap-2 rounded-[8px] px-3 py-2.25 text-left text-sm font-medium text-[#333333] transition hover:bg-white ${
                           isLoggingOut ? "cursor-not-allowed opacity-60" : ""
                         }`}
                       >
@@ -658,7 +652,7 @@ export default function TopNav({
                         onClick={closeMenu}
                         className={`${mobileItem} ${
                           isActivePath(pathname, "/login")
-                            ? "bg-[#eef4f7] text-[#33434c]"
+                            ? "bg-white text-[#33434c]"
                             : ""
                         }`}
                       >
@@ -669,7 +663,7 @@ export default function TopNav({
                       <Link
                         href="/signup"
                         onClick={closeMenu}
-                        className="mt-1 inline-flex items-center gap-2 rounded-[16px] border border-[#eef3f6] bg-[linear-gradient(135deg,#ffffff_0%,#f1f5f7_100%)] px-3 py-2.25 text-sm font-medium text-[#34424b] shadow-[0_12px_24px_rgba(146,154,162,0.12)] transition hover:bg-[#f7fafb]"
+                        className="mt-1 inline-flex items-center gap-2 rounded-[8px] border border-[#111111] bg-white px-3 py-2.25 text-sm font-medium text-[#34424b] shadow-none transition hover:bg-white"
                       >
                         <UserPlus className="h-4 w-4" />
                         Sign Up

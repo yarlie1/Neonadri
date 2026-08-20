@@ -42,7 +42,7 @@ export function FilterPill({
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex items-center rounded-full px-3 py-2 text-sm font-medium transition ${
+      className={`inline-flex items-center rounded-[8px] px-3 py-2 text-sm font-medium transition ${
         active ? APP_PILL_ACTIVE_CLASS : APP_PILL_INACTIVE_CLASS
       }`}
     >
@@ -120,10 +120,10 @@ export function HomeFilterCard({
 }: HomeFilterCardProps) {
   return (
     <div
-      className={`rounded-[22px] transition ${
+      className={`rounded-[8px] transition ${
         isPinned
-          ? `${APP_SOFT_CARD_CLASS} shadow-[0_18px_40px_rgba(118,126,133,0.11)]`
-          : `${APP_SOFT_CARD_CLASS} shadow-[0_8px_20px_rgba(118,126,133,0.05)]`
+          ? `${APP_SOFT_CARD_CLASS} shadow-none`
+          : `${APP_SOFT_CARD_CLASS} shadow-none`
       }`}
     >
       <button
@@ -132,7 +132,7 @@ export function HomeFilterCard({
         className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left sm:py-4"
       >
         <div className="min-w-0">
-          <div className="flex items-center gap-2 text-sm font-semibold text-[#2f3b44]">
+          <div className="flex items-center gap-2 text-sm font-semibold text-[#111111]">
             <SlidersHorizontal className={`h-4 w-4 ${APP_SUBTLE_TEXT_CLASS}`} />
             Refine your view
           </div>
@@ -140,7 +140,7 @@ export function HomeFilterCard({
         </div>
 
         <span
-          className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full shadow-[0_10px_18px_rgba(118,126,133,0.07)] transition ${APP_PILL_INACTIVE_CLASS} ${
+          className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] shadow-none transition ${APP_PILL_INACTIVE_CLASS} ${
             isOpen ? "rotate-180" : ""
           }`}
         >
@@ -149,7 +149,7 @@ export function HomeFilterCard({
       </button>
 
       {isOpen && (
-        <div className="max-h-[calc(100vh-14rem)] overflow-y-auto border-t border-[#e6edf1] px-4 py-4 pb-6 sm:pb-5">
+        <div className="max-h-[calc(100vh-14rem)] overflow-y-auto border-t border-[#111111] px-4 py-4 pb-6 sm:pb-5">
           <div>
             <div className={`mb-2 text-xs font-medium uppercase tracking-[0.08em] ${APP_SUBTLE_TEXT_CLASS}`}>
               Status
@@ -279,7 +279,7 @@ export function HomeFilterCard({
             )}
           </div>
 
-          <div className="mt-5 border-t border-[#e2e8ec] pt-4">
+          <div className="mt-5 border-t border-[#111111] pt-4">
             <button
               type="button"
               onClick={onReset}
@@ -312,14 +312,14 @@ function FilterSelect({
     <label className="relative inline-flex shrink-0 items-center">
       <span className="sr-only">{label}</span>
       {icon ? (
-        <span className="pointer-events-none absolute left-3 text-[#7c8a93]">
+        <span className="pointer-events-none absolute left-3 text-[#444444]">
           {icon}
         </span>
       ) : null}
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className={`h-11 appearance-none rounded-full border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fa_100%)] pr-10 text-sm font-semibold text-[#2f3f48] shadow-[0_10px_20px_rgba(118,126,133,0.08),inset_0_1px_0_rgba(255,255,255,0.95)] outline-none transition hover:border-[#ccd8df] focus:border-[#aebdc6] ${
+        className={`h-11 appearance-none rounded-[8px] border border-[#111111] bg-white pr-10 text-sm font-semibold text-[#111111] shadow-none outline-none transition hover:border-[#111111] focus:border-[#111111] ${
           icon ? "pl-9" : "pl-4"
         }`}
       >
@@ -329,7 +329,7 @@ function FilterSelect({
           </option>
         ))}
       </select>
-      <ChevronDown className="pointer-events-none absolute right-3 h-4 w-4 text-[#7c8a93]" />
+      <ChevronDown className="pointer-events-none absolute right-3 h-4 w-4 text-[#444444]" />
     </label>
   );
 }
@@ -417,12 +417,12 @@ export function HomeFilterRail({
 
   return (
     <div className="-mx-4 sm:mx-0">
-      <div className="overflow-x-auto border-y border-[#dfe7ec]/80 px-4 py-3 [scrollbar-width:none] sm:rounded-[24px] sm:border sm:bg-[rgba(255,255,255,0.42)] sm:px-4 sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] [&::-webkit-scrollbar]:hidden">
+      <div className="overflow-x-auto border-y border-[#111111]/80 px-4 py-3 [scrollbar-width:none] sm:rounded-[8px] sm:border sm:bg-white sm:px-4 sm:shadow-none [&::-webkit-scrollbar]:hidden">
         <div className="flex min-w-max items-center gap-2.5">
           <button
             type="button"
             onClick={onReset}
-            className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-bold text-[#6f65d8] transition hover:bg-white/70"
+            className="inline-flex h-11 shrink-0 items-center gap-2 rounded-[8px] px-4 text-sm font-bold text-[#6f65d8] transition hover:bg-white"
           >
             <RotateCcw className="h-4 w-4" />
             Reset
@@ -511,13 +511,13 @@ export function HomePurposeRail({
         type="button"
         aria-label="Previous meetup types"
         onClick={() => scrollRail("left")}
-        className="absolute left-2 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-[#24323f] text-white shadow-[0_12px_24px_rgba(36,50,63,0.2)] transition hover:bg-[#1b2630] sm:inline-flex"
+        className="absolute left-2 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-[8px] bg-[#24323f] text-white shadow-none transition hover:bg-[#1b2630] sm:inline-flex"
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
       <div
         ref={railRef}
-        className="overflow-x-auto border-y border-[#dfe7ec]/80 px-4 py-3 [scrollbar-width:none] sm:border sm:bg-[rgba(255,255,255,0.34)] sm:px-14 sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] [&::-webkit-scrollbar]:hidden"
+        className="overflow-x-auto border-y border-[#111111]/80 px-4 py-3 [scrollbar-width:none] sm:border sm:bg-white sm:px-14 sm:shadow-none [&::-webkit-scrollbar]:hidden"
       >
         <div className="flex min-w-max items-stretch gap-6 sm:gap-8 lg:gap-10">
           {purposeOptions.map((option) => {
@@ -535,13 +535,13 @@ export function HomePurposeRail({
                 type="button"
                 onClick={() => onPurpose(option)}
                 className={`group relative flex w-[74px] shrink-0 flex-col items-center gap-2 px-1 pb-2 pt-1 text-center transition ${
-                  active ? "text-[#24323f]" : "text-[#78868f] hover:text-[#43505a]"
+                  active ? "text-[#111111]" : "text-[#444444] hover:text-[#43505a]"
                 }`}
               >
                 <span
                   className={`inline-flex h-8 w-8 items-center justify-center rounded-[12px] border transition ${
                     active
-                      ? "border-[#c5d0d8] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] shadow-[0_10px_18px_rgba(118,126,133,0.14)]"
+                      ? "border-[#c5d0d8] bg-white shadow-none"
                       : "border-transparent bg-transparent"
                   }`}
                 >
@@ -551,7 +551,7 @@ export function HomePurposeRail({
                   {option === "All" ? "All" : option}
                 </span>
                 <span
-                  className={`absolute bottom-0 left-2 right-2 h-[2px] rounded-full transition ${
+                  className={`absolute bottom-0 left-2 right-2 h-[2px] rounded-[8px] transition ${
                     active ? "bg-[#24323f]" : "bg-transparent"
                   }`}
                 />
@@ -564,7 +564,7 @@ export function HomePurposeRail({
         type="button"
         aria-label="Next meetup types"
         onClick={() => scrollRail("right")}
-        className="absolute right-2 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-[#24323f] text-white shadow-[0_12px_24px_rgba(36,50,63,0.2)] transition hover:bg-[#1b2630] sm:inline-flex"
+        className="absolute right-2 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-[8px] bg-[#24323f] text-white shadow-none transition hover:bg-[#1b2630] sm:inline-flex"
       >
         <ChevronRight className="h-5 w-5" />
       </button>
@@ -594,22 +594,22 @@ export function FeaturedMeetupCard({
   targetText: string;
 }) {
   return (
-    <section className={`overflow-hidden rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] shadow-[0_24px_48px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur ${className}`}>
-      <div className="border-b border-[#e3e6e8] px-5 py-3 sm:py-4">
+    <section className={`overflow-hidden rounded-[8px] border border-[#111111] bg-white shadow-none  ${className}`}>
+      <div className="border-b border-[#111111] px-5 py-3 sm:py-4">
         <div className="flex items-center justify-between gap-3">
           <div>
             <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] ${APP_SUBTLE_TEXT_CLASS}`}>
               <Search className="h-3.5 w-3.5" />
               Featured moment
             </div>
-            <div className="mt-1.5 text-[25px] font-black tracking-[-0.05em] text-[#24323f]">
+            <div className="mt-1.5 text-[25px] font-black tracking-[-0.05em] text-[#111111]">
               {placeLabel}
             </div>
           </div>
 
           <Link
             href={buildPostPath(postId, purposeLabel, placeText || placeLabel)}
-            className={`inline-flex h-10 w-10 items-center justify-center rounded-[18px] shadow-[0_12px_22px_rgba(118,126,133,0.08)] transition ${APP_BUTTON_SECONDARY_CLASS}`}
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-[8px] shadow-none transition ${APP_BUTTON_SECONDARY_CLASS}`}
             aria-label="Open featured meetup"
           >
             <ArrowUpRight className="h-4 w-4" />
@@ -618,8 +618,8 @@ export function FeaturedMeetupCard({
       </div>
 
       <div className="grid gap-2 px-4 py-3 sm:px-5 sm:py-4">
-        <div className={`relative overflow-hidden px-4 py-3 text-[#24323f] ${APP_INNER_PANEL_CLASS}`}>
-          <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+        <div className={`relative overflow-hidden px-4 py-3 text-[#111111] ${APP_INNER_PANEL_CLASS}`}>
+          <div className={`inline-flex items-center gap-2 rounded-[8px] px-3 py-1 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
             {purposeIcon}
             {purposeLabel}
           </div>
@@ -634,19 +634,19 @@ export function FeaturedMeetupCard({
         </div>
 
         <div className="grid gap-2">
-          <div className={`flex min-h-[38px] items-center gap-2.5 px-3 py-1.5 text-sm text-[#38434b] ${APP_ROW_SURFACE_CLASS}`}>
+          <div className={`flex min-h-[38px] items-center gap-2.5 px-3 py-1.5 text-sm text-[#111111] ${APP_ROW_SURFACE_CLASS}`}>
             <Clock3 className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
             <span>{timeLabel}</span>
           </div>
 
           <div className={`flex min-h-[38px] min-w-0 items-center gap-2.5 px-3 py-1.5 text-sm ${APP_ROW_SURFACE_CLASS}`}>
             <MapPin className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
-            <span className="min-w-0 flex-1 truncate font-semibold text-[#24323f]">
+            <span className="min-w-0 flex-1 truncate font-semibold text-[#111111]">
               {placeText}
             </span>
           </div>
 
-          <div className={`flex min-h-[38px] items-center gap-2.5 px-3 py-1.5 text-sm text-[#38434b] ${APP_ROW_SURFACE_CLASS}`}>
+          <div className={`flex min-h-[38px] items-center gap-2.5 px-3 py-1.5 text-sm text-[#111111] ${APP_ROW_SURFACE_CLASS}`}>
             <Search className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
             <span className="truncate">{targetText}</span>
           </div>
@@ -697,17 +697,17 @@ export function MeetupFeedCard({
   activityLabel?: string;
   activityText?: string;
 }) {
-  const cardClassName = `block w-full max-w-full overflow-hidden rounded-[24px] border p-2.5 shadow-[0_18px_30px_rgba(118,126,133,0.12)] transition active:scale-[0.995] sm:p-3 ${
+  const cardClassName = `block w-full max-w-full overflow-hidden rounded-[8px] border p-2.5 shadow-none transition active:scale-[0.995] sm:p-3 ${
         isExpired
-          ? "border-[#d8e0e6] bg-[linear-gradient(180deg,rgba(250,252,253,0.99)_0%,rgba(241,245,247,0.98)_100%)]"
-          : "border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] hover:-translate-y-0.5 hover:shadow-[0_20px_34px_rgba(118,126,133,0.15)]"
+          ? "border-[#111111] bg-white"
+          : "border-[#111111] bg-white hover:-translate-y-0.5 hover:shadow-none"
       } ${onClick ? "w-full cursor-pointer text-left" : ""} ${className}`;
   const resolvedHref =
     href === undefined ? buildPostPath(postId, purposeName, placeText) : href;
   const content = (
       <div className={`min-w-0 px-2.5 py-3 sm:px-3.5 ${APP_INNER_PANEL_CLASS}`}>
         <div className="grid min-w-0 grid-cols-[40px_minmax(0,1fr)_auto] grid-rows-[auto_auto] items-center gap-x-2 gap-y-1 sm:grid-cols-[46px_minmax(0,1fr)_auto] sm:gap-x-2.5">
-          <div className="row-span-2 inline-flex h-10 w-10 items-center justify-center self-center rounded-[16px] border border-white/70 bg-[radial-gradient(circle_at_28%_18%,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.72)_26%,rgba(226,235,241,0.74)_58%,rgba(185,199,209,0.68)_100%)] text-[#60717c] shadow-[0_14px_26px_rgba(118,126,133,0.18),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-10px_18px_rgba(142,157,169,0.16)] backdrop-blur-md sm:h-11 sm:w-11">
+          <div className="row-span-2 inline-flex h-10 w-10 items-center justify-center self-center rounded-[8px] border border-white/70 bg-white text-[#60717c] shadow-none -md sm:h-11 sm:w-11">
             {purposeIcon}
           </div>
           <div className="col-span-2 min-w-0 truncate pt-[1px] text-[22px] font-black leading-none tracking-[-0.05em] text-[#1f2b34] sm:text-[24px]">
@@ -715,7 +715,7 @@ export function MeetupFeedCard({
           </div>
           <div className="col-start-3 row-start-2 flex items-start justify-end self-start">
             <div
-              className={`shrink-0 rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-[0_8px_16px_rgba(118,126,133,0.1),inset_0_1px_0_rgba(255,255,255,0.88)] ${matchBadgeClassName}`}
+              className={`shrink-0 rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-none ${matchBadgeClassName}`}
             >
               {matchBadgeLabel}
             </div>
@@ -744,7 +744,7 @@ export function MeetupFeedCard({
               <Clock3 className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
               <span className="min-w-0 flex-1 truncate">{whenText}</span>
               {durationLabel ? (
-                <span className="ml-auto rounded-[14px] border border-[#cbd4db] bg-[linear-gradient(180deg,#ffffff_0%,#eceff2_100%)] px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#3b4c56] shadow-[0_8px_14px_rgba(118,126,133,0.12)]">
+                <span className="ml-auto rounded-[14px] border border-[#111111] bg-white px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#3b4c56] shadow-none">
                   {durationLabel}
                 </span>
               ) : null}

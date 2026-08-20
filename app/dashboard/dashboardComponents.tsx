@@ -44,7 +44,7 @@ export const SOFT_CARD_CLASS =
   APP_SOFT_CARD_CLASS;
 
 export function getPurposeTheme(purpose: string | null) {
-  const baseBandClass = `${APP_ROW_SURFACE_CLASS} text-[#24323f]`;
+  const baseBandClass = `${APP_ROW_SURFACE_CLASS} text-[#111111]`;
 
   switch (purpose) {
     case "Coffee Chat":
@@ -78,7 +78,7 @@ export function getPurposeTheme(purpose: string | null) {
 }
 
 export function getPurposeIcon(purpose: string | null) {
-  const className = "h-5 w-5 shrink-0 text-[#71828c]";
+  const className = "h-5 w-5 shrink-0 text-[#444444]";
 
   switch (purpose) {
     case "Coffee Chat":
@@ -138,34 +138,34 @@ export function getStatusBadgeClass(status: string) {
   const normalized = status.toLowerCase();
 
   if (normalized === "cancelled") {
-    return "bg-[linear-gradient(180deg,#ffffff_0%,#f0f3f5_100%)] text-[#6f7d86] border border-[#d7dde2]";
+    return "bg-white text-[#444444] border border-[#111111]";
   }
 
   if (normalized === "expired") {
-    return "bg-[linear-gradient(180deg,#ffffff_0%,#eff3f5_100%)] text-[#75828a] border border-[#d7dde2]";
+    return "bg-white text-[#75828a] border border-[#111111]";
   }
 
   if (normalized === "upcoming") {
-    return "bg-[linear-gradient(180deg,#ffffff_0%,#edf3f7_100%)] text-[#4f6672] border border-[#d6e0e7]";
+    return "bg-white text-[#4f6672] border border-[#111111]";
   }
 
   if (normalized === "open") {
-    return "bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] text-[#536a75] border border-[#d4dfe6]";
+    return "bg-white text-[#536a75] border border-[#111111]";
   }
 
   if (normalized === "matched" || normalized === "accepted") {
-    return "bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] text-[#536a75] border border-[#d4dfe6]";
+    return "bg-white text-[#536a75] border border-[#111111]";
   }
 
   if (normalized === "pending") {
-    return "bg-[linear-gradient(180deg,#ffffff_0%,#eff3f5_100%)] text-[#75828a] border border-[#d7dde2]";
+    return "bg-white text-[#75828a] border border-[#111111]";
   }
 
   if (normalized === "rejected") {
-    return "bg-[linear-gradient(180deg,#ffffff_0%,#f2f5f7_100%)] text-[#8a949b] border border-[#dce3e8]";
+    return "bg-white text-[#8a949b] border border-[#111111]";
   }
 
-  return "bg-[linear-gradient(180deg,#ffffff_0%,#eff3f5_100%)] text-[#75828a] border border-[#d7dde2]";
+  return "bg-white text-[#75828a] border border-[#111111]";
 }
 
 export function getPostMatchState(
@@ -214,14 +214,14 @@ export function DashboardTabCard({
     <button
       type="button"
       onClick={onClick}
-      className={`relative w-full rounded-[26px] border px-4 py-5 text-left transition ${
+      className={`relative w-full rounded-[8px] border px-4 py-5 text-left transition ${
         active
-          ? "border-[#b7c6d0] bg-[linear-gradient(180deg,#ffffff_0%,#d8e3ea_100%)] text-[#1c2a34] shadow-[0_20px_38px_rgba(118,126,133,0.18)] ring-1 ring-[#c8d4dc]"
-          : "border-[#e0e7ec] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] text-[#2f3a42] hover:bg-[#f7fafb] hover:border-[#d3dde4]"
+          ? "border-[#b7c6d0] bg-white text-[#1c2a34] shadow-none ring-1"
+          : "border-[#111111] bg-white text-[#111111] hover:bg-white hover:border-[#111111]"
       }`}
     >
       {active ? (
-        <span className="absolute right-4 top-4 inline-flex h-2.5 w-2.5 rounded-full bg-[#506873] shadow-[0_0_0_4px_rgba(255,255,255,0.62)]" />
+        <span className="absolute right-4 top-4 inline-flex h-2.5 w-2.5 rounded-[8px] bg-[#506873] shadow-none" />
       ) : null}
       <div className="flex min-h-[108px] flex-col sm:min-h-[120px]">
         <div className="flex items-center gap-2 text-sm font-semibold">
@@ -252,13 +252,13 @@ export function FilterPill({
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
+      className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-medium transition ${
         active
-          ? `${APP_PILL_ACTIVE_CLASS} ring-1 ring-[#c6d1d8] shadow-[0_10px_18px_rgba(118,126,133,0.14)] text-[#22323d]`
+          ? `${APP_PILL_ACTIVE_CLASS} ring-1 shadow-none text-[#22323d]`
           : `${APP_PILL_INACTIVE_CLASS} text-[#61717a]`
       }`}
     >
-      {active ? <span className="h-1.5 w-1.5 rounded-full bg-[#435760] shadow-[0_0_0_3px_rgba(255,255,255,0.54)]" /> : null}
+      {active ? <span className="h-1.5 w-1.5 rounded-[8px] bg-[#435760] shadow-none" /> : null}
       {children}
     </button>
   );
@@ -278,7 +278,7 @@ export function SectionIntro({
       <div className={APP_EYEBROW_CLASS}>
         {eyebrow}
       </div>
-      <div className="mt-2 text-lg font-black tracking-[-0.04em] text-[#24323f]">
+      <div className="mt-2 text-lg font-black tracking-[-0.04em] text-[#111111]">
         {title}
       </div>
       <p className="mt-2 text-sm leading-6 text-[#66727a]">{body}</p>
@@ -299,7 +299,7 @@ export function CompactActionButton({
   primary?: boolean;
   children: ReactNode;
 }) {
-  const className = `inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition ${
+  const className = `inline-flex items-center gap-1.5 rounded-[8px] px-3 py-2 text-xs font-medium transition ${
     primary
       ? APP_BUTTON_PRIMARY_CLASS
       : APP_BUTTON_SECONDARY_CLASS
@@ -382,12 +382,12 @@ export function DashboardCompactMeetupCard({
         }
       }}
       className={`${SURFACE_CARD_CLASS} ${className} flex min-h-[250px] flex-col overflow-hidden p-4 text-left ${
-        onClick ? "cursor-pointer transition hover:-translate-y-0.5 hover:border-[#cfdae1]" : ""
+        onClick ? "cursor-pointer transition hover:-translate-y-0.5 hover:border-[#111111]" : ""
       }`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="line-clamp-2 text-lg font-black leading-tight tracking-[-0.04em] text-[#24323f]">
+          <div className="line-clamp-2 text-lg font-black leading-tight tracking-[-0.04em] text-[#111111]">
             {title}
           </div>
           {subtitle ? (
@@ -395,12 +395,12 @@ export function DashboardCompactMeetupCard({
           ) : null}
         </div>
 
-        <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${badgeClassName}`}>
+        <span className={`shrink-0 rounded-[8px] px-2.5 py-1 text-[11px] font-semibold ${badgeClassName}`}>
           {badgeLabel}
         </span>
       </div>
 
-      <div className="mt-4 grid gap-2 text-sm font-medium text-[#43525b]">
+      <div className="mt-4 grid gap-2 text-sm font-medium text-[#111111]">
         <div className={`${SOFT_CARD_CLASS} flex min-w-0 items-center gap-2 px-3 py-2`}>
           {getPurposeIcon(post.meeting_purpose)}
           <span className="min-w-0 truncate">{post.meeting_purpose || "Meetup"}</span>
@@ -424,7 +424,7 @@ export function DashboardCompactMeetupCard({
             <span className="min-w-0 truncate">{timeLabel || "Time TBD"}</span>
           </span>
           {durationLabel ? (
-            <span className="shrink-0 rounded-full border border-[#d8e2e8] px-2 py-0.5 text-xs font-bold text-[#43525b]">
+            <span className="shrink-0 rounded-[8px] border border-[#111111] px-2 py-0.5 text-xs font-bold text-[#111111]">
               {durationLabel}
             </span>
           ) : null}
@@ -436,7 +436,7 @@ export function DashboardCompactMeetupCard({
               <Coins className="h-4 w-4 shrink-0 text-[#82919a]" />
               <span className="min-w-0 truncate">Host covers</span>
             </span>
-            <span className="shrink-0 font-semibold text-[#43525b]">
+            <span className="shrink-0 font-semibold text-[#111111]">
               ${amount.toLocaleString()}
             </span>
           </div>

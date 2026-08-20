@@ -432,19 +432,19 @@ export default function ChatRoomClient({
         }}
       />
       <div className="mx-auto max-w-3xl">
-        <div className={`${APP_SURFACE_CARD_CLASS} rounded-[24px] p-4 sm:p-5`}>
+        <div className={`${APP_SURFACE_CARD_CLASS} rounded-[8px] p-4 sm:p-5`}>
           {isProviderConfigured ? (
             <>
-              <div className="border-b border-[#dce4ea] pb-3">
+              <div className="border-b border-[#111111] pb-3">
                 <div className="flex items-center justify-between gap-3 text-xs font-medium text-[#7a8790]">
                   <span className={APP_EYEBROW_CLASS}>
                     {chatClosed ? "Read-only chat" : "Live chat"}
                   </span>
                 </div>
                 <div className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm ${APP_MUTED_TEXT_CLASS}`}>
-                  <span className="inline-flex items-center gap-2 font-semibold text-[#24323c]">
+                  <span className="inline-flex items-center gap-2 font-semibold text-[#111111]">
                     <span
-                      className={`inline-flex h-2.5 w-2.5 rounded-full ${
+                      className={`inline-flex h-2.5 w-2.5 rounded-[8px] ${
                         isOtherUserActiveNow ? "bg-[#4e9d62]" : "bg-[#b6aea7]"
                       }`}
                       aria-hidden="true"
@@ -458,12 +458,12 @@ export default function ChatRoomClient({
 
               <div
                 ref={listRef}
-                className="mt-4 h-[315px] overflow-y-auto rounded-[18px] border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] px-3 py-3 sm:h-[345px] sm:px-4"
+                className="mt-4 h-[315px] overflow-y-auto rounded-[8px] border border-[#111111] bg-white px-3 py-3 sm:h-[345px] sm:px-4"
               >
                 {historyLoading ? (
                   <div className="flex h-full flex-col items-center justify-center px-6 text-center text-sm text-[#7a8790]">
                     <LoaderCircle className="h-8 w-8 animate-spin text-[#9aa6ad]" />
-                    <div className="mt-3 font-medium text-[#52616a]">
+                    <div className="mt-3 font-medium text-[#333333]">
                       Loading conversation...
                     </div>
                     <div className="mt-1 max-w-xs leading-6">
@@ -485,10 +485,10 @@ export default function ChatRoomClient({
                             </span>
                           ) : null}
                           <div
-                            className={`max-w-[82%] rounded-[20px] px-4 py-3 text-sm leading-6 shadow-sm ${
+                            className={`max-w-[82%] rounded-[8px] px-4 py-3 text-sm leading-6 shadow-none ${
                               isMine
-                                ? "border border-[#c9d5dd] bg-[linear-gradient(135deg,#ffffff_0%,#dde7ed_100%)] text-[#273740] shadow-[0_12px_22px_rgba(118,126,133,0.12),inset_0_1px_0_rgba(255,255,255,0.96)]"
-                                : "border border-[#d8e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eff4f7_100%)] text-[#4c5b64]"
+                                ? "border border-[#111111] bg-white text-[#273740] shadow-none"
+                                : "border border-[#111111] bg-white text-[#4c5b64]"
                             }`}
                           >
                             <div className="whitespace-pre-wrap break-words">{message.text}</div>
@@ -505,7 +505,7 @@ export default function ChatRoomClient({
                 ) : (
                   <div className="flex h-full flex-col items-center justify-center px-6 text-center text-sm text-[#7a8790]">
                     <MessageSquareMore className="h-8 w-8 text-[#9aa6ad]" />
-                    <div className="mt-3 font-medium text-[#52616a]">
+                    <div className="mt-3 font-medium text-[#333333]">
                       {chatClosed ? "No saved messages" : "No messages yet"}
                     </div>
                     <div className="mt-1 max-w-xs leading-6">
@@ -517,7 +517,7 @@ export default function ChatRoomClient({
                 )}
               </div>
 
-              <div className={`mt-4 rounded-[18px] p-2 sm:p-3 ${APP_SOFT_CARD_CLASS}`}>
+              <div className={`mt-4 rounded-[8px] p-2 sm:p-3 ${APP_SOFT_CARD_CLASS}`}>
                 <div className="flex gap-2">
                   <textarea
                     value={draft}
@@ -527,17 +527,17 @@ export default function ChatRoomClient({
                     placeholder={
                       chatClosed ? chatClosedMessage : `Message ${otherUserName}...`
                     }
-                    className={`h-[56px] min-h-[56px] flex-1 resize-none rounded-[16px] border px-4 py-[17px] text-sm leading-5 outline-none transition placeholder:text-[#96a2aa] ${
+                    className={`h-[56px] min-h-[56px] flex-1 resize-none rounded-[8px] border px-4 py-[17px] text-sm leading-5 outline-none transition placeholder:text-[#96a2aa] ${
                       chatClosed
-                        ? "cursor-not-allowed border-[#d9e1e6] bg-[linear-gradient(180deg,#f7fafb_0%,#eef3f6_100%)] text-[#7f8b92]"
-                        : "border-[#d6e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] text-[#2f3a42] focus:border-[#bccad3] focus:bg-[#ffffff]"
+                        ? "cursor-not-allowed border-[#111111] bg-white text-[#333333]"
+                        : "border-[#111111] bg-white text-[#2f3a42] focus:border-[#111111] focus:bg-[#ffffff]"
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => void handleSend()}
                     disabled={!canSend}
-                    className={`inline-flex h-[56px] shrink-0 items-center gap-2 self-end rounded-[16px] px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${APP_BUTTON_SECONDARY_CLASS}`}
+                    className={`inline-flex h-[56px] shrink-0 items-center gap-2 self-end rounded-[8px] px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${APP_BUTTON_SECONDARY_CLASS}`}
                   >
                     {sending ? (
                       <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -550,26 +550,26 @@ export default function ChatRoomClient({
               </div>
 
               {chatClosed ? (
-                <div className="mt-3 rounded-[14px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
+                <div className="mt-3 rounded-[14px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#333333]">
                   {chatClosedMessage} You can still read previous messages here.
                 </div>
               ) : null}
 
               {errorMessage && (
-                <div className="mt-3 rounded-[14px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
+                <div className="mt-3 rounded-[14px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#333333]">
                   {errorMessage}
                 </div>
               )}
 
-              <div className="mt-4 text-center text-[11px] font-medium text-[#7f8b92]">
+              <div className="mt-4 text-center text-[11px] font-medium text-[#333333]">
                 Live Chat Powered by PubNub
               </div>
             </>
           ) : (
-            <div className={`rounded-[18px] px-4 py-4 ${APP_SOFT_CARD_CLASS}`}>
+            <div className={`rounded-[8px] px-4 py-4 ${APP_SOFT_CARD_CLASS}`}>
               <div className="flex items-start gap-3">
-                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#71828c]" />
-                <div className="text-sm leading-6 text-[#52616a]">
+                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#333333]" />
+                <div className="text-sm leading-6 text-[#333333]">
                   Chat is ready, but PubNub keys are not configured yet.
                 </div>
               </div>
@@ -581,7 +581,7 @@ export default function ChatRoomClient({
         <div className="mt-4 flex flex-wrap gap-2">
           <Link
             href="/dashboard?tab=matches"
-            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+            className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
           >
             Back to Matches
           </Link>

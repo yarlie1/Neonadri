@@ -75,7 +75,7 @@ export default function AccountPasswordForm() {
   return (
     <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
       <div className="flex items-center gap-2 text-sm font-semibold text-[#2d3b44]">
-        <KeyRound className="h-4 w-4 text-[#71828c]" />
+        <KeyRound className="h-4 w-4 text-[#444444]" />
         Change password
       </div>
       <p className="mt-2 text-sm text-[#637079]">
@@ -94,7 +94,7 @@ export default function AccountPasswordForm() {
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            className="w-full rounded-[16px] border border-[#d6dee4] bg-white px-4 py-3 text-sm text-[#2f3a42] outline-none transition focus:border-[#bcc8d0] focus:ring-2 focus:ring-[#dce5eb]"
+            className="w-full rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#111111] outline-none transition focus:border-[#111111] focus: focus:"
             autoComplete="new-password"
           />
           {passwordTooShort ? (
@@ -112,7 +112,7 @@ export default function AccountPasswordForm() {
             type="password"
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
-            className="w-full rounded-[16px] border border-[#d6dee4] bg-white px-4 py-3 text-sm text-[#2f3a42] outline-none transition focus:border-[#bcc8d0] focus:ring-2 focus:ring-[#dce5eb]"
+            className="w-full rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#111111] outline-none transition focus:border-[#111111] focus: focus:"
             autoComplete="new-password"
           />
           {passwordsMismatch ? (
@@ -128,7 +128,7 @@ export default function AccountPasswordForm() {
           type="button"
           onClick={() => void handlePasswordUpdate()}
           disabled={isSavingPassword || !canSubmitPassword}
-          className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition disabled:opacity-60 ${APP_BUTTON_PRIMARY_CLASS}`}
+          className={`inline-flex items-center gap-2 rounded-[8px] border px-4 py-2.5 text-sm font-medium transition disabled:opacity-60 ${APP_BUTTON_PRIMARY_CLASS}`}
         >
           <KeyRound className="h-4 w-4" />
           {isSavingPassword ? "Updating..." : "Change password"}
@@ -137,7 +137,7 @@ export default function AccountPasswordForm() {
         <button
           type="button"
           onClick={() => router.push("/account")}
-          className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+          className={`inline-flex items-center rounded-[8px] px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
         >
           Back to account
         </button>
@@ -145,10 +145,10 @@ export default function AccountPasswordForm() {
 
       {passwordMessage ? (
         <div
-          className={`mt-4 rounded-[18px] px-4 py-3 text-sm font-medium ${
+          className={`mt-4 rounded-[8px] px-4 py-3 text-sm font-medium ${
             passwordMessageTone === "danger"
-              ? "border border-[#eaded8] bg-[linear-gradient(180deg,#fffdfc_0%,#f7f0ed_100%)] text-[#775f55]"
-              : `${APP_SOFT_CARD_CLASS} text-[#55626a]`
+              ? "border border-[#111111] bg-white text-[#775f55]"
+              : `${APP_SOFT_CARD_CLASS} text-[#333333]`
           }`}
         >
           {passwordMessage}

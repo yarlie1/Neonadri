@@ -92,9 +92,9 @@ export function formatDuration(minutes: number | null) {
 }
 
 export function getPurposeTheme(purpose: string | null) {
-  const baseBandClass = `${APP_ROW_SURFACE_CLASS} text-[#24323f]`;
+  const baseBandClass = `${APP_ROW_SURFACE_CLASS} text-[#111111]`;
   const baseIconWrapClass =
-    "border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#71828c] shadow-[inset_0_1px_0_rgba(255,255,255,0.92)]";
+    "border border-[#111111] bg-white text-[#333333] shadow-none";
 
   switch (purpose) {
     case "Coffee Chat":
@@ -180,7 +180,7 @@ export function getMatchBadge(
     return {
       label: "Matched",
       className:
-        "border border-[#d4dfe6] bg-[linear-gradient(180deg,#ffffff_0%,#eef4f7_100%)] text-[#536a75]",
+        "border border-[#111111] bg-white text-[#536a75]",
     };
   }
 
@@ -188,14 +188,14 @@ export function getMatchBadge(
     return {
       label: "Expired",
       className:
-        "border border-[#d7dde2] bg-[linear-gradient(180deg,#ffffff_0%,#eff3f5_100%)] text-[#75828a]",
+        "border border-[#111111] bg-white text-[#333333]",
     };
   }
 
   return {
     label: requestCount > 0 ? `Open / ${requestCount}` : "Open",
     className:
-      "border border-[#c9d8cf] bg-[linear-gradient(180deg,#ffffff_0%,#edf7f1_100%)] text-[#466958]",
+      "border border-[#111111] bg-white text-[#466958]",
   };
 }
 

@@ -21,11 +21,11 @@ const DISPLAY_NAME_LENGTH_MESSAGE = `Display name must be ${DISPLAY_NAME_MAX_LEN
 const DISPLAY_NAME_IN_USE_MESSAGE = "This display name is already in use.";
 const EMAIL_IN_USE_MESSAGE = "This email is already in use.";
 const INPUT_CLASS =
-  "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30";
+  "w-full rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#111111] outline-none transition focus:border-[#111111] focus:ring-1 focus:/30";
 const HERO_SURFACE_CLASS =
-  "relative overflow-hidden rounded-[24px] border border-[#dde5eb] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.99)_0%,rgba(241,246,249,0.96)_44%,rgba(225,232,237,0.95)_100%)] px-6 py-7 text-[#25313a] shadow-[0_24px_52px_rgba(118,126,133,0.12)] sm:px-8 sm:py-9";
+  "relative overflow-hidden rounded-[8px] border border-[#111111] bg-white px-6 py-7 text-[#111111] shadow-none sm:px-8 sm:py-9";
 const BETA_ACTION_CLASS =
-  "inline-flex appearance-none items-center justify-center gap-2 rounded-full border border-[#d6dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] px-5 py-3 text-sm font-medium text-[#52616a] no-underline transition hover:bg-[#f5f8fa] disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex appearance-none items-center justify-center gap-2 rounded-[8px] border border-[#111111] bg-white px-5 py-3 text-sm font-medium text-[#333333] no-underline transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50";
 const SIGNUP_HERO_TITLE = "Join or create meetups.";
 const SIGNUP_HERO_BODY =
   "Set up your profile. Browse, request, or host.";
@@ -490,11 +490,8 @@ function SignupPageContent() {
         <div className={showBetaGate || showCreateAccountCue ? "" : "grid gap-4 lg:grid-cols-[1.02fr_0.98fr]"}>
           {!showBetaGate && !showCreateAccountCue ? (
             <section className={HERO_SURFACE_CLASS}>
-            <div className="absolute -left-10 bottom-0 h-36 w-36 rounded-full bg-white/40 blur-2xl" />
-            <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-[#d9e2e8]/40 blur-2xl" />
-
             <div className="relative">
-              <div className={`inline-flex items-center gap-2 rounded-full px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}>
+              <div className={`inline-flex items-center gap-2 rounded-[8px] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}>
                 <Sparkles className="h-3.5 w-3.5" />
                 {awaitingSignupMode
                   ? "Create account"
@@ -504,7 +501,7 @@ function SignupPageContent() {
                   ? "Posting during beta"
                   : "Create account"}
               </div>
-              <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#22303a] sm:text-[42px]">
+              <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#111111] sm:text-[42px]">
                 {awaitingSignupMode
                   ? SIGNUP_HERO_TITLE
                   : showIntentPicker
@@ -524,7 +521,7 @@ function SignupPageContent() {
                   ? "Use the email already approved for creating meetups."
                   : SIGNUP_HERO_BODY}
               </p>
-              <div className={`mt-4 inline-flex rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+              <div className={`mt-4 inline-flex rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                 Neonadri is for adults 18+ only.
               </div>
 
@@ -533,18 +530,18 @@ function SignupPageContent() {
                   <button
                     type="button"
                     onClick={() => handleSelectIntent("guest")}
-                    className="w-full rounded-[24px] border border-[#cbd6dd] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(234,240,244,0.95)_100%)] px-5 py-5 text-left shadow-[0_16px_28px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,0.96)] transition hover:-translate-y-0.5 hover:border-[#aebec8] hover:shadow-[0_20px_32px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.98)]"
+                    className="w-full rounded-[8px] border border-[#111111] bg-white px-5 py-5 text-left shadow-none transition hover:-translate-y-0.5 hover:border-[#111111] hover:shadow-none"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <div className="text-base font-semibold text-[#24323c]">
+                        <div className="text-base font-semibold text-[#111111]">
                           Join 1:1 meetups
                         </div>
                         <div className="mt-1 text-xs leading-6 text-[#67747c]">
                           Browse plans. Request to join.
                         </div>
                       </div>
-                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c3d0d8] bg-white/90 text-[#31424d] shadow-sm">
+                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#c3d0d8] bg-white text-[#31424d] shadow-none">
                         <ArrowRight className="h-4 w-4" />
                       </div>
                     </div>
@@ -555,11 +552,11 @@ function SignupPageContent() {
                   <button
                     type="button"
                     onClick={() => handleSelectIntent("host")}
-                    className="w-full rounded-[24px] border border-[#cbd6dd] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(234,240,244,0.95)_100%)] px-5 py-5 text-left shadow-[0_16px_28px_rgba(118,126,133,0.14),inset_0_1px_0_rgba(255,255,255,0.96)] transition hover:-translate-y-0.5 hover:border-[#aebec8] hover:shadow-[0_20px_32px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.98)]"
+                    className="w-full rounded-[8px] border border-[#111111] bg-white px-5 py-5 text-left shadow-none transition hover:-translate-y-0.5 hover:border-[#111111] hover:shadow-none"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <div className="text-base font-semibold text-[#24323c]">
+                        <div className="text-base font-semibold text-[#111111]">
                           Create 1:1 meetups
                         </div>
                         <div className="mt-1 text-xs leading-6 text-[#67747c]">
@@ -568,7 +565,7 @@ function SignupPageContent() {
                             : "Post activity-based plans right away."}
                         </div>
                       </div>
-                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c3d0d8] bg-white/90 text-[#31424d] shadow-sm">
+                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#c3d0d8] bg-white text-[#31424d] shadow-none">
                         <ArrowRight className="h-4 w-4" />
                       </div>
                     </div>
@@ -578,8 +575,8 @@ function SignupPageContent() {
                   </button>
                 </div>
               ) : showSignupForm || awaitingSignupMode ? (
-                <div className="mt-7 rounded-[22px] border border-[#dce5eb] bg-white/65 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]">
-                  <div className="text-sm font-semibold text-[#24323c]">
+                <div className="mt-7 rounded-[8px] border border-[#111111] bg-white px-4 py-4 shadow-none">
+                  <div className="text-sm font-semibold text-[#111111]">
                     Required details first
                   </div>
                   <div className="mt-1 text-xs leading-6 text-[#67747c]">
@@ -590,8 +587,8 @@ function SignupPageContent() {
                   </div>
                 </div>
               ) : showBetaGate ? null : (
-                <div className="mt-7 rounded-[22px] border border-[#e0e7ec] bg-white/60 px-4 py-4">
-                  <div className="text-sm font-semibold text-[#24323c]">
+                <div className="mt-7 rounded-[8px] border border-[#111111] bg-white px-4 py-4">
+                  <div className="text-sm font-semibold text-[#111111]">
                     Create access comes first
                   </div>
                   <div className="mt-1 text-xs leading-6 text-[#67747c]">
@@ -601,13 +598,13 @@ function SignupPageContent() {
               )}
 
               <div className="mt-6 flex flex-wrap gap-2">
-                <span className={`rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                <span className={`rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                   Coffee chats
                 </span>
-                <span className={`rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                <span className={`rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                   Walk meetups
                 </span>
-                <span className={`rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                <span className={`rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                   Focus sessions
                 </span>
               </div>
@@ -621,11 +618,11 @@ function SignupPageContent() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className={APP_EYEBROW_CLASS}>Sign Up</div>
-                    <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
+                    <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#111111]">
                       Create account
                     </h2>
                   </div>
-                  <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                  <div className={`rounded-[8px] px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                     Getting ready
                   </div>
                 </div>
@@ -639,11 +636,11 @@ function SignupPageContent() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className={APP_EYEBROW_CLASS}>Sign Up</div>
-                    <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
+                    <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#111111]">
                       Already have an account?
                     </h2>
                   </div>
-                  <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                  <div className={`rounded-[8px] px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                     Quick link
                   </div>
                 </div>
@@ -655,7 +652,7 @@ function SignupPageContent() {
                 <div className="mt-6">
                   <Link
                     href="/login"
-                    className={`inline-flex rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                    className={`inline-flex rounded-[8px] px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                   >
                     Log in
                   </Link>
@@ -666,11 +663,11 @@ function SignupPageContent() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className={APP_EYEBROW_CLASS}>Create Access</div>
-                    <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
+                    <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#111111]">
                       Approved email required
                     </h2>
                   </div>
-                  <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                  <div className={`rounded-[8px] px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                     Access first
                   </div>
                 </div>
@@ -681,7 +678,7 @@ function SignupPageContent() {
 
                 <div className="mt-6 space-y-3">
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                    <label className="mb-2 block text-sm font-medium text-[#333333]">
                       Approved email
                     </label>
                     <input
@@ -698,9 +695,9 @@ function SignupPageContent() {
                       type="button"
                       onClick={handleBetaAccessCheck}
                       disabled={checkingBetaAccess}
-                      className={`${BETA_ACTION_CLASS} shadow-[inset_0_0_0_1px_rgba(214,223,229,0.95)]`}
+                      className={`${BETA_ACTION_CLASS} shadow-none`}
                     >
-                      <span className="text-sm font-medium text-[#52616a]">
+                      <span className="text-sm font-medium text-[#333333]">
                         {checkingBetaAccess ? "Checking access..." : "Continue with this email"}
                       </span>
                       <ArrowRight className="h-4 w-4" />
@@ -708,7 +705,7 @@ function SignupPageContent() {
                     <button
                       type="button"
                       onClick={handleResetIntent}
-                      className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                      className={`rounded-[8px] px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                     >
                       Choose another path
                     </button>
@@ -720,11 +717,11 @@ function SignupPageContent() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className={APP_EYEBROW_CLASS}>Sign Up</div>
-                    <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
+                    <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#111111]">
                       Create account
                     </h2>
                   </div>
-                  <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                  <div className={`rounded-[8px] px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                     Required
                   </div>
                 </div>
@@ -735,7 +732,7 @@ function SignupPageContent() {
 
                 <div className="mt-6 space-y-4">
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                    <label className="mb-2 block text-sm font-medium text-[#333333]">
                       {requiresPostingBeta ? "Approved email" : "Email"}
                     </label>
                     <input
@@ -753,7 +750,7 @@ function SignupPageContent() {
                       <button
                         type="button"
                         onClick={handleResetBetaAccess}
-                        className="mt-2 text-xs font-medium text-[#55656e] underline underline-offset-2 transition hover:text-[#24323c]"
+                        className="mt-2 text-xs font-medium text-[#55656e] underline underline-offset-2 transition hover:text-[#111111]"
                       >
                         Use a different email
                       </button>
@@ -761,7 +758,7 @@ function SignupPageContent() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                    <label className="mb-2 block text-sm font-medium text-[#333333]">
                       Password
                     </label>
                     <input
@@ -773,14 +770,14 @@ function SignupPageContent() {
                     />
                     {password.trim().length > 0 &&
                     password.trim().length < PASSWORD_MIN_LENGTH ? (
-                      <p className="mt-2 text-xs text-[#6e7d86]">
+                      <p className="mt-2 text-xs text-[#444444]">
                         Password must be at least {PASSWORD_MIN_LENGTH} characters.
                       </p>
                     ) : null}
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                    <label className="mb-2 block text-sm font-medium text-[#333333]">
                       Confirm password
                     </label>
                     <input
@@ -791,14 +788,14 @@ function SignupPageContent() {
                       onChange={(e) => setPasswordConfirmation(e.target.value)}
                     />
                     {passwordConfirmation.length > 0 && password !== passwordConfirmation ? (
-                      <p className="mt-2 text-xs text-[#6e7d86]">
+                      <p className="mt-2 text-xs text-[#444444]">
                         Passwords do not match.
                       </p>
                     ) : null}
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                    <label className="mb-2 block text-sm font-medium text-[#333333]">
                       Display name
                     </label>
                     <input
@@ -814,7 +811,7 @@ function SignupPageContent() {
 
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div>
-                      <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                      <label className="mb-2 block text-sm font-medium text-[#333333]">
                         Gender
                       </label>
                       <select
@@ -831,7 +828,7 @@ function SignupPageContent() {
                     </div>
 
                     <div>
-                      <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                      <label className="mb-2 block text-sm font-medium text-[#333333]">
                         Age group
                       </label>
                       <select
@@ -848,7 +845,7 @@ function SignupPageContent() {
                     </div>
                   </div>
 
-                  <label className="grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] p-4 text-sm text-[#55626a]">
+                  <label className="grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 rounded-[8px] border border-[#111111] bg-white p-4 text-sm text-[#333333]">
                     <input
                       type="checkbox"
                       checked={isAdultConfirmed}
@@ -862,17 +859,17 @@ function SignupPageContent() {
                 </div>
 
                 <div className="mt-6 flex flex-wrap gap-3">
-                  <p className="w-full text-xs text-[#6e7d86]">
+                  <p className="w-full text-xs text-[#444444]">
                     {"By creating an account, you agree to Neonadri's "}
-                    <Link href="/terms" className="underline underline-offset-2 transition hover:text-[#24323c]">
+                    <Link href="/terms" className="underline underline-offset-2 transition hover:text-[#111111]">
                       Terms
                     </Link>
                     ,{" "}
-                    <Link href="/privacy" className="underline underline-offset-2 transition hover:text-[#24323c]">
+                    <Link href="/privacy" className="underline underline-offset-2 transition hover:text-[#111111]">
                       Privacy Policy
                     </Link>
                     , and{" "}
-                    <Link href="/community" className="underline underline-offset-2 transition hover:text-[#24323c]">
+                    <Link href="/community" className="underline underline-offset-2 transition hover:text-[#111111]">
                       Community Guidelines
                     </Link>
                     .
@@ -916,11 +913,11 @@ function SignupPageContent() {
         {showBetaGate ? (
           <section className={`mt-4 ${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
             <div className="flex items-start gap-3">
-              <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+              <div className={`rounded-[8px] px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                 Create access
               </div>
             </div>
-            <h3 className="mt-3 text-xl font-black tracking-[-0.04em] text-[#24323c]">
+            <h3 className="mt-3 text-xl font-black tracking-[-0.04em] text-[#111111]">
               Need create access?
             </h3>
             <p className={`mt-3 text-sm leading-6 ${APP_BODY_TEXT_CLASS}`}>
@@ -931,7 +928,7 @@ function SignupPageContent() {
                 href={email ? `/beta?email=${encodeURIComponent(email)}` : "/beta"}
                 className={BETA_ACTION_CLASS}
               >
-                <span className="text-sm font-medium text-[#52616a]">
+                <span className="text-sm font-medium text-[#333333]">
                   Apply to create meetups
                 </span>
                 <ArrowRight className="h-4 w-4" />
@@ -953,7 +950,7 @@ export default function SignupPage() {
           <div className="mx-auto max-w-6xl">
             <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
               <div className={APP_EYEBROW_CLASS}>Sign Up</div>
-              <div className="mt-3 text-sm text-[#55626a]">Loading signup...</div>
+              <div className="mt-3 text-sm text-[#333333]">Loading signup...</div>
             </section>
           </div>
         </main>

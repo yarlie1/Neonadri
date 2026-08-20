@@ -70,7 +70,7 @@ export default async function AccountPage() {
         <div className="space-y-4">
         <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
           <div className={APP_EYEBROW_CLASS}>Account</div>
-          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
+          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#111111]">
             Identity and settings
           </h2>
 
@@ -78,7 +78,7 @@ export default async function AccountPage() {
             <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#849099]">
               Account email
             </div>
-            <div className="mt-2 text-sm font-medium text-[#52616a]">
+            <div className="mt-2 text-sm font-medium text-[#333333]">
               {user.email || "Not available"}
             </div>
           </div>
@@ -86,7 +86,7 @@ export default async function AccountPage() {
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
               href="/account/password"
-              className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+              className={`rounded-[8px] px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               Change password
             </Link>
@@ -95,7 +95,7 @@ export default async function AccountPage() {
 
         <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
           <div className={APP_EYEBROW_CLASS}>Notifications</div>
-          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
+          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#111111]">
             Request and match alerts
           </h2>
           <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
@@ -116,7 +116,7 @@ export default async function AccountPage() {
         {postingBetaRequired ? (
           <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
             <div className={APP_EYEBROW_CLASS}>Posting access</div>
-            <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
+            <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#111111]">
               {postingAccessAllowed
                 ? "Beta tester posting is active"
                 : "This account is in join-only mode"}
@@ -133,7 +133,7 @@ export default async function AccountPage() {
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#849099]">
                 Signup path
               </div>
-              <div className="mt-2 text-sm font-medium text-[#52616a]">
+              <div className="mt-2 text-sm font-medium text-[#333333]">
                 {profile.signup_intent === "host"
                   ? "Host path"
                   : "Join path"}
@@ -144,7 +144,7 @@ export default async function AccountPage() {
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
                   href={postingAccessHref}
-                  className={`inline-flex items-center rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                  className={`inline-flex items-center rounded-[8px] px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                 >
                   Apply for posting access
                 </Link>
@@ -156,7 +156,7 @@ export default async function AccountPage() {
         {!!profile.is_admin ? (
           <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
             <div className={APP_EYEBROW_CLASS}>Admin tools</div>
-            <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
+            <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#111111]">
               Run admin tools
             </h2>
             <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
@@ -165,25 +165,25 @@ export default async function AccountPage() {
             <div className="mt-4 flex flex-wrap gap-3">
               <Link
                 href="/admin/overview"
-                className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+                className={`inline-flex items-center rounded-[8px] px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
               >
                 Open admin overview
               </Link>
               <Link
                 href="/admin/posts"
-                className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+                className={`inline-flex items-center rounded-[8px] px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
               >
                 Open all meetups
               </Link>
               <Link
                 href="/admin/reports"
-                className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+                className={`inline-flex items-center rounded-[8px] px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
               >
                 Open admin reports
               </Link>
               <Link
                 href="/admin/beta"
-                className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
+                className={`inline-flex items-center rounded-[8px] px-4 py-2.5 text-sm font-medium ${APP_BUTTON_SECONDARY_CLASS}`}
               >
                 Open beta applications
               </Link>
@@ -195,7 +195,7 @@ export default async function AccountPage() {
 
         <section className={`${APP_SURFACE_CARD_CLASS} p-5 sm:p-6`}>
           <div className={APP_EYEBROW_CLASS}>Account removal</div>
-          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#24323c]">
+          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#111111]">
             Delete this account
           </h2>
           <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
@@ -204,7 +204,7 @@ export default async function AccountPage() {
           <div className="mt-4">
             <Link
               href="/account/delete"
-              className={`inline-flex rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+              className={`inline-flex rounded-[8px] px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               Delete account
             </Link>

@@ -111,7 +111,7 @@ export default function EditMeetupForm({
   const [saving, setSaving] = useState(false);
 
   const fieldClass =
-    "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] px-4 py-3 pl-16 text-sm text-[#24323f] outline-none transition focus:border-[#c3cfd7] focus:ring-4 focus:ring-[#cfd8de]/35";
+    "w-full rounded-[8px] border border-[#111111] bg-white px-4 py-3 pl-16 text-sm text-[#111111] outline-none transition focus:border-[#111111] focus:ring-1 focus:/35";
 
   const applyDraft = useCallback(
     (draft: {
@@ -370,14 +370,11 @@ export default function EditMeetupForm({
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-5 py-6`}>
       <div className="mx-auto max-w-2xl space-y-4">
-        <section className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-5 py-6 sm:px-6 sm:py-7`}>
-          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/42 blur-2xl" />
-          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#cfd8de]/35 blur-2xl" />
-          <div className="relative">
-            <div className={`inline-flex items-center rounded-full ${APP_INNER_PANEL_CLASS} px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7b84]`}>
+        <section className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-5 py-6 sm:px-6 sm:py-7`}>          <div className="relative">
+            <div className={`inline-flex items-center rounded-[8px] ${APP_INNER_PANEL_CLASS} px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#444444]`}>
               Edit meetup
             </div>
-            <h1 className="mt-4 max-w-md text-[32px] font-black leading-[0.98] tracking-[-0.05em] text-[#24323f] sm:text-[38px]">
+            <h1 className="mt-4 max-w-md text-[32px] font-black leading-[0.98] tracking-[-0.05em] text-[#111111] sm:text-[38px]">
               Refine the plan without losing the vibe.
             </h1>
             <p className={`mt-3 max-w-lg text-sm leading-6 sm:text-[15px] ${APP_MUTED_TEXT_CLASS}`}>
@@ -392,7 +389,7 @@ export default function EditMeetupForm({
             <div className={APP_EYEBROW_CLASS}>
               Edit post
             </div>
-            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323f]">
+            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#111111]">
               Update your meetup
             </h2>
           </div>
@@ -418,10 +415,10 @@ export default function EditMeetupForm({
                   key={item.value}
                   type="button"
                   onClick={() => setMeetingPurpose(item.value)}
-                  className={`flex items-center gap-2 rounded-[20px] border px-4 py-3 text-left text-sm font-medium transition ${
+                  className={`flex items-center gap-2 rounded-[8px] border px-4 py-3 text-left text-sm font-medium transition ${
                     isSelected
-                      ? `${APP_BUTTON_PRIMARY_CLASS} border-[#b9c7d0] ring-2 ring-[#c5d0d7]/60 shadow-[0_14px_24px_rgba(118,126,133,0.16)]`
-                      : "border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)] text-[#52616a] hover:bg-[#f5f8fa]"
+                      ? `${APP_BUTTON_PRIMARY_CLASS} border-[#b9c7d0]/60 shadow-none`
+                      : "border-[#111111] bg-white text-[#333333] hover:bg-white"
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
@@ -439,24 +436,24 @@ export default function EditMeetupForm({
 
         <div className="mt-3 space-y-3">
           <div className="grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
-            <div className="flex overflow-hidden rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] focus-within:border-[#c3cfd7] focus-within:ring-4 focus-within:ring-[#cfd8de]/35">
-              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#71828c]">
+            <div className="flex overflow-hidden rounded-[8px] border border-[#111111] bg-white focus-within:border-[#c3cfd7] focus-within:ring-4 focus-within:/35">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#444444]">
                 <Clock className="h-4 w-4" />
               </div>
               <input
                 type="date"
-                className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 text-sm text-[#24323f] !shadow-none !outline-none !ring-0"
+                className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 text-sm text-[#111111] !shadow-none !outline-none !ring-0"
                 value={meetingDate}
                 onChange={(e) => handleMeetingDateChange(e.target.value)}
               />
             </div>
 
-            <div className="flex overflow-hidden rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] focus-within:border-[#c3cfd7] focus-within:ring-4 focus-within:ring-[#cfd8de]/35">
-              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#71828c]">
+            <div className="flex overflow-hidden rounded-[8px] border border-[#111111] bg-white focus-within:border-[#c3cfd7] focus-within:ring-4 focus-within:/35">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#444444]">
                 <Clock className="h-4 w-4" />
               </div>
               <select
-                className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-10 text-sm text-[#24323f] outline-none"
+                className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-10 text-sm text-[#111111] outline-none"
                 value={meetingTimeSlot}
                 onChange={(e) => handleMeetingTimeSlotChange(e.target.value)}
               >
@@ -475,12 +472,12 @@ export default function EditMeetupForm({
             </div>
           </div>
 
-          <div className="flex overflow-hidden rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] focus-within:border-[#c3cfd7] focus-within:ring-4 focus-within:ring-[#cfd8de]/35">
-            <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#71828c]">
+          <div className="flex overflow-hidden rounded-[8px] border border-[#111111] bg-white focus-within:border-[#c3cfd7] focus-within:ring-4 focus-within:/35">
+            <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#444444]">
               <Clock className="h-4 w-4" />
             </div>
             <select
-              className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-10 text-sm text-[#24323f] outline-none"
+              className="h-[50px] w-full min-w-0 bg-transparent px-4 pr-10 text-sm text-[#111111] outline-none"
               value={durationMinutes}
               onChange={(e) => setDurationMinutes(e.target.value)}
             >
@@ -495,13 +492,13 @@ export default function EditMeetupForm({
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex flex-1 overflow-hidden rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f1f5f7_100%)] focus-within:border-[#c3cfd7] focus-within:ring-4 focus-within:ring-[#cfd8de]/35">
-              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#71828c]">
+            <div className="flex flex-1 overflow-hidden rounded-[8px] border border-[#111111] bg-white focus-within:border-[#c3cfd7] focus-within:ring-4 focus-within:/35">
+              <div className="flex h-[50px] w-12 shrink-0 items-center justify-center text-[#444444]">
                 <MapPin className="h-4 w-4" />
               </div>
               <input
                 ref={searchInputRef}
-                className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 pr-5 text-sm text-[#24323f] !shadow-none !outline-none !ring-0"
+                className="h-[50px] w-full min-w-0 appearance-none !border-0 bg-transparent !px-4 !py-0 pr-5 text-sm text-[#111111] !shadow-none !outline-none !ring-0"
                 placeholder="Search exact place or address"
                 value={location}
                 onChange={handleLocationInputChange}
@@ -511,7 +508,7 @@ export default function EditMeetupForm({
             <button
               type="button"
               onClick={handleOpenMapPicker}
-              className={`inline-flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[18px] ${APP_BUTTON_SECONDARY_CLASS} transition`}
+              className={`inline-flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[8px] ${APP_BUTTON_SECONDARY_CLASS} transition`}
               aria-label="Pick on map"
               title="Pick on map"
             >
@@ -521,7 +518,7 @@ export default function EditMeetupForm({
 
           {location && (
             <div className={`${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm ${APP_MUTED_TEXT_CLASS}`}>
-              <p className="font-medium text-[#24323f]">
+              <p className="font-medium text-[#111111]">
                 {placeName || location}
               </p>
               <p className="mt-1">{confirmedAddress || location}</p>
@@ -541,7 +538,7 @@ export default function EditMeetupForm({
 
         <div className="mt-3 space-y-3">
           <div className="relative">
-            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#71828c]" />
+            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#444444]" />
             <select
               className={`${fieldClass} pr-10`}
               value={targetGender}
@@ -555,7 +552,7 @@ export default function EditMeetupForm({
           </div>
 
           <div className="relative">
-            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#71828c]" />
+            <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#444444]" />
             <select
               className={`${fieldClass} pr-10`}
               value={targetAgeGroup}
@@ -577,7 +574,7 @@ export default function EditMeetupForm({
 
         <div className="mt-3 space-y-3">
           <div className="relative">
-            <Coins className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#71828c]" />
+            <Coins className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#444444]" />
             <select
               className={`${fieldClass} pr-10`}
               value={benefitAmount}
@@ -611,7 +608,7 @@ export default function EditMeetupForm({
               />
               <span className="min-w-0 flex-1 leading-6">
                 I understand that{" "}
-                <span className="font-semibold text-[#24323f]">{benefitAmount}</span>{" "}
+                <span className="font-semibold text-[#111111]">{benefitAmount}</span>{" "}
                 is only for direct activity costs.
               </span>
             </label>
@@ -622,7 +619,7 @@ export default function EditMeetupForm({
           <button
             onClick={handleSave}
             disabled={saving || (!!benefitAmount && !benefitConfirmed)}
-            className={`flex-1 rounded-full ${APP_BUTTON_PRIMARY_CLASS} py-4 text-base font-semibold disabled:opacity-50`}
+            className={`flex-1 rounded-[8px] ${APP_BUTTON_PRIMARY_CLASS} py-4 text-base font-semibold disabled:opacity-50`}
           >
             {saving ? "Saving..." : "Save Meetup"}
           </button>
@@ -632,14 +629,14 @@ export default function EditMeetupForm({
               onClick={() =>
                 router.push(buildPostPath(postId, meetingPurpose, placeName || location))
               }
-              className={`rounded-full ${APP_BUTTON_SECONDARY_CLASS} px-5 py-4 text-sm font-medium transition`}
+              className={`rounded-[8px] ${APP_BUTTON_SECONDARY_CLASS} px-5 py-4 text-sm font-medium transition`}
             >
               Cancel
           </button>
         </div>
 
         {message && (
-          <p className="mt-4 rounded-[20px] border border-[#e8cfd3] bg-[#fff6f7] px-4 py-3 text-sm text-[#b44f5b]">
+          <p className="mt-4 rounded-[8px] border border-[#111111] bg-[#fff6f7] px-4 py-3 text-sm text-[#b44f5b]">
             {message}
           </p>
         )}

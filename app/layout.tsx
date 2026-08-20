@@ -80,7 +80,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className="min-h-screen bg-[#dfe6eb] text-[#2f3a42]">
+      <body className="min-h-screen bg-white text-[#111111]">
         {mapsKey ? (
           <Script
             src={`https://maps.googleapis.com/maps/api/js?key=${mapsKey}&libraries=places&language=en&region=US`}

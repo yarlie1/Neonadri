@@ -96,7 +96,7 @@ function ToggleChip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-3 py-2 text-sm font-medium transition ${
+      className={`rounded-[8px] border px-3 py-2 text-sm font-medium transition ${
         selected ? APP_PILL_ACTIVE_CLASS : APP_PILL_INACTIVE_CLASS
       }`}
     >
@@ -106,7 +106,7 @@ function ToggleChip({
 }
 
 const INPUT_CLASS =
-  "w-full rounded-[20px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30";
+  "w-full rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#111111] outline-none transition focus:border-[#111111] focus:ring-1 focus:/30";
 const MAX_SOURCE_AVATAR_BYTES = 12 * 1024 * 1024;
 const MAX_UPLOAD_AVATAR_BYTES = 2 * 1024 * 1024;
 const AVATAR_IMAGE_SIZE = 512;
@@ -393,7 +393,7 @@ export default function ProfileEditForm({
   };
 
   return (
-    <div className={`overflow-hidden rounded-[24px] ${APP_SURFACE_CARD_CLASS} backdrop-blur`}>
+    <div className={`overflow-hidden rounded-[8px] ${APP_SURFACE_CARD_CLASS} `}>
       <style jsx global>{`
         @keyframes neonadri-profile-save-pulse {
           0%, 100% {
@@ -404,22 +404,22 @@ export default function ProfileEditForm({
           }
         }
       `}</style>
-      <div className="bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fa_100%)] px-6 py-5">
+      <div className="bg-white px-6 py-5">
         <div className={APP_EYEBROW_CLASS}>
           Edit profile
         </div>
-        <h2 className="mt-1 text-xl font-black tracking-[-0.03em] text-[#24323c]">
+        <h2 className="mt-1 text-xl font-black tracking-[-0.03em] text-[#111111]">
           Keep your profile feeling current
         </h2>
       </div>
 
-      <div className="border-t border-[#e6edf2]/80 px-6 py-5">
-        <div className={`mb-5 rounded-[22px] px-4 py-4 text-sm leading-6 ${APP_SOFT_CARD_CLASS} ${APP_BODY_TEXT_CLASS}`}>
+      <div className="border-t border-[#111111]/80 px-6 py-5">
+        <div className={`mb-5 rounded-[8px] px-4 py-4 text-sm leading-6 ${APP_SOFT_CARD_CLASS} ${APP_BODY_TEXT_CLASS}`}>
           Help people understand your meetup style.
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-4">
+          <div className="rounded-[8px] border border-[#111111] bg-white px-4 py-4">
             <div className="flex flex-wrap items-center gap-4">
               <Avatar
                 src={avatarUrl}
@@ -427,14 +427,14 @@ export default function ProfileEditForm({
                 size="xl"
               />
               <div className="min-w-0 flex-1">
-                <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                <label className="mb-2 block text-sm font-medium text-[#333333]">
                   Profile photo
                 </label>
                 <p className={`mb-3 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
                   Upload a square photo.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <label className={`inline-flex cursor-pointer items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}>
+                  <label className={`inline-flex cursor-pointer items-center gap-2 rounded-[8px] px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}>
                     <ImagePlus className="h-4 w-4" />
                     {uploadingAvatar ? "Uploading..." : "Upload photo"}
                     <input
@@ -452,7 +452,7 @@ export default function ProfileEditForm({
                     <button
                       type="button"
                       onClick={handleRemoveAvatar}
-                      className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                      className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                     >
                       <Trash2 className="h-4 w-4" />
                       Remove
@@ -464,7 +464,7 @@ export default function ProfileEditForm({
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#52616a]">
+            <label className="mb-2 block text-sm font-medium text-[#333333]">
               Display Name
             </label>
             <input
@@ -476,7 +476,7 @@ export default function ProfileEditForm({
           </div>
 
               <div>
-              <label className="mb-2 block text-sm font-medium text-[#52616a]">
+              <label className="mb-2 block text-sm font-medium text-[#333333]">
                 About Me
               </label>
                 <textarea
@@ -493,7 +493,7 @@ export default function ProfileEditForm({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                  <label className="mb-2 block text-sm font-medium text-[#333333]">
                     Gender
                   </label>
                   <select
@@ -515,7 +515,7 @@ export default function ProfileEditForm({
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                  <label className="mb-2 block text-sm font-medium text-[#333333]">
                     Age Group
                   </label>
                   <select
@@ -538,10 +538,10 @@ export default function ProfileEditForm({
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                <label className="mb-2 block text-sm font-medium text-[#333333]">
                   Languages
                 </label>
-                <div className={`flex flex-wrap gap-2 rounded-[22px] p-3 ${APP_SOFT_CARD_CLASS}`}>
+                <div className={`flex flex-wrap gap-2 rounded-[8px] p-3 ${APP_SOFT_CARD_CLASS}`}>
                   {LANGUAGE_OPTIONS.map((item) => (
                     <ToggleChip
                       key={item}
@@ -554,7 +554,7 @@ export default function ProfileEditForm({
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                <label className="mb-2 block text-sm font-medium text-[#333333]">
                   Meeting Style
                 </label>
                 <select
@@ -572,10 +572,10 @@ export default function ProfileEditForm({
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                <label className="mb-2 block text-sm font-medium text-[#333333]">
                   Interests
                 </label>
-                <div className={`flex flex-wrap gap-2 rounded-[22px] p-3 ${APP_SOFT_CARD_CLASS}`}>
+                <div className={`flex flex-wrap gap-2 rounded-[8px] p-3 ${APP_SOFT_CARD_CLASS}`}>
                   {INTEREST_OPTIONS.map((item) => (
                     <ToggleChip
                       key={item}
@@ -588,7 +588,7 @@ export default function ProfileEditForm({
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#52616a]">
+                <label className="mb-2 block text-sm font-medium text-[#333333]">
                   Response Note
                 </label>
                 <select
@@ -606,23 +606,23 @@ export default function ProfileEditForm({
               </div>
 
               {message && (
-                <p className="rounded-[22px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
+                <p className="rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#333333]">
                   {message}
                 </p>
               )}
         </div>
       </div>
 
-      <div className="border-t border-[#e7edf1] bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fa_100%)] px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
+      <div className="border-t border-[#111111] bg-white px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
         <div className="flex flex-wrap items-start gap-3">
           <div className="flex flex-col items-start">
             <button
               type="button"
               onClick={handleSave}
               disabled={saving}
-              className={`touch-manipulation inline-flex min-h-[48px] items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS} ${
+              className={`touch-manipulation inline-flex min-h-[48px] items-center gap-2 rounded-[8px] px-5 py-3 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS} ${
                 showSaveCue
-                  ? "border-[#0891b2] ring-4 ring-[#67e8f9]/55 shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_34px_rgba(14,165,233,0.68)] [animation:neonadri-profile-save-pulse_1.45s_ease-in-out_infinite]"
+                  ? "border-[#0891b2] ring-4/55 shadow-none [animation:neonadri-profile-save-pulse_1.45s_ease-in-out_infinite]"
                   : ""
               }`}
             >
@@ -630,8 +630,8 @@ export default function ProfileEditForm({
               {saving ? "Saving..." : "Save"}
             </button>
             {showSaveCue ? (
-              <div className="relative mt-4 max-w-[280px] rounded-[18px] border-2 border-[#38bdf8] bg-[#f0fdfa] px-4 py-3 text-left text-sm leading-6 text-[#31545d] shadow-[0_16px_30px_rgba(14,165,233,0.18)]">
-                <div className="font-bold text-[#24323c]">Save your profile</div>
+              <div className="relative mt-4 max-w-[280px] rounded-[8px] border-2 border-[#38bdf8] bg-[#f0fdfa] px-4 py-3 text-left text-sm leading-6 text-[#31545d] shadow-none">
+                <div className="font-bold text-[#111111]">Save your profile</div>
                 <div>Fill in what you want, then tap Save before requesting to join.</div>
                 <div className="absolute -top-2 left-8 h-4 w-4 rotate-45 border-l-2 border-t-2 border-[#38bdf8] bg-[#f0fdfa]" />
               </div>
@@ -640,7 +640,7 @@ export default function ProfileEditForm({
 
           <Link
             href={profile.username ? `/@${profile.username}` : `/profile/${profile.id}`}
-            className={`touch-manipulation inline-flex min-h-[48px] items-center rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+            className={`touch-manipulation inline-flex min-h-[48px] items-center rounded-[8px] px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
           >
             Cancel
           </Link>

@@ -484,7 +484,7 @@ export default function WriteLocationPage() {
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-5 sm:px-6 sm:py-8`}>
       <div className={`mx-auto max-w-3xl p-5 sm:p-7 ${APP_SURFACE_CARD_CLASS}`}>
-        <div className={`inline-flex items-center rounded-full px-3 py-1.5 ${APP_EYEBROW_CLASS} ${APP_SOFT_CARD_CLASS}`}>
+        <div className={`inline-flex items-center rounded-[8px] px-3 py-1.5 ${APP_EYEBROW_CLASS} ${APP_SOFT_CARD_CLASS}`}>
           Pick on Map
         </div>
         <div className="mt-6 space-y-4">
@@ -493,21 +493,21 @@ export default function WriteLocationPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Enter place or address"
-              className="flex-1 rounded-[22px] border border-[#d6dee4] bg-[linear-gradient(180deg,#ffffff_0%,#f3f6f8_100%)] px-4 py-3 text-sm text-[#24323c] outline-none transition focus:border-[#b9c7d0] focus:ring-4 focus:ring-[#c8d3da]/30"
+              className="flex-1 rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#111111] outline-none transition focus:border-[#111111] focus:ring-4 focus:ring-[#111111]/30"
             />
 
             <button
               type="button"
               onClick={handleSearch}
               disabled={searching}
-              className={`rounded-[22px] px-5 py-3 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
+              className={`rounded-[8px] px-5 py-3 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
             >
               {searching ? "Searching..." : "Search"}
             </button>
           </div>
 
           {results.length > 0 && (
-            <div className={`rounded-[24px] p-2 ${APP_SOFT_CARD_CLASS}`}>
+            <div className={`rounded-[8px] p-2 ${APP_SOFT_CARD_CLASS}`}>
               <div className="max-h-64 overflow-y-auto">
                 {results.map((item, index) => (
                   (() => {
@@ -522,11 +522,11 @@ export default function WriteLocationPage() {
                     onClick={() => handleChooseResult(item, index)}
                     className={`block w-full rounded-xl px-3 py-3 text-left transition ${
                       active
-                        ? "bg-[#eef4f7] shadow-[inset_0_0_0_1px_rgba(191,203,211,0.9)]"
+                        ? "bg-white shadow-none"
                         : "hover:bg-[#f5f8fa]"
                     }`}
                   >
-                    <div className="text-sm font-medium text-[#24323c]">
+                    <div className="text-sm font-medium text-[#111111]">
                       {index + 1}. {item.name || "Unnamed place"}
                     </div>
                     <div className={`mt-1 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
@@ -540,7 +540,7 @@ export default function WriteLocationPage() {
             </div>
           )}
 
-          <div className={`overflow-hidden rounded-[22px] ${APP_SOFT_CARD_CLASS}`}>
+          <div className={`overflow-hidden rounded-[8px] ${APP_SOFT_CARD_CLASS}`}>
             <div ref={mapContainerRef} className="h-[22rem] w-full sm:h-[24rem]" />
           </div>
 
@@ -549,7 +549,7 @@ export default function WriteLocationPage() {
               <button
                 type="button"
                 onClick={handleSearch}
-                className={`rounded-full px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
+                className={`rounded-[8px] px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
               >
                 Search this area
               </button>
@@ -561,13 +561,13 @@ export default function WriteLocationPage() {
           )}
 
           {(selectedAddress || selectedLatLng) && (
-            <div className={`rounded-[24px] px-4 py-4 text-sm ${APP_SOFT_CARD_CLASS} ${APP_BODY_TEXT_CLASS}`}>
+            <div className={`rounded-[8px] px-4 py-4 text-sm ${APP_SOFT_CARD_CLASS} ${APP_BODY_TEXT_CLASS}`}>
               <p className={APP_EYEBROW_CLASS}>
                 Selected place
               </p>
 
               {selectedPlaceName && (
-                <p className="mt-2 text-base font-semibold text-[#24323c]">
+                <p className="mt-2 text-base font-semibold text-[#111111]">
                   {selectedPlaceName}
                 </p>
               )}
@@ -578,7 +578,7 @@ export default function WriteLocationPage() {
           )}
 
           {message && (
-            <div className="rounded-[22px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
+            <div className="rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#333333]">
               {message}
             </div>
           )}
@@ -587,7 +587,7 @@ export default function WriteLocationPage() {
             <button
               type="button"
               onClick={() => router.push(returnTo)}
-              className={`rounded-[22px] px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+              className={`rounded-[8px] px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
             >
               Cancel
             </button>
@@ -595,7 +595,7 @@ export default function WriteLocationPage() {
             <button
               type="button"
               onClick={handleConfirm}
-              className={`rounded-[22px] px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
+              className={`rounded-[8px] px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
             >
               Confirm Location
             </button>

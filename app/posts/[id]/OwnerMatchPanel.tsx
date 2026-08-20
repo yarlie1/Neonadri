@@ -101,10 +101,7 @@ export default function OwnerMatchPanel({
   };
 
   return (
-    <div className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-6 py-6`}>
-      <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/55 blur-2xl" />
-      <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#c9d4db]/35 blur-2xl" />
-      <div className="relative">
+    <div className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-6 py-6`}>      <div className="relative">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <div className={APP_EYEBROW_CLASS}>
@@ -132,14 +129,14 @@ export default function OwnerMatchPanel({
           </div>
 
           {!isMatched && !isCancelled && (
-            <div className={`rounded-full px-4 py-[0.45rem] text-sm font-medium leading-none backdrop-blur ${APP_PILL_ACTIVE_CLASS}`}>
+            <div className={`rounded-[8px] px-4 py-[0.45rem] text-sm font-medium leading-none  ${APP_PILL_ACTIVE_CLASS}`}>
               {`${pendingRequestCount} pending`}
             </div>
           )}
         </div>
 
         {isMatched && matchedPartner && !isCancelled ? (
-          <div className={`mt-5 ${APP_SOFT_CARD_CLASS} p-4 backdrop-blur`}>
+          <div className={`mt-5 ${APP_SOFT_CARD_CLASS} p-4 `}>
             <div>
               <div className={APP_EYEBROW_CLASS}>
                 Match completed
@@ -159,7 +156,7 @@ export default function OwnerMatchPanel({
               return (
                 <div
                   key={request.id}
-                  className={`${APP_SOFT_CARD_CLASS} p-4 backdrop-blur`}
+                  className={`${APP_SOFT_CARD_CLASS} p-4 `}
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
@@ -177,7 +174,7 @@ export default function OwnerMatchPanel({
                       </div>
                     </div>
 
-                    <div className={`rounded-full px-3 py-[0.3125rem] text-xs font-medium uppercase leading-none tracking-[0.12em] ${APP_PILL_INACTIVE_CLASS}`}>
+                    <div className={`rounded-[8px] px-3 py-[0.3125rem] text-xs font-medium uppercase leading-none tracking-[0.12em] ${APP_PILL_INACTIVE_CLASS}`}>
                       {request.status}
                     </div>
                   </div>
@@ -185,7 +182,7 @@ export default function OwnerMatchPanel({
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Link
                       href={request.profileHref}
-                      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                      className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
                     >
                       <UserCircle2 className="h-4 w-4" />
                       View Profile
@@ -197,7 +194,7 @@ export default function OwnerMatchPanel({
                           type="button"
                           onClick={() => handleRequestAction(request.id, "accepted")}
                           disabled={processingRequestId !== null}
-                          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
+                          className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS}`}
                         >
                           <CheckCircle2 className="h-4 w-4" />
                           {processingRequestId === request.id && processingAction === "accepted"
@@ -209,7 +206,7 @@ export default function OwnerMatchPanel({
                           type="button"
                           onClick={() => handleRequestAction(request.id, "rejected")}
                           disabled={processingRequestId !== null}
-                          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_SECONDARY_CLASS}`}
+                          className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_SECONDARY_CLASS}`}
                         >
                           <XCircle className="h-4 w-4" />
                           {processingRequestId === request.id && processingAction === "rejected"
@@ -218,7 +215,7 @@ export default function OwnerMatchPanel({
                         </button>
                       </>
                     ) : (
-                      <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                      <div className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                         <Clock3 className="h-4 w-4" />
                         {request.status}
                       </div>
@@ -231,19 +228,19 @@ export default function OwnerMatchPanel({
         )}
 
         {!isMatched && requests.length === 0 && !isCancelled && (
-          <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} backdrop-blur`}>
+          <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} `}>
             No requests yet.
           </div>
         )}
 
         {isMatched && !matchedPartner && !isCancelled && (
-          <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} backdrop-blur`}>
+          <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} `}>
             A match has been recorded for this meetup.
           </div>
         )}
 
         {isCancelled && (
-          <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} backdrop-blur`}>
+          <div className={`mt-5 ${APP_SOFT_CARD_CLASS} px-4 py-4 text-sm leading-6 ${APP_BODY_TEXT_CLASS} `}>
             Cancelled by you.
           </div>
         )}

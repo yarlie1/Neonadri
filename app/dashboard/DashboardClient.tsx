@@ -129,7 +129,7 @@ function RecentChatsPanel({
     return (
       <div className={`${SURFACE_CARD_CLASS} p-4 sm:p-5`}>
         <div className="flex items-start gap-3">
-          <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#dde6ec] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_100%)] text-[#738690]">
+          <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border border-[#111111] bg-white text-[#444444]">
             <MessageSquareMore className="h-4 w-4" />
           </div>
           <div>
@@ -152,34 +152,34 @@ function RecentChatsPanel({
           <div className={APP_EYEBROW_CLASS}>
             Meetup chat
           </div>
-          <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#24323f]">
+          <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#111111]">
             Recent meetup chats
           </div>
         </div>
         <Link
           href="/chats"
-          className="shrink-0 rounded-full border border-[#d6dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#f2f6f8_100%)] px-3 py-2 text-xs font-medium text-[#52616a] transition hover:bg-[#f5f8fa]"
+          className="shrink-0 rounded-[8px] border border-[#111111] bg-white px-3 py-2 text-xs font-medium text-[#333333] transition hover:bg-white"
         >
           View all chats
         </Link>
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-[20px] border border-[#dde6ec] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_100%)]">
+      <div className="mt-4 overflow-hidden rounded-[8px] border border-[#111111] bg-white">
         {recentChats.map((chat, index) => (
           <Link
             key={chat.matchId}
             href={`/matches/${chat.matchId}/chat`}
-            className={`flex items-center justify-between gap-3 px-4 py-3 transition hover:bg-white/80 ${
-              index !== recentChats.length - 1 ? "border-b border-[#dfe6ea]" : ""
+            className={`flex items-center justify-between gap-3 px-4 py-3 transition hover:bg-white ${
+              index !== recentChats.length - 1 ? "border-b border-[#111111]" : ""
             }`}
           >
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="truncate text-sm font-semibold text-[#24323f]">
+                <span className="truncate text-sm font-semibold text-[#111111]">
                   {chat.otherUserName}
                 </span>
                 {chat.hasNewMessage ? (
-                  <span className="shrink-0 rounded-full border border-[#dde6ec] bg-[linear-gradient(180deg,#ffffff_0%,#f7fafb_100%)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#5f7480]">
+                  <span className="shrink-0 rounded-[8px] border border-[#111111] bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#5f7480]">
                     New
                   </span>
                 ) : null}
@@ -411,7 +411,7 @@ function MatchesTabPanel({
                   <HeartHandshake className="h-3.5 w-3.5" />
                   {meetupStatus === "cancelled" ? "Read Chat" : "Open Chat"}
                   {meetupStatus !== "cancelled" && hasNewMessage ? (
-                    <span className="inline-flex h-2.5 w-2.5 rounded-full bg-[#b56c57]" />
+                    <span className="inline-flex h-2.5 w-2.5 rounded-[8px] bg-[#b56c57]" />
                   ) : null}
                 </CompactActionButton>
 
@@ -426,22 +426,22 @@ function MatchesTabPanel({
                     Leave Feedback
                   </CompactActionButton>
                 ) : alreadyLeftCancellationFeedback ? (
-                  <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                  <div className={`inline-flex items-center gap-1.5 rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                     <Star className="h-3.5 w-3.5" />
                     Feedback submitted
                   </div>
                 ) : meetupStatus === "cancelled" ? (
-                  <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                  <div className={`inline-flex items-center gap-1.5 rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                     <Star className="h-3.5 w-3.5" />
                     Cancellation recorded
                   </div>
                 ) : alreadyReviewed ? (
-                  <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                  <div className={`inline-flex items-center gap-1.5 rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                     <Star className="h-3.5 w-3.5" />
                     Review submitted
                   </div>
                 ) : (
-                  <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
+                  <div className={`inline-flex items-center gap-1.5 rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
                     <Star className="h-3.5 w-3.5" />
                     Review after meetup
                   </div>
@@ -936,32 +936,29 @@ export default function DashboardClient({
     <main className={`min-h-screen px-4 py-5 sm:py-6 ${APP_PAGE_BG_CLASS}`}>
       <div className="mx-auto max-w-7xl space-y-4 sm:space-y-5">
         {showMatchSuccess && (
-          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#52616a] shadow-sm`}>
+          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#333333] shadow-none`}>
             Match created successfully.
           </div>
         )}
 
         {showReviewSuccess && (
-          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#52616a] shadow-sm`}>
+          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#333333] shadow-none`}>
             Review submitted successfully.
           </div>
         )}
 
         {showCancellationFeedbackSuccess && (
-          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#52616a] shadow-sm`}>
+          <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#333333] shadow-none`}>
             Cancellation feedback submitted successfully.
           </div>
         )}
 
-        <div className="relative overflow-hidden rounded-[24px] border border-[#dce5eb] bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(246,249,251,0.99)_100%)] px-6 py-6 shadow-[0_18px_36px_rgba(118,126,133,0.09),inset_0_1px_0_rgba(255,255,255,1)]">
-          <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/45 blur-2xl" />
-          <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#d8e1e7]/55 blur-2xl" />
-          <div className="relative">
+        <div className="relative overflow-hidden rounded-[8px] border border-[#111111] bg-white px-6 py-6 shadow-none">          <div className="relative">
           <div className={APP_EYEBROW_CLASS}>DASHBOARD</div>
 
           <div className="mt-2 flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-black tracking-[-0.04em] text-[#24323f] sm:text-[36px]">
+              <h1 className="text-3xl font-black tracking-[-0.04em] text-[#111111] sm:text-[36px]">
                 My Meetups
               </h1>
               <p className={`mt-2 max-w-md ${APP_BODY_TEXT_CLASS}`}>
@@ -971,7 +968,7 @@ export default function DashboardClient({
 
             <Link
               href={createHref}
-              className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
+              className={`inline-flex shrink-0 items-center gap-2 rounded-[8px] px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
             >
               <Plus className="h-4 w-4" />
               Create
@@ -983,7 +980,7 @@ export default function DashboardClient({
         {reviewDueMatches.length > 0 ? (
           <Link
             href={`/reviews/write/${reviewDueMatches[0].id}`}
-            className={`${SOFT_CARD_CLASS} block px-4 py-3 text-[#43525b] shadow-sm transition hover:bg-white/90`}
+            className={`${SOFT_CARD_CLASS} block px-4 py-3 text-[#111111] shadow-none transition hover:bg-white`}
           >
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7f8990]">
               Review reminder
@@ -1003,7 +1000,7 @@ export default function DashboardClient({
                 <div className={APP_EYEBROW_CLASS}>
                   Coming up next
                 </div>
-                <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#24323f]">
+                <div className="mt-2 text-xl font-black tracking-[-0.04em] text-[#111111]">
                   Your next meetup
                 </div>
                 <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
@@ -1054,7 +1051,7 @@ export default function DashboardClient({
               upcomingMatchedMeetups.length > 0
                 ? (
                     <span className="inline-flex items-center gap-1.5">
-                      <span className="inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#b9c6cf] bg-[linear-gradient(180deg,#ffffff_0%,#dbe5eb_100%)] px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-[#2f404b] shadow-[0_10px_18px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.95)]">
+                      <span className="inline-flex min-w-[18px] items-center justify-center rounded-[8px] border border-[#b9c6cf] bg-white px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-[#2f404b] shadow-none">
                         {upcomingMatchedMeetups.length > 99 ? "99+" : upcomingMatchedMeetups.length}
                       </span>
                       <span>upcoming</span>
@@ -1072,7 +1069,7 @@ export default function DashboardClient({
             subtext={
               upcomingAcceptedSent > 0 ? (
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#a9b7c1] bg-[linear-gradient(180deg,#ffffff_0%,#d0dce4_100%)] px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-[#263844] shadow-[0_10px_18px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.95)]">
+                  <span className="inline-flex min-w-[18px] items-center justify-center rounded-[8px] border border-[#a9b7c1] bg-white px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-[#263844] shadow-none">
                     {upcomingAcceptedSent > 99 ? "99+" : upcomingAcceptedSent}
                   </span>
                   <span>Upcoming accepted</span>
@@ -1089,7 +1086,7 @@ export default function DashboardClient({
             subtext={
               pendingReceived > 0 ? (
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#b9c6cf] bg-[linear-gradient(180deg,#ffffff_0%,#dbe5eb_100%)] px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-[#2f404b] shadow-[0_10px_18px_rgba(118,126,133,0.18),inset_0_1px_0_rgba(255,255,255,0.95)]">
+                  <span className="inline-flex min-w-[18px] items-center justify-center rounded-[8px] border border-[#b9c6cf] bg-white px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-[#2f404b] shadow-none">
                     {pendingReceived > 99 ? "99+" : pendingReceived}
                   </span>
                   <span>pending</span>
