@@ -199,7 +199,6 @@ export function DashboardTabCard({
   active,
   label,
   value,
-  subtext,
   icon,
   onClick,
 }: {
@@ -214,28 +213,15 @@ export function DashboardTabCard({
     <button
       type="button"
       onClick={onClick}
-      className={`relative w-full rounded-[8px] border px-4 py-5 text-left transition ${
+      className={`inline-flex items-center gap-2 rounded-[8px] border px-3 py-2 text-sm font-black transition ${
         active
-          ? "border-[#b7c6d0] bg-white text-[#1c2a34] shadow-none ring-1"
-          : "border-[#111111] bg-white text-[#111111] hover:bg-white hover:border-[#111111]"
+          ? "border-[#111111] bg-[#111111] text-white"
+          : "border-[#111111] bg-white text-[#111111] hover:bg-[#f7f7f7]"
       }`}
     >
-      {active ? (
-        <span className="absolute right-4 top-4 inline-flex h-2.5 w-2.5 rounded-[8px] bg-[#506873] shadow-none" />
-      ) : null}
-      <div className="flex min-h-[108px] flex-col sm:min-h-[120px]">
-        <div className="flex items-center gap-2 text-sm font-semibold">
-          {icon}
-          {label}
-        </div>
-
-        <div className="mt-auto">
-          <div className="text-[36px] font-extrabold leading-none">{value}</div>
-          <div className={`mt-2 min-h-[16px] text-xs ${active ? "text-[#4f6672]" : "opacity-80"}`}>
-            {subtext || ""}
-          </div>
-        </div>
-      </div>
+      {icon}
+      <span>{label}</span>
+      <span className={active ? "text-white/75" : "text-[#666666]"}>{value}</span>
     </button>
   );
 }

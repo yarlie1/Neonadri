@@ -10,7 +10,6 @@ import {
   Inbox,
   Send,
   HeartHandshake,
-  Plus,
   Star,
 } from "lucide-react";
 import type { MatchChatMetaRow, MatchRow, MatchRequestRow, PostRow } from "./page";
@@ -24,15 +23,12 @@ import {
   FilterPill,
   getPostMatchState,
   getStatusBadgeClass,
-  SectionIntro,
   SOFT_CARD_CLASS,
   SURFACE_CARD_CLASS,
 } from "./dashboardComponents";
 import {
   APP_BODY_TEXT_CLASS,
-  APP_BUTTON_PRIMARY_CLASS,
   APP_EYEBROW_CLASS,
-  APP_INNER_PANEL_CLASS,
   APP_PAGE_BG_CLASS,
   APP_PILL_INACTIVE_CLASS,
 } from "../designSystem";
@@ -126,23 +122,7 @@ function RecentChatsPanel({
   userTimeZone: string;
 }) {
   if (recentChats.length === 0) {
-    return (
-      <div className={`${SURFACE_CARD_CLASS} p-4 sm:p-5`}>
-        <div className="flex items-start gap-3">
-          <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border border-[#111111] bg-white text-[#444444]">
-            <MessageSquareMore className="h-4 w-4" />
-          </div>
-          <div>
-            <div className={APP_EYEBROW_CLASS}>
-              Meetup chat
-            </div>
-            <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-              Meetup chat updates.
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
@@ -934,7 +914,7 @@ export default function DashboardClient({
 
   return (
     <main className={`min-h-screen px-4 py-5 sm:py-6 ${APP_PAGE_BG_CLASS}`}>
-      <div className="mx-auto max-w-7xl space-y-4 sm:space-y-5">
+      <div className="mx-auto max-w-4xl space-y-5">
         {showMatchSuccess && (
           <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#333333] shadow-none`}>
             Match created successfully.
@@ -952,29 +932,16 @@ export default function DashboardClient({
             Cancellation feedback submitted successfully.
           </div>
         )}
-
-        <div className="relative overflow-hidden rounded-[8px] border border-[#111111] bg-white px-6 py-6 shadow-none">          <div className="relative">
-          <div className={APP_EYEBROW_CLASS}>DASHBOARD</div>
-
-          <div className="mt-2 flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-black tracking-[-0.04em] text-[#111111] sm:text-[36px]">
-                My Meetups
-              </h1>
-              <p className={`mt-2 max-w-md ${APP_BODY_TEXT_CLASS}`}>
-                Your meetups, requests, and chats.
-              </p>
-            </div>
-
-            <Link
-              href={createHref}
-              className={`inline-flex shrink-0 items-center gap-2 rounded-[8px] px-4 py-2.5 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
-            >
-              <Plus className="h-4 w-4" />
-              Create
-            </Link>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <div className={APP_EYEBROW_CLASS}>DASHBOARD</div>
+            <h1 className="mt-2 text-4xl font-black tracking-[-0.04em] text-[#111111] sm:text-[44px]">
+              My meetups
+            </h1>
           </div>
-          </div>
+          <Link href={createHref} className="text-sm font-black text-[#111111] underline underline-offset-4">
+            Create meetup
+          </Link>
         </div>
 
         {reviewDueMatches.length > 0 ? (
@@ -1033,8 +1000,8 @@ export default function DashboardClient({
         <RecentChatsPanel recentChats={recentChats} userTimeZone={userTimeZone} />
 
         <div>
-          <div className={`${APP_EYEBROW_CLASS} mb-3 px-1`}>Manage your meetup activity</div>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className={`${APP_EYEBROW_CLASS} mb-2 px-1`}>Activity</div>
+          <div className="flex flex-wrap gap-2">
           <DashboardTabCard
             active={activeTab === "posts"}
             label="My Posts"
@@ -1101,14 +1068,7 @@ export default function DashboardClient({
 
         {activeTab === "posts" && (
           <div className={`${SURFACE_CARD_CLASS} p-4`}>
-            <div className="space-y-4">
-              <SectionIntro
-                eyebrow="Hosting"
-                title="Everything you are hosting"
-                body="Your hosted meetups."
-              />
-
-              <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="space-y-4">`r`n              <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap gap-2">
                   <FilterPill active={postFilter === "all"} onClick={() => setPostFilter("all")}>
                     All
@@ -1140,14 +1100,7 @@ export default function DashboardClient({
 
         {activeTab === "received" && (
           <div className={`${SURFACE_CARD_CLASS} p-4`}>
-            <div className="space-y-4">
-              <SectionIntro
-                eyebrow="Incoming"
-                title="People who want to join"
-                body="Incoming requests."
-              />
-
-              <div className="flex flex-wrap gap-2">
+            <div className="space-y-4">`r`n              <div className="flex flex-wrap gap-2">
                 <FilterPill
                   active={receivedFilter === "all"}
                   onClick={() => setReceivedFilter("all")}
@@ -1185,14 +1138,7 @@ export default function DashboardClient({
 
         {activeTab === "sent" && (
           <div className={`${SURFACE_CARD_CLASS} p-4`}>
-            <div className="space-y-4">
-              <SectionIntro
-                eyebrow="Outgoing"
-                title="Requests you have sent"
-                body="Requests you sent."
-              />
-
-              <div className="flex flex-wrap gap-2">
+            <div className="space-y-4">`r`n              <div className="flex flex-wrap gap-2">
                 <FilterPill active={sentFilter === "all"} onClick={() => setSentFilter("all")}>
                   All
                 </FilterPill>
@@ -1227,14 +1173,7 @@ export default function DashboardClient({
 
         {activeTab === "matches" && (
           <div className={`${SURFACE_CARD_CLASS} p-4`}>
-            <div className="space-y-4">
-              <SectionIntro
-                eyebrow="Connections"
-                title="People you have matched with"
-                body="Confirmed meetups."
-              />
-
-              <div className="flex flex-wrap gap-2">
+            <div className="space-y-4">`r`n              <div className="flex flex-wrap gap-2">
                 <FilterPill active={matchFilter === "all"} onClick={() => setMatchFilter("all")}>
                   All
                 </FilterPill>
