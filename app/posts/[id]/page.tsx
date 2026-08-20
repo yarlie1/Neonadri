@@ -145,7 +145,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function MeetupDetailPage({ params, searchParams }: PageProps) {
+export default async function MeetupDetailPage({ params }: PageProps) {
   const supabase = await createClient();
   const cookieStore = cookies();
   const userTimeZone = normalizeUserTimeZone(
@@ -508,17 +508,11 @@ export default async function MeetupDetailPage({ params, searchParams }: PagePro
     post.cancelled_by_user_id !== user.id &&
     !hasCancellationFeedback;
 
-  const sourceParam = typeof searchParams?.utm_source === "string" ? searchParams.utm_source.toLowerCase() : "";
-  const mediumParam = typeof searchParams?.utm_medium === "string" ? searchParams.utm_medium.toLowerCase() : "";
-  const campaignParam = typeof searchParams?.utm_campaign === "string" ? searchParams.utm_campaign.toLowerCase() : "";
-  const focusedJoinFlow =
-    searchParams?.joinCue === "1" ||
-    sourceParam === "reddit" ||
-    mediumParam.includes("reddit") ||
-    campaignParam.includes("reddit");
+  const isViewerHost = user?.id === post.user_id;
+  const shouldUseFocusedRequestView = !isViewerHost && !isViewerParticipant;
   const titleLine = `${post.meeting_purpose || "Meetup"}${placeDisplay ? ` at ${placeDisplay}` : ""}`;
 
-  if (focusedJoinFlow && user?.id !== post.user_id) {
+  if (shouldUseFocusedRequestView) {
     return (
       <main className="min-h-screen bg-white px-4 py-5 text-[#111111] sm:px-6 sm:py-8">
         <div className="mx-auto max-w-3xl">
