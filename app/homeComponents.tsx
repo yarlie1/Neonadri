@@ -309,7 +309,7 @@ function FilterSelect({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="relative inline-flex shrink-0 items-center">
+    <label className="relative flex w-full min-w-0 items-center">
       <span className="sr-only">{label}</span>
       {icon ? (
         <span className="pointer-events-none absolute left-3 text-[#444444]">
@@ -319,7 +319,7 @@ function FilterSelect({
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className={`h-11 appearance-none rounded-[8px] border border-[#111111] bg-white pr-10 text-sm font-semibold text-[#111111] shadow-none outline-none transition hover:border-[#111111] focus:border-[#111111] ${
+        className={`h-11 w-full appearance-none rounded-[8px] border border-[#111111] bg-white pr-10 text-sm font-semibold text-[#111111] shadow-none outline-none transition hover:border-[#111111] focus:border-[#111111] ${
           icon ? "pl-9" : "pl-4"
         }`}
       >
@@ -417,7 +417,7 @@ export function HomeFilterRail({
 
   return (
     <section className="rounded-[8px] border border-[#111111] bg-white p-3 sm:p-4">
-      <div className="grid gap-2 sm:grid-cols-3">
+      <div className="grid gap-2 sm:grid-cols-3 lg:max-w-3xl">
         <FilterSelect
           label="Host gender"
           value={hostGender}
@@ -443,7 +443,7 @@ export function HomeFilterRail({
           More filters
           <ChevronDown className="h-4 w-4" />
         </summary>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:max-w-5xl lg:grid-cols-5">
           <FilterSelect
             label="Guest age"
             value={ageGroup}
@@ -706,7 +706,7 @@ export function MeetupFeedCard({
   activityLabel?: string;
   activityText?: string;
 }) {
-  const cardClassName = `block w-full max-w-full overflow-hidden rounded-[8px] border p-2.5 shadow-none transition active:scale-[0.995] sm:p-3 ${
+  const cardClassName = `block w-full max-w-full overflow-hidden rounded-[8px] border shadow-none transition active:scale-[0.995] ${
         isExpired
           ? "border-[#111111] bg-white"
           : "border-[#111111] bg-white hover:-translate-y-0.5 hover:shadow-none"

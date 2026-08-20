@@ -363,7 +363,7 @@ export default function HomeFeedClient({
     <>
       <main className={`relative isolate min-h-[100dvh] overflow-x-hidden px-4 py-5 ${APP_PAGE_BG_CLASS}`}>
 
-        <div className="relative z-10 mx-auto max-w-7xl min-w-0 space-y-4 pb-28 sm:space-y-5 sm:pb-32">
+        <div className="relative z-10 mx-auto max-w-7xl min-w-0 space-y-4 pb-48 sm:space-y-5 sm:pb-56">
         <section className={`relative mx-auto w-full max-w-4xl overflow-hidden px-5 py-5 text-[#111111] sm:px-7 sm:py-6 ${HOME_WHITE_SURFACE_CLASS}`}>
           <div className="relative">
             <div className={`inline-flex items-center gap-2 rounded-[8px] px-3 py-1 ${APP_PILL_INACTIVE_CLASS} ${APP_EYEBROW_CLASS}`}>
@@ -429,7 +429,7 @@ export default function HomeFeedClient({
           </div>
         </div>
 
-        <div className="grid min-w-0 gap-3 lg:grid-cols-2 xl:grid-cols-4">
+        <div className="grid max-w-5xl min-w-0 gap-4 sm:grid-cols-2">
         {feedPosts.map((post) => {
           const amount = parseBenefitAmount(post.benefit_amount);
           const host = hostProfileMap[post.user_id] || {
@@ -496,7 +496,7 @@ export default function HomeFeedClient({
         </div>
 
         <div
-          className="fixed left-1/2 z-40 w-[calc(100%-2rem)] max-w-7xl -translate-x-1/2 transition-[bottom] duration-150 sm:w-[calc(100%-3rem)]"
+          className="fixed left-1/2 z-40 w-[calc(100%-2rem)] max-w-5xl -translate-x-1/2 transition-[bottom] duration-150 sm:w-[calc(100%-3rem)]"
           style={{ bottom: `calc(${footerOffset}px + env(safe-area-inset-bottom))` }}
         >
           <div>
