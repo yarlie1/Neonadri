@@ -2,23 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
-import {
-  Menu,
-  X,
-  LayoutDashboard,
-  LogOut,
-  LogIn,
-  UserPlus,
-  House,
-  UserCircle2,
-  Settings2,
-  Plus,
-  MessageCircleMore,
-  Play,
-} from "lucide-react";
+import { MessageCircleMore } from "lucide-react";
 import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
@@ -67,25 +53,6 @@ function NewChatBadge({ visible }: { visible: boolean }) {
   );
 }
 
-function isActivePath(pathname: string, href: string) {
-  if (href === "/") return pathname === "/";
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
-
-function NavLabel({
-  icon,
-  children,
-}: {
-  icon: ReactNode;
-  children: ReactNode;
-}) {
-  return (
-    <>
-      {icon}
-      <span>{children}</span>
-    </>
-  );
-}
 
 export default function TopNav({
   initialUser = null,
@@ -402,278 +369,96 @@ export default function TopNav({
 
   const closeMenu = () => setMenuOpen(false);
 
-  const navBtn = (active: boolean) =>
-    `inline-flex items-center gap-2 rounded-[8px] border px-3 py-2.5 text-sm font-medium transition ${
-      active
-        ? "border-[#111111] bg-white text-[#111111] shadow-none"
-        : "border-[#111111] bg-white text-[#111111] shadow-none hover:border-[#111111] hover:bg-white hover:text-[#111111]"
-    }`;
-
-  const primary =
-    "inline-flex items-center gap-2 rounded-[8px] border border-[#111111] bg-white px-3 py-2.5 text-sm font-medium text-[#111111] shadow-none transition hover:border-[#111111] hover:text-[#111111]";
-  const subtleLink =
-    "inline-flex items-center gap-1.5 rounded-[8px] px-2 py-1.5 text-xs font-medium text-[#333333] transition hover:bg-white hover:text-[#111111]";
-
-  const mobileItem =
-    "inline-flex items-center gap-2 rounded-[8px] px-3 py-2.25 text-sm font-medium text-[#333333] transition hover:bg-[#f5f5f5] hover:text-[#111111]";
+  const topLink =
+    "inline-flex h-10 items-center rounded-[8px] px-3 text-sm font-bold text-[#111111] transition hover:bg-[#f4f4f4]";
+  const topPrimary =
+    "inline-flex h-10 items-center rounded-[8px] bg-[#111111] px-4 text-sm font-black text-white transition hover:bg-[#333333]";
+  const menuItem =
+    "block rounded-[8px] px-3 py-2 text-sm font-bold text-[#111111] transition hover:bg-[#f4f4f4]";
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#111111] bg-white">
-      <div className="border-b border-[#111111] bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <div className="flex min-w-0 items-center gap-3">
-            <Link
-              href="/"
-              className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[8px] border border-[#111111] bg-white text-base font-black tracking-[-0.06em] text-[#111111] shadow-none transition hover:scale-[1.015]"
-              onClick={closeMenu}
-              aria-label="Neonadri home"
-            >
-              <span className="pointer-events-none absolute inset-[3px] rounded-[8px] border border-[#111111] bg-white" />              <span className="relative translate-y-[0.5px] text-[17px] font-black leading-none text-[#111111] drop-shadow-none">
-                N
-              </span>
-            </Link>
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        <Link
+          href="/"
+          className="text-[24px] font-black leading-none tracking-[-0.05em] text-[#111111]"
+          onClick={closeMenu}
+          aria-label="Neonadri home"
+        >
+          Neonadri
+        </Link>
 
-            <div className="flex min-w-0 flex-1 items-center">
-              <div className="flex min-w-0 flex-col items-start justify-center gap-[1px] sm:h-10 sm:justify-center sm:gap-[1px]">
-                <Link
-                  href="/"
-                  className="block w-full"
-                  onClick={closeMenu}
-                >
-                  <span className="inline-flex items-start gap-1.5">
-                    <span className="text-[20px] font-extrabold leading-none tracking-[-0.05em] text-[#111111] sm:text-[24px]">
-                      Neonadri
-                    </span>
-                    <span className="mt-0 rounded-[8px] border border-[#111111] bg-white px-1 py-[0.04rem] text-[6px] font-extrabold uppercase leading-none tracking-[0.12em] text-[#333333] shadow-none sm:mt-0.5 sm:px-1.5 sm:text-[7px]">
-                      Beta
-                    </span>
-                  </span>
-                </Link>
-                <div
-                  className="block text-[9px] font-medium uppercase leading-none tracking-[0.16em] text-[#444444] sm:text-[10px] sm:tracking-[0.16em]"
-                >
-                  AI-generated social space
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="relative flex items-center gap-1.5" ref={menuRef}>
+          {user ? (
+            <>
+              <Link href={dashboardHref} className={topLink} onClick={closeMenu}>
+                Dashboard
+                <span className="ml-2 inline-flex items-center gap-1">
+                  <CountBadge count={mobileDashboardCount} />
+                  <NewChatBadge visible={hasNewChatActivity} />
+                </span>
+              </Link>
+              <Link href={createHref} className={topPrimary} onClick={closeMenu}>
+                Create
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href={loginHref} className={topLink} onClick={closeMenu}>
+                Log in
+              </Link>
+              <Link href="/signup" className={topPrimary} onClick={closeMenu}>
+                Sign up
+              </Link>
+            </>
+          )}
 
-          <div className="hidden items-center gap-2 sm:flex">
-            <button type="button" onClick={openIntroVideo} className={subtleLink}>
-              <Play className="h-3.5 w-3.5" />
-              Watch intro
-            </button>
+          <button
+            type="button"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((prev) => !prev)}
+            className="inline-flex h-10 items-center rounded-[8px] border border-[#111111] bg-white px-3 text-sm font-bold text-[#111111] transition hover:bg-[#f4f4f4]"
+          >
+            {menuOpen ? "Close" : "Menu"}
+          </button>
 
-            <Link href="/" className={navBtn(isActivePath(pathname, "/"))}>
-              <NavLabel icon={<House className="h-4 w-4" />}>Home</NavLabel>
-            </Link>
+          {menuOpen && (
+            <div className="absolute right-0 top-12 z-50 w-52 rounded-[8px] border border-[#111111] bg-white p-2 shadow-none">
+              <Link href="/" onClick={closeMenu} className={menuItem}>
+                Home
+              </Link>
+              <button
+                type="button"
+                onClick={openIntroVideo}
+                className="w-full text-left rounded-[8px] px-3 py-2 text-sm font-bold text-[#111111] transition hover:bg-[#f4f4f4]"
+              >
+                Watch intro
+              </button>
 
-            {user ? (
-              <>
-                <Link
-                  href={dashboardHref}
-                  className={`${navBtn(isActivePath(pathname, "/dashboard"))} relative pr-12`}
-                >
-                  <NavLabel icon={<LayoutDashboard className="h-4 w-4" />}>
-                    Dashboard
-                  </NavLabel>
-                  <span className="absolute right-3 top-1/2 inline-flex -translate-y-1/2 items-center gap-1.5">
-                    <CountBadge count={upcomingMatchCount} />
-                    <NewChatBadge visible={hasNewChatActivity} />
-                    <CountBadge count={acceptedSentCount} />
-                    <CountBadge count={pendingCount} />
-                  </span>
-                </Link>
-
-                <Link
-                  href="/profile"
-                  className={navBtn(pathname === "/profile" || pathname.startsWith("/profile/"))}
-                >
-                  <NavLabel icon={<UserCircle2 className="h-4 w-4" />}>Profile</NavLabel>
-                </Link>
-
-                <Link
-                  href="/account"
-                  className={navBtn(isActivePath(pathname, "/account"))}
-                >
-                  <NavLabel icon={<Settings2 className="h-4 w-4" />}>Account</NavLabel>
-                </Link>
-
-                <Link href={createHref} className={primary}>
-                  <Plus className="h-4 w-4" />
-                  Create
-                </Link>
-
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  disabled={isLoggingOut}
-                  className={`${navBtn(false)} ${
-                    isLoggingOut
-                      ? "cursor-not-allowed opacity-60"
-                      : ""
-                  }`}
-                >
-                  <LogOut className="h-4 w-4" />
-                  {isLoggingOut ? "Logging out..." : "Logout"}
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href={loginHref} className={navBtn(isActivePath(pathname, "/login"))}>
-                  <NavLabel icon={<LogIn className="h-4 w-4" />}>Log In</NavLabel>
-                </Link>
-
-                <Link href="/signup" className={primary}>
-                  <UserPlus className="h-4 w-4" />
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </div>
-
-          <div className="relative sm:hidden" ref={menuRef}>
-            <button
-              type="button"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((prev) => !prev)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#111111] bg-white text-[#333333] shadow-none transition hover:bg-[#f6f9fb]"
-            >
-              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
-
-            {menuOpen && (
-              <div className="absolute right-0 top-12 z-50 w-[15.25rem] overflow-hidden rounded-[8px] border border-[#111111] bg-white shadow-none">
-                <div className="border-b border-[#111111] bg-white px-3.5 py-2.5">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#78838b]">
-                    Neonadri
-                  </div>
-                  <div className="mt-1 text-[15px] font-semibold text-[#111111]">
-                    AI-softened social discovery.
-                  </div>
-                  <div className="mt-1 text-[13px] leading-5 text-[#6f7a82]">
-                    Cyber-chill surfaces, same routes, same structure.
-                  </div>
+              {user ? (
+                <>
+                  <div className="my-1 border-t border-[#111111]" />
+                  <Link href="/profile" onClick={closeMenu} className={menuItem}>
+                    Profile
+                  </Link>
+                  <Link href="/account" onClick={closeMenu} className={menuItem}>
+                    Account
+                  </Link>
                   <button
                     type="button"
-                    onClick={openIntroVideo}
-                    className="mt-2 inline-flex items-center gap-1.5 text-[13px] leading-5 text-[#6f7a82] transition hover:text-[#111111]"
-                  >
-                    <Play className="h-3.5 w-3.5" />
-                    Watch intro
-                  </button>
-                </div>
-
-                <div className="flex flex-col p-2">
-                  <Link
-                    href="/"
-                    onClick={closeMenu}
-                    className={`${mobileItem} ${
-                      isActivePath(pathname, "/")
-                        ? "bg-white text-[#33434c]"
-                        : ""
+                    onClick={handleLogout}
+                    disabled={isLoggingOut}
+                    className={`w-full text-left rounded-[8px] px-3 py-2 text-sm font-bold text-[#111111] transition hover:bg-[#f4f4f4] ${
+                      isLoggingOut ? "cursor-not-allowed opacity-60" : ""
                     }`}
                   >
-                    <NavLabel icon={<House className="h-4 w-4" />}>Home</NavLabel>
-                  </Link>
-
-                  {user ? (
-                    <>
-                      <Link
-                        href={dashboardHref}
-                        onClick={closeMenu}
-                        className={`w-full justify-between ${mobileItem} ${
-                          isActivePath(pathname, "/dashboard")
-                            ? "bg-white text-[#33434c]"
-                            : ""
-                        }`}
-                        >
-                        <NavLabel icon={<LayoutDashboard className="h-4 w-4" />}>
-                          Dashboard
-                        </NavLabel>
-                        <span className="ml-auto inline-flex items-center gap-2">
-                          <CountBadge count={mobileDashboardCount} />
-                          <NewChatBadge visible={hasNewChatActivity} />
-                        </span>
-                      </Link>
-
-                      <Link
-                        href="/profile"
-                        onClick={closeMenu}
-                        className={`${mobileItem} ${
-                          pathname === "/profile" || pathname.startsWith("/profile/")
-                            ? "bg-white text-[#33434c]"
-                            : ""
-                        }`}
-                      >
-                        <NavLabel icon={<UserCircle2 className="h-4 w-4" />}>Profile</NavLabel>
-                      </Link>
-
-                      <Link
-                        href="/account"
-                        onClick={closeMenu}
-                        className={`${mobileItem} ${
-                          isActivePath(pathname, "/account")
-                            ? "bg-white text-[#33434c]"
-                            : ""
-                        }`}
-                      >
-                        <NavLabel icon={<Settings2 className="h-4 w-4" />}>Account</NavLabel>
-                      </Link>
-
-                      <Link
-                        href={createHref}
-                        onClick={closeMenu}
-                        className="mt-1 inline-flex items-center gap-2 rounded-[8px] border border-[#111111] bg-white px-3 py-2.25 text-sm font-medium text-[#34424b] shadow-none transition hover:bg-white"
-                      >
-                        <Plus className="h-4 w-4" />
-                        Create Meetup
-                      </Link>
-
-                      <div className="my-1 border-t border-[#111111]" />
-
-                      <button
-                        type="button"
-                        onClick={handleLogout}
-                        disabled={isLoggingOut}
-                        className={`inline-flex items-center gap-2 rounded-[8px] px-3 py-2.25 text-left text-sm font-medium text-[#333333] transition hover:bg-white ${
-                          isLoggingOut ? "cursor-not-allowed opacity-60" : ""
-                        }`}
-                      >
-                        <LogOut className="h-4 w-4" />
-                        {isLoggingOut ? "Logging out..." : "Logout"}
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link
-                        href={loginHref}
-                        onClick={closeMenu}
-                        className={`${mobileItem} ${
-                          isActivePath(pathname, "/login")
-                            ? "bg-white text-[#33434c]"
-                            : ""
-                        }`}
-                      >
-                        <LogIn className="h-4 w-4" />
-                        Log In
-                      </Link>
-
-                      <Link
-                        href="/signup"
-                        onClick={closeMenu}
-                        className="mt-1 inline-flex items-center gap-2 rounded-[8px] border border-[#111111] bg-white px-3 py-2.25 text-sm font-medium text-[#34424b] shadow-none transition hover:bg-white"
-                      >
-                        <UserPlus className="h-4 w-4" />
-                        Sign Up
-                      </Link>
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+                    {isLoggingOut ? "Logging out..." : "Logout"}
+                  </button>
+                </>
+              ) : null}
+            </div>
+          )}
         </div>
       </div>
     </header>
