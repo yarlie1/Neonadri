@@ -371,8 +371,6 @@ export default function TopNav({
 
   const topLink =
     "inline-flex h-10 items-center rounded-[8px] px-3 text-sm font-bold text-[#111111] transition hover:bg-[#f4f4f4]";
-  const topPrimary =
-    "inline-flex h-10 items-center rounded-[8px] bg-[#111111] px-4 text-sm font-black text-white transition hover:bg-[#333333]";
   const menuItem =
     "block rounded-[8px] px-3 py-2 text-sm font-bold text-[#111111] transition hover:bg-[#f4f4f4]";
 
@@ -404,9 +402,6 @@ export default function TopNav({
               <Link href={loginHref} className={topLink} onClick={closeMenu}>
                 Log in
               </Link>
-              <Link href="/signup" className={topPrimary} onClick={closeMenu}>
-                Sign up
-              </Link>
             </>
           )}
 
@@ -432,6 +427,15 @@ export default function TopNav({
               >
                 Watch intro
               </button>
+
+              {!user ? (
+                <>
+                  <div className="my-1 border-t border-[#111111]" />
+                  <Link href="/signup" onClick={closeMenu} className={menuItem}>
+                    Sign up
+                  </Link>
+                </>
+              ) : null}
 
               {user ? (
                 <>
