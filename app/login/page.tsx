@@ -84,10 +84,10 @@ export default function LoginPage() {
             <style jsx global>{`
               @keyframes neonadri-signup-pulse {
                 0%, 100% {
-                  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.98), 0 0 0 7px rgba(45, 212, 191, 0.38), 0 0 30px rgba(14, 165, 233, 0.45);
+                  box-shadow: 0 0 0 3px #ffffff, 0 0 0 7px #111111;
                 }
                 50% {
-                  box-shadow: 0 0 0 5px rgba(255, 255, 255, 1), 0 0 0 12px rgba(45, 212, 191, 0.2), 0 0 46px rgba(14, 165, 233, 0.72);
+                  box-shadow: 0 0 0 4px #ffffff, 0 0 0 11px #111111;
                 }
               }
             `}</style>
@@ -95,10 +95,10 @@ export default function LoginPage() {
               Log In
             </div>
             <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-              Enter your account
+              Continue to request
             </h2>
             <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-              Use your email and password.
+              Log in, or create an account to request this meetup.
             </p>
             <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
               By using Neonadri, you confirm that you are 18 or older.
@@ -154,26 +154,26 @@ export default function LoginPage() {
             <div className="mt-6 flex flex-wrap gap-3">
               <button
                 onClick={handleLogin}
-                className={`rounded-full border px-5 py-3 text-sm font-medium transition ${APP_BUTTON_PRIMARY_CLASS}`}
+                className={`rounded-[8px] border px-5 py-3 text-sm font-bold transition ${APP_BUTTON_SECONDARY_CLASS}`}
               >
                 Log In
               </button>
 
               <div className="relative inline-flex flex-col items-start gap-3 sm:flex-row sm:items-center">
                 {showSignupCue ? (
-                  <div className="max-w-[250px] rounded-[18px] border-2 border-[#38bdf8] bg-[linear-gradient(180deg,#ffffff_0%,#ecfeff_100%)] px-4 py-3 text-sm leading-5 text-[#17424a] shadow-[0_18px_34px_rgba(14,165,233,0.24)] sm:absolute sm:bottom-[calc(100%+12px)] sm:left-0 sm:z-10">
-                    <div className="font-semibold text-[#0f3f46]">New here?</div>
-                    <div className="mt-1 text-[#3f6d74]">
+                  <div className="max-w-[250px] rounded-[8px] border-2 border-[#111111] bg-white px-4 py-3 text-sm leading-5 text-[#111111] sm:absolute sm:bottom-[calc(100%+12px)] sm:left-0 sm:z-10">
+                    <div className="font-semibold text-[#111111]">New here?</div>
+                    <div className="mt-1 text-[#333333]">
                       Create an account first, then send your request.
                     </div>
-                    <div className="absolute -bottom-2 left-7 hidden h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#38bdf8] bg-[#ecfeff] sm:block" />
+                    <div className="absolute -bottom-2 left-7 hidden h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#111111] bg-white sm:block" />
                   </div>
                 ) : null}
                 <Link
                   href={signupHref}
-                  className={`rounded-full border px-5 py-3 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS} ${
+                  className={`rounded-[8px] border px-5 py-3 text-base font-black transition ${APP_BUTTON_PRIMARY_CLASS} ${
                     showSignupCue
-                      ? "border-[#0891b2] ring-4 ring-[#67e8f9]/55 shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_34px_rgba(14,165,233,0.68)] [animation:neonadri-signup-pulse_1.45s_ease-in-out_infinite]"
+                      ? "border-[#111111] [animation:neonadri-signup-pulse_1.45s_ease-in-out_infinite]"
                       : ""
                   }`}
                 >
@@ -183,7 +183,7 @@ export default function LoginPage() {
             </div>
 
             {message && (
-              <p className="mt-4 rounded-[20px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
+              <p className="mt-4 rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#333333]">
                 {message}
               </p>
             )}

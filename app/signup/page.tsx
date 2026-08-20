@@ -444,10 +444,10 @@ function SignupPageContent() {
       }
 
       if (hasSession) {
-        setCompletedUserId(userId);
-        setSignupCompleteWithSession(true);
-        setSubmitting(false);
-        setMessage("");
+        const nextPath = redirectPath.startsWith("/posts/")
+          ? `${redirectPath}${redirectPath.includes("?") ? "&" : "?"}joinCue=1`
+          : redirectPath;
+        window.location.replace(nextPath);
         return;
       }
 
@@ -467,72 +467,11 @@ function SignupPageContent() {
     }
   };
   if (signupCompleteWithSession) {
-    const profileEditBasePath = completedUserId
-      ? `/profile/${completedUserId}/edit`
-      : redirectPath;
-    const profileEditPath = profileEditBasePath.startsWith("/profile/")
-      ? `/profile/${completedUserId}/edit?profileCue=1&next=${encodeURIComponent(redirectPath)}`
-      : profileEditBasePath;
-    const continuePath = redirectPath.startsWith("/posts/")
+    const nextPath = redirectPath.startsWith("/posts/")
       ? `${redirectPath}${redirectPath.includes("?") ? "&" : "?"}joinCue=1`
       : redirectPath;
-
-    return (
-      <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
-        <style jsx global>{`
-          @keyframes neonadri-create-account-pulse {
-            0%, 100% {
-              box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.98), 0 0 0 7px rgba(45, 212, 191, 0.38), 0 0 30px rgba(14, 165, 233, 0.45);
-            }
-            50% {
-              box-shadow: 0 0 0 5px rgba(255, 255, 255, 1), 0 0 0 12px rgba(45, 212, 191, 0.2), 0 0 46px rgba(14, 165, 233, 0.72);
-            }
-          }
-        `}</style>
-        <div className="mx-auto max-w-2xl">
-          <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
-            <div className={APP_EYEBROW_CLASS}>Account created</div>
-            <h1 className="mt-3 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-              What would you like to do next?
-            </h1>
-            <p className={`mt-3 ${APP_BODY_TEXT_CLASS}`}>
-              Your required account details are saved.
-            </p>
-
-            <div className="mt-6 grid gap-5 sm:grid-cols-2">
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => router.push(profileEditPath)}
-                  className={`w-full rounded-full px-5 py-3 text-sm font-medium transition border-[#0891b2] ring-4 ring-[#67e8f9]/55 shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_34px_rgba(14,165,233,0.68)] [animation:neonadri-create-account-pulse_1.45s_ease-in-out_infinite] ${APP_BUTTON_PRIMARY_CLASS}`}
-                >
-                  Edit profile
-                </button>
-                <div className="relative mt-4 rounded-[18px] border-2 border-[#38bdf8] bg-[#f0fdfa] px-4 py-3 text-left text-sm leading-6 text-[#31545d] shadow-[0_16px_30px_rgba(14,165,233,0.18)]">
-                  <div className="font-bold text-[#24323c]">Add profile first</div>
-                  <div>Fill out your profile, then request to join.</div>
-                  <div className="absolute -top-2 left-8 h-4 w-4 rotate-45 border-l-2 border-t-2 border-[#38bdf8] bg-[#f0fdfa]" />
-                </div>
-              </div>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => router.push(continuePath)}
-                  className={`w-full rounded-full px-5 py-3 text-sm font-medium transition border-[#0891b2] ring-4 ring-[#67e8f9]/55 shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_34px_rgba(14,165,233,0.68)] [animation:neonadri-create-account-pulse_1.45s_ease-in-out_infinite] ${APP_BUTTON_SECONDARY_CLASS}`}
-                >
-                  Just continue
-                </button>
-                <div className="relative mt-4 rounded-[18px] border-2 border-[#38bdf8] bg-[#f0fdfa] px-4 py-3 text-left text-sm leading-6 text-[#31545d] shadow-[0_16px_30px_rgba(14,165,233,0.18)]">
-                  <div className="font-bold text-[#24323c]">Request now</div>
-                  <div>Skip profile details and request to join right away.</div>
-                  <div className="absolute -top-2 left-8 h-4 w-4 rotate-45 border-l-2 border-t-2 border-[#38bdf8] bg-[#f0fdfa]" />
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-      </main>
-    );
+    window.location.replace(nextPath);
+    return null;
   }
 
   return (
@@ -540,16 +479,16 @@ function SignupPageContent() {
       <style jsx global>{`
         @keyframes neonadri-create-account-pulse {
           0%, 100% {
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.98), 0 0 0 7px rgba(45, 212, 191, 0.38), 0 0 30px rgba(14, 165, 233, 0.45);
+            box-shadow: 0 0 0 3px #ffffff, 0 0 0 7px #111111;
           }
           50% {
-            box-shadow: 0 0 0 5px rgba(255, 255, 255, 1), 0 0 0 12px rgba(45, 212, 191, 0.2), 0 0 46px rgba(14, 165, 233, 0.72);
+            box-shadow: 0 0 0 4px #ffffff, 0 0 0 11px #111111;
           }
         }
       `}</style>
-      <div className={`mx-auto ${showBetaGate ? "max-w-2xl" : "max-w-6xl"}`}>
-        <div className={showBetaGate ? "" : "grid gap-4 lg:grid-cols-[1.02fr_0.98fr]"}>
-          {!showBetaGate ? (
+      <div className={`mx-auto ${showBetaGate ? "max-w-2xl" : showCreateAccountCue ? "max-w-xl" : "max-w-6xl"}`}>
+        <div className={showBetaGate || showCreateAccountCue ? "" : "grid gap-4 lg:grid-cols-[1.02fr_0.98fr]"}>
+          {!showBetaGate && !showCreateAccountCue ? (
             <section className={HERO_SURFACE_CLASS}>
             <div className="absolute -left-10 bottom-0 h-36 w-36 rounded-full bg-white/40 blur-2xl" />
             <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-[#d9e2e8]/40 blur-2xl" />
@@ -683,7 +622,7 @@ function SignupPageContent() {
                   <div>
                     <div className={APP_EYEBROW_CLASS}>Sign Up</div>
                     <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-                      Create your account
+                      Create account
                     </h2>
                   </div>
                   <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
@@ -782,7 +721,7 @@ function SignupPageContent() {
                   <div>
                     <div className={APP_EYEBROW_CLASS}>Sign Up</div>
                     <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#24323c]">
-                      Create your account
+                      Create account
                     </h2>
                   </div>
                   <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
@@ -791,7 +730,7 @@ function SignupPageContent() {
                 </div>
 
                 <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-                  Save the details Neonadri needs to work.
+                  Create your account, then request this meetup.
                 </p>
 
                 <div className="mt-6 space-y-4">
@@ -944,20 +883,20 @@ function SignupPageContent() {
                       type="button"
                       onClick={handleSignup}
                       disabled={submitting || !canCreateAccount}
-                      className={`rounded-full border px-5 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-75 ${APP_BUTTON_PRIMARY_CLASS} ${
+                      className={`rounded-[8px] border px-5 py-3 text-base font-black transition disabled:cursor-not-allowed disabled:opacity-75 ${APP_BUTTON_PRIMARY_CLASS} ${
                         showCreateAccountCue
-                          ? "border-[#0891b2] ring-4 ring-[#67e8f9]/55 shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_34px_rgba(14,165,233,0.68)] [animation:neonadri-create-account-pulse_1.45s_ease-in-out_infinite]"
+                          ? "border-[#111111] [animation:neonadri-create-account-pulse_1.45s_ease-in-out_infinite]"
                           : ""
                       }`}
                     >
                       {submitting ? "Creating account..." : "Create account"}
                     </button>
                     {showCreateAccountCue ? (
-                      <div className="relative max-w-[320px] rounded-[18px] border-2 border-[#38bdf8] bg-[linear-gradient(180deg,#ffffff_0%,#ecfeff_100%)] px-4 py-3 text-sm leading-5 text-[#17424a] shadow-[0_18px_34px_rgba(14,165,233,0.24)]">
-                        <div className="absolute -top-2 left-7 h-4 w-4 rotate-45 border-l-2 border-t-2 border-[#38bdf8] bg-white" />
-                        <div className="relative font-semibold text-[#0f3f46]">Fill this out first</div>
-                        <div className="relative mt-1 text-[#3f6d74]">
-                          Complete the details above, then tap Create account to request this meetup.
+                      <div className="relative max-w-[320px] rounded-[8px] border-2 border-[#111111] bg-white px-4 py-3 text-sm leading-5 text-[#111111]">
+                        <div className="absolute -top-2 left-7 h-4 w-4 rotate-45 border-l-2 border-t-2 border-[#111111] bg-white" />
+                        <div className="relative font-black text-[#111111]">Fill this out first</div>
+                        <div className="relative mt-1 text-[#333333]">
+                          Complete this, then return to the meetup request.
                         </div>
                       </div>
                     ) : null}
@@ -967,7 +906,7 @@ function SignupPageContent() {
             )}
 
             {message && (
-              <p className="mt-4 rounded-[20px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
+              <p className="mt-4 rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#333333]">
                 {message}
               </p>
             )}

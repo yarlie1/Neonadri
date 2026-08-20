@@ -47,6 +47,8 @@ export default function MatchRequestBox({
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "info">("info");
   const [isRedditVisitor, setIsRedditVisitor] = useState(false);
+  const searchString = searchParams.toString();
+  const nextPath = `${pathname || `/posts/${postId}`}${searchString ? `?${searchString}` : ""}`;
 
   useEffect(() => {
     const utmSource = searchParams.get("utm_source")?.toLowerCase();
@@ -118,7 +120,7 @@ export default function MatchRequestBox({
       const payload = await response.json().catch(() => null);
 
       if (response.status === 401) {
-        router.push(`/login?next=${encodeURIComponent(pathname || `/posts/${postId}`)}`);
+        router.push(`/login?next=${encodeURIComponent(nextPath)}`);
         return;
       }
 
@@ -157,7 +159,7 @@ export default function MatchRequestBox({
       const payload = await response.json().catch(() => null);
 
       if (response.status === 401) {
-        router.push(`/login?next=${encodeURIComponent(pathname || `/posts/${postId}`)}`);
+        router.push(`/login?next=${encodeURIComponent(nextPath)}`);
         return;
       }
 
@@ -187,62 +189,23 @@ export default function MatchRequestBox({
     !hasMatchedRequest;
 
   return (
-    <div className={`${APP_SURFACE_CARD_CLASS} px-6 py-6`}>
+    <div className={`${APP_SURFACE_CARD_CLASS} px-5 py-5`}>
       <style jsx global>{`
         @keyframes neonadri-request-pulse {
-          0%, 100% {
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.98), 0 0 0 7px rgba(45, 212, 191, 0.38), 0 0 30px rgba(14, 165, 233, 0.45);
-          }
-          50% {
-            box-shadow: 0 0 0 5px rgba(255, 255, 255, 1), 0 0 0 12px rgba(45, 212, 191, 0.2), 0 0 46px rgba(14, 165, 233, 0.72);
-          }
+          0%, 100% { box-shadow: 0 0 0 3px #ffffff, 0 0 0 7px #111111; }
+          50% { box-shadow: 0 0 0 4px #ffffff, 0 0 0 11px #111111; }
         }
       `}</style>
-      <div className="flex items-center gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#d7e0e6] bg-[linear-gradient(180deg,#ffffff_0%,#eef3f6_100%)]">
-          <Send className="h-5 w-5 text-[#71828c]" />
-        </div>
-        <div className="min-w-0">
-          <div className={APP_EYEBROW_CLASS}>
-            {headerEyebrow}
-          </div>
-          <h2 className="mt-1 text-[1.45rem] font-black tracking-[-0.04em] text-[#24323c]">
-            {headerTitle}
-          </h2>
-        </div>
-      </div>
-
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <div className={`rounded-full px-3 py-[0.3125rem] text-xs font-medium leading-none ${APP_PILL_INACTIVE_CLASS}`}>
+      <div className={APP_EYEBROW_CLASS}>{headerEyebrow}</div>
+      <h2 className="mt-2 text-2xl font-black leading-tight tracking-[-0.03em] text-[#111111]">
+        {headerTitle}
+      </h2>
+      <p className="mt-2 text-sm leading-6 text-[#333333]">{headerDescription}</p>
+      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-bold text-[#111111]">
+        <span className="rounded-[6px] border border-[#111111] px-2.5 py-1">
           {isPostMatched ? "Spot filled" : "Host approval"}
-        </div>
-        <div className={`rounded-full px-3 py-[0.3125rem] text-xs font-medium leading-none ${APP_PILL_INACTIVE_CLASS}`}>
-          {requestCountLabel}
-        </div>
-      </div>
-
-      <p className={`mt-4 ${APP_BODY_TEXT_CLASS}`}>
-        {headerDescription}
-      </p>
-      <div className={`mt-5 rounded-[22px] px-4 py-4 ${APP_SOFT_CARD_CLASS}`}>
-        <div className={APP_EYEBROW_CLASS}>
-          Status
-        </div>
-        <div className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-          {isUnavailableBecauseCancelled
-            ? "Requests closed. Chat is read-only."
-            : hasMatchedRequest
-            ? "Confirmed. Chat with the host here."
-            : isUnavailableBecauseExpired
-            ? "Meetup ended."
-            : isUnavailableBecauseMatched
-            ? "Spot filled."
-            : hasPendingRequest
-            ? "Request sent. Waiting for host approval."
-            : isRejectedRequest
-            ? "Request declined."
-            : "The host can accept or decline."}
-        </div>
+        </span>
+        <span className="rounded-[6px] border border-[#111111] px-2.5 py-1">{requestCountLabel}</span>
       </div>
 
       <div className="mt-5 flex flex-wrap items-center gap-3">
@@ -284,21 +247,21 @@ export default function MatchRequestBox({
         ) : (
           <div className="relative inline-flex flex-col items-start gap-3 sm:flex-row sm:items-center">
             {showRedditRequestCue ? (
-              <div className="max-w-[240px] rounded-[18px] border-2 border-[#38bdf8] bg-[linear-gradient(180deg,#ffffff_0%,#ecfeff_100%)] px-4 py-3 text-sm leading-5 text-[#17424a] shadow-[0_18px_34px_rgba(14,165,233,0.24)] sm:absolute sm:bottom-[calc(100%+12px)] sm:left-0 sm:z-10">
-                <div className="font-semibold text-[#0f3f46]">Ready to join?</div>
-                <div className="mt-1 text-[#3f6d74]">
+              <div className="max-w-[240px] rounded-[8px] border-2 border-[#111111] bg-white px-4 py-3 text-sm leading-5 text-[#111111] sm:absolute sm:bottom-[calc(100%+12px)] sm:left-0 sm:z-10">
+                <div className="font-black text-[#111111]">Ready to join?</div>
+                <div className="mt-1 text-[#333333]">
                   Tap here to send your request to the host.
                 </div>
-                <div className="absolute -bottom-2 left-7 hidden h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#38bdf8] bg-[#ecfeff] sm:block" />
+                <div className="absolute -bottom-2 left-7 hidden h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#111111] bg-white sm:block" />
               </div>
             ) : null}
             <button
               type="button"
               onClick={handleRequestMatch}
               disabled={loading}
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS} ${
+              className={`inline-flex min-h-[52px] items-center gap-2 rounded-[8px] border px-5 py-3 text-base font-black transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS} ${
                 showRedditRequestCue
-                  ? "border-[#0891b2] ring-4 ring-[#67e8f9]/55 shadow-[0_0_0_3px_rgba(255,255,255,0.96),0_0_34px_rgba(14,165,233,0.68)] [animation:neonadri-request-pulse_1.45s_ease-in-out_infinite]"
+                  ? "border-[#111111] [animation:neonadri-request-pulse_1.45s_ease-in-out_infinite]"
                   : ""
               }`}
             >
@@ -310,12 +273,12 @@ export default function MatchRequestBox({
       </div>
 
       {message && (
-        <div className="mt-5 rounded-[22px] border border-[#d7dfe5] bg-[linear-gradient(180deg,#ffffff_0%,#edf3f6_100%)] px-4 py-3 text-sm text-[#55626a]">
+        <div className="mt-5 rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#333333]">
           <div className="flex items-start gap-2">
             {messageType === "success" ? (
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#71828c]" />
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#111111]" />
             ) : (
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#71828c]" />
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#111111]" />
             )}
             <span>{message}</span>
           </div>
