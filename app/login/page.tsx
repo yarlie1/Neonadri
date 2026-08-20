@@ -42,6 +42,8 @@ export default function LoginPage() {
     setShowSignupCue(isRedditVisitor || !!nextValue?.startsWith("/posts/"));
     if (params.get("message") === "password-reset") {
       setMessage("Password reset. Log in again.");
+    } else if (params.get("message") === "google-login-failed") {
+      setMessage("Google login could not be completed. Please try again.");
     }
   }, []);
 
@@ -75,6 +77,25 @@ export default function LoginPage() {
     window.location.replace(redirectPath);
   };
 
+  const handleGoogleLogin = async () => {
+    setMessage("");
+
+    if (typeof window === "undefined") return;
+
+    const callbackUrl = new URL("/auth/callback", window.location.origin);
+    callbackUrl.searchParams.set("next", redirectPath);
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: callbackUrl.toString(),
+      },
+    });
+
+    if (error) {
+      setMessage(error.message || "Could not start Google login.");
+    }
+  };
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
       <div className="mx-auto max-w-lg">
@@ -98,7 +119,20 @@ export default function LoginPage() {
             <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
               Use your account to continue.
             </p>
-            <div className="mt-6 space-y-4">
+            <div className="mt-6">
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                className="inline-flex min-h-[52px] w-full items-center justify-center gap-3 rounded-[8px] border border-[#111111] bg-white px-5 py-3 text-base font-black text-[#111111] transition hover:bg-[#f7f7f7]"
+              >
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-[#111111] text-sm font-black">
+                  G
+                </span>
+                Continue with Google
+              </button>
+            </div>
+
+            <div className="mt-5 space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-medium text-[#333333]">
                   Email
