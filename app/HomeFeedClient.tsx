@@ -9,44 +9,27 @@ import {
   getMeetingStatus,
   parseMeetingTime,
 } from "../lib/meetingTime";
-import { ArrowRight, CalendarPlus, Sparkles } from "lucide-react";
 import { HomeFilterRail, MeetupFeedCard } from "./homeComponents";
 import {
-  formatDistanceKm,
-  formatDuration,
-  getMatchBadge,
-  getPurposeIcon,
   haversineKm,
   parseBenefitAmount,
   SURFACE_CARD_CLASS,
 } from "./homeFeedHelpers";
-import {
-  APP_BODY_TEXT_CLASS,
-  APP_EYEBROW_CLASS,
-  APP_PAGE_BG_CLASS,
-  APP_PILL_INACTIVE_CLASS,
-  APP_SOFT_CARD_CLASS,
-} from "./designSystem";
+import { APP_PAGE_BG_CLASS } from "./designSystem";
+
 import {
   AGE_GROUP_OPTIONS,
   AUDIENCE_OPTIONS,
   DISTANCE_OPTIONS,
   GENDER_OPTIONS,
   MATCH_STATE_OPTIONS,
-  PURPOSE_OPTIONS,
   SORT_OPTIONS,
   type SortValue,
   useHomeFeedFilters,
 } from "./useHomeFeedFilters";
 import { useDistanceUnit } from "./useDistanceUnit";
 import { useCreateMeetupHref } from "./useCreateMeetupHref";
-import {
-  formatAudienceMeta,
-  formatCompactMeetupAudience,
-} from "../lib/genderLabels";
 
-const HOME_WHITE_SURFACE_CLASS =
-  "rounded-[8px] border border-[#111111] bg-white shadow-none";
 
 type PostRow = {
   id: number;
@@ -81,73 +64,6 @@ type MatchSummaryMap = Record<
     totalRequestCount: number;
   }
 >;
-
-function getFeaturedPost(
-  posts: PostRow[],
-  matchSummaryMap: MatchSummaryMap,
-  userTimeZone: string,
-  sort: SortValue
-) {
-  const now = Date.now();
-  let bestPost: PostRow | null = null;
-  let bestScore = Number.NEGATIVE_INFINITY;
-
-  for (let index = 0; index < posts.length; index += 1) {
-    const post = posts[index];
-    const meetingDate = parseMeetingTime(post.meeting_time, userTimeZone);
-    const meetingTime = meetingDate?.getTime() ?? now;
-    const isExpired = meetingTime < now;
-    const hoursUntilMeetup = (meetingTime - now) / (1000 * 60 * 60);
-    const benefitAmount = parseBenefitAmount(post.benefit_amount) ?? 0;
-    const matchSummary = matchSummaryMap[post.id];
-
-    let score = 0;
-
-    if (!isExpired) score += 80;
-    if (matchSummary?.isMatched) score -= 20;
-
-    if (!isExpired) {
-      if (hoursUntilMeetup <= 72) score += 40;
-      else if (hoursUntilMeetup <= 168) score += 28;
-      else if (hoursUntilMeetup <= 336) score += 18;
-      else score += 8;
-    } else {
-      score -= 60;
-    }
-
-    score += Math.min(benefitAmount / 10, 12);
-    score += Math.min(matchSummary?.pendingRequestCount ?? 0, 6);
-
-    const recencyHours =
-      (now - new Date(post.created_at).getTime()) / (1000 * 60 * 60);
-    if (Number.isFinite(recencyHours)) {
-      score += Math.max(0, 18 - recencyHours / 12);
-    }
-
-    const orderBoost = Math.max(0, 6 - index);
-    if (sort === "distance") {
-      score += orderBoost * 7;
-    } else if (sort === "benefit_desc") {
-      score += orderBoost * 6;
-    } else if (sort === "soonest") {
-      score += orderBoost * 5;
-    } else {
-      score += orderBoost * 4;
-    }
-
-    if (
-      score > bestScore ||
-      (score === bestScore &&
-        new Date(post.created_at).getTime() >
-          new Date(bestPost?.created_at ?? 0).getTime())
-    ) {
-      bestPost = post;
-      bestScore = score;
-    }
-  }
-
-  return bestPost;
-}
 
 export default function HomeFeedClient({
   initialPosts,
@@ -339,25 +255,19 @@ export default function HomeFeedClient({
   return (
     <>
       <main className={`relative isolate min-h-[100dvh] overflow-x-hidden px-4 py-5 ${APP_PAGE_BG_CLASS}`}>
-
-        <div className="relative z-10 mx-auto max-w-5xl min-w-0 space-y-4 pb-16 sm:space-y-5 sm:pb-20">
-        <section className={`relative w-full overflow-hidden px-5 py-5 text-[#111111] sm:px-7 sm:py-6 ${HOME_WHITE_SURFACE_CLASS}`}>
-          <div className="relative">
-            <div className={`inline-flex items-center gap-2 rounded-[8px] px-3 py-1 ${APP_PILL_INACTIVE_CLASS} ${APP_EYEBROW_CLASS}`}>
-              <Sparkles className="h-3.5 w-3.5" />
-              1:1 social meetups
+        <div className="relative z-10 mx-auto max-w-2xl min-w-0 space-y-4 pb-14">
+          <div className="flex items-end justify-between gap-4 px-1 pt-2">
+            <div>
+              <h1 className="text-[30px] font-black leading-none text-[#111111] sm:text-[36px]">
+                Available meetups
+              </h1>
+              <div className="mt-1 text-sm font-medium text-[#555555]">
+                {posts.length} results
+              </div>
             </div>
-
-            <h1 className="mt-3 text-[34px] font-black leading-[0.98] text-[#111111] sm:text-[46px]">
-              Find a 1:1 meetup
-            </h1>
-
-            <p className={`mt-2 max-w-xl text-[14px] sm:mt-3 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-              Pick a simple plan, check the host fit, then request to join.
-            </p>
           </div>
-        </section>
-        <HomeFilterRail
+
+          <HomeFilterRail
           matchState={matchState}
           audience={audience}
           hostGender={hostGender}
@@ -391,59 +301,19 @@ export default function HomeFeedClient({
           locationStatus={locationStatus}
         />
 
-        <div className="flex items-center justify-between px-1 pt-1">
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#848d93]">
-              Discover
-            </div>
-            <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#111111]">
-              Available meetups
-            </div>
-          </div>
 
-          <div className={`${APP_SOFT_CARD_CLASS} px-3 py-1.5 text-xs font-medium text-[#6f7a81] shadow-none`}>
-            {posts.length} results
-          </div>
-        </div>
-
-        <div className="grid min-w-0 gap-4 sm:grid-cols-2">
+        <div className="grid min-w-0 gap-3">
         {feedPosts.map((post) => {
           const amount = parseBenefitAmount(post.benefit_amount);
-          const host = hostProfileMap[post.user_id] || {
-            displayName: "Unknown",
-            gender: "",
-            ageGroup: "",
-          };
           const status = getPostStatus(post.meeting_time);
           const isExpired = status === "Expired";
-          const matchBadge = getMatchBadge(status as "Upcoming" | "Expired", matchSummaryMap[post.id]);
-          const distanceText =
-            locationStatus === "granted" &&
-            userLocation &&
-            post.latitude !== null &&
-            post.longitude !== null
-              ? formatDistanceKm(
-                  haversineKm(
-                    userLocation.lat,
-                    userLocation.lng,
-                    post.latitude,
-                    post.longitude
-                  ),
-                  distanceUnit
-                )
-              : "";
 
           return (
             <ViewportMeetupFeedCard
               key={post.id}
               postId={post.id}
               isExpired={isExpired}
-              hostName={host.displayName}
-              matchBadgeLabel={matchBadge.label}
-              matchBadgeClassName={matchBadge.className}
-              purposeIcon={getPurposeIcon(post.meeting_purpose, "h-5 w-5 shrink-0")}
               purposeName={post.meeting_purpose || "Social meetup"}
-              durationLabel={formatDuration(post.duration_minutes)}
               amountText={amount !== null ? `$${amount.toLocaleString()}` : ""}
               whenText={post.meeting_time ? formatTime(post.meeting_time) : ""}
               placeText={
@@ -451,13 +321,6 @@ export default function HomeFeedClient({
                 getPublicLocationLabel(post.place_name, post.location) ||
                 "No place"
               }
-              lookingForText={formatCompactMeetupAudience({
-                hostGender: host.gender,
-                hostAgeGroup: host.ageGroup,
-                guestGender: post.target_gender,
-                guestAgeGroup: post.target_age_group,
-              })}
-              distanceText={distanceText}
             />
           );
         })}
@@ -471,26 +334,12 @@ export default function HomeFeedClient({
           </div>
         )}
 
-        <Link
-          href={createHref}
-          className="flex min-h-[64px] w-full items-center justify-between gap-4 rounded-[8px] border border-[#111111] bg-white px-5 py-3 text-[#111111] shadow-none transition hover:bg-[#f5f5f5]"
-          aria-label="Create meetup"
-        >
-          <div className="flex min-w-0 items-center gap-3">
-            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] border border-[#111111] bg-white text-[#111111] shadow-none">
-              <CalendarPlus className="h-5 w-5" />
-            </span>
-            <span className="min-w-0">
-              <span className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-[#7b8992]">
-                Host a plan
-              </span>
-              <span className="block text-sm font-black tracking-[-0.03em]">
-                Create meetup
-              </span>
-            </span>
-          </div>
-          <ArrowRight className="h-5 w-5 shrink-0 text-[#60717c]" />
-        </Link>
+        <div className="px-1 pt-2 text-sm text-[#555555]">
+          Want to host?{" "}
+          <Link href={createHref} className="font-bold text-[#111111] underline underline-offset-4">
+            Create meetup
+          </Link>
+        </div>
         </div>
 
       </main>

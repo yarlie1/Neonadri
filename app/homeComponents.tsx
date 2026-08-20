@@ -416,71 +416,80 @@ export function HomeFilterRail({
       : "";
 
   return (
-    <section className="rounded-[8px] border border-[#111111] bg-white p-3 sm:p-4">
-      <div className="grid gap-2 sm:grid-cols-3 lg:max-w-3xl">
-        <FilterSelect
-          label="Host gender"
-          value={hostGender}
-          options={optionize(genderOptions, { All: "Host gender" })}
-          onChange={onHostGender}
-        />
-        <FilterSelect
-          label="Host age"
-          value={hostAgeGroup}
-          options={optionize(ageGroupOptions, { All: "Host age" })}
-          onChange={onHostAgeGroup}
-        />
-        <FilterSelect
-          label="Guest fit"
-          value={audience}
-          options={optionize(audienceOptions, { All: "Guest fit", "Fits me": "Fits me" })}
-          onChange={onAudience}
-        />
-      </div>
+    <details className="group">
+      <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-[8px] border border-[#111111] px-3 py-2 text-sm font-bold text-[#111111] transition hover:bg-[#f4f4f4]">
+        <SlidersHorizontal className="h-4 w-4" />
+        Filters
+        <ChevronDown className="h-4 w-4 transition group-open:rotate-180" />
+      </summary>
 
-      <details className="mt-3">
-        <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-[8px] border border-[#111111] px-3 py-2 text-sm font-bold text-[#111111]">
-          More filters
-          <ChevronDown className="h-4 w-4" />
-        </summary>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:max-w-5xl lg:grid-cols-5">
+      <div className="mt-3 rounded-[8px] border border-[#111111] bg-white p-3">
+        <div className="grid gap-2 sm:grid-cols-3">
           <FilterSelect
-            label="Guest age"
-            value={ageGroup}
-            options={optionize(ageGroupOptions, { All: "Guest age" })}
-            onChange={onAgeGroup}
+            label="Host gender"
+            value={hostGender}
+            options={optionize(genderOptions, { All: "Host gender" })}
+            onChange={onHostGender}
           />
           <FilterSelect
-            label="Guest gender"
-            value={gender}
-            options={optionize(genderOptions, { All: "Guest gender" })}
-            onChange={onGender}
+            label="Host age"
+            value={hostAgeGroup}
+            options={optionize(ageGroupOptions, { All: "Host age" })}
+            onChange={onHostAgeGroup}
           />
           <FilterSelect
-            label="Distance"
-            value={distance}
-            options={distanceSelectOptions}
-            onChange={onDistance}
-          />
-          <FilterSelect
-            label="Status"
-            value={matchState}
-            options={optionize(matchStateOptions, { All: "All status" })}
-            onChange={onMatchState}
-          />
-          <FilterSelect
-            label="Sort"
-            value={sort}
-            options={sortOptions}
-            icon={<ArrowUpDown className="h-4 w-4" />}
-            onChange={onSort}
+            label="Guest fit"
+            value={audience}
+            options={optionize(audienceOptions, { All: "Guest fit", "Fits me": "Fits me" })}
+            onChange={onAudience}
           />
         </div>
-        <div className="mt-3 flex flex-wrap items-center gap-3">
+
+        <details className="mt-2">
+          <summary className="inline-flex cursor-pointer list-none items-center gap-2 px-1 py-2 text-sm font-bold text-[#111111]">
+            More filters
+            <ChevronDown className="h-4 w-4" />
+          </summary>
+          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+            <FilterSelect
+              label="Guest age"
+              value={ageGroup}
+              options={optionize(ageGroupOptions, { All: "Guest age" })}
+              onChange={onAgeGroup}
+            />
+            <FilterSelect
+              label="Guest gender"
+              value={gender}
+              options={optionize(genderOptions, { All: "Guest gender" })}
+              onChange={onGender}
+            />
+            <FilterSelect
+              label="Distance"
+              value={distance}
+              options={distanceSelectOptions}
+              onChange={onDistance}
+            />
+            <FilterSelect
+              label="Status"
+              value={matchState}
+              options={optionize(matchStateOptions, { All: "All status" })}
+              onChange={onMatchState}
+            />
+            <FilterSelect
+              label="Sort"
+              value={sort}
+              options={sortOptions}
+              icon={<ArrowUpDown className="h-4 w-4" />}
+              onChange={onSort}
+            />
+          </div>
+        </details>
+
+        <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-[#111111] pt-3">
           <button
             type="button"
             onClick={onReset}
-            className="inline-flex h-10 items-center gap-2 rounded-[8px] border border-[#111111] px-3 text-sm font-bold text-[#111111] transition hover:bg-[#f4f4f4]"
+            className="inline-flex h-9 items-center gap-2 rounded-[8px] border border-[#111111] px-3 text-sm font-bold text-[#111111] transition hover:bg-[#f4f4f4]"
           >
             <RotateCcw className="h-4 w-4" />
             Reset
@@ -491,8 +500,8 @@ export function HomeFilterRail({
             </span>
           ) : null}
         </div>
-      </details>
-    </section>
+      </div>
+    </details>
   );
 }
 
@@ -595,7 +604,7 @@ export function FeaturedMeetupCard({
   className?: string;
   postId: number;
   placeLabel: string;
-  purposeIcon: ReactNode;
+  purposeIcon?: ReactNode;
   purposeLabel: string;
   purposeCopy: string;
   timeLabel: string;
@@ -691,18 +700,18 @@ export function MeetupFeedCard({
   onClick?: () => void;
   className?: string;
   isExpired: boolean;
-  hostName: string;
+  hostName?: string;
   hostLine?: string;
-  matchBadgeLabel: string;
-  matchBadgeClassName: string;
-  purposeIcon: ReactNode;
+  matchBadgeLabel?: string;
+  matchBadgeClassName?: string;
+  purposeIcon?: ReactNode;
   purposeName: string;
-  durationLabel: string;
+  durationLabel?: string;
   amountText: string;
   whenText: string;
   placeText: string;
-  lookingForText: string;
-  distanceText: string;
+  lookingForText?: string;
+  distanceText?: string;
   activityLabel?: string;
   activityText?: string;
 }) {
@@ -713,43 +722,24 @@ export function MeetupFeedCard({
       } ${onClick ? "w-full cursor-pointer text-left" : ""} ${className}`;
   const resolvedHref =
     href === undefined ? buildPostPath(postId, purposeName, placeText) : href;
+  const title = `${purposeName || "Meetup"}${placeText ? ` at ${placeText}` : ""}`;
+  const detailText = [whenText, amountText ? `Host covers ${amountText}` : ""]
+    .filter(Boolean)
+    .join(" · ");
   const content = (
-    <div className="grid min-w-0 gap-3 p-4 sm:p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#111111]">
-            {purposeIcon}
-            {purposeName || "Meetup"}
-          </div>
-          <div className="mt-2 truncate text-2xl font-black leading-none text-[#111111]">
-            {activityText || getPurposeLabel(purposeName)}
-          </div>
+    <div className="grid min-w-0 gap-3 p-4 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-4">
+      <div className="min-w-0">
+        <div className="truncate text-[22px] font-black leading-tight text-[#111111]">
+          {title}
         </div>
-        <span className={`shrink-0 rounded-[8px] border px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] ${matchBadgeClassName}`}>
-          {matchBadgeLabel}
-        </span>
-      </div>
-
-      <div className="grid gap-2 text-sm font-semibold text-[#111111]">
-        <div className="flex items-center gap-2 rounded-[8px] border border-[#111111]/35 px-3 py-2">
-          <MapPin className="h-4 w-4 shrink-0 text-[#555555]" />
-          <span className="min-w-0 truncate">{placeText}</span>
-        </div>
-        {whenText ? (
-          <div className="flex items-center gap-2 rounded-[8px] border border-[#111111]/35 px-3 py-2">
-            <Clock3 className="h-4 w-4 shrink-0 text-[#555555]" />
-            <span className="min-w-0 flex-1 truncate">{whenText}</span>
-          </div>
-        ) : null}
-        {amountText ? (
-          <div className="flex items-center justify-between gap-3 rounded-[8px] border border-[#111111]/35 px-3 py-2">
-            <span>Host covers</span>
-            <span>{amountText}</span>
+        {detailText ? (
+          <div className="mt-1 truncate text-sm font-semibold text-[#555555]">
+            {detailText}
           </div>
         ) : null}
       </div>
 
-      <div className="mt-1 inline-flex h-11 items-center justify-center rounded-[8px] bg-[#111111] px-4 text-sm font-black text-white">
+      <div className="inline-flex h-10 items-center justify-center rounded-[8px] bg-[#111111] px-5 text-sm font-black text-white sm:min-w-[92px]">
         View
       </div>
     </div>
