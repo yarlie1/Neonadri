@@ -1068,7 +1068,8 @@ export default function DashboardClient({
 
         {activeTab === "posts" && (
           <div className={`${SURFACE_CARD_CLASS} p-4`}>
-            <div className="space-y-4">`r`n              <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap gap-2">
                   <FilterPill active={postFilter === "all"} onClick={() => setPostFilter("all")}>
                     All
@@ -1100,7 +1101,8 @@ export default function DashboardClient({
 
         {activeTab === "received" && (
           <div className={`${SURFACE_CARD_CLASS} p-4`}>
-            <div className="space-y-4">`r`n              <div className="flex flex-wrap gap-2">
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-2">
                 <FilterPill
                   active={receivedFilter === "all"}
                   onClick={() => setReceivedFilter("all")}
@@ -1138,7 +1140,8 @@ export default function DashboardClient({
 
         {activeTab === "sent" && (
           <div className={`${SURFACE_CARD_CLASS} p-4`}>
-            <div className="space-y-4">`r`n              <div className="flex flex-wrap gap-2">
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-2">
                 <FilterPill active={sentFilter === "all"} onClick={() => setSentFilter("all")}>
                   All
                 </FilterPill>
@@ -1173,7 +1176,8 @@ export default function DashboardClient({
 
         {activeTab === "matches" && (
           <div className={`${SURFACE_CARD_CLASS} p-4`}>
-            <div className="space-y-4">`r`n              <div className="flex flex-wrap gap-2">
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-2">
                 <FilterPill active={matchFilter === "all"} onClick={() => setMatchFilter("all")}>
                   All
                 </FilterPill>
