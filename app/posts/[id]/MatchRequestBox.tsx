@@ -24,6 +24,7 @@ type Props = {
   myRequestId: number | null;
   myRequestStatus: string;
   meetupFinished: boolean;
+  compact?: boolean;
 };
 
 export default function MatchRequestBox({
@@ -37,6 +38,7 @@ export default function MatchRequestBox({
   myRequestId,
   myRequestStatus,
   meetupFinished,
+  compact = false,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -189,26 +191,29 @@ export default function MatchRequestBox({
     !hasMatchedRequest;
 
   return (
-    <div className={`${APP_SURFACE_CARD_CLASS} px-5 py-5`}>
+    <div className={compact ? "" : `${APP_SURFACE_CARD_CLASS} px-5 py-5`}>
       <style jsx global>{`
         @keyframes neonadri-request-pulse {
           0%, 100% { box-shadow: 0 0 0 3px #ffffff, 0 0 0 7px #111111; }
           50% { box-shadow: 0 0 0 4px #ffffff, 0 0 0 11px #111111; }
         }
       `}</style>
-      <div className={APP_EYEBROW_CLASS}>{headerEyebrow}</div>
-      <h2 className="mt-2 text-2xl font-black leading-tight tracking-[-0.03em] text-[#111111]">
-        {headerTitle}
-      </h2>
-      <p className="mt-2 text-sm leading-6 text-[#333333]">{headerDescription}</p>
-      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-bold text-[#111111]">
-        <span className="rounded-[6px] border border-[#111111] px-2.5 py-1">
-          {isPostMatched ? "Spot filled" : "Host approval"}
-        </span>
-        <span className="rounded-[6px] border border-[#111111] px-2.5 py-1">{requestCountLabel}</span>
-      </div>
-
-      <div className="mt-5 flex flex-wrap items-center gap-3">
+      {!compact ? (
+        <>
+          <div className={APP_EYEBROW_CLASS}>{headerEyebrow}</div>
+          <h2 className="mt-2 text-2xl font-black leading-tight tracking-[-0.03em] text-[#111111]">
+            {headerTitle}
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-[#333333]">{headerDescription}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-bold text-[#111111]">
+            <span className="rounded-[6px] border border-[#111111] px-2.5 py-1">
+              {isPostMatched ? "Spot filled" : "Host approval"}
+            </span>
+            <span className="rounded-[6px] border border-[#111111] px-2.5 py-1">{requestCountLabel}</span>
+          </div>
+        </>
+      ) : null}
+      <div className={compact ? "mt-5" : "mt-5 flex flex-wrap items-center gap-3"}>
         {isUnavailableBecauseCancelled ? (
           <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium ${APP_PILL_INACTIVE_CLASS}`}>
             <AlertCircle className="h-4 w-4" />
@@ -245,7 +250,7 @@ export default function MatchRequestBox({
             Request declined
           </div>
         ) : (
-          <div className="relative inline-flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+          <div className={compact ? "relative grid gap-3" : "relative inline-flex flex-col items-start gap-3 sm:flex-row sm:items-center"}>
             {showRedditRequestCue ? (
               <div className="max-w-[240px] rounded-[8px] border-2 border-[#111111] bg-white px-4 py-3 text-sm leading-5 text-[#111111] sm:absolute sm:bottom-[calc(100%+12px)] sm:left-0 sm:z-10">
                 <div className="font-black text-[#111111]">Ready to join?</div>
@@ -259,7 +264,7 @@ export default function MatchRequestBox({
               type="button"
               onClick={handleRequestMatch}
               disabled={loading}
-              className={`inline-flex min-h-[52px] items-center gap-2 rounded-[8px] border px-5 py-3 text-base font-black transition disabled:opacity-50 ${APP_BUTTON_PRIMARY_CLASS} ${
+              className={`inline-flex min-h-[56px] items-center justify-center gap-2 rounded-[8px] border px-5 py-3 text-base font-black transition disabled:opacity-50 ${compact ? "w-full" : ""} ${APP_BUTTON_PRIMARY_CLASS} ${
                 showRedditRequestCue
                   ? "border-[#111111] [animation:neonadri-request-pulse_1.45s_ease-in-out_infinite]"
                   : ""

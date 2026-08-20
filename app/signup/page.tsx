@@ -470,10 +470,40 @@ function SignupPageContent() {
     const nextPath = redirectPath.startsWith("/posts/")
       ? `${redirectPath}${redirectPath.includes("?") ? "&" : "?"}joinCue=1`
       : redirectPath;
-    window.location.replace(nextPath);
-    return null;
-  }
+    const editProfileHref = completedUserId
+      ? `/profile/${completedUserId}/edit?profileCue=1&next=${encodeURIComponent(redirectPath)}`
+      : `/profile/edit?profileCue=1&next=${encodeURIComponent(redirectPath)}`;
 
+    return (
+      <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
+        <div className="mx-auto max-w-lg">
+          <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
+            <div className={APP_EYEBROW_CLASS}>Account created</div>
+            <h1 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#111111]">
+              Account created
+            </h1>
+            <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
+              You can request to join now.
+            </p>
+            <div className="mt-6 grid gap-3">
+              <Link
+                href={nextPath}
+                className={`inline-flex min-h-[52px] items-center justify-center rounded-[8px] px-5 py-3 text-base font-black transition ${APP_BUTTON_PRIMARY_CLASS}`}
+              >
+                Continue to request
+              </Link>
+              <Link
+                href={editProfileHref}
+                className="text-sm font-bold text-[#111111] underline underline-offset-4"
+              >
+                Add profile details first
+              </Link>
+            </div>
+          </section>
+        </div>
+      </main>
+    );
+  }
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
       <style jsx global>{`
@@ -486,132 +516,8 @@ function SignupPageContent() {
           }
         }
       `}</style>
-      <div className={`mx-auto ${showBetaGate ? "max-w-2xl" : showCreateAccountCue ? "max-w-xl" : "max-w-6xl"}`}>
-        <div className={showBetaGate || showCreateAccountCue ? "" : "grid gap-4 lg:grid-cols-[1.02fr_0.98fr]"}>
-          {!showBetaGate && !showCreateAccountCue ? (
-            <section className={HERO_SURFACE_CLASS}>
-            <div className="relative">
-              <div className={`inline-flex items-center gap-2 rounded-[8px] px-3 py-[0.3125rem] text-[11px] font-medium uppercase leading-none tracking-[0.18em] ${APP_PILL_INACTIVE_CLASS}`}>
-                <Sparkles className="h-3.5 w-3.5" />
-                {awaitingSignupMode
-                  ? "Create account"
-                  : showIntentPicker
-                  ? "Choose your path"
-                  : requiresPostingBeta
-                  ? "Posting during beta"
-                  : "Create account"}
-              </div>
-              <h1 className="mt-4 max-w-md text-[34px] font-black leading-[0.96] tracking-[-0.05em] text-[#111111] sm:text-[42px]">
-                {awaitingSignupMode
-                  ? SIGNUP_HERO_TITLE
-                  : showIntentPicker
-                  ? "How do you want to start?"
-                  : requiresPostingBeta
-                  ? "Use your approved email."
-                  : SIGNUP_HERO_TITLE}
-              </h1>
-              <p className={`mt-3 max-w-lg sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-                {awaitingSignupMode
-                  ? SIGNUP_HERO_BODY
-                  : showIntentPicker
-                  ? postingBetaRequired
-                    ? "Join now, or apply to host."
-                    : "Join or create low-pressure 1:1 meetups right away."
-                  : requiresPostingBeta
-                  ? "Use the email already approved for creating meetups."
-                  : SIGNUP_HERO_BODY}
-              </p>
-              <div className={`mt-4 inline-flex rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                Neonadri is for adults 18+ only.
-              </div>
-
-              {showIntentPicker ? (
-                <div className="mt-7 space-y-3">
-                  <button
-                    type="button"
-                    onClick={() => handleSelectIntent("guest")}
-                    className="w-full rounded-[8px] border border-[#111111] bg-white px-5 py-5 text-left shadow-none transition hover:-translate-y-0.5 hover:border-[#111111] hover:shadow-none"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="text-base font-semibold text-[#111111]">
-                          Join 1:1 meetups
-                        </div>
-                        <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                          Browse plans. Request to join.
-                        </div>
-                      </div>
-                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#c3d0d8] bg-white text-[#31424d] shadow-none">
-                        <ArrowRight className="h-4 w-4" />
-                      </div>
-                    </div>
-                    <div className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#60707a]">
-                      Tap to continue
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectIntent("host")}
-                    className="w-full rounded-[8px] border border-[#111111] bg-white px-5 py-5 text-left shadow-none transition hover:-translate-y-0.5 hover:border-[#111111] hover:shadow-none"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="text-base font-semibold text-[#111111]">
-                          Create 1:1 meetups
-                        </div>
-                        <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                          {postingBetaRequired
-                            ? "Apply for beta access to post activity-based plans."
-                            : "Post activity-based plans right away."}
-                        </div>
-                      </div>
-                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#c3d0d8] bg-white text-[#31424d] shadow-none">
-                        <ArrowRight className="h-4 w-4" />
-                      </div>
-                    </div>
-                    <div className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#60707a]">
-                      Tap to continue
-                    </div>
-                  </button>
-                </div>
-              ) : showSignupForm || awaitingSignupMode ? (
-                <div className="mt-7 rounded-[8px] border border-[#111111] bg-white px-4 py-4 shadow-none">
-                  <div className="text-sm font-semibold text-[#111111]">
-                    Required details first
-                  </div>
-                  <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                    Email, password, confirmation, display name, gender, age group, and 18+ confirmation.
-                  </div>
-                  <div className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#60707a]">
-                    Profile details can come next
-                  </div>
-                </div>
-              ) : showBetaGate ? null : (
-                <div className="mt-7 rounded-[8px] border border-[#111111] bg-white px-4 py-4">
-                  <div className="text-sm font-semibold text-[#111111]">
-                    Create access comes first
-                  </div>
-                  <div className="mt-1 text-xs leading-6 text-[#67747c]">
-                    Use the approved email, then finish signup.
-                  </div>
-                </div>
-              )}
-
-              <div className="mt-6 flex flex-wrap gap-2">
-                <span className={`rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                  Coffee chats
-                </span>
-                <span className={`rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                  Walk meetups
-                </span>
-                <span className={`rounded-[8px] px-3 py-2 text-xs font-medium ${APP_PILL_INACTIVE_CLASS}`}>
-                  Focus sessions
-                </span>
-              </div>
-            </div>
-            </section>
-          ) : null}
-
+      <div className={`mx-auto ${showBetaGate ? "max-w-2xl" : "max-w-xl"}`}>
+        <div>
           <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
             {awaitingSignupMode ? (
               <>

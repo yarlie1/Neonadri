@@ -515,45 +515,67 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   if (shouldUseFocusedRequestView) {
     return (
       <main className="min-h-screen bg-white px-4 py-5 text-[#111111] sm:px-6 sm:py-8">
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-3xl space-y-4">
           <section className="rounded-[8px] border border-[#111111] bg-white p-5 sm:p-7">
             <div className="text-[11px] font-black uppercase tracking-[0.14em] text-[#111111]">
               Request this meetup?
             </div>
-            <h1 className="mt-3 text-4xl font-black leading-[0.96] tracking-[-0.04em] text-[#111111] sm:text-5xl">
+            <h1 className="mt-3 text-4xl font-black leading-[0.96] tracking-[-0.04em] text-[#111111] sm:text-6xl">
               {titleLine}
             </h1>
-            <div className="mt-5 grid gap-2 text-base font-bold text-[#111111] sm:grid-cols-2">
-              <div className="rounded-[8px] border border-[#111111] px-3 py-2">{meetupTimeLabel}</div>
-              <div className="rounded-[8px] border border-[#111111] px-3 py-2">Host covers {post.benefit_amount || "costs"}</div>
-              <div className="rounded-[8px] border border-[#111111] px-3 py-2">Host: {hostIdentityLabel}</div>
-              <div className="rounded-[8px] border border-[#111111] px-3 py-2">Looking for: {targetLabel}</div>
+
+            <div className="mt-6 grid gap-2 text-base font-bold text-[#111111] sm:grid-cols-2">
+              <div className="rounded-[8px] border border-[#111111] px-3 py-2">
+                {meetupTimeLabel}
+              </div>
+              <div className="rounded-[8px] border border-[#111111] px-3 py-2">
+                {meetupDurationLabel} · Host covers {post.benefit_amount || "costs"}
+              </div>
             </div>
-            <p className="mt-4 text-sm font-medium leading-6 text-[#333333]">
-              Platonic meetup. Public place. Host approval required.
-            </p>
+
+            <div className="mt-5 grid gap-4 border-y border-[#111111] py-5 sm:grid-cols-2">
+              <div>
+                <div className="text-[11px] font-black uppercase tracking-[0.14em] text-[#666666]">
+                  Host
+                </div>
+                <div className="mt-1 text-xl font-black text-[#111111]">
+                  {ownerName} · {hostIdentityLabel}
+                </div>
+              </div>
+              <div>
+                <div className="text-[11px] font-black uppercase tracking-[0.14em] text-[#666666]">
+                  Looking for
+                </div>
+                <div className="mt-1 text-xl font-black text-[#111111]">
+                  {targetLabel}
+                </div>
+              </div>
+            </div>
 
             {post.user_id ? (
-              <div className="mt-6">
-                <MatchRequestBox
-                  postId={post.id}
-                  postOwnerUserId={post.user_id}
-                  benefitAmount={post.benefit_amount}
-                  requestCount={totalRequestCount}
-                  isPostMatched={isPostMatched}
-                  isCancelled={isCancelled}
-                  isViewerParticipant={isViewerParticipant}
-                  myRequestId={myRequestId}
-                  myRequestStatus={myRequestStatus}
-                  meetupFinished={meetupFinished}
-                />
-              </div>
+              <MatchRequestBox
+                postId={post.id}
+                postOwnerUserId={post.user_id}
+                benefitAmount={post.benefit_amount}
+                requestCount={totalRequestCount}
+                isPostMatched={isPostMatched}
+                isCancelled={isCancelled}
+                isViewerParticipant={isViewerParticipant}
+                myRequestId={myRequestId}
+                myRequestStatus={myRequestStatus}
+                meetupFinished={meetupFinished}
+                compact
+              />
             ) : null}
+
+            <p className="mt-5 text-sm font-medium leading-6 text-[#333333]">
+              This is a platonic, non-romantic meetup.
+            </p>
           </section>
 
-          <details className="mt-4 rounded-[8px] border border-[#111111] bg-white p-5">
+          <details className="rounded-[8px] border border-[#111111] bg-white p-5">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-black uppercase tracking-[0.12em] text-[#111111]">
-              Details
+              More details
               <ChevronDown className="h-4 w-4" />
             </summary>
             <div className="mt-5 space-y-5">

@@ -14,7 +14,7 @@ import {
 } from "../designSystem";
 
 const INPUT_CLASS =
-  "w-full rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#111111] outline-none transition focus:border-[#111111] focus:ring-1 focus:/30";
+  "w-full rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#111111] outline-none transition focus:border-[#111111] focus:ring-1 focus:ring-[#111111]";
 
 export default function LoginPage() {
   const supabase = createClient();
@@ -95,26 +95,11 @@ export default function LoginPage() {
               Log In
             </div>
             <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#111111]">
-              Continue to request
+              Log in to continue
             </h2>
             <p className={`mt-2 ${APP_BODY_TEXT_CLASS}`}>
-              Log in, or create an account to request this meetup.
+              Use your account to continue.
             </p>
-            <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-              By using Neonadri, you confirm that you are 18 or older.
-            </p>
-            <div className={`mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-              <Link href="/terms" className="transition hover:text-[#111111]">
-                Terms
-              </Link>
-              <Link href="/privacy" className="transition hover:text-[#111111]">
-                Privacy
-              </Link>
-              <Link href="/community" className="transition hover:text-[#111111]">
-                Community
-              </Link>
-            </div>
-
             <div className="mt-6 space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-medium text-[#333333]">
@@ -151,37 +136,47 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button
-                onClick={handleLogin}
-                className={`rounded-[8px] border px-5 py-3 text-sm font-bold transition ${APP_BUTTON_SECONDARY_CLASS}`}
-              >
-                Log In
-              </button>
-
-              <div className="relative inline-flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-                {showSignupCue ? (
-                  <div className="max-w-[250px] rounded-[8px] border-2 border-[#111111] bg-white px-4 py-3 text-sm leading-5 text-[#111111] sm:absolute sm:bottom-[calc(100%+12px)] sm:left-0 sm:z-10">
-                    <div className="font-semibold text-[#111111]">New here?</div>
-                    <div className="mt-1 text-[#333333]">
-                      Create an account first, then send your request.
+            <div className="mt-6 grid gap-3">
+              {showSignupCue ? (
+                <>
+                  <div className="relative">
+                    <div className="mb-3 max-w-[280px] rounded-[8px] border-2 border-[#111111] bg-white px-4 py-3 text-sm leading-5 text-[#111111]">
+                      <div className="font-black text-[#111111]">New here?</div>
+                      <div className="mt-1 text-[#333333]">
+                        Create an account first, then send your request.
+                      </div>
                     </div>
-                    <div className="absolute -bottom-2 left-7 hidden h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#111111] bg-white sm:block" />
+                    <Link
+                      href={signupHref}
+                      className={`inline-flex min-h-[52px] w-full items-center justify-center rounded-[8px] border px-5 py-3 text-base font-black transition ${APP_BUTTON_PRIMARY_CLASS} border-[#111111] [animation:neonadri-signup-pulse_1.45s_ease-in-out_infinite]`}
+                    >
+                      Create account
+                    </Link>
                   </div>
-                ) : null}
-                <Link
-                  href={signupHref}
-                  className={`rounded-[8px] border px-5 py-3 text-base font-black transition ${APP_BUTTON_PRIMARY_CLASS} ${
-                    showSignupCue
-                      ? "border-[#111111] [animation:neonadri-signup-pulse_1.45s_ease-in-out_infinite]"
-                      : ""
-                  }`}
-                >
-                  Create account
-                </Link>
-              </div>
+                  <button
+                    onClick={handleLogin}
+                    className={`inline-flex min-h-[48px] items-center justify-center rounded-[8px] border px-5 py-3 text-sm font-bold transition ${APP_BUTTON_SECONDARY_CLASS}`}
+                  >
+                    Log in instead
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleLogin}
+                    className={`inline-flex min-h-[52px] items-center justify-center rounded-[8px] border px-5 py-3 text-base font-black transition ${APP_BUTTON_PRIMARY_CLASS}`}
+                  >
+                    Log In
+                  </button>
+                  <div className="text-sm text-[#333333]">
+                    New here?{" "}
+                    <Link href={signupHref} className="font-bold underline underline-offset-4">
+                      Create account
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
-
             {message && (
               <p className="mt-4 rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#333333]">
                 {message}

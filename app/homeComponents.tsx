@@ -416,29 +416,34 @@ export function HomeFilterRail({
       : "";
 
   return (
-    <div className="-mx-4 sm:mx-0">
-      <div className="overflow-x-auto border-y border-[#111111]/80 px-4 py-3 [scrollbar-width:none] sm:rounded-[8px] sm:border sm:bg-white sm:px-4 sm:shadow-none [&::-webkit-scrollbar]:hidden">
-        <div className="flex min-w-max items-center gap-2.5">
-          <button
-            type="button"
-            onClick={onReset}
-            className="inline-flex h-11 shrink-0 items-center gap-2 rounded-[8px] px-4 text-sm font-bold text-[#6f65d8] transition hover:bg-white"
-          >
-            <RotateCcw className="h-4 w-4" />
-            Reset
-          </button>
-          <FilterSelect
-            label="Host age"
-            value={hostAgeGroup}
-            options={optionize(ageGroupOptions, { All: "Host age" })}
-            onChange={onHostAgeGroup}
-          />
-          <FilterSelect
-            label="Host gender"
-            value={hostGender}
-            options={optionize(genderOptions, { All: "Host gender" })}
-            onChange={onHostGender}
-          />
+    <section className="rounded-[8px] border border-[#111111] bg-white p-3 sm:p-4">
+      <div className="grid gap-2 sm:grid-cols-3">
+        <FilterSelect
+          label="Host gender"
+          value={hostGender}
+          options={optionize(genderOptions, { All: "Host gender" })}
+          onChange={onHostGender}
+        />
+        <FilterSelect
+          label="Host age"
+          value={hostAgeGroup}
+          options={optionize(ageGroupOptions, { All: "Host age" })}
+          onChange={onHostAgeGroup}
+        />
+        <FilterSelect
+          label="Guest fit"
+          value={audience}
+          options={optionize(audienceOptions, { All: "Guest fit", "Fits me": "Fits me" })}
+          onChange={onAudience}
+        />
+      </div>
+
+      <details className="mt-3">
+        <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-[8px] border border-[#111111] px-3 py-2 text-sm font-bold text-[#111111]">
+          More filters
+          <ChevronDown className="h-4 w-4" />
+        </summary>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
           <FilterSelect
             label="Guest age"
             value={ageGroup}
@@ -452,12 +457,6 @@ export function HomeFilterRail({
             onChange={onGender}
           />
           <FilterSelect
-            label="Fits"
-            value={audience}
-            options={optionize(audienceOptions, { All: "All guests", "Fits me": "Fits me" })}
-            onChange={onAudience}
-          />
-          <FilterSelect
             label="Distance"
             value={distance}
             options={distanceSelectOptions}
@@ -466,7 +465,7 @@ export function HomeFilterRail({
           <FilterSelect
             label="Status"
             value={matchState}
-            options={optionize(matchStateOptions, { All: "All Status" })}
+            options={optionize(matchStateOptions, { All: "All status" })}
             onChange={onMatchState}
           />
           <FilterSelect
@@ -476,14 +475,24 @@ export function HomeFilterRail({
             icon={<ArrowUpDown className="h-4 w-4" />}
             onChange={onSort}
           />
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={onReset}
+            className="inline-flex h-10 items-center gap-2 rounded-[8px] border border-[#111111] px-3 text-sm font-bold text-[#111111] transition hover:bg-[#f4f4f4]"
+          >
+            <RotateCcw className="h-4 w-4" />
+            Reset
+          </button>
           {locationMessage ? (
-            <span className={`shrink-0 px-2 text-xs font-medium ${APP_SUBTLE_TEXT_CLASS}`}>
+            <span className={`text-xs font-medium ${APP_SUBTLE_TEXT_CLASS}`}>
               {locationMessage}
             </span>
           ) : null}
         </div>
-      </div>
-    </div>
+      </details>
+    </section>
   );
 }
 
@@ -705,81 +714,45 @@ export function MeetupFeedCard({
   const resolvedHref =
     href === undefined ? buildPostPath(postId, purposeName, placeText) : href;
   const content = (
-      <div className={`min-w-0 px-2.5 py-3 sm:px-3.5 ${APP_INNER_PANEL_CLASS}`}>
-        <div className="grid min-w-0 grid-cols-[40px_minmax(0,1fr)_auto] grid-rows-[auto_auto] items-center gap-x-2 gap-y-1 sm:grid-cols-[46px_minmax(0,1fr)_auto] sm:gap-x-2.5">
-          <div className="row-span-2 inline-flex h-10 w-10 items-center justify-center self-center rounded-[8px] border border-white/70 bg-white text-[#60717c] shadow-none -md sm:h-11 sm:w-11">
+    <div className="grid min-w-0 gap-3 p-4 sm:p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#111111]">
             {purposeIcon}
+            {purposeName || "Meetup"}
           </div>
-          <div className="col-span-2 min-w-0 truncate pt-[1px] text-[22px] font-black leading-none tracking-[-0.05em] text-[#1f2b34] sm:text-[24px]">
-            {placeText}
-          </div>
-          <div className="col-start-3 row-start-2 flex items-start justify-end self-start">
-            <div
-              className={`shrink-0 rounded-[14px] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-none ${matchBadgeClassName}`}
-            >
-              {matchBadgeLabel}
-            </div>
-          </div>
-          <div
-            className={`col-start-2 row-start-2 min-w-0 pr-1 line-clamp-2 text-[12px] leading-[1.15] ${APP_SUBTLE_TEXT_CLASS}`}
-          >
-            {hostLine || (
-              <>
-                Hosted by {hostName}
-              </>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-2.5 grid min-w-0 gap-1.5">
-          <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
-            <span className="inline-flex min-w-0 flex-1 items-center gap-2 text-[#55646e]">
-              <UserRound className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
-              <span className="truncate font-semibold text-[#435760]">{lookingForText}</span>
-            </span>
-          </div>
-
-          {whenText && (
-            <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
-              <Clock3 className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
-              <span className="min-w-0 flex-1 truncate">{whenText}</span>
-              {durationLabel ? (
-                <span className="ml-auto rounded-[14px] border border-[#111111] bg-white px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#3b4c56] shadow-none">
-                  {durationLabel}
-                </span>
-              ) : null}
-            </div>
-          )}
-
-          {amountText ? (
-            <div className={`flex min-h-[40px] min-w-0 items-center justify-between gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
-              <span className="inline-flex min-w-0 flex-1 items-center gap-2 text-[#55646e]">
-                <Coins className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
-                <span className="truncate">Host covers</span>
-              </span>
-              <span className="shrink-0 font-semibold text-[#435760]">
-                {amountText}
-              </span>
-            </div>
-          ) : null}
-
-          {distanceText && (
-            <div className={`flex min-h-[40px] min-w-0 items-center gap-2 px-2.5 py-1.5 text-sm text-[#364149] sm:gap-2.5 sm:px-3 ${APP_ROW_SURFACE_CLASS}`}>
-              <LocateFixed className={`h-4 w-4 shrink-0 ${APP_SUBTLE_TEXT_CLASS}`} />
-              <span className="min-w-0 truncate">{distanceText}</span>
-            </div>
-          )}
-        </div>
-
-        <div className={`mt-2.5 flex items-center justify-between gap-3 rounded-[14px] px-3 py-1 ${APP_SOFT_CARD_CLASS}`}>
-          <div className={`text-xs uppercase tracking-[0.16em] ${APP_SUBTLE_TEXT_CLASS}`}>
-            {activityLabel}
-          </div>
-          <div className="ml-auto text-right text-sm font-semibold text-[#314454]">
+          <div className="mt-2 truncate text-2xl font-black leading-none text-[#111111]">
             {activityText || getPurposeLabel(purposeName)}
           </div>
         </div>
+        <span className={`shrink-0 rounded-[8px] border px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] ${matchBadgeClassName}`}>
+          {matchBadgeLabel}
+        </span>
       </div>
+
+      <div className="grid gap-2 text-sm font-semibold text-[#111111]">
+        <div className="flex items-center gap-2 rounded-[8px] border border-[#111111]/35 px-3 py-2">
+          <MapPin className="h-4 w-4 shrink-0 text-[#555555]" />
+          <span className="min-w-0 truncate">{placeText}</span>
+        </div>
+        {whenText ? (
+          <div className="flex items-center gap-2 rounded-[8px] border border-[#111111]/35 px-3 py-2">
+            <Clock3 className="h-4 w-4 shrink-0 text-[#555555]" />
+            <span className="min-w-0 flex-1 truncate">{whenText}</span>
+          </div>
+        ) : null}
+        {amountText ? (
+          <div className="flex items-center justify-between gap-3 rounded-[8px] border border-[#111111]/35 px-3 py-2">
+            <span>Host covers</span>
+            <span>{amountText}</span>
+          </div>
+        ) : null}
+      </div>
+
+      <div className="mt-1 inline-flex h-11 items-center justify-center rounded-[8px] bg-[#111111] px-4 text-sm font-black text-white">
+        View
+      </div>
+    </div>
   );
 
   if (resolvedHref) {

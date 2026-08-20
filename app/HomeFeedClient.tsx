@@ -10,18 +10,12 @@ import {
   parseMeetingTime,
 } from "../lib/meetingTime";
 import { ArrowRight, CalendarPlus, Sparkles } from "lucide-react";
-import {
-  FeaturedMeetupCard,
-  HomeFilterRail,
-  HomePurposeRail,
-  MeetupFeedCard,
-} from "./homeComponents";
+import { HomeFilterRail, MeetupFeedCard } from "./homeComponents";
 import {
   formatDistanceKm,
   formatDuration,
   getMatchBadge,
   getPurposeIcon,
-  getPurposeLabel,
   haversineKm,
   parseBenefitAmount,
   SURFACE_CARD_CLASS,
@@ -29,11 +23,9 @@ import {
 import {
   APP_BODY_TEXT_CLASS,
   APP_EYEBROW_CLASS,
-  APP_INNER_PANEL_CLASS,
   APP_PAGE_BG_CLASS,
   APP_PILL_INACTIVE_CLASS,
   APP_SOFT_CARD_CLASS,
-  APP_SUBTLE_TEXT_CLASS,
 } from "./designSystem";
 import {
   AGE_GROUP_OPTIONS,
@@ -342,26 +334,7 @@ export default function HomeFeedClient({
     userTimeZone,
   ]);
 
-  const upcomingCount = useMemo(
-    () =>
-      initialPosts.filter(
-        (post) => getPostStatus(post.meeting_time) === "Upcoming"
-      ).length,
-    [initialPosts, userTimeZone]
-  );
-
-  const hostCount = useMemo(
-    () => Object.keys(hostProfileMap).length,
-    [hostProfileMap]
-  );
-
-  const highlightedPost = useMemo(
-    () => getFeaturedPost(posts, matchSummaryMap, userTimeZone, sort),
-    [posts, matchSummaryMap, sort, userTimeZone]
-  );
   const feedPosts = posts;
-  const heroStatClass = `${APP_INNER_PANEL_CLASS} px-3 py-2.5 sm:py-3`;
-  const heroChipClass = `${APP_PILL_INACTIVE_CLASS} rounded-[8px] px-3 py-1 text-[11px] font-medium `;
   const [footerOffset, setFooterOffset] = useState(0);
 
   useEffect(() => {
@@ -391,101 +364,22 @@ export default function HomeFeedClient({
       <main className={`relative isolate min-h-[100dvh] overflow-x-hidden px-4 py-5 ${APP_PAGE_BG_CLASS}`}>
 
         <div className="relative z-10 mx-auto max-w-7xl min-w-0 space-y-4 pb-28 sm:space-y-5 sm:pb-32">
-        <div className="grid gap-4 lg:grid-cols-3 lg:items-stretch">
-        <section className={`relative mx-auto h-full w-full max-w-2xl overflow-hidden px-5 py-4 text-[#111111] sm:px-7 sm:py-5 lg:mx-0 lg:max-w-none ${highlightedPost ? "lg:col-span-2" : "lg:col-span-3"} ${HOME_WHITE_SURFACE_CLASS}`}>
+        <section className={`relative mx-auto w-full max-w-4xl overflow-hidden px-5 py-5 text-[#111111] sm:px-7 sm:py-6 ${HOME_WHITE_SURFACE_CLASS}`}>
           <div className="relative">
             <div className={`inline-flex items-center gap-2 rounded-[8px] px-3 py-1 ${APP_PILL_INACTIVE_CLASS} ${APP_EYEBROW_CLASS}`}>
               <Sparkles className="h-3.5 w-3.5" />
               1:1 social meetups
             </div>
 
-            <h1 className={`mt-2 max-w-[18ch] text-[32px] font-bold leading-[0.98] text-[#111111] sm:mt-3 sm:text-[38px]`}>
-              Meet someone new,
-              <br />
-              no pressure.
+            <h1 className="mt-3 text-[34px] font-black leading-[0.98] text-[#111111] sm:text-[46px]">
+              Find a 1:1 meetup
             </h1>
 
             <p className={`mt-2 max-w-xl text-[14px] sm:mt-3 sm:text-[15px] ${APP_BODY_TEXT_CLASS}`}>
-              Browse nearby plans. Join when it feels right.
+              Pick a simple plan, check the host fit, then request to join.
             </p>
-
-            <div className="mt-4 grid grid-cols-3 gap-2.5 sm:mt-5 sm:gap-3">
-              <div className={heroStatClass}>
-                <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                  Plans
-                </div>
-                <div className="mt-1 text-[26px] font-black tracking-[-0.05em] text-[#111111]">
-                  {upcomingCount}
-                </div>
-                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Upcoming</div>
-              </div>
-
-              <div className={heroStatClass}>
-                <div className={`text-[11px] uppercase tracking-[0.12em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                  People
-                </div>
-                <div className="mt-1 text-[26px] font-black tracking-[-0.05em] text-[#111111]">
-                  {hostCount}
-                </div>
-                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Nearby hosts</div>
-              </div>
-
-              <div className={heroStatClass}>
-                <div className={`text-[11px] uppercase tracking-[0.16em] ${APP_SUBTLE_TEXT_CLASS}`}>
-                  Mode
-                </div>
-                <div className="mt-1.5 text-sm font-bold leading-5 text-[#111111]">
-                  Social
-                  <br />
-                  1:1
-                </div>
-                <div className={`mt-1 text-[11px] ${APP_SUBTLE_TEXT_CLASS}`}>Not dating</div>
-              </div>
-            </div>
-
-            <div className="mt-3 flex flex-wrap gap-2 sm:mt-4 sm:gap-2.5">
-              <span className={heroChipClass}>
-                Not dating
-              </span>
-              <span className={heroChipClass}>
-                No expectations
-              </span>
-              <span className={heroChipClass}>
-                Host covers
-              </span>
-            </div>
           </div>
         </section>
-
-        {highlightedPost && (
-          <FeaturedMeetupCard
-            className="hidden h-full w-full lg:mx-0 lg:block lg:max-w-none"
-            postId={highlightedPost.id}
-            placeLabel={
-              highlightedPost.place_name ||
-              getPublicLocationLabel(
-                highlightedPost.place_name,
-                highlightedPost.location
-              ) ||
-              "Meetup"
-            }
-            purposeIcon={getPurposeIcon(highlightedPost.meeting_purpose)}
-            purposeLabel={highlightedPost.meeting_purpose || "Meetup"}
-            purposeCopy={getPurposeLabel(highlightedPost.meeting_purpose)}
-            timeLabel={formatTime(highlightedPost.meeting_time) || "Time TBD"}
-            placeText={
-              highlightedPost.place_name ||
-              getPublicLocationLabel(
-                highlightedPost.place_name,
-                highlightedPost.location
-              ) ||
-              "Location TBD"
-            }
-            targetText={formatAudienceMeta(highlightedPost.target_gender, highlightedPost.target_age_group)}
-          />
-        )}
-        </div>
-
         <HomeFilterRail
           matchState={matchState}
           audience={audience}
@@ -520,19 +414,13 @@ export default function HomeFeedClient({
           locationStatus={locationStatus}
         />
 
-        <HomePurposeRail
-          purpose={purpose}
-          purposeOptions={PURPOSE_OPTIONS}
-          onPurpose={(option) => setPurpose(option)}
-        />
-
         <div className="flex items-center justify-between px-1 pt-1">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#848d93]">
               Discover
             </div>
             <div className="mt-1 text-xl font-black tracking-[-0.04em] text-[#111111]">
-              Nearby meetups
+              Available meetups
             </div>
           </div>
 
@@ -602,9 +490,7 @@ export default function HomeFeedClient({
           <div
             className={`${SURFACE_CARD_CLASS} px-5 py-10 text-center text-[#6b7881] sm:px-6 sm:py-12`}
           >
-            {highlightedPost
-              ? "No more meetups match this view yet."
-              : "No meetups match this view right now."}
+            {"No meetups match this view right now."}
           </div>
         )}
         </div>
