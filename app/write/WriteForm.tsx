@@ -384,8 +384,8 @@ export default function WriteForm({ userId }: { userId: string | null }) {
 
   return (
     <main className={`min-h-screen overflow-x-hidden ${APP_PAGE_BG_CLASS} px-4 py-5`}>
-      <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[minmax(280px,1fr)_minmax(0,2fr)] lg:items-start">
-        <section className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-5 py-6 sm:px-6 sm:py-7 lg:col-start-1 lg:row-start-1 lg:sticky lg:top-28`}>          <div className="relative">
+      <div className="mx-auto max-w-4xl">
+        <section className="hidden">          <div className="relative">
             <div className={`inline-flex items-center rounded-[8px] ${APP_INNER_PANEL_CLASS} px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#444444]`}>
               Create meetup
             </div>
@@ -398,7 +398,7 @@ export default function WriteForm({ userId }: { userId: string | null }) {
           </div>
         </section>
 
-        <div className={`${APP_SURFACE_CARD_CLASS} p-4 sm:p-6 lg:col-start-2 lg:row-start-1`}>
+        <div className={`${APP_SURFACE_CARD_CLASS} p-4 sm:p-6`}>
         <div className="flex items-start gap-4">
           <div>
             <div className={APP_EYEBROW_CLASS}>
