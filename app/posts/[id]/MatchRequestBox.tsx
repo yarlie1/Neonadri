@@ -12,6 +12,7 @@ import {
   APP_SOFT_CARD_CLASS,
   APP_SURFACE_CARD_CLASS,
 } from "../../designSystem";
+import { getProfileCompletionPath } from "../../../lib/profileCompletion";
 
 type Props = {
   postId: number;
@@ -123,6 +124,11 @@ export default function MatchRequestBox({
 
       if (response.status === 401) {
         router.push(`/login?next=${encodeURIComponent(nextPath)}`);
+        return;
+      }
+
+      if (response.status === 403 && payload?.profileIncomplete) {
+        router.push(getProfileCompletionPath(nextPath));
         return;
       }
 

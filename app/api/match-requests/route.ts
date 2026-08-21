@@ -5,6 +5,10 @@ import { isBlockedBetween } from "../../../lib/safety";
 import { isAdultConfirmedUser } from "../../../lib/adultGate";
 import { isMeetingFinished } from "../../../lib/meetingTime";
 import {
+  isProfileComplete,
+  PROFILE_COMPLETION_REQUIRED_MESSAGE,
+} from "../../../lib/profileCompletion";
+import {
   normalizeUserTimeZone,
   USER_TIME_ZONE_COOKIE,
 } from "../../../lib/userTimeZone";
@@ -31,12 +35,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!(await isAdultConfirmedUser(supabase, user.id))) {
-      return NextResponse.json(
-        { error: "Please confirm that you are 18 or older before using meetup requests." },
-        { status: 403 }
-      );
-    }
 
     const postId = Number(body.postId);
     const postOwnerUserId = String(body.postOwnerUserId || "");
@@ -68,7 +66,7 @@ export async function POST(req: Request) {
           .maybeSingle(),
         supabase
           .from("profiles")
-          .select("gender, age_group, display_name")
+          .select("gender, age_group, display_name, is_adult_confirmed")
           .eq("id", user.id)
           .maybeSingle(),
       ]);
@@ -123,6 +121,13 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: "Failed to check your profile." },
         { status: 500 }
+      );
+    }
+
+    if (!isProfileComplete(profileData)) {
+      return NextResponse.json(
+        { error: PROFILE_COMPLETION_REQUIRED_MESSAGE, profileIncomplete: true },
+        { status: 403 }
       );
     }
 
@@ -272,7 +277,6 @@ export async function DELETE(req: Request) {
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
     if (!(await isAdultConfirmedUser(supabase, user.id))) {
       return NextResponse.json(
         { error: "Please confirm that you are 18 or older before using meetup requests." },
