@@ -123,16 +123,22 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className="inline-flex min-h-[52px] w-full items-center justify-center gap-3 rounded-[8px] border border-[#111111] bg-white px-5 py-3 text-base font-black text-[#111111] transition hover:bg-[#f7f7f7]"
+                className="inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-[8px] border-2 border-[#111111] bg-white px-5 py-3 text-base font-black text-[#111111] shadow-[4px_4px_0_#111111] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#111111] active:translate-y-0 active:shadow-[2px_2px_0_#111111]"
               >
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-[#111111] text-sm font-black">
+                <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-[#111111] bg-white text-sm font-black text-[#111111]">
                   G
                 </span>
-                Continue with Google
+                <span>Continue with Google</span>
               </button>
             </div>
 
-            <div className="mt-5 space-y-4">
+            <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-xs font-black uppercase tracking-[0.18em] text-[#555555]">
+              <div className="h-px bg-[#111111]" />
+              <span>or</span>
+              <div className="h-px bg-[#111111]" />
+            </div>
+
+            <div className="space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-medium text-[#333333]">
                   Email
@@ -180,9 +186,9 @@ export default function LoginPage() {
                     </div>
                     <Link
                       href={signupHref}
-                      className="inline-flex min-h-[52px] w-full items-center justify-center rounded-[8px] border border-[#111111] bg-[#111111] px-5 py-3 text-base font-black text-white shadow-none transition hover:bg-[#333333] [animation:neonadri-signup-pulse_1.45s_ease-in-out_infinite]"
+                      className="inline-flex min-h-[52px] w-full items-center justify-center rounded-[8px] border-2 border-[#111111] bg-[#111111] px-5 py-3 text-base font-black text-white shadow-[4px_4px_0_#cfcfcf] transition hover:bg-[#333333]"
                     >
-                      Create account
+                      <span>Create account</span>
                     </Link>
                   </div>
                   <button
