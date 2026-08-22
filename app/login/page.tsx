@@ -100,7 +100,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className="group inline-flex min-h-[62px] w-full cursor-pointer items-center justify-center gap-3 rounded-[8px] border-4 border-black bg-[#fff4c7] px-5 py-3 text-base font-black text-black shadow-[0_5px_0_#111111] transition hover:-translate-y-0.5 hover:bg-[#fff9df] hover:shadow-[0_7px_0_#111111] active:translate-y-1 active:shadow-[0_2px_0_#111111] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+                className="group inline-flex min-h-[62px] w-full cursor-pointer items-center justify-center gap-3 rounded-[8px] border-2 border-black bg-white px-5 py-3 text-base font-black text-black shadow-[0_4px_0_#111111] ring-2 ring-black transition hover:-translate-y-0.5 hover:bg-[#f7f7f7] hover:shadow-[0_6px_0_#111111] active:translate-y-1 active:shadow-[0_2px_0_#111111] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
               >
                 <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-[#111111] bg-white text-sm font-black text-[#111111]">
                   G
