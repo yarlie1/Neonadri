@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import {
   APP_BODY_TEXT_CLASS,
-  APP_BUTTON_SECONDARY_CLASS,
   APP_EYEBROW_CLASS,
   APP_PAGE_BG_CLASS,
   APP_SURFACE_CARD_CLASS,
@@ -21,25 +20,13 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [nextPath, setNextPath] = useState<string | null>(null);
-  const [showSignupCue, setShowSignupCue] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const params = new URLSearchParams(window.location.search);
     const nextValue = params.get("next");
-    const utmSource = params.get("utm_source")?.toLowerCase();
-    const utmMedium = params.get("utm_medium")?.toLowerCase();
-    const utmCampaign = params.get("utm_campaign")?.toLowerCase();
-    const referrer = document.referrer.toLowerCase();
-    const isRedditVisitor =
-      utmSource === "reddit" ||
-      !!utmMedium?.includes("reddit") ||
-      !!utmCampaign?.includes("reddit") ||
-      referrer.includes("reddit.com");
-
     setNextPath(nextValue);
-    setShowSignupCue(isRedditVisitor || !!nextValue?.startsWith("/posts/"));
     if (params.get("message") === "password-reset") {
       setMessage("Password reset. Log in again.");
     } else if (params.get("message") === "google-login-failed") {
@@ -100,16 +87,6 @@ export default function LoginPage() {
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
       <div className="mx-auto max-w-lg">
           <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
-            <style jsx global>{`
-              @keyframes neonadri-signup-pulse {
-                0%, 100% {
-                  box-shadow: 0 0 0 3px #ffffff, 0 0 0 7px #111111;
-                }
-                50% {
-                  box-shadow: 0 0 0 4px #ffffff, 0 0 0 11px #111111;
-                }
-              }
-            `}</style>
             <div className={APP_EYEBROW_CLASS}>
               Log In
             </div>
@@ -123,7 +100,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className="inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-[8px] border-2 border-[#111111] bg-white px-5 py-3 text-base font-black text-[#111111] shadow-[4px_4px_0_#111111] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#111111] active:translate-y-0 active:shadow-[2px_2px_0_#111111]"
+                className="inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-[8px] border-2 border-[#111111] bg-white px-5 py-3 text-base font-black text-[#111111] transition hover:bg-[#f7f7f7] active:bg-[#eeeeee]"
               >
                 <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-[#111111] bg-white text-sm font-black text-[#111111]">
                   G
@@ -175,45 +152,18 @@ export default function LoginPage() {
             </div>
 
             <div className="mt-6 grid gap-3">
-              {showSignupCue ? (
-                <>
-                  <div className="relative">
-                    <div className="mb-3 max-w-[280px] rounded-[8px] border-2 border-[#111111] bg-white px-4 py-3 text-sm leading-5 text-[#111111]">
-                      <div className="font-black text-[#111111]">New here?</div>
-                      <div className="mt-1 text-[#333333]">
-                        Create an account first, then send your request.
-                      </div>
-                    </div>
-                    <Link
-                      href={signupHref}
-                      className="inline-flex min-h-[52px] w-full items-center justify-center rounded-[8px] border-2 border-[#111111] bg-[#111111] px-5 py-3 text-base font-black text-white shadow-[4px_4px_0_#cfcfcf] transition hover:bg-[#333333]"
-                    >
-                      <span>Create account</span>
-                    </Link>
-                  </div>
-                  <button
-                    onClick={handleLogin}
-                    className={`inline-flex min-h-[48px] items-center justify-center rounded-[8px] border px-5 py-3 text-sm font-bold transition ${APP_BUTTON_SECONDARY_CLASS}`}
-                  >
-                    Log in instead
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={handleLogin}
-                    className="inline-flex min-h-[52px] items-center justify-center rounded-[8px] border border-[#111111] bg-[#111111] px-5 py-3 text-base font-black text-white shadow-none transition hover:bg-[#333333]"
-                  >
-                    Log In
-                  </button>
-                  <div className="text-sm text-[#333333]">
-                    New here?{" "}
-                    <Link href={signupHref} className="font-bold underline underline-offset-4">
-                      Create account
-                    </Link>
-                  </div>
-                </>
-              )}
+              <button
+                onClick={handleLogin}
+                className="inline-flex min-h-[52px] items-center justify-center rounded-[8px] border border-[#111111] bg-[#111111] px-5 py-3 text-base font-black text-white shadow-none transition hover:bg-[#333333]"
+              >
+                Log In
+              </button>
+              <div className="text-sm text-[#333333]">
+                New here?{" "}
+                <Link href={signupHref} className="font-bold underline underline-offset-4">
+                  Create account
+                </Link>
+              </div>
             </div>
             {message && (
               <p className="mt-4 rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#333333]">
