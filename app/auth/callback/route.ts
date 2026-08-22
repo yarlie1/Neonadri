@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import {
+  getProfileCompletionPath,
+  isProfileComplete,
+} from "../../../lib/profileCompletion";
 
 function getSafeNext(nextValue: string | null) {
   return nextValue && nextValue.startsWith("/") && !nextValue.startsWith("//")
@@ -70,6 +74,32 @@ export async function GET(request: Request) {
     loginUrl.searchParams.set("next", safeNext);
     loginUrl.searchParams.set("message", "google-login-failed");
     return NextResponse.redirect(loginUrl);
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("gender, age_group, is_adult_confirmed")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (!profileError && !isProfileComplete(profile)) {
+      const completeUrl = new URL(
+        getProfileCompletionPath(safeNext),
+        requestUrl.origin
+      );
+      const completeResponse = NextResponse.redirect(completeUrl);
+
+      response.cookies.getAll().forEach((cookie) => {
+        completeResponse.cookies.set(cookie);
+      });
+
+      return completeResponse;
+    }
   }
 
   return response;
