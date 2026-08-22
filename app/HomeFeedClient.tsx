@@ -267,40 +267,52 @@ export default function HomeFeedClient({
             </div>
           </div>
 
-          <HomeFilterRail
-          matchState={matchState}
-          audience={audience}
-          hostGender={hostGender}
-          hostAgeGroup={hostAgeGroup}
-          gender={gender}
-          ageGroup={ageGroup}
-          distance={distance}
-          distanceUnit={distanceUnit}
-          sort={sort}
-          matchStateOptions={MATCH_STATE_OPTIONS}
-          audienceOptions={AUDIENCE_OPTIONS}
-          genderOptions={GENDER_OPTIONS}
-          ageGroupOptions={AGE_GROUP_OPTIONS}
-          distanceOptions={DISTANCE_OPTIONS}
-          sortOptions={SORT_OPTIONS}
-          onMatchState={setMatchState}
-          onAudience={(option) => applyAudience(option as (typeof AUDIENCE_OPTIONS)[number])}
-          onHostGender={setHostGender}
-          onHostAgeGroup={setHostAgeGroup}
-          onGender={(option) => {
-            setAudience("All");
-            setGender(option);
-          }}
-          onAgeGroup={(option) => {
-            setAudience("All");
-            setAgeGroup(option);
-          }}
-          onDistance={(option) => setDistance(option as (typeof DISTANCE_OPTIONS)[number]["value"])}
-          onSort={(option) => setSort(option as SortValue)}
-          onReset={resetAll}
-          locationStatus={locationStatus}
-        />
-
+          <div className="flex items-center justify-between gap-3 px-1">
+            <div className="min-w-0 flex-1">
+              <HomeFilterRail
+                matchState={matchState}
+                audience={audience}
+                hostGender={hostGender}
+                hostAgeGroup={hostAgeGroup}
+                gender={gender}
+                ageGroup={ageGroup}
+                distance={distance}
+                distanceUnit={distanceUnit}
+                sort={sort}
+                matchStateOptions={MATCH_STATE_OPTIONS}
+                audienceOptions={AUDIENCE_OPTIONS}
+                genderOptions={GENDER_OPTIONS}
+                ageGroupOptions={AGE_GROUP_OPTIONS}
+                distanceOptions={DISTANCE_OPTIONS}
+                sortOptions={SORT_OPTIONS}
+                onMatchState={setMatchState}
+                onAudience={(option) => applyAudience(option as (typeof AUDIENCE_OPTIONS)[number])}
+                onHostGender={setHostGender}
+                onHostAgeGroup={setHostAgeGroup}
+                onGender={(option) => {
+                  setAudience("All");
+                  setGender(option);
+                }}
+                onAgeGroup={(option) => {
+                  setAudience("All");
+                  setAgeGroup(option);
+                }}
+                onDistance={(option) => setDistance(option as (typeof DISTANCE_OPTIONS)[number]["value"])}
+                onSort={(option) => setSort(option as SortValue)}
+                onReset={resetAll}
+                locationStatus={locationStatus}
+              />
+            </div>
+            <Link
+              href={createHref}
+              className="shrink-0 text-right text-sm font-medium text-[#555555]"
+            >
+              Want to host?{" "}
+              <span className="font-bold text-[#111111] underline underline-offset-4">
+                Create meetup
+              </span>
+            </Link>
+          </div>
 
         <div className="grid min-w-0 gap-3">
         {feedPosts.map((post) => {
@@ -334,12 +346,6 @@ export default function HomeFeedClient({
           </div>
         )}
 
-        <div className="px-1 pt-2 text-sm text-[#555555]">
-          Want to host?{" "}
-          <Link href={createHref} className="font-bold text-[#111111] underline underline-offset-4">
-            Create meetup
-          </Link>
-        </div>
         </div>
 
       </main>
