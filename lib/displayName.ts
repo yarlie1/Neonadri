@@ -8,7 +8,14 @@ export function normalizeDisplayName(value: unknown) {
 export function getUserMetadataDisplayName(
   userMetadata: Record<string, unknown> | null | undefined
 ) {
+  const givenName = normalizeDisplayName(userMetadata?.given_name);
+  const familyName = normalizeDisplayName(userMetadata?.family_name);
+  const westernOrderName = normalizeDisplayName(
+    [givenName, familyName].filter(Boolean).join(" ")
+  );
+
   const candidates = [
+    westernOrderName,
     userMetadata?.display_name,
     userMetadata?.full_name,
     userMetadata?.name,
