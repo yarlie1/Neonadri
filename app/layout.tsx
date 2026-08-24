@@ -16,15 +16,15 @@ const APP_URL = process.env.APP_BASE_URL?.trim() || "https://neonadri.net";
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: "Neonadri",
+    default: "Neonadri | Small Meetups in Los Angeles",
     template: "%s | Neonadri",
   },
   description:
-    "Meet someone new through 1:1 social meetups with no pressure.",
+    "Find small, intentional meetups in Los Angeles. Coffee, dinner, books, and relaxed ways to meet new people.",
   openGraph: {
-    title: "Meet someone new, no pressure.",
+    title: "Neonadri | Small Meetups in Los Angeles",
     description:
-      "1:1 social meetups where hosts cover the listed activity cost.",
+      "Find small, intentional meetups in Los Angeles. Coffee, dinner, books, and relaxed ways to meet new people.",
     url: APP_URL,
     siteName: "Neonadri",
     type: "website",
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Meet someone new, no pressure.",
+    title: "Neonadri | Small Meetups in Los Angeles",
     description:
-      "1:1 social meetups where hosts cover the listed activity cost.",
+      "Find small, intentional meetups in Los Angeles. Coffee, dinner, books, and relaxed ways to meet new people.",
     images: [`/opengraph-image?${OG_IMAGE_VERSION}`],
   },
 };

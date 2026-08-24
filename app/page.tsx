@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { createClient } from "../lib/supabase/server";
 import { getBlockedUserIdsForViewer } from "../lib/safety";
 import { cookies } from "next/headers";
@@ -56,6 +57,19 @@ type MatchSummaryMap = Record<
     totalRequestCount: number;
   }
 >;
+
+export const metadata: Metadata = {
+  title: "Small Meetups in Los Angeles",
+  description:
+    "Find small, intentional meetups in Los Angeles. Coffee, dinner, books, and relaxed ways to meet new people.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    url: "/",
+    type: "website",
+  },
+};
 
 export default async function HomePage() {
   const supabase = await createClient();

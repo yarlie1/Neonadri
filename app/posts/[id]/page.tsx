@@ -57,6 +57,105 @@ type PageProps = {
 };
 
 const APP_URL = process.env.APP_BASE_URL?.trim() || "https://neonadri.net";
+const SITE_URL = APP_URL.replace(/\/+$/, "");
+
+function compactText(value: string | null | undefined) {
+  return String(value || "").trim().replace(/\s+/g, " ");
+}
+
+function buildPostSeoTitle(post: {
+  meeting_purpose: string | null;
+  place_name: string | null;
+  location: string | null;
+}) {
+  const purpose = compactText(post.meeting_purpose) || "Meetup";
+  const place = compactText(post.place_name) || compactText(post.location);
+  return place ? `${purpose} at ${place}` : purpose;
+}
+
+function buildPostSeoDescription(post: {
+  meeting_purpose: string | null;
+  place_name: string | null;
+  location: string | null;
+  benefit_amount?: string | null;
+}) {
+  const purpose = compactText(post.meeting_purpose) || "meetup";
+  const place = compactText(post.place_name) || "a local spot";
+  const location = compactText(post.location);
+  const cityPhrase = location ? ` in ${location}` : " in Los Angeles";
+  const benefit = compactText(post.benefit_amount);
+  const benefitPhrase = benefit
+    ? ` Host covers ${benefit}.`
+    : " Host covers the listed activity cost.";
+
+  return `Join a 1:1 ${purpose.toLowerCase()} at ${place}${cityPhrase}. Request to join and meet someone new.${benefitPhrase}`;
+}
+
+function buildEventJsonLd({
+  post,
+  title,
+  description,
+  url,
+}: {
+  post: {
+    place_name: string | null;
+    location: string | null;
+    meeting_time: string | null;
+    duration_minutes: number | null;
+    benefit_amount: string | null;
+    status: string | null;
+  };
+  title: string;
+  description: string;
+  url: string;
+}) {
+  const startDate = post.meeting_time || undefined;
+  const endDate =
+    post.meeting_time && post.duration_minutes
+      ? new Date(
+          new Date(post.meeting_time).getTime() + post.duration_minutes * 60 * 1000
+        ).toISOString()
+      : undefined;
+  const placeName = compactText(post.place_name) || "Meetup location";
+  const address = compactText(post.location) || "Los Angeles";
+  const isCancelled = String(post.status || "open").toLowerCase() === "cancelled";
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: title,
+    description,
+    url,
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    eventStatus: isCancelled
+      ? "https://schema.org/EventCancelled"
+      : "https://schema.org/EventScheduled",
+    startDate,
+    endDate,
+    location: {
+      "@type": "Place",
+      name: placeName,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: address,
+      },
+    },
+    organizer: {
+      "@type": "Organization",
+      name: "Neonadri",
+      url: SITE_URL,
+    },
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+      availability: isCancelled
+        ? "https://schema.org/SoldOut"
+        : "https://schema.org/InStock",
+      url,
+    },
+  };
+}
 
 async function getPostMetadataRecord(id: string) {
   const postId = extractPostIdParam(id);
@@ -66,7 +165,7 @@ async function getPostMetadataRecord(id: string) {
   const { data } = await supabase
     .from("posts")
     .select(
-      "id, place_name, location, meeting_purpose, target_gender, target_age_group, status, admin_hidden"
+      "id, place_name, location, meeting_purpose, meeting_time, duration_minutes, benefit_amount, target_gender, target_age_group, status, admin_hidden"
     )
     .eq("id", postId)
     .maybeSingle();
@@ -79,6 +178,9 @@ async function getPostMetadataRecord(id: string) {
         place_name: string | null;
         location: string | null;
         meeting_purpose: string | null;
+        meeting_time: string | null;
+        duration_minutes: number | null;
+        benefit_amount: string | null;
         target_gender: string | null;
         target_age_group: string | null;
         status: string | null;
@@ -98,34 +200,26 @@ export async function generateMetadata({
     };
   }
 
-  const titleParts = [
-    post.meeting_purpose?.trim() || "Meetup",
-    post.place_name?.trim() || post.location?.trim() || "Neonadri",
-  ].filter(Boolean);
-  const title = titleParts.join(" at ");
-  const descriptionParts = [
-    post.place_name?.trim() || "Meetup location",
-    post.target_gender?.trim(),
-    post.target_age_group?.trim(),
-    String(post.status || "open").toLowerCase() === "cancelled"
-      ? "Cancelled meetup"
-      : "View details and request to join on Neonadri.",
-  ].filter(Boolean);
-  const description = descriptionParts.join(" - ");
+  const title = buildPostSeoTitle(post);
+  const description = buildPostSeoDescription(post);
   const postPath = buildPostPath(
     post.id,
     post.meeting_purpose,
     post.place_name || post.location
   );
-  const url = `${APP_URL.replace(/\/+$/, "")}${postPath}`;
+  const url = `${SITE_URL}${postPath}`;
 
   return {
     title,
     description,
+    alternates: {
+      canonical: postPath,
+    },
     openGraph: {
       title,
       description,
       url,
+      siteName: "Neonadri",
       type: "article",
       images: [
         {
@@ -144,7 +238,6 @@ export async function generateMetadata({
     },
   };
 }
-
 export default async function MeetupDetailPage({ params }: PageProps) {
   const supabase = await createClient();
   const cookieStore = cookies();
@@ -511,6 +604,20 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const isViewerHost = user?.id === post.user_id;
   const shouldUseFocusedRequestView = !isViewerHost && !isViewerParticipant;
   const titleLine = `${post.meeting_purpose || "Meetup"}${placeDisplay ? ` at ${placeDisplay}` : ""}`;
+  const currentPostPath = buildPostPath(
+    post.id,
+    post.meeting_purpose,
+    post.place_name || post.location
+  );
+  const canonicalUrl = `${SITE_URL}${currentPostPath}`;
+  const seoTitle = buildPostSeoTitle(post);
+  const seoDescription = buildPostSeoDescription(post);
+  const eventJsonLd = buildEventJsonLd({
+    post,
+    title: seoTitle,
+    description: seoDescription,
+    url: canonicalUrl,
+  });
 
   if (shouldUseFocusedRequestView) {
     return (
@@ -606,6 +713,10 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               />
             </div>
           </details>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
+          />
         </div>
       </main>
     );
