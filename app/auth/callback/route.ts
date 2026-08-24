@@ -83,7 +83,7 @@ export async function GET(request: Request) {
   if (user) {
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("gender, age_group, is_adult_confirmed")
+      .select("display_name, gender, age_group, is_adult_confirmed")
       .eq("id", user.id)
       .maybeSingle();
 

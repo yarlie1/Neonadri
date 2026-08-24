@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
+import { DISPLAY_NAME_MAX_LENGTH } from "../../../lib/displayName";
 import {
   APP_BUTTON_PRIMARY_CLASS,
   APP_BUTTON_SECONDARY_CLASS,
@@ -13,23 +14,32 @@ const INPUT_CLASS =
   "w-full rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#111111] outline-none transition focus:border-[#111111] focus:ring-1 focus:ring-[#111111]";
 
 export default function CompleteProfileForm({
+  initialDisplayName,
   initialGender,
   initialAgeGroup,
   initialAdultConfirmed,
   nextPath,
 }: {
+  initialDisplayName: string;
   initialGender: string;
   initialAgeGroup: string;
   initialAdultConfirmed: boolean;
   nextPath: string;
 }) {
+  const [displayName, setDisplayName] = useState(initialDisplayName);
   const [gender, setGender] = useState(initialGender);
   const [ageGroup, setAgeGroup] = useState(initialAgeGroup);
   const [isAdultConfirmed, setIsAdultConfirmed] = useState(initialAdultConfirmed);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
 
-  const canSubmit = gender.trim() && ageGroup.trim() && isAdultConfirmed;
+  const normalizedDisplayName = displayName.trim().replace(/\s+/g, " ");
+  const canSubmit =
+    normalizedDisplayName.length > 0 &&
+    normalizedDisplayName.length <= DISPLAY_NAME_MAX_LENGTH &&
+    gender.trim() &&
+    ageGroup.trim() &&
+    isAdultConfirmed;
 
   const handleSubmit = async () => {
     if (!canSubmit || submitting) return;
@@ -44,6 +54,7 @@ export default function CompleteProfileForm({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          display_name: normalizedDisplayName,
           gender,
           age_group: ageGroup,
           is_adult_confirmed: isAdultConfirmed,
@@ -65,6 +76,23 @@ export default function CompleteProfileForm({
 
   return (
     <div className="mt-6 space-y-4">
+      <div>
+        <label className="mb-2 block text-sm font-medium text-[#333333]">
+          Display name
+        </label>
+        <input
+          type="text"
+          value={displayName}
+          onChange={(event) => setDisplayName(event.target.value)}
+          maxLength={DISPLAY_NAME_MAX_LENGTH}
+          placeholder="How others will see you"
+          className={INPUT_CLASS}
+        />
+        <p className={`mt-2 text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
+          {normalizedDisplayName.length}/{DISPLAY_NAME_MAX_LENGTH}
+        </p>
+      </div>
+
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
           <label className="mb-2 block text-sm font-medium text-[#333333]">
@@ -115,7 +143,7 @@ export default function CompleteProfileForm({
 
       {!canSubmit ? (
         <p className={`text-xs ${APP_SUBTLE_TEXT_CLASS}`}>
-          Complete all required fields to continue.
+          Add a display name and complete all required fields to continue.
         </p>
       ) : null}
 

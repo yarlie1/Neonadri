@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
+import {
+  DISPLAY_NAME_MAX_LENGTH,
+  getUserMetadataDisplayName,
+  normalizeDisplayName,
+} from "../../../../lib/displayName";
+import { generateUniqueProfileUsername } from "../../../../lib/profileUsername";
 import { createAdminClient } from "../../../../lib/supabase/admin";
 import { createClient } from "../../../../lib/supabase/server";
-import { generateUniqueProfileUsername } from "../../../../lib/profileUsername";
 
 const VALID_GENDERS = ["Male", "Female", "Other", "Prefer not to say"] as const;
 const VALID_AGE_GROUPS = ["20s", "30s", "40s", "50s+"] as const;
@@ -26,8 +31,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const displayName =
+      normalizeDisplayName(body.display_name) ||
+      getUserMetadataDisplayName(user.user_metadata);
     const gender = sanitizeAllowedValue(body.gender, VALID_GENDERS);
     const ageGroup = sanitizeAllowedValue(body.age_group, VALID_AGE_GROUPS);
+
+    if (!displayName) {
+      return NextResponse.json(
+        { error: "Please enter a display name." },
+        { status: 400 }
+      );
+    }
+
+    if (displayName.length > DISPLAY_NAME_MAX_LENGTH) {
+      return NextResponse.json(
+        { error: `Display name must be ${DISPLAY_NAME_MAX_LENGTH} characters or fewer.` },
+        { status: 400 }
+      );
+    }
 
     if (!gender) {
       return NextResponse.json({ error: "Please select a gender." }, { status: 400 });
@@ -62,22 +84,43 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Failed to check your profile." }, { status: 500 });
     }
 
-    const displayName =
-      existingProfile?.display_name ||
-      (typeof user.user_metadata?.display_name === "string"
-        ? user.user_metadata.display_name.trim()
-        : "") ||
-      (typeof user.user_metadata?.full_name === "string"
-        ? user.user_metadata.full_name.trim()
-        : "") ||
-      null;
+    const { data: duplicateProfile, error: duplicateProfileError } = await adminSupabase
+      .from("profiles")
+      .select("id")
+      .ilike("display_name", displayName)
+      .neq("id", user.id)
+      .limit(1)
+      .maybeSingle();
+
+    if (duplicateProfileError) {
+      console.error("Profile completion display name lookup failed", {
+        message: duplicateProfileError.message,
+        details: duplicateProfileError.details,
+        hint: duplicateProfileError.hint,
+        code: duplicateProfileError.code,
+        userId: user.id,
+      });
+      return NextResponse.json(
+        { error: "We couldn't check that display name right now." },
+        { status: 500 }
+      );
+    }
+
+    if (duplicateProfile) {
+      return NextResponse.json(
+        { error: "This display name is already in use." },
+        { status: 409 }
+      );
+    }
+
+    const shouldRefreshUsername =
+      !existingProfile?.username || existingProfile?.display_name !== displayName;
+    const username = shouldRefreshUsername
+      ? await generateUniqueProfileUsername(adminSupabase, displayName, user.id)
+      : existingProfile.username;
+    const timestamp = new Date().toISOString();
 
     if (!existingProfile) {
-      const username = await generateUniqueProfileUsername(
-        adminSupabase,
-        displayName,
-        user.id
-      );
       const { error } = await adminSupabase.from("profiles").insert({
         id: user.id,
         display_name: displayName,
@@ -85,8 +128,8 @@ export async function POST(req: Request) {
         gender,
         age_group: ageGroup,
         is_adult_confirmed: true,
-        age_gate_confirmed_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        age_gate_confirmed_at: timestamp,
+        updated_at: timestamp,
       });
 
       if (error) {
@@ -97,7 +140,11 @@ export async function POST(req: Request) {
           code: error.code,
           userId: user.id,
         });
-        return NextResponse.json({ error: "Failed to complete your profile." }, { status: 500 });
+        const message =
+          error.code === "23505"
+            ? "This display name is already in use."
+            : "Failed to complete your profile.";
+        return NextResponse.json({ error: message }, { status: error.code === "23505" ? 409 : 500 });
       }
 
       return NextResponse.json({ ok: true }, { status: 200 });
@@ -106,11 +153,13 @@ export async function POST(req: Request) {
     const { error } = await adminSupabase
       .from("profiles")
       .update({
+        display_name: displayName,
+        username,
         gender,
         age_group: ageGroup,
         is_adult_confirmed: true,
-        age_gate_confirmed_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        age_gate_confirmed_at: timestamp,
+        updated_at: timestamp,
       })
       .eq("id", user.id);
 
@@ -122,7 +171,11 @@ export async function POST(req: Request) {
         code: error.code,
         userId: user.id,
       });
-      return NextResponse.json({ error: "Failed to complete your profile." }, { status: 500 });
+      const message =
+        error.code === "23505"
+          ? "This display name is already in use."
+          : "Failed to complete your profile.";
+      return NextResponse.json({ error: message }, { status: error.code === "23505" ? 409 : 500 });
     }
 
     return NextResponse.json({ ok: true }, { status: 200 });

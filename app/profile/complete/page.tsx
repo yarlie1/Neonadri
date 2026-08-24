@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
-import { createClient } from "../../../lib/supabase/server";
+import { getUserMetadataDisplayName } from "../../../lib/displayName";
 import { isProfileComplete } from "../../../lib/profileCompletion";
+import { createClient } from "../../../lib/supabase/server";
 import {
   APP_BODY_TEXT_CLASS,
   APP_EYEBROW_CLASS,
@@ -35,13 +36,16 @@ export default async function CompleteProfilePage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("gender, age_group, is_adult_confirmed")
+    .select("display_name, gender, age_group, is_adult_confirmed")
     .eq("id", user.id)
     .maybeSingle();
 
   if (isProfileComplete(profile)) {
     redirect(nextPath);
   }
+
+  const initialDisplayName =
+    profile?.display_name || getUserMetadataDisplayName(user.user_metadata);
 
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
@@ -55,10 +59,11 @@ export default async function CompleteProfilePage({
             Complete your profile
           </h1>
           <p className={`mt-3 ${APP_BODY_TEXT_CLASS}`}>
-            Gender, age group, and 18+ confirmation are required before you can request to join a meetup.
+            Display name, gender, age group, and 18+ confirmation are required before you can request to join a meetup.
           </p>
 
           <CompleteProfileForm
+            initialDisplayName={initialDisplayName}
             initialGender={profile?.gender || ""}
             initialAgeGroup={profile?.age_group || ""}
             initialAdultConfirmed={profile?.is_adult_confirmed === true}
