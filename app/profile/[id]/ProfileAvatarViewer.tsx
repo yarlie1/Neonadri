@@ -19,6 +19,9 @@ export default function ProfileAvatarViewer({
   useEffect(() => {
     if (!open) return;
 
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setOpen(false);
@@ -26,7 +29,11 @@ export default function ProfileAvatarViewer({
     };
 
     document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [open]);
 
   if (!src) {
@@ -38,7 +45,7 @@ export default function ProfileAvatarViewer({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-full outline-none transition hover:scale-[1.03] focus-visible:ring-4 focus-visible:ring-[#c8d3da]/50"
+        className="rounded-full outline-none transition hover:opacity-90 focus-visible:ring-4 focus-visible:ring-[#c8d3da]/50"
         aria-label={`Open ${label}`}
       >
         <Avatar src={src} name={name} size="lg" />
@@ -46,20 +53,20 @@ export default function ProfileAvatarViewer({
 
       {open ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#17212a]/70 px-5 py-8 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#101417]/75 px-4 py-6 sm:px-8"
           role="dialog"
           aria-modal="true"
           aria-label={label}
           onClick={() => setOpen(false)}
         >
           <div
-            className="relative max-h-full max-w-[min(92vw,560px)]"
+            className="relative flex max-h-full max-w-[min(92vw,680px)] flex-col items-end gap-3"
             onClick={(event) => event.stopPropagation()}
           >
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/45 bg-white/90 text-[#24323c] shadow-[0_12px_24px_rgba(20,29,37,0.2)] transition hover:bg-white"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white text-[#111111] shadow-[0_10px_24px_rgba(0,0,0,0.18)] transition hover:bg-[#f4f6f7] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/35"
               aria-label="Close profile photo"
             >
               <X className="h-5 w-5" />
@@ -68,7 +75,7 @@ export default function ProfileAvatarViewer({
             <img
               src={src}
               alt={label}
-              className="max-h-[82vh] w-full rounded-[22px] border border-white/30 bg-white object-contain shadow-[0_24px_80px_rgba(10,18,24,0.35)]"
+              className="max-h-[82vh] max-w-full rounded-[12px] border border-white/20 bg-white object-contain shadow-[0_24px_60px_rgba(0,0,0,0.28)]"
               referrerPolicy="no-referrer"
             />
           </div>
