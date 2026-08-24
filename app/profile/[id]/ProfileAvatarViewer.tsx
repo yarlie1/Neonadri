@@ -53,31 +53,38 @@ export default function ProfileAvatarViewer({
 
       {open ? (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#101417]/75 px-4 py-6 sm:px-8"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#111111]/55 px-4 py-6 sm:px-8"
           role="dialog"
           aria-modal="true"
           aria-label={label}
           onClick={() => setOpen(false)}
         >
           <div
-            className="relative flex max-h-full max-w-[min(92vw,680px)] flex-col items-end gap-3"
+            className="w-full max-w-[min(92vw,520px)] overflow-hidden rounded-[8px] border border-[#111111] bg-white shadow-[0_24px_70px_rgba(0,0,0,0.24)]"
             onClick={(event) => event.stopPropagation()}
           >
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white text-[#111111] shadow-[0_10px_24px_rgba(0,0,0,0.18)] transition hover:bg-[#f4f6f7] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/35"
-              aria-label="Close profile photo"
-            >
-              <X className="h-5 w-5" />
-            </button>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={src}
-              alt={label}
-              className="max-h-[82vh] max-w-full rounded-[12px] border border-white/20 bg-white object-contain shadow-[0_24px_60px_rgba(0,0,0,0.28)]"
-              referrerPolicy="no-referrer"
-            />
+            <div className="flex items-center justify-between gap-3 border-b border-[#111111] px-4 py-3">
+              <div className="min-w-0 text-sm font-semibold text-[#111111]">
+                <div className="truncate">{name || "Profile photo"}</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] border border-[#111111] bg-white text-[#111111] transition hover:bg-[#f4f6f7] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#c8d3da]/50"
+                aria-label="Close profile photo"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="bg-[#f5f7f8] p-3 sm:p-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={src}
+                alt={label}
+                className="mx-auto max-h-[76vh] max-w-full rounded-[6px] bg-white object-contain"
+                referrerPolicy="no-referrer"
+              />
+            </div>
           </div>
         </div>
       ) : null}
