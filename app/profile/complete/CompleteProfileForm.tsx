@@ -3,10 +3,14 @@
 import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { DISPLAY_NAME_MAX_LENGTH } from "../../../lib/displayName";
+import PushNotificationButton from "../../components/PushNotificationButton";
 import {
+  APP_BODY_TEXT_CLASS,
   APP_BUTTON_PRIMARY_CLASS,
   APP_BUTTON_SECONDARY_CLASS,
+  APP_EYEBROW_CLASS,
   APP_PILL_INACTIVE_CLASS,
+  APP_SOFT_CARD_CLASS,
   APP_SUBTLE_TEXT_CLASS,
 } from "../../designSystem";
 
@@ -30,6 +34,7 @@ export default function CompleteProfileForm({
   const [gender, setGender] = useState(initialGender);
   const [ageGroup, setAgeGroup] = useState(initialAgeGroup);
   const [isAdultConfirmed, setIsAdultConfirmed] = useState(initialAdultConfirmed);
+  const [profileSaved, setProfileSaved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -40,6 +45,10 @@ export default function CompleteProfileForm({
     gender.trim() &&
     ageGroup.trim() &&
     isAdultConfirmed;
+
+  const continueToNext = () => {
+    window.location.replace(nextPath);
+  };
 
   const handleSubmit = async () => {
     if (!canSubmit || submitting) return;
@@ -68,11 +77,34 @@ export default function CompleteProfileForm({
         return;
       }
 
-      window.location.replace(nextPath);
+      setProfileSaved(true);
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (profileSaved) {
+    return (
+      <div className="mt-6 space-y-4">
+        <div className={`${APP_SOFT_CARD_CLASS} px-4 py-5`}>
+          <div className={APP_EYEBROW_CLASS}>Recommended</div>
+          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#111111]">
+            Turn on app notifications?
+          </h2>
+          <p className={`mt-2 text-sm ${APP_BODY_TEXT_CLASS}`}>
+            Get alerts for meetup requests, matches, and messages.
+          </p>
+          <div className="mt-4">
+            <PushNotificationButton
+              variant="choice"
+              onEnabled={continueToNext}
+              onSkipped={continueToNext}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-6 space-y-4">
