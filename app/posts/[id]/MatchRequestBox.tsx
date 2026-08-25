@@ -187,6 +187,7 @@ export default function MatchRequestBox({
   const requestCountLabel =
     requestCount === 1 ? "1 request so far" : `${requestCount} requests so far`;
   const showRedditRequestCue =
+    !compact &&
     isRedditVisitor &&
     !loading &&
     !hasPendingRequest &&
