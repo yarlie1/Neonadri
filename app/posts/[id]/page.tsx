@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import type { Metadata } from "next";
-import { ChevronDown, Sparkles } from "lucide-react";
+import { ChevronDown, MessageSquare, Sparkles, Star } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import { buildPostPath, extractPostIdParam } from "../../../lib/postUrl";
 import { buildProfilePath } from "../../../lib/profileUrl";
@@ -602,6 +602,16 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     !hasCancellationFeedback;
 
   const isViewerHost = user?.id === post.user_id;
+  const matchedRecordId = matchedRecord?.id ?? null;
+  const shouldShowHostProfileCard = !isViewerHost;
+  const shouldShowUpcomingMeetupCard = !isViewerHost;
+  const shouldShowMatchedSidePanels = !isViewerHost;
+  const shouldShowHostMatchedSummary =
+    isViewerHost &&
+    isPostMatched &&
+    isViewerParticipant &&
+    !!matchedRecordId &&
+    !isCancelled;
   const shouldUseFocusedRequestView = !isViewerHost && !isViewerParticipant;
   const titleLine = `${post.meeting_purpose || "Meetup"}${placeDisplay ? ` at ${placeDisplay}` : ""}`;
   const currentPostPath = buildPostPath(
@@ -753,29 +763,33 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           </div>
 
           <div className="space-y-5 lg:sticky lg:top-36">
-            <UpcomingMeetupCard
-              isPostMatched={isPostMatched}
-              isViewerParticipant={isViewerParticipant}
-              meetupFinished={meetupFinished}
-              isCancelled={isCancelled}
-              purposeTheme={purposeTheme}
-              post={post}
-              meetupTimeLabel={meetupTimeLabel}
-              meetupCountdown={meetupCountdown}
-            />
-
-            <ScrollReveal>
-              <ProfileShowcaseCard
-                title="Host"
-                subtitle="Warm, low-pressure meetup host"
-                profileHref={post.user_id ? ownerProfileHref : undefined}
-                data={ownerProfileData}
-                isCurrentUser={user?.id === post.user_id}
-                summaryOnly
+            {shouldShowUpcomingMeetupCard ? (
+              <UpcomingMeetupCard
+                isPostMatched={isPostMatched}
+                isViewerParticipant={isViewerParticipant}
+                meetupFinished={meetupFinished}
+                isCancelled={isCancelled}
+                purposeTheme={purposeTheme}
+                post={post}
+                meetupTimeLabel={meetupTimeLabel}
+                meetupCountdown={meetupCountdown}
               />
-            </ScrollReveal>
+            ) : null}
 
-            {isPostMatched && isViewerParticipant && guestProfileData && (
+            {shouldShowHostProfileCard ? (
+              <ScrollReveal>
+                <ProfileShowcaseCard
+                  title="Host"
+                  subtitle="Warm, low-pressure meetup host"
+                  profileHref={post.user_id ? ownerProfileHref : undefined}
+                  data={ownerProfileData}
+                  isCurrentUser={user?.id === post.user_id}
+                  summaryOnly
+                />
+              </ScrollReveal>
+            ) : null}
+
+            {isPostMatched && isViewerParticipant && guestProfileData && !isViewerHost && (
               <ScrollReveal>
                 <ProfileShowcaseCard
                   title="Guest"
@@ -793,7 +807,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </ScrollReveal>
             )}
 
-            {user && user.id === post.user_id ? (
+            {user && user.id === post.user_id && !isPostMatched ? (
               <ScrollReveal>
                 <OwnerMatchPanel
                   postId={post.id}
@@ -804,7 +818,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                   matchedPartner={matchedPartner}
                 />
               </ScrollReveal>
-            ) : post.user_id ? (
+            ) : !isViewerHost && post.user_id ? (
               <ScrollReveal>
                 <MatchRequestBox
                   postId={post.id}
@@ -821,41 +835,129 @@ export default async function MeetupDetailPage({ params }: PageProps) {
               </ScrollReveal>
             ) : null}
 
-            <ScrollReveal>
-              <MatchedChatPanel
-                isPostMatched={isPostMatched}
-                isViewerParticipant={isViewerParticipant}
-                matchedRecordId={matchedRecord?.id}
-                hasNewChatMessage={hasNewChatMessage}
-                meetupFinished={meetupFinished}
-                chatClosed={chatClosed}
-                isCancelled={isCancelled}
-              />
-            </ScrollReveal>
+            {shouldShowHostMatchedSummary ? (
+              <ScrollReveal>
+                <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
+                  <div className={APP_EYEBROW_CLASS}>Matched meetup</div>
+                  <h2 className="mt-2 text-[1.55rem] font-black tracking-[-0.04em] text-[#111111]">
+                    {matchedPartner
+                      ? `Matched with ${matchedPartner.displayName}`
+                      : "This meetup is matched"}
+                  </h2>
+                  {matchedPartner ? (
+                    <div className="mt-1 text-sm leading-6 text-[#66727a]">
+                      {matchedPartner.ageGroup || "Guest"} / {matchedPartner.gender || "Guest"}
+                    </div>
+                  ) : null}
 
-            <ScrollReveal>
-              <MatchReviewPanel
-                isPostMatched={isPostMatched}
-                isViewerParticipant={isViewerParticipant}
-                matchedRecordId={matchedRecord?.id}
-                canLeaveReview={canLeaveReview}
-                meetupFinished={meetupFinished}
-                viewerHasReview={viewerHasReview}
-                matchReviews={matchReviews}
-                getMatchReviewAuthorLabel={getMatchReviewAuthorLabel}
-                isCancelled={isCancelled}
-              />
-            </ScrollReveal>
+                  <div className="mt-5 space-y-4">
+                    <div className="rounded-[8px] border border-[#111111] bg-white px-4 py-4">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <div className={APP_EYEBROW_CLASS}>Chat</div>
+                          <div className="mt-1 text-base font-black text-[#111111]">
+                            {chatClosed ? "Chat closed" : "Confirm details in chat"}
+                          </div>
+                        </div>
+                        <Link
+                          href={`/matches/${matchedRecordId}/chat`}
+                          className={`inline-flex items-center gap-2 rounded-[8px] ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
+                        >
+                          <MessageSquare className="h-4 w-4 text-[#444444]" />
+                          {chatClosed ? "Read Chat" : "Open Chat"}
+                          {!chatClosed && hasNewChatMessage ? (
+                            <span className="rounded-[8px] border border-[#111111] bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#5f7480]">
+                              New
+                            </span>
+                          ) : null}
+                        </Link>
+                      </div>
+                    </div>
 
-            <ScrollReveal>
-              <CancellationFeedbackPanel
-                isCancelled={isCancelled}
-                isViewerParticipant={isViewerParticipant}
-                matchedRecordId={matchedRecord?.id}
-                canLeaveCancellationFeedback={canLeaveCancellationFeedback}
-                hasCancellationFeedback={hasCancellationFeedback}
-              />
-            </ScrollReveal>
+                    <div className="rounded-[8px] border border-[#111111] bg-white px-4 py-4">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <div className={APP_EYEBROW_CLASS}>Review</div>
+                          <div className="mt-1 text-sm leading-6 text-[#66727a]">
+                            {meetupFinished
+                              ? viewerHasReview
+                                ? "Review submitted."
+                                : "Review this match."
+                              : "Reviews open after meetup."}
+                          </div>
+                        </div>
+                        {canLeaveReview ? (
+                          <Link
+                            href={`/reviews/write/${matchedRecordId}`}
+                            className={`inline-flex items-center gap-2 rounded-[8px] ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
+                          >
+                            <Star className="h-4 w-4 text-[#444444]" />
+                            Leave Review
+                          </Link>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    <div className="rounded-[8px] border border-[#111111] bg-white px-4 py-4">
+                      <div className={APP_EYEBROW_CLASS}>Need a change?</div>
+                      <div className="mt-2 text-sm leading-6 text-[#66727a]">
+                        Need a new time or place? Cancel and recreate.
+                      </div>
+                      <div className="mt-3">
+                        <CancelMeetupButton
+                          postId={post.id}
+                          meetingTime={post.meeting_time}
+                          userTimeZone={userTimeZone}
+                          hasMatchedParticipant={isPostMatched}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ) : null}
+
+            {shouldShowMatchedSidePanels ? (
+              <ScrollReveal>
+                <MatchedChatPanel
+                  isPostMatched={isPostMatched}
+                  isViewerParticipant={isViewerParticipant}
+                  matchedRecordId={matchedRecord?.id}
+                  hasNewChatMessage={hasNewChatMessage}
+                  meetupFinished={meetupFinished}
+                  chatClosed={chatClosed}
+                  isCancelled={isCancelled}
+                />
+              </ScrollReveal>
+            ) : null}
+
+            {shouldShowMatchedSidePanels ? (
+              <ScrollReveal>
+                <MatchReviewPanel
+                  isPostMatched={isPostMatched}
+                  isViewerParticipant={isViewerParticipant}
+                  matchedRecordId={matchedRecord?.id}
+                  canLeaveReview={canLeaveReview}
+                  meetupFinished={meetupFinished}
+                  viewerHasReview={viewerHasReview}
+                  matchReviews={matchReviews}
+                  getMatchReviewAuthorLabel={getMatchReviewAuthorLabel}
+                  isCancelled={isCancelled}
+                />
+              </ScrollReveal>
+            ) : null}
+
+            {shouldShowMatchedSidePanels ? (
+              <ScrollReveal>
+                <CancellationFeedbackPanel
+                  isCancelled={isCancelled}
+                  isViewerParticipant={isViewerParticipant}
+                  matchedRecordId={matchedRecord?.id}
+                  canLeaveCancellationFeedback={canLeaveCancellationFeedback}
+                  hasCancellationFeedback={hasCancellationFeedback}
+                />
+              </ScrollReveal>
+            ) : null}
 
             {user && user.id === post.user_id && !isCancelled && !isPostMatched && !hasAnyRequests && (
               <ScrollReveal>
@@ -880,6 +982,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             {user &&
               user.id === post.user_id &&
               !isCancelled &&
+              !shouldShowHostMatchedSummary &&
               (isPostMatched || hasAnyRequests) && (
                 <ScrollReveal>
                   <div className={`${APP_SURFACE_CARD_CLASS} p-5`}>
