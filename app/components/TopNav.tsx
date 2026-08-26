@@ -440,6 +440,9 @@ export default function TopNav({
               {user ? (
                 <>
                   <div className="my-1 border-t border-[#111111]" />
+                  <Link href="/chats" onClick={closeMenu} className={menuItem}>
+                    Chats
+                  </Link>
                   <Link href="/profile" onClick={closeMenu} className={menuItem}>
                     Profile
                   </Link>
