@@ -129,12 +129,6 @@ function SignupPageContent() {
     resolvedSignupIntent === "guest" || hostSignupOpen || betaAccessAllowed;
   const passwordsMatch =
     password.length >= PASSWORD_MIN_LENGTH && password === passwordConfirmation;
-  const showCreateAccountCue =
-    redirectPath.startsWith("/posts/") ||
-    searchParams.get("utm_source")?.toLowerCase() === "reddit" ||
-    !!searchParams.get("utm_medium")?.toLowerCase().includes("reddit") ||
-    !!searchParams.get("utm_campaign")?.toLowerCase().includes("reddit");
-
   const canCreateAccount = useMemo(
     () =>
       displayName.trim().length > 0 &&
@@ -506,16 +500,6 @@ function SignupPageContent() {
   }
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
-      <style jsx global>{`
-        @keyframes neonadri-create-account-pulse {
-          0%, 100% {
-            box-shadow: 0 0 0 3px #ffffff, 0 0 0 7px #111111;
-          }
-          50% {
-            box-shadow: 0 0 0 4px #ffffff, 0 0 0 11px #111111;
-          }
-        }
-      `}</style>
       <div className={`mx-auto ${showBetaGate ? "max-w-2xl" : "max-w-xl"}`}>
         <div>
           <section className={`${APP_SURFACE_CARD_CLASS} p-6 sm:p-8`}>
@@ -786,23 +770,10 @@ function SignupPageContent() {
                       type="button"
                       onClick={handleSignup}
                       disabled={submitting || !canCreateAccount}
-                      className={`rounded-[8px] border px-5 py-3 text-base font-black transition disabled:cursor-not-allowed disabled:opacity-75 ${APP_BUTTON_PRIMARY_CLASS} ${
-                        showCreateAccountCue
-                          ? "border-[#111111] [animation:neonadri-create-account-pulse_1.45s_ease-in-out_infinite]"
-                          : ""
-                      }`}
+                      className={`rounded-[8px] border px-5 py-3 text-base font-black transition disabled:cursor-not-allowed disabled:opacity-75 ${APP_BUTTON_PRIMARY_CLASS}`}
                     >
                       {submitting ? "Creating account..." : "Create account"}
                     </button>
-                    {showCreateAccountCue ? (
-                      <div className="relative max-w-[320px] rounded-[8px] border-2 border-[#111111] bg-white px-4 py-3 text-sm leading-5 text-[#111111]">
-                        <div className="absolute -top-2 left-7 h-4 w-4 rotate-45 border-l-2 border-t-2 border-[#111111] bg-white" />
-                        <div className="relative font-black text-[#111111]">Fill this out first</div>
-                        <div className="relative mt-1 text-[#333333]">
-                          Complete this, then return to the meetup request.
-                        </div>
-                      </div>
-                    ) : null}
                   </div>
                 </div>
               </>
