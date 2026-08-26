@@ -292,7 +292,9 @@ export default function MatchRequestBox({
             ) : (
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#111111]" />
             )}
-            <span>{message}</span>
+            <span className={messageType === "success" ? "font-black text-[#111111]" : ""}>
+              {message}
+            </span>
           </div>
         </div>
       )}
