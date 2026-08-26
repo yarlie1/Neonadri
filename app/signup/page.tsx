@@ -765,12 +765,12 @@ function SignupPageContent() {
                     .
                   </p>
 
-                  <div className="inline-flex flex-col items-start gap-3">
+                  <div className="flex w-full flex-col gap-3">
                     <button
                       type="button"
                       onClick={handleSignup}
                       disabled={submitting || !canCreateAccount}
-                      className={`rounded-[8px] border px-5 py-3 text-base font-black transition disabled:cursor-not-allowed disabled:opacity-75 ${APP_BUTTON_PRIMARY_CLASS}`}
+                      className={`w-full rounded-[8px] border px-5 py-3 text-base font-black transition disabled:cursor-not-allowed disabled:opacity-75 ${APP_BUTTON_PRIMARY_CLASS}`}
                     >
                       {submitting ? "Creating account..." : "Create account"}
                     </button>
