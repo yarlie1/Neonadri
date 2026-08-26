@@ -762,7 +762,11 @@ export default async function MeetupDetailPage({ params }: PageProps) {
             </ScrollReveal>
           </div>
 
-          <div className="space-y-5 lg:sticky lg:top-36">
+          <div
+            className={`space-y-5 lg:sticky lg:top-36 ${
+              shouldShowHostMatchedSummary ? "lg:-mt-12" : ""
+            }`}
+          >
             {shouldShowUpcomingMeetupCard ? (
               <UpcomingMeetupCard
                 isPostMatched={isPostMatched}
