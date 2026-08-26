@@ -440,8 +440,13 @@ export default function TopNav({
               {user ? (
                 <>
                   <div className="my-1 border-t border-[#111111]" />
-                  <Link href="/chats" onClick={closeMenu} className={menuItem}>
-                    Chats
+                  <Link
+                    href="/chats"
+                    onClick={closeMenu}
+                    className="flex items-center justify-between gap-3 rounded-[8px] px-3 py-2 text-sm font-bold text-[#111111] transition hover:bg-[#f4f4f4]"
+                  >
+                    <span>Chats</span>
+                    <NewChatBadge visible={hasNewChatActivity} />
                   </Link>
                   <Link href="/profile" onClick={closeMenu} className={menuItem}>
                     Profile
