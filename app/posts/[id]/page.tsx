@@ -613,7 +613,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     !!matchedRecordId &&
     !isCancelled;
   const detailSidebarClassName = shouldShowHostMatchedSummary
-    ? "space-y-5 lg:sticky lg:top-36 lg:-mt-[108px]"
+    ? "space-y-5"
     : "space-y-5 lg:sticky lg:top-36";
   const shouldUseFocusedRequestView = !isViewerHost && !isViewerParticipant;
   const titleLine = `${post.meeting_purpose || "Meetup"}${placeDisplay ? ` at ${placeDisplay}` : ""}`;
