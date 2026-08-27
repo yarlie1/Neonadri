@@ -733,8 +733,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   }
   return (
     <main className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}>
-      <div className="mx-auto max-w-7xl space-y-5">
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)] lg:items-start">
+      <div className="mx-auto max-w-6xl space-y-5">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(340px,400px)] lg:items-start">
           <div className="space-y-5">
             <ScrollReveal>
               <MeetupOverviewCard
@@ -763,9 +763,8 @@ export default async function MeetupDetailPage({ params }: PageProps) {
           </div>
 
           <div
-            className={`space-y-5 lg:sticky lg:top-36 ${
-              shouldShowHostMatchedSummary ? "lg:-mt-12" : ""
-            }`}
+            className="space-y-5 lg:sticky lg:top-36"
+            style={shouldShowHostMatchedSummary ? { marginTop: "-48px" } : undefined}
           >
             {shouldShowUpcomingMeetupCard ? (
               <UpcomingMeetupCard
