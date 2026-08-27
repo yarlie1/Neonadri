@@ -613,6 +613,7 @@ export function MeetupOverviewCard({
   locationDisplay,
   locationHeading,
   locationPrivacyNote,
+  embedded = false,
 }: {
   isPostMatched: boolean;
   isCancelled: boolean;
@@ -629,13 +630,24 @@ export function MeetupOverviewCard({
   locationDisplay: string;
   locationHeading: string;
   locationPrivacyNote: string | null;
+  embedded?: boolean;
 }) {
   const purposeHelpText = post.meeting_purpose
     ? PURPOSE_HELP_TEXT[post.meeting_purpose] || ""
     : "";
+  const containerClassName = embedded
+    ? "relative"
+    : `relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-6 py-6`;
+  const statsSectionClassName = embedded
+    ? "mt-5"
+    : `mt-5 ${APP_INNER_PANEL_CLASS} px-4 py-4`;
+  const locationSectionClassName = embedded
+    ? "mt-5 border-t border-[#111111] pt-5"
+    : `mt-5 ${APP_INNER_PANEL_CLASS} px-4 py-4`;
 
   return (
-    <div className={`relative overflow-hidden ${APP_SURFACE_CARD_CLASS} px-6 py-6`}>      <div className="relative">
+    <div className={containerClassName}>
+      <div className="relative">
         <div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className={APP_EYEBROW_CLASS}>Meetup overview</div>
@@ -689,7 +701,7 @@ export function MeetupOverviewCard({
           </p>
         </div>
 
-        <div className={`mt-5 ${APP_INNER_PANEL_CLASS} px-4 py-4`}>
+        <div className={statsSectionClassName}>
           <div className="grid grid-cols-1 gap-3">
             <StatCard label="Host" value={hostIdentityLabel} />
             <StatCard label="Guest" value={targetLabel} />
@@ -698,7 +710,7 @@ export function MeetupOverviewCard({
           </div>
         </div>
 
-        <div className={`mt-5 ${APP_INNER_PANEL_CLASS} px-4 py-4`}>
+        <div className={locationSectionClassName}>
           <div className="flex items-center justify-between gap-3">
             <div className={APP_EYEBROW_CLASS}>Location</div>
             {mapUrl && (

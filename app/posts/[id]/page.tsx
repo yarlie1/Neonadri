@@ -715,6 +715,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 locationHeading={locationHeading}
                 locationPrivacyNote={locationPrivacyNote}
                 distanceNote={<PostDistanceNote latitude={post.latitude} longitude={post.longitude} />}
+                embedded
               />
               <ProfileShowcaseCard
                 title="Host"
