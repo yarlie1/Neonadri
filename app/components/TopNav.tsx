@@ -71,6 +71,7 @@ export default function TopNav({
   const [hasNewChatActivity, setHasNewChatActivity] = useState(
     initialIndicators?.hasNewChatActivity || false
   );
+  const [showTagline, setShowTagline] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [currentSearch, setCurrentSearch] = useState("");
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -99,6 +100,26 @@ export default function TopNav({
     setMenuOpen(false);
     window.dispatchEvent(new CustomEvent("neonadri:open-intro"));
   };
+
+  useEffect(() => {
+    const showDurationMs = 2200;
+    const cycleDurationMs = 7000;
+    let hideTimeout: number | null = null;
+
+    const showThenHide = () => {
+      setShowTagline(true);
+      hideTimeout = window.setTimeout(() => {
+        setShowTagline(false);
+      }, showDurationMs);
+    };
+
+    const intervalId = window.setInterval(showThenHide, cycleDurationMs);
+
+    return () => {
+      window.clearInterval(intervalId);
+      if (hideTimeout) window.clearTimeout(hideTimeout);
+    };
+  }, []);
 
   useEffect(() => {
     const browserTimeZone = normalizeUserTimeZone(
@@ -379,11 +400,31 @@ export default function TopNav({
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link
           href="/"
-          className="text-[24px] font-black leading-none tracking-[-0.05em] text-[#111111]"
+          className="relative inline-flex h-10 w-[142px] shrink-0 items-center text-[#111111] sm:w-[280px]"
           onClick={closeMenu}
           aria-label="Neonadri home"
         >
-          Neonadri
+          <span
+            aria-hidden="true"
+            className={`absolute left-0 text-[24px] font-black leading-none tracking-[-0.05em] transition duration-500 ease-out ${
+              showTagline
+                ? "-translate-y-1 opacity-0"
+                : "translate-y-0 opacity-100"
+            }`}
+          >
+            Neonadri
+          </span>
+          <span
+            aria-hidden="true"
+            className={`absolute left-0 text-[13px] font-black leading-[1.05] tracking-normal transition duration-500 ease-out sm:text-[18px] sm:leading-none ${
+              showTagline
+                ? "translate-y-0 opacity-100"
+                : "translate-y-1 opacity-0"
+            }`}
+          >
+            <span className="block sm:inline">The simplest way to</span>
+            <span className="block sm:inline"> start meetups</span>
+          </span>
         </Link>
 
         <div className="relative flex items-center gap-1.5" ref={menuRef}>
