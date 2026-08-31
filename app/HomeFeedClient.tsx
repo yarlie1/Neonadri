@@ -258,8 +258,8 @@ export default function HomeFeedClient({
         <div className="relative z-10 mx-auto max-w-2xl min-w-0 space-y-4 pb-14">
           <div className="flex items-end justify-between gap-4 px-1 pt-2">
             <div>
-              <h1 className="text-[30px] font-black leading-none text-[#111111] sm:text-[36px]">
-                Meetups
+              <h1 className="text-[30px] font-black leading-tight text-[#111111] sm:text-[36px]">
+                The simplest way to start meetups
               </h1>
               <div className="mt-1 text-sm font-medium text-[#555555]">
                 {posts.length} results
