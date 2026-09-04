@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "../../../../lib/supabase/server";
 import { buildPostPath } from "../../../../lib/postUrl";
 
+const LAUNCH_REWARD_CLAIM_EMAIL = "hello@neonadri.net";
+
 function buildRewardClaimMailto({
   userId,
   postId,
@@ -30,7 +32,7 @@ function buildRewardClaimMailto({
     "Feedback:",
   ].join("\n");
 
-  return `mailto:hello@neonadri.net?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return `mailto:${LAUNCH_REWARD_CLAIM_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 export async function POST(req: Request) {

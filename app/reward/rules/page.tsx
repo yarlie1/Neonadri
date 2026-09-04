@@ -7,7 +7,7 @@ const rules = [
   "The meetup must be the participant's first qualifying meetup on Neonadri.",
   "A qualifying meetup must be a normal post intended for a real in-person meetup with another person.",
   "Spam, advertisements, duplicate posts, fake posts, abusive content, and misleading claims are not eligible.",
-  "Participants must submit a valid reward claim email after posting their qualifying meetup.",
+  "Participants must submit a valid reward claim email to hello@neonadri.net after posting their qualifying meetup.",
   "Rewards are available to the first 100 eligible participants who submit a valid reward claim after posting a qualifying meetup.",
   "Claim order is based on the time Neonadri receives the reward claim email, not the time the meetup was posted.",
   "Neonadri may review account, email, claim email, post content, IP, device, and related activity patterns to help prevent abuse.",
