@@ -14,6 +14,7 @@ const rules = [
   "Shared IP address or device signals do not automatically make a participant ineligible, but suspicious or duplicate activity may require review.",
   "Feedback is completely optional and does not affect reward eligibility.",
   "Approved rewards are expected to be delivered through Tremendous.",
+  "This promotion is not sponsored, endorsed, administered by, or associated with Reddit, Nextdoor, or any other third-party platform where this promotion may appear.",
   "Neonadri may end, pause, or update this campaign if the reward spots are filled, abuse is detected, or operational issues require it.",
 ];
 
