@@ -13,7 +13,7 @@ const steps = [
   },
   {
     title: "Get Your $10",
-    body: "Once we verify your post, we'll send your $10 reward by email.",
+    body: "Once we verify your post, we'll send your $10 reward through Tremendous.",
   },
 ];
 
