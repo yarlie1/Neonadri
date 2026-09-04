@@ -89,27 +89,6 @@ function PostsTabPanel({
   );
 }
 
-function buildRewardClaimMailto(userId: string, post?: PostRow) {
-  const origin =
-    typeof window !== "undefined" ? window.location.origin : "https://neonadri.net";
-  const postUrl = post ? `${origin}${buildPostPath(post.id, post.meeting_purpose, post.place_name || post.location)}` : "";
-  const subject = "Neonadri $10 Launch Reward Claim";
-  const body = [
-    "Hi Neonadri,",
-    "",
-    "I posted my first meetup and would like to claim my $10 Launch Reward.",
-    "",
-    `Neonadri user ID: ${userId}`,
-    `Post URL: ${postUrl}`,
-    "",
-    "Optional - We'd love to hear what you think about Neonadri.",
-    "What did you like, find confusing, or think we could improve?",
-    "",
-    "Feedback:",
-  ].join("\n");
-
-  return `mailto:hello@neonadri.net?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
 function formatRecentChatTime(meetingTime: string | null, userTimeZone: string) {
   const parsed = parseMeetingTime(meetingTime, userTimeZone);
   if (!parsed) return "Time TBD";
@@ -566,16 +545,14 @@ export default function DashboardClient({
   const currentUserMeta = liveProfileMetaMap[userId] || "";
   const [showRewardClaim, setShowRewardClaim] = useState(false);
   const [rewardClaimPostId, setRewardClaimPostId] = useState<number | null>(null);
+  const [claimingReward, setClaimingReward] = useState(false);
+  const [rewardClaimMessage, setRewardClaimMessage] = useState("");
 
   const rewardClaimPost = useMemo(() => {
     if (rewardClaimPostId === null) return posts[0];
     return posts.find((post) => post.id === rewardClaimPostId) || posts[0];
   }, [posts, rewardClaimPostId]);
 
-  const rewardClaimHref = useMemo(
-    () => buildRewardClaimMailto(userId, rewardClaimPost),
-    [userId, rewardClaimPost]
-  );
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -585,6 +562,40 @@ export default function DashboardClient({
     setShowRewardClaim(true);
     setRewardClaimPostId(postId ? Number(postId) : null);
   }, []);
+
+  const handleRewardClaim = async () => {
+    if (!rewardClaimPost?.id) {
+      setRewardClaimMessage("Could not find the meetup for this Launch Reward claim.");
+      return;
+    }
+
+    setClaimingReward(true);
+    setRewardClaimMessage("");
+
+    try {
+      const response = await fetch("/api/reward/claim", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ postId: rewardClaimPost.id }),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        setRewardClaimMessage(result.error || "Could not claim this Launch Reward right now.");
+        return;
+      }
+
+      if (result.mailto) {
+        window.location.href = result.mailto;
+      }
+    } catch (error) {
+      setRewardClaimMessage(error instanceof Error ? error.message : "Something went wrong.");
+    } finally {
+      setClaimingReward(false);
+    }
+  };
 
   useEffect(() => {
     if (previousActiveTabRef.current === activeTab) return;
@@ -989,14 +1000,21 @@ export default function DashboardClient({
             <p className="mt-2 text-sm font-semibold leading-6 text-[#333333]">
               Feedback is completely optional and does not affect your eligibility for the reward.
             </p>
+            {rewardClaimMessage && (
+              <p className="mt-4 rounded-[8px] border border-[#111111] bg-[#fff6f7] px-4 py-3 text-sm font-semibold leading-6 text-[#b44f5b]">
+                {rewardClaimMessage}
+              </p>
+            )}
             <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-              <a
-                href={rewardClaimHref}
+              <button
+                type="button"
+                onClick={handleRewardClaim}
+                disabled={claimingReward}
                 style={{ color: "#ffffff" }}
-                className="inline-flex items-center justify-center rounded-[8px] border border-[#111111] bg-[#111111] px-5 py-3 text-sm font-black transition hover:bg-[#333333]"
+                className="inline-flex items-center justify-center rounded-[8px] border border-[#111111] bg-[#111111] px-5 py-3 text-sm font-black transition hover:bg-[#333333] disabled:opacity-50"
               >
-                Claim My $10
-              </a>
+                {claimingReward ? "Checking..." : "Claim My $10"}
+              </button>
               <button
                 type="button"
                 onClick={() => setShowRewardClaim(false)}

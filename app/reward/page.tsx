@@ -1,6 +1,11 @@
 import Link from "next/link";
+import { getLaunchRewardStatus } from "../../lib/launchReward";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const campaignSignupHref = "/signup?intent=host&next=/write%3Fcampaign%3Dlaunch10";
+const regularSignupHref = "/signup?intent=host&next=/write";
 
 const steps = [
   {
@@ -17,7 +22,56 @@ const steps = [
   },
 ];
 
-export default function RewardPage() {
+export default async function RewardPage() {
+  const rewardStatus = await getLaunchRewardStatus();
+
+  if (rewardStatus.isFull) {
+    return (
+      <main className="min-h-screen bg-white px-5 py-11 text-[#111111] sm:py-14">
+        <div className="mx-auto max-w-3xl">
+          <div className="text-[13px] font-black uppercase tracking-[0.16em]">
+            Los Angeles Launch Campaign
+          </div>
+
+          <h1 className="mt-5 max-w-2xl text-[52px] font-black leading-[0.96] tracking-[-0.05em] sm:text-[76px]">
+            All 100 Launch Reward spots are currently claimed.
+          </h1>
+
+          <p className="mt-6 max-w-2xl text-[22px] font-bold leading-[1.35] text-[#333333]">
+            Thank you for helping launch the Neonadri community.
+          </p>
+
+          <p className="mt-3 max-w-2xl text-lg font-semibold leading-8 text-[#555555]">
+            The $10 Launch Reward is no longer accepting new campaign participants. You can still post a meetup and meet someone new.
+          </p>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Link
+              href={regularSignupHref}
+              style={{ color: "#ffffff" }}
+              className="inline-flex items-center justify-center rounded-[10px] border border-[#111111] bg-[#111111] px-7 py-4 text-base font-black transition hover:bg-[#333333]"
+            >
+              Post a Meetup
+            </Link>
+
+            <Link
+              href="/reward/rules"
+              className="inline-flex items-center justify-center rounded-[10px] border border-[#111111] bg-white px-7 py-4 text-base font-black text-[#111111] transition hover:bg-[#f5f5f5]"
+            >
+              Official Rules
+            </Link>
+          </div>
+
+          <section className="mt-16 border-y border-[#111111] py-6">
+            <p className="text-base font-semibold leading-7 text-[#555555]">
+              Reward spots are counted by valid reward claim submissions. If any reserved claim is rejected during review, Neonadri may reopen the campaign or contact the next eligible participant at its discretion.
+            </p>
+          </section>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-white px-5 py-11 text-[#111111] sm:py-14">
       <div className="mx-auto max-w-3xl">

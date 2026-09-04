@@ -329,6 +329,7 @@ export default function WriteForm({ userId, campaign = "" }: { userId: string | 
         benefit_amount: benefitAmount,
         latitude,
         longitude,
+        campaign_code: campaignCode === "launch10" ? "launch10" : undefined,
       };
 
       const res = await fetch("/api/posts/create", {

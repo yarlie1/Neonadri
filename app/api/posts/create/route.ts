@@ -9,6 +9,7 @@ import {
   POSTING_ACCESS_ERROR_MESSAGE,
 } from "../../../../lib/postingAccess";
 import { buildPostPath } from "../../../../lib/postUrl";
+import { getLaunchRewardStatus } from "../../../../lib/launchReward";
 
 export async function POST(req: Request) {
   try {
@@ -41,6 +42,20 @@ export async function POST(req: Request) {
         { error: POSTING_ACCESS_ERROR_MESSAGE },
         { status: 403 }
       );
+    }
+
+    if (body.campaign_code === "launch10") {
+      const rewardStatus = await getLaunchRewardStatus();
+
+      if (rewardStatus.isFull) {
+        return NextResponse.json(
+          {
+            error: "All 100 Launch Reward spots are currently claimed. You can still create a regular meetup, but this $10 Launch Reward is no longer accepting new campaign participants.",
+            reason: "launch_reward_full",
+          },
+          { status: 409 }
+        );
+      }
     }
 
     const payload = {
