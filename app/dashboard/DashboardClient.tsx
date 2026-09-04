@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import {
   MessageSquareMore,
@@ -89,6 +89,27 @@ function PostsTabPanel({
   );
 }
 
+function buildRewardClaimMailto(userId: string, post?: PostRow) {
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "https://neonadri.net";
+  const postUrl = post ? `${origin}${buildPostPath(post.id, post.meeting_purpose, post.place_name || post.location)}` : "";
+  const subject = "Neonadri $10 Launch Reward Claim";
+  const body = [
+    "Hi Neonadri,",
+    "",
+    "I posted my first meetup and would like to claim my $10 Launch Reward.",
+    "",
+    `Neonadri user ID: ${userId}`,
+    `Post URL: ${postUrl}`,
+    "",
+    "Optional - We'd love to hear what you think about Neonadri.",
+    "What did you like, find confusing, or think we could improve?",
+    "",
+    "Feedback:",
+  ].join("\n");
+
+  return `mailto:hello@neonadri.net?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
 function formatRecentChatTime(meetingTime: string | null, userTimeZone: string) {
   const parsed = parseMeetingTime(meetingTime, userTimeZone);
   if (!parsed) return "Time TBD";
@@ -543,6 +564,27 @@ export default function DashboardClient({
     initialUserTimeZone,
   });
   const currentUserMeta = liveProfileMetaMap[userId] || "";
+  const [showRewardClaim, setShowRewardClaim] = useState(false);
+  const [rewardClaimPostId, setRewardClaimPostId] = useState<number | null>(null);
+
+  const rewardClaimPost = useMemo(() => {
+    if (rewardClaimPostId === null) return posts[0];
+    return posts.find((post) => post.id === rewardClaimPostId) || posts[0];
+  }, [posts, rewardClaimPostId]);
+
+  const rewardClaimHref = useMemo(
+    () => buildRewardClaimMailto(userId, rewardClaimPost),
+    [userId, rewardClaimPost]
+  );
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("post_success") !== "launch10") return;
+
+    const postId = params.get("post_id");
+    setShowRewardClaim(true);
+    setRewardClaimPostId(postId ? Number(postId) : null);
+  }, []);
 
   useEffect(() => {
     if (previousActiveTabRef.current === activeTab) return;
@@ -930,6 +972,39 @@ export default function DashboardClient({
         {showCancellationFeedbackSuccess && (
           <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#333333] shadow-none`}>
             Cancellation feedback submitted successfully.
+          </div>
+        )}
+
+        {showRewardClaim && (
+          <div className="border border-[#111111] bg-white p-5 text-[#111111] shadow-none">
+            <div className="text-[11px] font-black uppercase tracking-[0.16em] text-[#111111]">
+              Launch Reward
+            </div>
+            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#111111]">
+              Your Meetup is Live!
+            </h2>
+            <p className="mt-3 text-sm font-semibold leading-6 text-[#333333]">
+              Want your $10 Neonadri Launch Reward? Click below to claim it. Limited to the first 100 eligible participants.
+            </p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-[#333333]">
+              Feedback is completely optional and does not affect your eligibility for the reward.
+            </p>
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+              <a
+                href={rewardClaimHref}
+                style={{ color: "#ffffff" }}
+                className="inline-flex items-center justify-center rounded-[8px] border border-[#111111] bg-[#111111] px-5 py-3 text-sm font-black transition hover:bg-[#333333]"
+              >
+                Claim My $10
+              </a>
+              <button
+                type="button"
+                onClick={() => setShowRewardClaim(false)}
+                className="inline-flex items-center justify-center rounded-[8px] border border-[#111111] bg-white px-5 py-3 text-sm font-black text-[#111111] transition hover:bg-[#f5f5f5]"
+              >
+                Dismiss
+              </button>
+            </div>
           </div>
         )}
         <div className="flex flex-wrap items-end justify-between gap-3">

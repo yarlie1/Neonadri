@@ -478,7 +478,8 @@ export default function WriteLocationPage() {
       lng: String(selectedLatLng.lng),
     });
 
-    router.push(`${returnTo}?${params.toString()}`);
+    const separator = returnTo.includes("?") ? "&" : "?";
+    router.push(`${returnTo}${separator}${params.toString()}`);
   };
 
   return (

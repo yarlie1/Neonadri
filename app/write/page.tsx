@@ -9,7 +9,7 @@ import WriteForm from "./WriteForm";
 export default async function WritePage({
   searchParams,
 }: {
-  searchParams?: { submit?: string };
+  searchParams?: { submit?: string; campaign?: string };
 }) {
   const supabase = await createClient();
 
@@ -17,10 +17,15 @@ export default async function WritePage({
     data: { user },
   } = await supabase.auth.getUser();
 
+  const campaign = searchParams?.campaign === "launch10" ? "launch10" : "";
+  const writeParams = new URLSearchParams();
+  if (searchParams?.submit === "1") writeParams.set("submit", "1");
+  if (campaign) writeParams.set("campaign", campaign);
+  const writePath = `/write${writeParams.toString() ? `?${writeParams.toString()}` : ""}`;
+
   if (user && !(await isAdultConfirmedUser(supabase, user.id))) {
-    const submitQuery = searchParams?.submit === "1" ? "?submit=1" : "";
-    redirect(getAdultGateRedirectPath(`/write${submitQuery}`));
+    redirect(getAdultGateRedirectPath(writePath));
   }
 
-  return <WriteForm userId={user?.id ?? null} />;
+  return <WriteForm userId={user?.id ?? null} campaign={campaign} />;
 }

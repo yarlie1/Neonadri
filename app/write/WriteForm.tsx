@@ -39,7 +39,7 @@ declare global {
   }
 }
 
-export default function WriteForm({ userId }: { userId: string | null }) {
+export default function WriteForm({ userId, campaign = "" }: { userId: string | null; campaign?: string }) {
   const router = useRouter();
 
   const searchInputRef = useRef<HTMLInputElement | null>(null);
@@ -64,6 +64,7 @@ export default function WriteForm({ userId }: { userId: string | null }) {
 
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [campaignCode, setCampaignCode] = useState(campaign);
 
   const fieldClass =
     "w-full rounded-[8px] border border-[#111111] bg-white px-4 py-3 pl-12 text-sm text-[#111111] outline-none transition focus:border-[#111111] focus:ring-1 focus:/35";
@@ -259,7 +260,9 @@ export default function WriteForm({ userId }: { userId: string | null }) {
 
   const handleOpenMapPicker = () => {
     markReturnFromMap();
-    router.push("/write/location?returnTo=/write");
+    const returnTo =
+      campaignCode === "launch10" ? "/write?campaign=launch10" : "/write";
+    router.push(`/write/location?returnTo=${encodeURIComponent(returnTo)}`);
   };
 
   const handleMeetingDateChange = (value: string) => {
@@ -306,7 +309,9 @@ export default function WriteForm({ userId }: { userId: string | null }) {
 
     if (!userId) {
       markRestoreDraft();
-      router.push(`/login?next=${encodeURIComponent("/write?submit=1")}`);
+      const loginNext =
+        campaignCode === "launch10" ? "/write?submit=1&campaign=launch10" : "/write?submit=1";
+      router.push(`/login?next=${encodeURIComponent(loginNext)}`);
       return;
     }
 
@@ -339,7 +344,9 @@ export default function WriteForm({ userId }: { userId: string | null }) {
         if (!res.ok) {
           if (res.status === 401) {
             markRestoreDraft();
-            router.push(`/login?next=${encodeURIComponent("/write?submit=1")}`);
+            const loginNext =
+              campaignCode === "launch10" ? "/write?submit=1&campaign=launch10" : "/write?submit=1";
+            router.push(`/login?next=${encodeURIComponent(loginNext)}`);
             return;
           }
 
@@ -360,7 +367,16 @@ export default function WriteForm({ userId }: { userId: string | null }) {
           : "/dashboard");
 
       clearDraft();
-      router.push(nextPath);
+      if (campaignCode === "launch10") {
+        const dashboardParams = new URLSearchParams({
+          tab: "posts",
+          post_success: "launch10",
+        });
+        if (createdPost?.id) dashboardParams.set("post_id", String(createdPost.id));
+        router.push(`/dashboard?${dashboardParams.toString()}`);
+      } else {
+        router.push(nextPath);
+      }
       router.refresh();
     } catch (e) {
       setSaving(false);
@@ -373,6 +389,8 @@ export default function WriteForm({ userId }: { userId: string | null }) {
     if (typeof window === "undefined") return;
 
     const params = new URLSearchParams(window.location.search);
+    const queryCampaign = params.get("campaign");
+    if (queryCampaign) setCampaignCode(queryCampaign);
     if (params.get("submit") !== "1") return;
 
     autoSubmitAttemptedRef.current = true;
