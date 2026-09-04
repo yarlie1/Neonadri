@@ -4,8 +4,8 @@ import { getLaunchRewardStatus } from "../../lib/launchReward";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const campaignSignupHref = "/signup?intent=host&next=/write%3Fcampaign%3Dlaunch10";
-const regularSignupHref = "/signup?intent=host&next=/write";
+const campaignLoginHref = "/login?next=/write%3Fcampaign%3Dlaunch10";
+const regularLoginHref = "/login?next=/write";
 
 const steps = [
   {
@@ -47,7 +47,7 @@ export default async function RewardPage() {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link
-              href={regularSignupHref}
+              href={regularLoginHref}
               style={{ color: "#ffffff" }}
               className="inline-flex items-center justify-center rounded-[10px] border border-[#111111] bg-[#111111] px-7 py-4 text-base font-black transition hover:bg-[#333333]"
             >
@@ -93,7 +93,7 @@ export default async function RewardPage() {
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link
-            href={campaignSignupHref}
+            href={campaignLoginHref}
             style={{ color: "#ffffff" }}
             className="inline-flex items-center justify-center rounded-[10px] border border-[#111111] bg-[#111111] px-7 py-4 text-base font-black transition hover:bg-[#333333]"
           >
@@ -148,7 +148,7 @@ export default async function RewardPage() {
 
         <div className="mt-8">
           <Link
-            href={campaignSignupHref}
+            href={campaignLoginHref}
             style={{ color: "#ffffff" }}
             className="inline-flex w-full items-center justify-center rounded-[10px] border border-[#111111] bg-[#111111] px-7 py-4 text-base font-black transition hover:bg-[#333333] sm:w-auto"
           >
