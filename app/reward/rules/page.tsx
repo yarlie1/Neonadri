@@ -13,7 +13,7 @@ const rules = [
   "Neonadri may review account, email, claim email, post content, IP, device, and related activity patterns to help prevent abuse.",
   "Shared IP address or device signals do not automatically make a participant ineligible, but suspicious or duplicate activity may require review.",
   "Feedback is completely optional and does not affect reward eligibility.",
-  "Approved rewards are expected to be delivered through Tremendous.",
+  "Approved rewards are expected to be delivered as a $10 digital reward through Tremendous.",
   "This promotion is not sponsored, endorsed, administered by, or associated with Reddit, Nextdoor, or any other third-party platform where this promotion may appear.",
   "Neonadri may end, pause, or update this campaign if the reward spots are filled, abuse is detected, or operational issues require it.",
 ];
