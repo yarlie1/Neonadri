@@ -64,7 +64,7 @@ export default function LaunchRewardClaimBox({
           "Your Launch Reward claim has been received."
         ) : (
           <>
-            If you already sent the reward claim email, you are all set. If you closed it,{" "}
+            If you already sent the reward claim email, you are all set. If you have not sent it yet,{" "}
             <button
               type="button"
               onClick={openClaimEmail}
