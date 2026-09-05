@@ -70,6 +70,7 @@ export async function POST(req: Request) {
       benefit_amount: body.benefit_amount,
       latitude: body.latitude,
       longitude: body.longitude,
+      campaign_code: body.campaign_code === "launch10" ? "launch10" : null,
     };
 
     const { data, error } = await supabase

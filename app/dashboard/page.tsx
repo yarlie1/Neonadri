@@ -21,6 +21,7 @@ export type PostRow = {
   status: string | null;
   cancelled_at: string | null;
   cancelled_by_user_id: string | null;
+  campaign_code?: string | null;
 };
 
 export type MatchRequestRow = {
@@ -48,6 +49,13 @@ export type MatchChatMetaRow = {
   last_seen_by_guest_at: string | null;
   host_user_id: string;
   guest_user_id: string;
+};
+
+export type LaunchRewardClaimRow = {
+  id: number;
+  post_id: number;
+  status: string;
+  created_at: string;
 };
 
 export type ProfileRow = {
@@ -121,12 +129,12 @@ export default async function DashboardPage() {
       : "/beta?next=/write";
   }
 
-  const [postsRes, receivedRes, sentRes, matchesRes, reviewsRes, cancellationFeedbackRes] =
+  const [postsRes, receivedRes, sentRes, matchesRes, reviewsRes, cancellationFeedbackRes, launchRewardClaimsRes] =
     await Promise.all([
     supabase
       .from("posts")
       .select(
-        "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, status, cancelled_at, cancelled_by_user_id"
+        "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, status, cancelled_at, cancelled_by_user_id, campaign_code"
       )
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
@@ -158,6 +166,14 @@ export default async function DashboardPage() {
       .from("meetup_cancellation_feedback")
       .select("id, match_id, feedback_user_id, created_at")
       .eq("feedback_user_id", user.id),
+
+    supabase
+      .from("launch_reward_claims")
+      .select("id, post_id, status, created_at")
+      .eq("user_id", user.id)
+      .eq("campaign_code", "launch10")
+      .neq("status", "rejected")
+      .order("created_at", { ascending: false }),
   ]);
 
   const posts = (postsRes.data || []) as PostRow[];
@@ -167,6 +183,8 @@ export default async function DashboardPage() {
   const reviews = (reviewsRes.data || []) as MatchReviewRow[];
   const cancellationFeedback =
     (cancellationFeedbackRes.data || []) as CancellationFeedbackRow[];
+  const launchRewardClaims =
+    (launchRewardClaimsRes.data || []) as LaunchRewardClaimRow[];
   let matchChatMetaMap: Record<number, MatchChatMetaRow> = {};
   let matchSummaryMap: Record<
     number,
@@ -220,7 +238,7 @@ export default async function DashboardPage() {
     const { data: relatedPostsData } = await supabase
       .from("posts")
       .select(
-        "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, status, cancelled_at, cancelled_by_user_id"
+        "id, user_id, place_name, location, meeting_time, duration_minutes, meeting_purpose, benefit_amount, target_gender, target_age_group, created_at, status, cancelled_at, cancelled_by_user_id, campaign_code"
       )
       .in("id", relatedPostIds);
 
@@ -276,6 +294,7 @@ export default async function DashboardPage() {
       matchChatMetaMap={matchChatMetaMap}
       initialUserTimeZone={initialUserTimeZone}
       initialCreateHref={initialCreateHref}
+      launchRewardClaims={launchRewardClaims}
     />
   );
 }
