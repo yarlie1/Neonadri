@@ -368,16 +368,7 @@ export default function WriteForm({ userId, campaign = "" }: { userId: string | 
           : "/dashboard");
 
       clearDraft();
-      if (campaignCode === "launch10") {
-        const dashboardParams = new URLSearchParams({
-          tab: "posts",
-          post_success: "launch10",
-        });
-        if (createdPost?.id) dashboardParams.set("post_id", String(createdPost.id));
-        router.push(`/dashboard?${dashboardParams.toString()}`);
-      } else {
-        router.push(nextPath);
-      }
+      router.push(nextPath);
       router.refresh();
     } catch (e) {
       setSaving(false);

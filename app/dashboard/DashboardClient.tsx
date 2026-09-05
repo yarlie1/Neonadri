@@ -12,7 +12,7 @@ import {
   HeartHandshake,
   Star,
 } from "lucide-react";
-import type { LaunchRewardClaimRow, MatchChatMetaRow, MatchRow, MatchRequestRow, PostRow } from "./page";
+import type { MatchChatMetaRow, MatchRow, MatchRequestRow, PostRow } from "./page";
 import { getMeetingStatus, parseMeetingTime } from "../../lib/meetingTime";
 import { formatPersonMeta } from "../../lib/genderLabels";
 import { buildPostPath } from "../../lib/postUrl";
@@ -457,7 +457,6 @@ export default function DashboardClient({
   matchChatMetaMap,
   initialUserTimeZone,
   initialCreateHref,
-  launchRewardClaims,
 }: {
   userId: string;
   posts: PostRow[];
@@ -477,13 +476,11 @@ export default function DashboardClient({
   matchChatMetaMap: Record<number, MatchChatMetaRow>;
   initialUserTimeZone: string;
   initialCreateHref: string;
-  launchRewardClaims: LaunchRewardClaimRow[];
 }) {
   const createHref = useCreateMeetupHref(true, initialCreateHref);
   const supabase = createClient();
   const router = useRouter();
   const previousActiveTabRef = useRef<string | null>(null);
-  const rewardClaimInitializedRef = useRef(false);
   const refreshInFlightRef = useRef(false);
   const refreshQueuedRef = useRef(false);
   const [liveReceivedItems, setLiveReceivedItems] = useState(requestsReceived);
@@ -546,106 +543,6 @@ export default function DashboardClient({
     initialUserTimeZone,
   });
   const currentUserMeta = liveProfileMetaMap[userId] || "";
-  const [showRewardClaim, setShowRewardClaim] = useState(false);
-  const [rewardClaimPostId, setRewardClaimPostId] = useState<number | null>(null);
-  const [claimingReward, setClaimingReward] = useState(false);
-  const [rewardClaimOpened, setRewardClaimOpened] = useState(false);
-  const [rewardClaimMailto, setRewardClaimMailto] = useState("");
-  const [rewardClaimMessage, setRewardClaimMessage] = useState("");
-
-  const rewardClaimPost = useMemo(() => {
-    if (rewardClaimPostId === null) return posts[0];
-    return posts.find((post) => post.id === rewardClaimPostId) || posts[0];
-  }, [posts, rewardClaimPostId]);
-
-  const rewardClaimPostPath = useMemo(() => {
-    if (!rewardClaimPost?.id) return "/dashboard";
-    return buildPostPath(
-      rewardClaimPost.id,
-      rewardClaimPost.meeting_purpose,
-      rewardClaimPost.place_name || rewardClaimPost.location
-    );
-  }, [rewardClaimPost]);
-
-  useEffect(() => {
-    if (rewardClaimInitializedRef.current) return;
-    rewardClaimInitializedRef.current = true;
-
-    const params = new URLSearchParams(window.location.search);
-    const postId = params.get("post_id");
-
-    if (params.get("post_success") === "launch10") {
-      setShowRewardClaim(true);
-      setRewardClaimPostId(postId ? Number(postId) : null);
-      return;
-    }
-
-    const activeClaim = launchRewardClaims.find((claim) => claim.status === "reserved");
-    if (activeClaim) {
-      setShowRewardClaim(true);
-      setRewardClaimPostId(activeClaim.post_id);
-      setRewardClaimOpened(true);
-      return;
-    }
-
-    const claimedPostIds = new Set(launchRewardClaims.map((claim) => claim.post_id));
-    const unclaimedRewardPost = posts.find(
-      (post) => post.campaign_code === "launch10" && !claimedPostIds.has(post.id)
-    );
-
-    if (unclaimedRewardPost) {
-      setShowRewardClaim(true);
-      setRewardClaimPostId(unclaimedRewardPost.id);
-    }
-  }, [launchRewardClaims, posts]);
-
-  const handleRewardClaim = async () => {
-    if (!rewardClaimPost?.id) {
-      setRewardClaimMessage("Could not find the meetup for this Launch Reward claim.");
-      return;
-    }
-
-    setClaimingReward(true);
-    setRewardClaimMessage("");
-
-    try {
-      const response = await fetch("/api/reward/claim", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ postId: rewardClaimPost.id }),
-      });
-      const result = await response.json();
-
-      if (!response.ok) {
-        setRewardClaimMessage(result.error || "Could not claim this Launch Reward right now.");
-        return;
-      }
-
-      if (result.mailto) {
-        setRewardClaimMailto(result.mailto);
-        setRewardClaimOpened(true);
-        window.location.href = result.mailto;
-        window.setTimeout(() => {
-          router.push(rewardClaimPostPath);
-        }, 700);
-      }
-    } catch (error) {
-      setRewardClaimMessage(error instanceof Error ? error.message : "Something went wrong.");
-    } finally {
-      setClaimingReward(false);
-    }
-  };
-
-  const reopenRewardClaimEmail = () => {
-    if (rewardClaimMailto) {
-      window.location.href = rewardClaimMailto;
-      return;
-    }
-
-    void handleRewardClaim();
-  };
 
   useEffect(() => {
     if (previousActiveTabRef.current === activeTab) return;
@@ -1033,58 +930,6 @@ export default function DashboardClient({
         {showCancellationFeedbackSuccess && (
           <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#333333] shadow-none`}>
             Cancellation feedback submitted successfully.
-          </div>
-        )}
-
-        {showRewardClaim && (
-          <div className="border border-[#111111] bg-white p-5 text-[#111111] shadow-none">
-            <div className="text-[11px] font-black uppercase tracking-[0.16em] text-[#111111]">
-              Launch Reward
-            </div>
-            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#111111]">
-              Your Meetup is Live!
-            </h2>
-            <p className="mt-3 text-sm font-semibold leading-6 text-[#333333]">
-              {rewardClaimOpened
-                ? "Your claim email is ready. If you already sent it, you're all set. If you closed the email draft, open it again below."
-                : "Want your $10 Neonadri Launch Reward? Click below to claim it. Limited to the first 100 eligible participants."}
-            </p>
-            <p className="mt-2 text-sm font-semibold leading-6 text-[#333333]">
-              Feedback is completely optional and does not affect your eligibility for the reward.
-            </p>
-            {rewardClaimMessage && (
-              <p className="mt-4 rounded-[8px] border border-[#111111] bg-[#fff6f7] px-4 py-3 text-sm font-semibold leading-6 text-[#b44f5b]">
-                {rewardClaimMessage}
-              </p>
-            )}
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={rewardClaimOpened ? reopenRewardClaimEmail : handleRewardClaim}
-                disabled={claimingReward}
-                style={{ color: "#ffffff" }}
-                className="inline-flex items-center justify-center rounded-[8px] border border-[#111111] bg-[#111111] px-5 py-3 text-sm font-black transition hover:bg-[#333333] disabled:opacity-50"
-              >
-                {claimingReward
-                  ? "Checking..."
-                  : rewardClaimOpened
-                  ? "Open Claim Email Again"
-                  : "Claim My $10"}
-              </button>
-              <Link
-                href={rewardClaimPostPath}
-                className="inline-flex items-center justify-center rounded-[8px] border border-[#111111] bg-white px-5 py-3 text-sm font-black text-[#111111] transition hover:bg-[#f5f5f5]"
-              >
-                View Meetup
-              </Link>
-              <button
-                type="button"
-                onClick={() => setShowRewardClaim(false)}
-                className="inline-flex items-center justify-center rounded-[8px] border border-[#111111] bg-white px-5 py-3 text-sm font-black text-[#111111] transition hover:bg-[#f5f5f5]"
-              >
-                Dismiss
-              </button>
-            </div>
           </div>
         )}
         <div className="flex flex-wrap items-end justify-between gap-3">

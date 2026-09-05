@@ -21,10 +21,12 @@ import {
   USER_TIME_ZONE_COOKIE,
 } from "../../../lib/userTimeZone";
 import { getChatWindowState } from "../../../lib/chat/chatWindow";
+import { getLaunchRewardStatus } from "../../../lib/launchReward";
 import MatchRequestBox from "./MatchRequestBox";
 import OwnerMatchPanel from "./OwnerMatchPanel";
 import DeletePostButton from "./DeletePostButton";
 import CancelMeetupButton from "./CancelMeetupButton";
+import LaunchRewardClaimBox from "./LaunchRewardClaimBox";
 import PostDistanceNote from "./PostDistanceNote";
 import ScrollReveal from "./ScrollReveal";
 import {
@@ -257,7 +259,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
   const { data: postData, error: postError } = await supabase
     .from("posts")
     .select(
-      "id, user_id, created_at, place_name, location, meeting_time, duration_minutes, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude, status, cancelled_at, cancelled_by_user_id, admin_hidden"
+      "id, user_id, created_at, place_name, location, meeting_time, duration_minutes, target_gender, target_age_group, meeting_purpose, benefit_amount, latitude, longitude, status, cancelled_at, cancelled_by_user_id, admin_hidden, campaign_code"
     )
     .eq("id", id)
     .maybeSingle();
@@ -602,6 +604,29 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     !hasCancellationFeedback;
 
   const isViewerHost = user?.id === post.user_id;
+  let shouldShowLaunchRewardClaim = false;
+  let launchRewardClaimStatus: string | null = null;
+
+  if (isViewerHost && user?.id && !isCancelled) {
+    const { data: existingClaim } = await supabase
+      .from("launch_reward_claims")
+      .select("id, post_id, status")
+      .eq("user_id", user.id)
+      .eq("campaign_code", "launch10")
+      .neq("status", "rejected")
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    if (existingClaim?.post_id === post.id) {
+      launchRewardClaimStatus = existingClaim.status || null;
+      shouldShowLaunchRewardClaim = true;
+    } else if (!existingClaim) {
+      const rewardStatus = await getLaunchRewardStatus();
+      shouldShowLaunchRewardClaim = !rewardStatus.isFull;
+    }
+  }
+
   const matchedRecordId = matchedRecord?.id ?? null;
   const shouldShowHostProfileCard = !isViewerHost;
   const shouldShowUpcomingMeetupCard = !isViewerHost;
@@ -740,6 +765,15 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       <div className="mx-auto max-w-5xl space-y-5">
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(320px,360px)] lg:items-start">
           <div className="space-y-5">
+            {shouldShowLaunchRewardClaim ? (
+              <ScrollReveal>
+                <LaunchRewardClaimBox
+                  postId={post.id}
+                  initialClaimStatus={launchRewardClaimStatus}
+                />
+              </ScrollReveal>
+            ) : null}
+
             <ScrollReveal>
               <MeetupOverviewCard
                 isPostMatched={isPostMatched}

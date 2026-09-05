@@ -88,11 +88,26 @@ export async function POST(req: Request) {
       );
     }
 
+    let claimPostId = postId;
+
+    if (claim.reason === "already_reserved" && claim.claim_id) {
+      const { data: existingClaim } = await supabase
+        .from("launch_reward_claims")
+        .select("post_id")
+        .eq("id", Number(claim.claim_id))
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (existingClaim?.post_id) {
+        claimPostId = Number(existingClaim.post_id);
+      }
+    }
+
     const [{ data: post }, { data: profile }] = await Promise.all([
       supabase
         .from("posts")
         .select("id, meeting_purpose, place_name, location")
-        .eq("id", postId)
+        .eq("id", claimPostId)
         .single(),
       supabase
         .from("profiles")
@@ -104,7 +119,7 @@ export async function POST(req: Request) {
     const origin = (process.env.APP_BASE_URL || new URL(req.url).origin).replace(/\/+$/, "");
     const postPath = post
       ? buildPostPath(post.id, post.meeting_purpose, post.place_name || post.location)
-      : `/posts/${postId}`;
+      : `/posts/${claimPostId}`;
     const username =
       profile?.display_name?.trim() ||
       (profile?.username?.trim() ? `@${profile.username.trim()}` : "") ||

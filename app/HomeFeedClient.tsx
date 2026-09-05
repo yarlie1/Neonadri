@@ -267,6 +267,21 @@ export default function HomeFeedClient({
             </div>
           </div>
 
+          <Link
+            href="/reward"
+            className="block rounded-[8px] border border-[#111111] bg-white px-4 py-4 text-[#111111] transition hover:bg-[#f7f7f7]"
+          >
+            <div className="text-[11px] font-black uppercase tracking-[0.14em]">
+              LA Launch Reward
+            </div>
+            <div className="mt-1 text-lg font-black tracking-[-0.03em]">
+              Post a meetup. Claim a $10 digital reward.
+            </div>
+            <div className="mt-1 text-sm font-semibold leading-5 text-[#555555]">
+              First 100 eligible participants. Terms apply.
+            </div>
+          </Link>
+
           <div className="relative px-1">
             <HomeFilterRail
               matchState={matchState}
