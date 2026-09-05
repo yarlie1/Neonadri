@@ -276,14 +276,14 @@ export default function HomeFeedClient({
                 <div className="text-[10px] font-black uppercase tracking-[0.18em] text-[#d6d6d6]">
                   LA Launch Reward
                 </div>
-                <div className="mt-2 text-xl font-black leading-[1.05] tracking-[-0.03em] sm:text-2xl">
+                <div className="mt-2 text-xl font-black leading-[1.05] tracking-[-0.03em] text-[#ffffff] sm:text-2xl">
                   Post a meetup. Claim $10.
                 </div>
                 <div className="mt-2 text-sm font-semibold leading-5 text-[#d6d6d6]">
                   First 100 eligible participants. Terms apply.
                 </div>
               </div>
-              <div className="shrink-0 rounded-full border border-white px-3 py-1 text-xs font-black transition group-hover:bg-white group-hover:text-[#111111]">
+              <div className="shrink-0 rounded-full border border-white px-3 py-1 text-xs font-black text-[#ffffff] transition group-hover:bg-white group-hover:text-[#111111]">
                 View
               </div>
             </div>
