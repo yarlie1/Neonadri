@@ -5,9 +5,11 @@ import { buildPostPath } from "../../../../lib/postUrl";
 const LAUNCH_REWARD_CLAIM_EMAIL = "hello@neonadri.net";
 
 function buildRewardClaimMailto({
+  username,
   postUrl,
   claimId,
 }: {
+  username: string;
   postUrl: string;
   claimId: number;
 }) {
@@ -18,6 +20,7 @@ function buildRewardClaimMailto({
     "I posted my first meetup and would like to claim my $10 Launch Reward.",
     "",
     `Claim ID: ${claimId}`,
+    `Username: ${username}`,
     `Post URL: ${postUrl}`,
     "",
     "Optional - We'd love to hear what you think about Neonadri.",
@@ -85,17 +88,31 @@ export async function POST(req: Request) {
       );
     }
 
-    const { data: post } = await supabase
-      .from("posts")
-      .select("id, meeting_purpose, place_name, location")
-      .eq("id", postId)
-      .single();
+    const [{ data: post }, { data: profile }] = await Promise.all([
+      supabase
+        .from("posts")
+        .select("id, meeting_purpose, place_name, location")
+        .eq("id", postId)
+        .single(),
+      supabase
+        .from("profiles")
+        .select("display_name, username")
+        .eq("id", user.id)
+        .single(),
+    ]);
 
     const origin = (process.env.APP_BASE_URL || new URL(req.url).origin).replace(/\/+$/, "");
     const postPath = post
       ? buildPostPath(post.id, post.meeting_purpose, post.place_name || post.location)
       : `/posts/${postId}`;
+    const username =
+      profile?.display_name?.trim() ||
+      (profile?.username?.trim() ? `@${profile.username.trim()}` : "") ||
+      user.email ||
+      "Unknown";
+
     const mailto = buildRewardClaimMailto({
+      username,
       postUrl: `${origin}${postPath}`,
       claimId: Number(claim.claim_id),
     });
