@@ -55,6 +55,7 @@ export default function PrivacyPage() {
             "We may review meetup, message, profile, report, account, promotion, or related activity information where reasonably necessary to detect unsafe, fraudulent, abusive, or prohibited behavior.",
             "Technical or activity signals may be considered as part of an abuse or fraud review.",
             "A shared IP address or similar technical signal alone does not necessarily establish fraud or misuse.",
+            "This may include:",
           ],
           bullets: [
             "attempts to offer money for attendance, time, companionship, romantic access, sexual access, or personal interaction;",
@@ -71,7 +72,6 @@ export default function PrivacyPage() {
           paragraphs: [
             "When you participate in a Neonadri promotion, we may process information reasonably necessary to receive and review your claim, determine eligibility, prevent duplicate or fraudulent participation, communicate with you about the promotion, deliver a reward, and maintain records reasonably necessary for administration, accounting, dispute resolution, fraud prevention, or legal compliance.",
             "Unless the rules of a particular promotion clearly state otherwise, participation in optional product feedback or research is voluntary.",
-            "For the Neonadri $10 Launch Reward, providing feedback is optional and does not affect reward eligibility.",
           ],
         },
         {
@@ -80,7 +80,6 @@ export default function PrivacyPage() {
             "We may share information with service providers that help us operate Neonadri, such as providers supporting infrastructure, hosting, communications, security, analytics, mapping, or other operational functions.",
             "When necessary to deliver a promotional reward, we may share limited information, such as your name, email address, reward amount, and related fulfillment information, with a reward provider such as Tremendous.",
             "We may also share information when required by law or legal process, or where reasonably necessary to protect safety, rights, users, or platform integrity.",
-            "We do not need to publicly expose all information we process. Some information is used internally for safety, moderation, fraud prevention, account operations, and enforcement.",
           ],
         },
         {
