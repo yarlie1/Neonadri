@@ -269,16 +269,23 @@ export default function HomeFeedClient({
 
           <Link
             href="/reward"
-            className="block rounded-[8px] border border-[#111111] bg-white px-4 py-4 text-[#111111] transition hover:bg-[#f7f7f7]"
+            className="group block overflow-hidden rounded-[8px] border border-[#111111] bg-[#111111] px-4 py-4 text-white transition hover:bg-[#262626]"
           >
-            <div className="text-[11px] font-black uppercase tracking-[0.14em]">
-              LA Launch Reward
-            </div>
-            <div className="mt-1 text-lg font-black tracking-[-0.03em]">
-              Post a meetup. Claim a $10 digital reward.
-            </div>
-            <div className="mt-1 text-sm font-semibold leading-5 text-[#555555]">
-              First 100 eligible participants. Terms apply.
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-[10px] font-black uppercase tracking-[0.18em] text-[#d6d6d6]">
+                  LA Launch Reward
+                </div>
+                <div className="mt-2 text-xl font-black leading-[1.05] tracking-[-0.03em] sm:text-2xl">
+                  Post a meetup. Claim $10.
+                </div>
+                <div className="mt-2 text-sm font-semibold leading-5 text-[#d6d6d6]">
+                  First 100 eligible participants. Terms apply.
+                </div>
+              </div>
+              <div className="shrink-0 rounded-full border border-white px-3 py-1 text-xs font-black transition group-hover:bg-white group-hover:text-[#111111]">
+                View
+              </div>
             </div>
           </Link>
 
