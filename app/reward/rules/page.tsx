@@ -179,7 +179,7 @@ export default function RewardRulesPage() {
         </p>
 
         <p className="mt-3 text-sm font-semibold leading-6 text-[#555555]">
-          Last updated: September 15, 2026
+          Last updated: September 5, 2026
         </p>
 
         <div className="mt-8 divide-y divide-[#111111] border-y border-[#111111]">

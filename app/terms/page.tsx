@@ -6,7 +6,7 @@ export default function TermsPage() {
       eyebrow="Terms"
       title="Neonadri Terms of Service"
       intro='These Terms of Service ("Terms") govern your access to and use of Neonadri ("Neonadri"), an adults-only social meetup service operated by an individual owner ("we," "our," or "us"). By accessing or using Neonadri, you agree to these Terms.'
-      lastUpdated="September 15, 2026"
+      lastUpdated="September 5, 2026"
       sections={[
         {
           title: "1. Eligibility",

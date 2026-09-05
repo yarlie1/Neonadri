@@ -6,7 +6,7 @@ export default function PrivacyPage() {
       eyebrow="Privacy"
       title="Neonadri Privacy Policy"
       intro='This Privacy Policy explains how Neonadri, an independently operated social meetup service ("Neonadri," "we," "our," or "us"), collects, uses, shares, and retains information in connection with the service.'
-      lastUpdated="September 15, 2026"
+      lastUpdated="September 5, 2026"
       sections={[
         {
           title: "1. Information We Collect",
