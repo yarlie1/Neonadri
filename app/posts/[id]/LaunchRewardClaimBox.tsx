@@ -64,7 +64,7 @@ export default function LaunchRewardClaimBox({
           "Your Launch Reward claim has been received."
         ) : (
           <>
-            If you already sent the email, you are all set. If you closed it,{" "}
+            If you already sent the reward claim email, you are all set. If you closed it,{" "}
             <button
               type="button"
               onClick={openClaimEmail}
@@ -73,7 +73,7 @@ export default function LaunchRewardClaimBox({
             >
               {claiming ? "opening..." : "click here"}
             </button>
-            .
+            . After review, eligible rewards are sent through Tremendous.
           </>
         )}
         {message ? <span className="block text-[#555555]">{message}</span> : null}
