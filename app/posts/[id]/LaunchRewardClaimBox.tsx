@@ -16,6 +16,7 @@ export default function LaunchRewardClaimBox({
 
   const claimAlreadyComplete =
     initialClaimStatus === "approved" || initialClaimStatus === "reward_sent";
+  const showCompactClaimState = claimOpened || claimAlreadyComplete;
 
   const openClaimEmail = async () => {
     if (mailto) {
@@ -44,7 +45,6 @@ export default function LaunchRewardClaimBox({
       if (result.mailto) {
         setMailto(result.mailto);
         setClaimOpened(true);
-        setMessage("Email draft opened. Send it to submit your claim.");
         window.location.href = result.mailto;
       }
     } catch (error) {
@@ -53,6 +53,30 @@ export default function LaunchRewardClaimBox({
       setClaiming(false);
     }
   };
+
+  if (showCompactClaimState) {
+    return (
+      <div className="rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm font-semibold leading-6 text-[#333333]">
+        {claimAlreadyComplete ? (
+          "Your Launch Reward claim has been received."
+        ) : (
+          <>
+            If you already sent the email, you are all set. If you closed it,{" "}
+            <button
+              type="button"
+              onClick={openClaimEmail}
+              disabled={claiming}
+              className="font-black text-[#111111] underline underline-offset-4 disabled:opacity-50"
+            >
+              {claiming ? "opening..." : "click here"}
+            </button>
+            .
+          </>
+        )}
+        {message ? <span className="block text-[#555555]">{message}</span> : null}
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-[8px] border border-[#111111] bg-white p-5 text-[#111111] shadow-none">
@@ -63,27 +87,17 @@ export default function LaunchRewardClaimBox({
         Claim your $10 reward
       </h2>
       <p className="mt-2 text-sm font-semibold leading-6 text-[#333333]">
-        {claimAlreadyComplete
-          ? "Your Launch Reward claim has been received."
-          : claimOpened
-          ? "If you already sent the email, you're all set. If you closed it, open it again."
-          : "First 100 eligible participants. Feedback is optional."}
+        First 100 eligible participants. Feedback is optional.
       </p>
-      {!claimAlreadyComplete ? (
-        <button
-          type="button"
-          onClick={openClaimEmail}
-          disabled={claiming}
-          style={{ color: "#ffffff" }}
-          className="mt-4 inline-flex w-full items-center justify-center rounded-[8px] border border-[#111111] bg-[#111111] px-5 py-3 text-sm font-black transition hover:bg-[#333333] disabled:opacity-50 sm:w-auto"
-        >
-          {claiming
-            ? "Checking..."
-            : claimOpened
-            ? "Open Claim Email Again"
-            : "Claim $10 Reward"}
-        </button>
-      ) : null}
+      <button
+        type="button"
+        onClick={openClaimEmail}
+        disabled={claiming}
+        style={{ color: "#ffffff" }}
+        className="mt-4 inline-flex w-full items-center justify-center rounded-[8px] border border-[#111111] bg-[#111111] px-5 py-3 text-sm font-black transition hover:bg-[#333333] disabled:opacity-50 sm:w-auto"
+      >
+        {claiming ? "Checking..." : "Claim $10 Reward"}
+      </button>
       {message ? (
         <p className="mt-3 text-sm font-semibold leading-6 text-[#555555]">
           {message}
