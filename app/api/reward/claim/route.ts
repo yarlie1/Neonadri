@@ -5,13 +5,9 @@ import { buildPostPath } from "../../../../lib/postUrl";
 const LAUNCH_REWARD_CLAIM_EMAIL = "hello@neonadri.net";
 
 function buildRewardClaimMailto({
-  userId,
-  postId,
   postUrl,
   claimId,
 }: {
-  userId: string;
-  postId: number;
   postUrl: string;
   claimId: number;
 }) {
@@ -21,9 +17,7 @@ function buildRewardClaimMailto({
     "",
     "I posted my first meetup and would like to claim my $10 Launch Reward.",
     "",
-    `Launch Reward claim ID: ${claimId}`,
-    `Neonadri user ID: ${userId}`,
-    `Post ID: ${postId}`,
+    `Claim ID: ${claimId}`,
     `Post URL: ${postUrl}`,
     "",
     "Optional - We'd love to hear what you think about Neonadri.",
@@ -102,8 +96,6 @@ export async function POST(req: Request) {
       ? buildPostPath(post.id, post.meeting_purpose, post.place_name || post.location)
       : `/posts/${postId}`;
     const mailto = buildRewardClaimMailto({
-      userId: user.id,
-      postId,
       postUrl: `${origin}${postPath}`,
       claimId: Number(claim.claim_id),
     });
