@@ -57,6 +57,9 @@ export default function LaunchRewardClaimBox({
   if (showCompactClaimState) {
     return (
       <div className="rounded-[8px] border border-[#111111] bg-white px-4 py-3 text-sm font-semibold leading-6 text-[#333333]">
+        <div className="mb-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#111111]">
+          Launch Reward Claim
+        </div>
         {claimAlreadyComplete ? (
           "Your Launch Reward claim has been received."
         ) : (
