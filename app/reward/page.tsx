@@ -33,7 +33,7 @@ export default async function RewardPage() {
             Los Angeles Launch Campaign
           </div>
 
-          <h1 className="mt-5 max-w-2xl text-[52px] font-black leading-[0.96] tracking-[-0.05em] sm:text-[76px]">
+          <h1 className="mt-5 max-w-2xl text-[42px] font-black leading-[0.98] tracking-[-0.03em] sm:text-[76px]">
             All 100 Launch Reward spots are currently claimed.
           </h1>
 
@@ -79,8 +79,9 @@ export default async function RewardPage() {
           Los Angeles Launch Campaign
         </div>
 
-        <h1 className="mt-5 max-w-2xl text-[58px] font-black leading-[0.94] tracking-[-0.05em] sm:text-[82px]">
-          Post a Meetup. Get $10.
+        <h1 className="mt-5 max-w-2xl text-[44px] font-black leading-[0.98] tracking-[-0.03em] sm:text-[82px] sm:leading-[0.94] sm:tracking-[-0.05em]">
+          <span className="block whitespace-nowrap">Post a Meetup.</span>
+          <span className="block whitespace-nowrap">Get $10.</span>
         </h1>
 
         <p className="mt-6 max-w-2xl text-[22px] font-bold leading-[1.35] text-[#333333]">
