@@ -50,7 +50,7 @@ export async function POST(req: Request) {
       if (rewardStatus.isFull) {
         return NextResponse.json(
           {
-            error: "All 100 Launch Reward spots are currently claimed. You can still create a regular meetup, but this $10 Launch Reward is no longer accepting new campaign participants.",
+            error: rewardStatus.displayMessage,
             reason: "launch_reward_full",
           },
           { status: 409 }

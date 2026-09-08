@@ -605,6 +605,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
 
   const isViewerHost = user?.id === post.user_id;
   let shouldShowLaunchRewardClaim = false;
+  let launchRewardDisplayMessage = "First 100 eligible participants.";
   let launchRewardClaimStatus: string | null = null;
 
   if (isViewerHost && user?.id && !isCancelled) {
@@ -624,6 +625,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
     } else if (!existingClaim) {
       const rewardStatus = await getLaunchRewardStatus();
       shouldShowLaunchRewardClaim = !rewardStatus.isFull;
+      launchRewardDisplayMessage = rewardStatus.displayMessage;
     }
   }
 
@@ -770,6 +772,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                 <LaunchRewardClaimBox
                   postId={post.id}
                   initialClaimStatus={launchRewardClaimStatus}
+                  availabilityMessage={launchRewardDisplayMessage}
                 />
               </ScrollReveal>
             ) : null}

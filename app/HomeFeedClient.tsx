@@ -1,5 +1,6 @@
 "use client";
 
+import type { LaunchRewardStatus } from "../lib/launchRewardStatus";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -73,6 +74,7 @@ export default function HomeFeedClient({
   initialUserTimeZone,
   isLoggedIn,
   initialCreateHref,
+  rewardStatus,
 }: {
   initialPosts: PostRow[];
   hostProfileMap: HostProfileMap;
@@ -82,6 +84,7 @@ export default function HomeFeedClient({
   isLoggedIn: boolean;
   postingBetaRequired: boolean;
   initialCreateHref: string;
+  rewardStatus: LaunchRewardStatus;
 }) {
   const userTimeZone = useMemo(() => initialUserTimeZone, [initialUserTimeZone]);
   const createHref = useCreateMeetupHref(isLoggedIn, initialCreateHref);
@@ -277,10 +280,10 @@ export default function HomeFeedClient({
                   LA Launch Reward
                 </div>
                 <div className="mt-2 text-xl font-black leading-[1.05] tracking-[-0.03em] text-[#ffffff] sm:text-2xl">
-                  Post a meetup. Claim $10.
+                  {rewardStatus.isFull ? rewardStatus.displayMessage : "Post a meetup. Claim $10."}
                 </div>
                 <div className="mt-2 text-sm font-semibold leading-5 text-[#d6d6d6]">
-                  First 100 eligible participants. Terms apply.
+                  {rewardStatus.isFull ? "You can still post a meetup and meet someone new." : `${rewardStatus.displayMessage} Terms apply.`}
                 </div>
               </div>
               <div className="shrink-0 rounded-full border border-white px-3 py-1 text-xs font-black text-[#ffffff] transition group-hover:bg-white group-hover:text-[#111111]">

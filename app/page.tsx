@@ -7,6 +7,7 @@ import {
   isPostingAccessAllowedForEmail,
   isPostingBetaRequired,
 } from "../lib/postingAccess";
+import { getLaunchRewardStatus } from "../lib/launchReward";
 import HomeFeedClient from "./HomeFeedClient";
 
 type PostRow = {
@@ -197,6 +198,7 @@ export default async function HomePage() {
 
   return (
     <HomeFeedClient
+      rewardStatus={await getLaunchRewardStatus()}
       initialPosts={posts}
       hostProfileMap={hostProfileMap}
       matchSummaryMap={matchSummaryMap}

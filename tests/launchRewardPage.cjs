@@ -1,0 +1,6 @@
+const fs=require('fs'),vm=require('vm'),ts=require('typescript'),React=require('react'),{renderToStaticMarkup}=require('react-dom/server'),assert=require('node:assert/strict');
+function load(file,deps){const exports={};vm.runInNewContext(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true}}).outputText,{exports,require:name=>deps[name]||require(name)});return exports;}
+const {buildLaunchRewardStatus}=load('lib/launchRewardStatus.ts',{});
+let current;
+const Page=load('app/reward/page.tsx',{'../../lib/launchReward':{getLaunchRewardStatus:async()=>current},'next/link':({children,...props})=>React.createElement('a',props,children)}).default;
+(async()=>{for(const [active,finalized] of [[1,0],[70,0],[92,85],[100,85],[100,100]]){current=buildLaunchRewardStatus(active,finalized);const html=renderToStaticMarkup(await Page());assert.ok(html.includes(current.displayMessage));if(active<100)assert.ok(html.includes('href="/write?campaign=launch10"'));else {assert.ok(!html.includes('href="/write?campaign=launch10"'));assert.ok(html.includes('href="/write"'));}if(finalized===100)assert.ok(!html.includes('If a reserved claim is rejected'));}console.log('PASS: rendered reward page copy and CTAs for all five stages');})().catch(e=>{console.error(e);process.exitCode=1;});

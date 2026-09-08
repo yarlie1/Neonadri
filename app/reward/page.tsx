@@ -34,7 +34,7 @@ export default async function RewardPage() {
           </div>
 
           <h1 className="mt-5 max-w-2xl text-[42px] font-black leading-[0.98] tracking-[-0.03em] sm:text-[76px]">
-            All 100 Launch Reward spots are currently claimed.
+            {rewardStatus.displayMessage}
           </h1>
 
           <p className="mt-6 max-w-2xl text-[22px] font-bold leading-[1.35] text-[#333333]">
@@ -64,7 +64,7 @@ export default async function RewardPage() {
 
           <section className="mt-16 border-y border-[#111111] py-6">
             <p className="text-base font-semibold leading-7 text-[#555555]">
-              Reward spots are counted by valid reward claim submissions. If any reserved claim is rejected during review, Neonadri may reopen the campaign or contact the next eligible participant at its discretion.
+              {rewardStatus.isFinalized ? "All 100 rewards have been approved. Thank you for participating." : "If a reserved claim is rejected during review, a spot may become available again."}
             </p>
           </section>
         </div>
@@ -110,7 +110,7 @@ export default async function RewardPage() {
         </div>
 
         <p className="mt-5 text-base font-semibold text-[#666666]">
-          First 100 eligible participants. Terms apply.
+          {rewardStatus.displayMessage} Terms apply.
         </p>
 
         <section className="mt-16 border-t border-[#111111] pt-10">

@@ -36,7 +36,7 @@ export default async function WritePage({
               Launch Reward
             </div>
             <h1 className="mt-5 max-w-2xl text-[46px] font-black leading-[0.98] tracking-[-0.05em] sm:text-[64px]">
-              All 100 Launch Reward spots are currently claimed.
+              {rewardStatus.displayMessage}
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-semibold leading-8 text-[#555555]">
               This campaign is no longer accepting new $10 Launch Reward participants. You can still create a regular meetup on Neonadri.

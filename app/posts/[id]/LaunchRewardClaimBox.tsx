@@ -5,9 +5,11 @@ import { useState } from "react";
 export default function LaunchRewardClaimBox({
   postId,
   initialClaimStatus,
+  availabilityMessage,
 }: {
   postId: number;
   initialClaimStatus?: string | null;
+  availabilityMessage: string;
 }) {
   const [claiming, setClaiming] = useState(false);
   const [claimOpened, setClaimOpened] = useState(initialClaimStatus === "reserved");
@@ -90,7 +92,7 @@ export default function LaunchRewardClaimBox({
         Claim your $10 reward
       </h2>
       <p className="mt-2 text-sm font-semibold leading-6 text-[#333333]">
-        First 100 eligible participants. Feedback is optional.
+        {availabilityMessage} Feedback is optional.
       </p>
       <button
         type="button"
