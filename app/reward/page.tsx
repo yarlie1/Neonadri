@@ -155,7 +155,7 @@ export default async function RewardPage() {
             style={{ color: "#ffffff" }}
             className="inline-flex w-full items-center justify-center rounded-[10px] border border-[#111111] bg-[#111111] px-7 py-4 text-base font-black transition hover:bg-[#333333] sm:w-auto"
           >
-            Post Your Meetup
+            Post a Meetup & Get $10
           </Link>
         </div>
       </div>
