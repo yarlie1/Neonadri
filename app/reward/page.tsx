@@ -14,7 +14,7 @@ const steps = [
   },
   {
     title: "Claim Your $10",
-    body: "After posting, send us a quick email to claim your reward.",
+    body: "After posting, use the claim button to reserve an available spot, then send the claim email for eligibility review.",
   },
   {
     title: "Get Your $10",
@@ -85,11 +85,11 @@ export default async function RewardPage() {
         </h1>
 
         <p className="mt-6 max-w-2xl text-[22px] font-bold leading-[1.35] text-[#333333]">
-          We're looking for our first 100 LA users.
+          Help launch small social meetups in Los Angeles.
         </p>
 
         <p className="mt-3 max-w-2xl text-lg font-semibold leading-8 text-[#555555]">
-          Post your first qualifying meetup on Neonadri and receive a $10 Launch Reward.
+          Post your first qualifying meetup in Los Angeles County and claim a $10 digital reward through Tango after eligibility review.
         </p>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -110,7 +110,11 @@ export default async function RewardPage() {
         </div>
 
         <p className="mt-5 text-base font-semibold text-[#666666]">
-          {rewardStatus.displayMessage} Terms apply.
+          {rewardStatus.displayMessage} U.S. residents 18+ only. One reward per person. No purchase necessary. Terms apply.
+        </p>
+
+        <p className="mt-3 text-base font-semibold leading-7 text-[#555555]">
+          Starts September 15, 2026 at 12:00 a.m. Pacific Time. Ends October 15, 2026 at 11:59 p.m. Pacific Time, or earlier if all 100 rewards are approved. Qualifying posts and claim emails must be submitted during this period.
         </p>
 
         <section className="mt-16 border-t border-[#111111] pt-10">
@@ -140,7 +144,7 @@ export default async function RewardPage() {
 
         <section className="mt-5 border border-[#111111] p-6">
           <p className="text-base font-semibold leading-7 text-[#555555]">
-            Limited to the first 100 eligible participants who submit a valid reward claim after posting a qualifying meetup.
+            Limited to the first 100 eligible participants, in reservation order. A reserved spot counts even before the claim email is sent and does not automatically expire. Email your claim during the promotion period for review; a reservation does not guarantee a reward.
           </p>
           <p className="mt-3 text-base font-semibold leading-7 text-[#555555]">
             Feedback is completely optional and does not affect your eligibility for the reward.

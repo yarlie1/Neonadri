@@ -45,8 +45,8 @@ const sections: RuleSection[] = [
     bullets: [
       "Create or sign in to your Neonadri account.",
       "Post your first qualifying meetup on Neonadri during the Promotion Period.",
-      "After posting, submit a reward claim email to hello@neonadri.net during the Promotion Period.",
-      "Submitting a meetup alone does not reserve or guarantee a Launch Reward. A valid reward claim must also be received.",
+      "After posting, use the reward claim button on your meetup page during the Promotion Period to reserve an available spot. Then send the claim email to hello@neonadri.net during the Promotion Period so Neonadri can review your eligibility.",
+      "Posting a meetup alone does not reserve a spot. A successful reservation counts toward the 100-spot limit even if you have not yet sent the claim email. Reservations do not automatically expire. A reservation does not guarantee payment; a valid claim email and eligibility review are required.",
     ],
   },
   {
@@ -72,9 +72,9 @@ const sections: RuleSection[] = [
     title: "8. First 100 Eligible Participants",
     paragraphs: [
       "A total of 100 Launch Rewards are available.",
-      "Reward claims will be considered in the order they are received by Neonadri.",
-      "Claim order is determined by the time Neonadri receives the valid reward claim email, not by the time the meetup was posted.",
-      "If a claim is determined to be ineligible, the next eligible claim received will be considered until 100 eligible participants have been approved or the Promotion otherwise ends in accordance with these Official Rules.",
+      "Available reward spots are reserved in the order successful reservations are recorded by Neonadri.",
+      "Spot order is determined by the reservation timestamp recorded by Neonadri, not by when the claim email is received or the meetup is posted.",
+      "If a claim is rejected as ineligible, its reservation no longer counts toward the 100-spot limit. A spot may become available for a new reservation while the Promotion remains open.",
       "Submitting a claim does not guarantee a reward until eligibility has been verified.",
     ],
   },
@@ -109,8 +109,8 @@ const sections: RuleSection[] = [
     title: "12. Reward Availability",
     paragraphs: [
       "The Promotion is limited to 100 eligible reward recipients.",
-      "Neonadri may display an estimate of reward availability while the Promotion is active. Because claims may be pending verification or rejected as ineligible, any displayed availability count is informational and may not reflect final eligibility determinations.",
-      "Once all available reward spots are pending verification, Neonadri may stop accepting additional reward claims or place additional claims on a waiting list.",
+      "Displayed availability counts reserved claims, including reservations without a claim email, approved claims, and rewards already sent. Rejected claims are excluded. These counts reflect occupied spots, not final eligibility determinations.",
+      "When all 100 spots are occupied, new reservations are blocked. Existing reservations do not automatically expire, and participants may still send their claim email during the Promotion Period. Final approval remains subject to these Official Rules.",
     ],
   },
   {
@@ -138,6 +138,7 @@ const sections: RuleSection[] = [
     title: "15. Third-Party Platforms",
     paragraphs: [
       "This Promotion is offered solely by Neonadri.",
+      "To the extent permitted by applicable law, each participant releases Reddit from liability related to this Promotion.",
       "It is not sponsored, endorsed, administered by, or associated with Reddit, Nextdoor, Meta, Instagram, Facebook, or any other third-party platform on which the Promotion may be advertised or discussed.",
       "Any questions regarding the Promotion should be directed to Neonadri, not to those platforms.",
     ],
