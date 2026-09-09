@@ -58,6 +58,7 @@ export default function WriteForm({ userId, campaign = "" }: { userId: string | 
   const [targetAgeGroup, setTargetAgeGroup] = useState("");
   const [benefitAmount, setBenefitAmount] = useState("");
   const [benefitConfirmed, setBenefitConfirmed] = useState(false);
+  const requiresCostConfirmation = !!benefitAmount && benefitAmount !== "$0";
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [locationConfirmed, setLocationConfirmed] = useState(false);
@@ -302,7 +303,7 @@ export default function WriteForm({ userId, campaign = "" }: { userId: string | 
       return;
     }
 
-    if (benefitAmount && !benefitConfirmed) {
+    if (requiresCostConfirmation && !benefitConfirmed) {
       setMessage("Confirm the cost note.");
       return;
     }
@@ -629,7 +630,7 @@ export default function WriteForm({ userId, campaign = "" }: { userId: string | 
             The host who creates the meetup must cover the listed activity cost. Activity costs only. Never pay for attendance or time.
           </div>
 
-          {benefitAmount && (
+          {requiresCostConfirmation && (
             <label
               className={`${APP_SOFT_CARD_CLASS} grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 px-4 py-3 text-sm ${APP_MUTED_TEXT_CLASS}`}
             >
@@ -651,7 +652,7 @@ export default function WriteForm({ userId, campaign = "" }: { userId: string | 
         <button
           type="button"
           onClick={handleCreate}
-          disabled={saving || (!!benefitAmount && !benefitConfirmed)}
+          disabled={saving || (requiresCostConfirmation && !benefitConfirmed)}
           className={`mt-6 w-full rounded-[8px] ${APP_BUTTON_PRIMARY_CLASS} py-4 text-base font-semibold disabled:opacity-50`}
         >
           {saving ? "Creating..." : "Create Meetup"}

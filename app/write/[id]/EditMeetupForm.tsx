@@ -99,6 +99,7 @@ export default function EditMeetupForm({
   const [benefitConfirmed, setBenefitConfirmed] = useState(
     !!initialPost.benefit_amount
   );
+  const requiresCostConfirmation = !!benefitAmount && benefitAmount !== "$0";
   const [latitude, setLatitude] = useState(initialPost.latitude ?? null);
   const [longitude, setLongitude] = useState(initialPost.longitude ?? null);
   const [locationConfirmed, setLocationConfirmed] = useState(
@@ -220,10 +221,6 @@ export default function EditMeetupForm({
   }, [meetingTime]);
 
   useEffect(() => {
-    setBenefitConfirmed(!!benefitAmount && benefitAmount === (initialPost.benefit_amount || ""));
-  }, [benefitAmount, initialPost.benefit_amount]);
-
-  useEffect(() => {
     if (!window.google || !searchInputRef.current) return;
 
     if (!autocompleteRef.current) {
@@ -319,7 +316,7 @@ export default function EditMeetupForm({
       return;
     }
 
-    if (benefitAmount && !benefitConfirmed) {
+    if (requiresCostConfirmation && !benefitConfirmed) {
       setMessage("Confirm the cost note.");
       return;
     }
@@ -598,7 +595,7 @@ export default function EditMeetupForm({
             The host who creates the meetup must cover the listed activity cost. Activity costs only. Never pay for attendance, time, or companionship.
           </div>
 
-          {benefitAmount && (
+          {requiresCostConfirmation && (
             <label className={`grid grid-cols-[18px_minmax(0,1fr)] items-start gap-3 ${APP_SOFT_CARD_CLASS} px-4 py-3 text-sm ${APP_MUTED_TEXT_CLASS}`}>
               <input
                 type="checkbox"
@@ -618,7 +615,7 @@ export default function EditMeetupForm({
         <div className="mt-6 flex gap-2">
           <button
             onClick={handleSave}
-            disabled={saving || (!!benefitAmount && !benefitConfirmed)}
+            disabled={saving || (requiresCostConfirmation && !benefitConfirmed)}
             className={`flex-1 rounded-[8px] ${APP_BUTTON_PRIMARY_CLASS} py-4 text-base font-semibold disabled:opacity-50`}
           >
             {saving ? "Saving..." : "Save Meetup"}
