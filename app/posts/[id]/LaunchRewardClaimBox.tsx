@@ -75,7 +75,7 @@ export default function LaunchRewardClaimBox({
             >
               {claiming ? "opening..." : "click here"}
             </button>
-            . After review, eligible rewards are sent through Tremendous.
+            . After review, eligible rewards are sent through Tango. Look for an email from Tango Card, and check your Promotions or Spam folder if you don’t see it.
           </>
         )}
         {message ? <span className="block text-[#555555]">{message}</span> : null}

@@ -83,7 +83,7 @@ const sections: RuleSection[] = [
     paragraphs: [
       "Each approved participant will receive one $10 digital reward.",
       "Rewards will be delivered electronically to the email address associated with the participant's valid reward claim or Neonadri account.",
-      "Neonadri may use a third-party reward provider, such as Tremendous, to fulfill rewards. Redemption options may be subject to the reward provider's applicable terms and availability.",
+      "Neonadri may use a third-party reward provider, such as Tango, to fulfill rewards. Redemption options may be subject to the reward provider's applicable terms and availability.",
       "Rewards are generally expected to be sent within 3-5 business days after eligibility is verified.",
       "No participant will be required to pay Neonadri a fee to receive the $10 Launch Reward.",
     ],
@@ -179,7 +179,7 @@ export default function RewardRulesPage() {
         </p>
 
         <p className="mt-3 text-sm font-semibold leading-6 text-[#555555]">
-          Last updated: September 5, 2026
+          Last updated: September 9, 2026
         </p>
 
         <div className="mt-8 divide-y divide-[#111111] border-y border-[#111111]">

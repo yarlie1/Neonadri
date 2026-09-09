@@ -6,7 +6,7 @@ export default function PrivacyPage() {
       eyebrow="Privacy"
       title="Neonadri Privacy Policy"
       intro='This Privacy Policy explains how Neonadri, an independently operated social meetup service ("Neonadri," "we," "our," or "us"), collects, uses, shares, and retains information in connection with the service.'
-      lastUpdated="September 5, 2026"
+      lastUpdated="September 9, 2026"
       sections={[
         {
           title: "1. Information We Collect",
@@ -78,7 +78,7 @@ export default function PrivacyPage() {
           title: "6. Sharing Information",
           paragraphs: [
             "We may share information with service providers that help us operate Neonadri, such as providers supporting infrastructure, hosting, communications, security, analytics, mapping, or other operational functions.",
-            "When necessary to deliver a promotional reward, we may share limited information, such as your name, email address, reward amount, and related fulfillment information, with a reward provider such as Tremendous.",
+            "When necessary to deliver a promotional reward, we may share limited information, such as your name, email address, reward amount, and related fulfillment information, with a reward provider such as Tango.",
             "We may also share information when required by law or legal process, or where reasonably necessary to protect safety, rights, users, or platform integrity.",
           ],
         },
