@@ -109,14 +109,6 @@ export default async function RewardPage() {
           </Link>
         </div>
 
-        <p className="mt-5 text-base font-semibold text-[#666666]">
-          {rewardStatus.displayMessage} U.S. residents 18+ only. One reward per person. No purchase necessary. Terms apply.
-        </p>
-
-        <p className="mt-3 text-base font-semibold leading-7 text-[#555555]">
-          Starts September 15, 2026 at 12:00 a.m. Pacific Time. Ends October 15, 2026 at 11:59 p.m. Pacific Time, or earlier if all 100 rewards are approved. Qualifying posts and claim emails must be submitted during this period.
-        </p>
-
         <section className="mt-16 border-t border-[#111111] pt-10">
           <h2 className="text-[32px] font-black tracking-[-0.04em]">How It Works</h2>
 
@@ -144,7 +136,13 @@ export default async function RewardPage() {
 
         <section className="mt-5 border border-[#111111] p-6">
           <p className="text-base font-semibold leading-7 text-[#555555]">
-            Limited to the first 100 eligible participants, in reservation order. A reserved spot counts even before the claim email is sent and does not automatically expire. Email your claim during the promotion period for review; a reservation does not guarantee a reward.
+            {rewardStatus.displayMessage} U.S. residents 18+ only. One reward per person. No purchase necessary. Terms apply.
+          </p>
+          <p className="mt-3 text-base font-semibold leading-7 text-[#555555]">
+            Starts September 15, 2026 at 12:00 a.m. Pacific Time. Ends October 15, 2026 at 11:59 p.m. Pacific Time, or earlier if all 100 rewards are approved. Qualifying posts and claim emails must be submitted during this period.
+          </p>
+          <p className="mt-3 text-base font-semibold leading-7 text-[#555555]">
+            Spots are allocated in reservation order, up to 100 eligible participants. A reserved spot counts even before the claim email is sent and does not automatically expire. Email your claim during the promotion period for review; a reservation does not guarantee a reward.
           </p>
           <p className="mt-3 text-base font-semibold leading-7 text-[#555555]">
             Feedback is completely optional and does not affect your eligibility for the reward.
