@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Script from "next/script";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
@@ -10,14 +9,7 @@ import {
   Send,
   ShieldCheck,
 } from "lucide-react";
-import {
-  APP_BUTTON_SECONDARY_CLASS,
-  APP_EYEBROW_CLASS,
-  APP_MUTED_TEXT_CLASS,
-  APP_PAGE_BG_CLASS,
-  APP_SOFT_CARD_CLASS,
-  APP_SURFACE_CARD_CLASS,
-} from "../../designSystem";
+
 
 declare global {
   interface Window {
@@ -420,7 +412,7 @@ export default function ChatRoomClient({
   };
 
   return (
-    <main className={`${APP_PAGE_BG_CLASS} px-4 py-4 text-[#2f2a26] sm:px-6 sm:py-6`}>
+    <main className="bg-white px-3 py-4 text-[#111111] sm:px-6 sm:py-6">
       <Script
         src="https://cdn.pubnub.com/sdk/javascript/pubnub.10.2.8.js"
         strategy="afterInteractive"
@@ -431,161 +423,107 @@ export default function ChatRoomClient({
           setErrorMessage("Chat connection failed.");
         }}
       />
-      <div className="mx-auto max-w-3xl">
-        <div className={`${APP_SURFACE_CARD_CLASS} rounded-[8px] p-4 sm:p-5`}>
-          {isProviderConfigured ? (
-            <>
-              <div className="border-b border-[#111111] pb-3">
-                <div className="flex items-center justify-between gap-3 text-xs font-medium text-[#7a8790]">
-                  <span className={APP_EYEBROW_CLASS}>
-                    {chatClosed ? "Read-only chat" : "Live chat"}
-                  </span>
-                </div>
-                <div className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm ${APP_MUTED_TEXT_CLASS}`}>
-                  <span className="inline-flex items-center gap-2 font-semibold text-[#111111]">
-                    <span
-                      className={`inline-flex h-2.5 w-2.5 rounded-[8px] ${
-                        isOtherUserActiveNow ? "bg-[#4e9d62]" : "bg-[#b6aea7]"
-                      }`}
-                      aria-hidden="true"
-                    />
-                    {otherUserName}
-                  </span>
-                  <span>{meetingTimeLabel}</span>
-                  <span className="truncate">{placeLabel}</span>
-                </div>
+      <div className="mx-auto max-w-3xl overflow-hidden bg-white sm:rounded-2xl sm:border sm:border-[#e5e5e5]">
+        {isProviderConfigured ? (
+          <>
+            <header className="border-b border-[#ededed] px-2 pb-4 pt-1 sm:px-6 sm:pt-5">
+              <div className="flex items-center gap-2.5">
+                <span
+                  className={`h-2 w-2 shrink-0 rounded-full ${isOtherUserActiveNow ? "bg-[#43885b]" : "bg-[#b0b0b0]"}`}
+                  role="img"
+                  aria-label={presenceLabel}
+                  title={presenceLabel}
+                />
+                <h1 className="min-w-0 break-words text-xl font-bold tracking-tight text-[#111111]">{otherUserName}</h1>
+                {chatClosed ? <span className="ml-auto shrink-0 text-xs text-[#737373]">Read-only</span> : null}
               </div>
+              <p className="mt-1.5 break-words pl-[18px] text-[13px] leading-5 text-[#666666]">
+                {meetingTimeLabel}<span className="px-2" aria-hidden="true">·</span>{placeLabel}
+              </p>
+            </header>
 
-              <div
-                ref={listRef}
-                className="mt-4 h-[315px] overflow-y-auto rounded-[8px] border border-[#111111] bg-white px-3 py-3 sm:h-[345px] sm:px-4"
-              >
-                {historyLoading ? (
-                  <div className="flex h-full flex-col items-center justify-center px-6 text-center text-sm text-[#7a8790]">
-                    <LoaderCircle className="h-8 w-8 animate-spin text-[#9aa6ad]" />
-                    <div className="mt-3 font-medium text-[#333333]">
-                      Loading conversation...
-                    </div>
-                    <div className="mt-1 max-w-xs leading-6">
-                      Pulling saved messages for this meetup chat.
-                    </div>
-                  </div>
-                ) : messages.length > 0 ? (
-                  <div className="space-y-3">
-                    {messages.map((message) => {
-                      const isMine = message.senderId === currentUserId;
-                      return (
-                        <div
-                          key={message.id}
-                          className={`flex items-end gap-2 ${isMine ? "justify-end" : "justify-start"}`}
-                        >
-                          {isMine ? (
-                            <span className="shrink-0 text-[10px] font-medium text-[#859199]">
-                              {formatMessageTime(message.createdAt)}
-                            </span>
-                          ) : null}
-                          <div
-                            className={`max-w-[82%] rounded-[8px] px-4 py-3 text-sm leading-6 shadow-none ${
-                              isMine
-                                ? "border border-[#111111] bg-white text-[#273740] shadow-none"
-                                : "border border-[#111111] bg-white text-[#4c5b64]"
-                            }`}
-                          >
-                            <div className="whitespace-pre-wrap break-words">{message.text}</div>
+            <div
+              ref={listRef}
+              role="log"
+              aria-label="Conversation"
+              aria-live="polite"
+              aria-relevant="additions"
+              aria-busy={historyLoading}
+              tabIndex={0}
+              className="h-[clamp(320px,55dvh,600px)] overflow-y-auto overscroll-contain px-1 py-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#999999] sm:px-6 sm:py-6"
+            >
+              {historyLoading ? (
+                <div className="flex h-full flex-col items-center justify-center gap-3 text-sm text-[#737373]">
+                  <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />
+                  Loading conversation…
+                </div>
+              ) : messages.length > 0 ? (
+                <div className="space-y-4">
+                  {messages.map((message) => {
+                    const isMine = message.senderId === currentUserId;
+                    return (
+                      <div key={message.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+                        <div className="min-w-0 max-w-[88%] sm:max-w-[78%]">
+                          <div className={`whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-2xl px-4 py-3 text-[15px] leading-[1.6] ${
+                            isMine
+                              ? "rounded-br-sm bg-[#202020] text-white"
+                              : "rounded-bl-sm bg-[#f1f1f1] text-[#222222]"
+                          }`}>
+                            {message.text}
                           </div>
-                          {!isMine ? (
-                            <span className="shrink-0 text-[10px] font-medium text-[#859199]">
-                              {formatMessageTime(message.createdAt)}
-                            </span>
-                          ) : null}
+                          <time dateTime={message.createdAt} className={`mt-1 block px-1 text-[11px] leading-4 text-[#737373] ${isMine ? "text-right" : "text-left"}`}>
+                            <span className="sr-only">{isMine ? "You" : message.senderName}, </span>
+                            {formatMessageTime(message.createdAt)}
+                          </time>
                         </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="flex h-full flex-col items-center justify-center px-6 text-center text-sm text-[#7a8790]">
-                    <MessageSquareMore className="h-8 w-8 text-[#9aa6ad]" />
-                    <div className="mt-3 font-medium text-[#333333]">
-                      {chatClosed ? "No saved messages" : "No messages yet"}
-                    </div>
-                    <div className="mt-1 max-w-xs leading-6">
-                      {chatClosed
-                        ? "This conversation is now read-only."
-                        : "Say hello or confirm details."}
-                    </div>
-                  </div>
-                )}
-              </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center gap-2 px-6 text-center text-sm text-[#737373]">
+                  <MessageSquareMore className="mb-1 h-6 w-6 text-[#aaaaaa]" aria-hidden="true" />
+                  <p className="font-medium text-[#333333]">{chatClosed ? "No saved messages" : "No messages yet"}</p>
+                  <p>{chatClosed ? "This conversation is now read-only." : "Say hello or confirm details."}</p>
+                </div>
+              )}
+            </div>
 
-              <div className={`mt-4 rounded-[8px] p-2 sm:p-3 ${APP_SOFT_CARD_CLASS}`}>
-                <div className="flex gap-2">
+            <div className="border-t border-[#ededed] pt-3 pb-1 sm:px-5 sm:pb-5">
+              {chatClosed ? (
+                <p className="px-2 py-2 text-sm leading-6 text-[#666666]">{chatClosedMessage} You can still read previous messages here.</p>
+              ) : (
+                <div className="flex items-end gap-2 rounded-2xl border border-[#dedede] bg-white p-1.5 focus-within:border-[#777777]">
                   <textarea
                     value={draft}
                     onChange={(event) => setDraft(event.target.value)}
                     onKeyDown={handleDraftKeyDown}
-                    disabled={chatClosed}
-                    placeholder={
-                      chatClosed ? chatClosedMessage : `Message ${otherUserName}...`
-                    }
-                    className={`h-[56px] min-h-[56px] flex-1 resize-none rounded-[8px] border px-4 py-[17px] text-sm leading-5 outline-none transition placeholder:text-[#96a2aa] ${
-                      chatClosed
-                        ? "cursor-not-allowed border-[#111111] bg-white text-[#333333]"
-                        : "border-[#111111] bg-white text-[#2f3a42] focus:border-[#111111] focus:bg-[#ffffff]"
-                    }`}
+                    aria-label={`Message ${otherUserName}`}
+                    placeholder={`Message ${otherUserName}…`}
+                    rows={2}
+                    style={{ border: 0, boxShadow: "none", fontSize: 16, padding: "8px 12px" }}
+                    className="min-h-[48px] min-w-0 flex-1 resize-none border-0 bg-transparent px-3 py-2 text-base leading-6 text-[#222222] outline-none placeholder:text-[#888888]"
                   />
                   <button
                     type="button"
                     onClick={() => void handleSend()}
                     disabled={!canSend}
-                    className={`inline-flex h-[56px] shrink-0 items-center gap-2 self-end rounded-[8px] px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${APP_BUTTON_SECONDARY_CLASS}`}
+                    aria-label={sending ? "Sending message" : "Send message"}
+                    className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#202020] text-white transition hover:bg-[#3a3a3a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111] disabled:cursor-not-allowed disabled:bg-[#e8e8e8] disabled:text-[#999999]"
                   >
-                    {sending ? (
-                      <LoaderCircle className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Send className="h-4 w-4" />
-                    )}
-                    Send
+                    {sending ? <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" /> : <Send className="h-5 w-5" aria-hidden="true" />}
                   </button>
                 </div>
-              </div>
-
-              {chatClosed ? (
-                <div className="mt-3 rounded-[14px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#333333]">
-                  {chatClosedMessage} You can still read previous messages here.
-                </div>
-              ) : null}
-
-              {errorMessage && (
-                <div className="mt-3 rounded-[14px] border border-[#111111] bg-white px-4 py-3 text-sm text-[#333333]">
-                  {errorMessage}
-                </div>
               )}
-
-              <div className="mt-4 text-center text-[11px] font-medium text-[#333333]">
-                Live Chat Powered by PubNub
-              </div>
-            </>
-          ) : (
-            <div className={`rounded-[8px] px-4 py-4 ${APP_SOFT_CARD_CLASS}`}>
-              <div className="flex items-start gap-3">
-                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#333333]" />
-                <div className="text-sm leading-6 text-[#333333]">
-                  Chat is ready, but PubNub keys are not configured yet.
-                </div>
-              </div>
+              {errorMessage ? <p role="alert" className="mt-2 px-2 text-sm leading-5 text-[#a12c2c]">{errorMessage}</p> : null}
             </div>
-          )}
-
-        </div>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Link
-            href="/dashboard?tab=matches"
-            className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-medium transition ${APP_BUTTON_SECONDARY_CLASS}`}
-          >
-            Back to Matches
-          </Link>
-        </div>
+          </>
+        ) : (
+          <div className="flex items-start gap-3 px-5 py-6 text-sm leading-6 text-[#666666]">
+            <ShieldCheck className="mt-1 h-4 w-4 shrink-0" aria-hidden="true" />
+            Chat is currently unavailable. Please try again later.
+          </div>
+        )}
       </div>
     </main>
   );
