@@ -717,7 +717,7 @@ export function MeetupFeedCard({
 }) {
   const cardClassName = `block w-full max-w-full overflow-hidden rounded-[8px] border shadow-none transition active:scale-[0.995] ${
         isExpired
-          ? "border-[#111111] bg-white"
+          ? "border-[#111111] bg-[#f3f3f3]"
           : "border-[#111111] bg-white hover:-translate-y-0.5 hover:shadow-none"
       } ${onClick ? "w-full cursor-pointer text-left" : ""} ${className}`;
   const resolvedHref =
