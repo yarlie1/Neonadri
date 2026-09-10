@@ -471,7 +471,7 @@ export default function ChatRoomClient({
                     return (
                       <div key={message.id} className={`flex items-start gap-2 ${isMine ? "justify-end" : "justify-start"}`}>
                         {isMine && message.readReceiptVersion === 1 && checkedIds.has(message.id) && !readIds.has(message.id) ? (
-                          <span role="img" aria-label="Not yet read" title="Not yet read" className="mt-5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#737373]" />
+                          <span role="img" aria-label="Not yet read" title="Not yet read" className="mb-7 h-1.5 w-1.5 shrink-0 self-end rounded-full bg-[#737373]" />
                         ) : null}
                         <div className="min-w-0 max-w-[88%] sm:max-w-[78%]">
                           <div data-receipt-id={!isMine && message.readReceiptVersion === 1 ? message.id : undefined} className={`whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-2xl px-4 py-3 text-[15px] leading-[1.6] ${
