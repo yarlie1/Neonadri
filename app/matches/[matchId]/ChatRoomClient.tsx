@@ -1,6 +1,7 @@
 "use client";
 
 import Script from "next/script";
+import { useReadReceipts } from "./useReadReceipts";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import {
@@ -24,6 +25,7 @@ declare global {
             senderId?: string;
             senderName?: string;
             createdAt?: string;
+            readReceiptVersion?: number;
           };
           timetoken: string;
         }) => void;
@@ -44,6 +46,7 @@ type ChatMessage = {
   senderId: string;
   senderName: string;
   createdAt: string;
+  readReceiptVersion?: number;
 };
 
 function formatMessageTime(value: string) {
@@ -109,6 +112,8 @@ export default function ChatRoomClient({
   const pubnubRef = useRef<InstanceType<NonNullable<typeof window.PubNub>> | null>(null);
   const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
+
+  const { readIds, checkedIds } = useReadReceipts(matchId, currentUserId, messages, listRef, isProviderConfigured && !historyLoading);
 
   const subscribeKey = process.env.NEXT_PUBLIC_PUBNUB_SUBSCRIBE_KEY;
 
@@ -211,7 +216,8 @@ export default function ChatRoomClient({
         if (!text) return;
 
         pushMessage({
-          id: event.timetoken,
+          id: String(event.timetoken),
+          readReceiptVersion: payload.readReceiptVersion,
           text,
           senderId: payload.senderId || "unknown",
           senderName: payload.senderName || "Participant",
@@ -251,6 +257,7 @@ export default function ChatRoomClient({
           ? history.messages
               .map((message) => ({
                 id: String(message.id || "").trim(),
+                readReceiptVersion: message.readReceiptVersion,
                 text: String(message.text || "").trim(),
                 senderId: String(message.senderId || "unknown"),
                 senderName: String(message.senderName || "Participant"),
@@ -259,7 +266,7 @@ export default function ChatRoomClient({
               .filter((message) => message.id && message.text)
           : [];
 
-        setMessages(historyMessages);
+        setMessages((current) => Array.from(new Map([...historyMessages, ...current].map((message) => [message.id, message])).values()).sort((a, b) => a.createdAt.localeCompare(b.createdAt)));
         void markSeenIfVisible();
       } catch {
         setErrorMessage("Past messages unavailable.");
@@ -462,9 +469,12 @@ export default function ChatRoomClient({
                   {messages.map((message) => {
                     const isMine = message.senderId === currentUserId;
                     return (
-                      <div key={message.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+                      <div key={message.id} className={`flex items-start gap-2 ${isMine ? "justify-end" : "justify-start"}`}>
+                        {isMine && message.readReceiptVersion === 1 && checkedIds.has(message.id) && !readIds.has(message.id) ? (
+                          <span role="img" aria-label="Not yet read" title="Not yet read" className="mt-5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#737373]" />
+                        ) : null}
                         <div className="min-w-0 max-w-[88%] sm:max-w-[78%]">
-                          <div className={`whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-2xl px-4 py-3 text-[15px] leading-[1.6] ${
+                          <div data-receipt-id={!isMine && message.readReceiptVersion === 1 ? message.id : undefined} className={`whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-2xl px-4 py-3 text-[15px] leading-[1.6] ${
                             isMine
                               ? "rounded-br-sm bg-[#202020] text-white"
                               : "rounded-bl-sm bg-[#f1f1f1] text-[#222222]"

@@ -47,6 +47,7 @@ async function publishPubNubMessage({
     senderId: string;
     senderName: string;
     createdAt: string;
+    readReceiptVersion: number;
   };
   uuid: string;
 }) {
@@ -176,6 +177,7 @@ export async function POST(request: Request) {
     senderId: user.id,
     senderName: profileData?.display_name || "Participant",
     createdAt: now,
+    readReceiptVersion: 1,
   };
 
   let timetoken = "";

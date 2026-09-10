@@ -11,12 +11,14 @@ type PubNubHistoryEntry = {
         senderId?: string;
         senderName?: string;
         createdAt?: string;
+    readReceiptVersion?: number;
       };
   entry?: {
     text?: string;
     senderId?: string;
     senderName?: string;
     createdAt?: string;
+    readReceiptVersion?: number;
   };
   timetoken?: number | string;
 };
@@ -27,6 +29,7 @@ type HistoryMessage = {
   senderId: string;
   senderName: string;
   createdAt: string;
+  readReceiptVersion: number;
 };
 
 type PubNubHistoryResponse =
@@ -78,6 +81,7 @@ function parsePubNubHistoryPayload(payload: unknown, channel: string): HistoryMe
           String(historyEntry.timetoken || "").trim() ||
           `${message?.senderId || "unknown"}-${message?.createdAt || Date.now()}`,
         text,
+        readReceiptVersion: message?.readReceiptVersion === 1 ? 1 : 0,
         senderId: String(message?.senderId || "unknown"),
         senderName: String(message?.senderName || "Participant"),
         createdAt: String(message?.createdAt || new Date().toISOString()),
