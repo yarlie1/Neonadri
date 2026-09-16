@@ -6,6 +6,7 @@ import {
   BookOpen,
   Cake,
   Camera,
+  CalendarDays,
   Clock3,
   Coins,
   Coffee,
@@ -121,6 +122,8 @@ export function getPurposeIcon(purpose: string | null) {
     case "Photo Walk":
     case "Photo":
       return <Camera className={className} />;
+    case "Event":
+      return <CalendarDays className={className} />;
     default:
       return <MapPin className={className} />;
   }

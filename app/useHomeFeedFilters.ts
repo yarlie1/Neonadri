@@ -22,6 +22,7 @@ export const PURPOSE_OPTIONS = [
   "Study",
   "Work Together",
   "Photo Walk",
+  "Event",
 ];
 
 export const GENDER_OPTIONS = [

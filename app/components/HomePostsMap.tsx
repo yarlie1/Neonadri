@@ -92,6 +92,8 @@ const getPurposeIcon = (purpose: string | null) => {
     case "Book Talk":
     case "Book":
       return "\ud83d\udcd6";
+    case "Event":
+      return "\u{1F39F}";
     case "Photo Walk":
     case "Photo":
       return "\ud83d\udcf7";

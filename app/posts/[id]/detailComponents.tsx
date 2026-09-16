@@ -18,6 +18,7 @@ import {
   BookOpen,
   Cake,
   Camera,
+  CalendarDays,
   CheckCircle,
   Clock3,
   Coffee,
@@ -148,6 +149,8 @@ export const getPurposeIcon = (purpose: string | null, className?: string) => {
     case "Photo Walk":
     case "Photo":
       return <Camera className={iconClassName} />;
+    case "Event":
+      return <CalendarDays className={iconClassName} />;
     default:
       return <Sparkles className={iconClassName} />;
   }

@@ -3,6 +3,7 @@ import {
   BookOpen,
   Cake,
   Camera,
+  CalendarDays,
   Coffee,
   Film,
   Footprints,
@@ -37,6 +38,7 @@ export const PURPOSE_OPTIONS: ReadonlyArray<{
   { value: "Study", icon: BookOpen },
   { value: "Work Together", icon: Laptop },
   { value: "Photo Walk", icon: Camera },
+  { value: "Event", icon: CalendarDays },
 ] as const;
 
 export const PURPOSE_HELP_TEXT: Record<string, string> = {
@@ -56,6 +58,7 @@ export const PURPOSE_HELP_TEXT: Record<string, string> = {
   Study: "Focus together in a quiet place.",
   "Work Together": "Work side by side in a cafe or shared space.",
   "Photo Walk": "Walk around and take photos together.",
+  Event: "Attend a local event together.",
 };
 
 export function formatDateTimeLocalValue(date: Date) {

@@ -5,6 +5,7 @@ import {
   BookOpen,
   Cake,
   Camera,
+  CalendarDays,
   Coffee,
   CookingPot,
   Dice5,
@@ -79,6 +80,8 @@ export function getPurposeIcon(purpose: string | null, className?: string) {
     case "Photo Walk":
     case "Photo":
       return <Camera className={iconClassName} />;
+    case "Event":
+      return <CalendarDays className={iconClassName} />;
     default:
       return <MapPin className={iconClassName} />;
   }
@@ -316,6 +319,8 @@ export function getPurposeLabel(purpose: string | null) {
     case "Photo Walk":
     case "Photo":
       return "Creative hangout";
+    case "Event":
+      return "Attend an event together";
     default:
       return "Meet someone new";
   }
