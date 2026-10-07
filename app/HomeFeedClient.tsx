@@ -292,6 +292,23 @@ export default function HomeFeedClient({
             </div>
           </Link>
 
+          <Link
+            href="/discussion"
+            className="group flex items-center justify-between gap-3 rounded-[8px] border border-[#d6d6d6] bg-white px-4 py-3 text-[#111111] transition hover:border-[#111111] hover:bg-[#fafafa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111]"
+          >
+            <div className="min-w-0">
+              <div className="text-sm font-bold leading-5">
+                Simple meetups. What do you think?
+              </div>
+              <div className="mt-1 text-xs leading-5 text-[#555555]">
+                Share your thoughts. No login needed.
+              </div>
+            </div>
+            <span aria-hidden="true" className="shrink-0 text-xl transition group-hover:translate-x-1">
+              &rarr;
+            </span>
+          </Link>
+
           <div className="relative px-1">
             <HomeFilterRail
               matchState={matchState}
