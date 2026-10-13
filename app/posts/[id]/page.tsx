@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import type { Metadata } from "next";
-import { ChevronDown, MessageSquare, Sparkles, Star } from "lucide-react";
+import { ChevronDown, MessageSquare, Sparkles, Star, UserCircle2 } from "lucide-react";
 import { createClient } from "../../../lib/supabase/server";
 import { buildPostPath, extractPostIdParam } from "../../../lib/postUrl";
 import { buildProfilePath } from "../../../lib/profileUrl";
@@ -889,6 +889,19 @@ export default async function MeetupDetailPage({ params }: PageProps) {
                     <div className="mt-1 text-sm leading-6 text-[#66727a]">
                       {matchedPartner.ageGroup || "Guest"} / {matchedPartner.gender || "Guest"}
                     </div>
+                  ) : null}
+
+                  {matchedPartner ? (
+                    <Link
+                      href={buildProfilePath({
+                        id: matchedPartner.userId,
+                        username: guestProfileData?.username,
+                      })}
+                      className={`mt-3 inline-flex items-center gap-2 rounded-[8px] ${APP_BUTTON_SECONDARY_CLASS} px-4 py-2 text-sm font-medium transition`}
+                    >
+                      <UserCircle2 aria-hidden="true" className="h-4 w-4" />
+                      View Profile
+                    </Link>
                   ) : null}
 
                   <div className="mt-5 space-y-4">
