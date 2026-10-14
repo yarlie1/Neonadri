@@ -74,11 +74,6 @@ export default function DiscussionComments() {
  return <div className="mt-7">
   {topContainer && createPortal(composer(null,true),topContainer)}
   <div className="flex items-center justify-between gap-3"><h3 className="text-xl font-bold">The conversation</h3><button disabled={loading || busy} onClick={()=>load()} className="text-sm underline disabled:opacity-40">Refresh</button></div>
-  {composer()}
-  <details className="mt-2 text-xs leading-5 text-[#666666]">
-   <summary className="cursor-pointer">Comment guidelines</summary>
-   <p className="mt-2">Comments are public. Comments are identified by number and date. Don’t impersonate others or share private contact details. Spam and abuse may be hidden. A privacy-preserving connection identifier is used to limit spam: one post per 60 seconds, up to 20 per day per connection.</p>
-  </details>
   {error && !busy && <p role="alert" className="mt-3 text-sm text-red-700">{error} <button onClick={()=>load()} className="underline">Reload comments</button></p>}
   <p className="mt-5 text-xs text-[#666666]">Newest first</p>
   {!loading && !error && comments.length===0 && <p className="py-8 text-[#666666]">No comments yet. Be the first to share a thought.</p>}
@@ -92,5 +87,10 @@ export default function DiscussionComments() {
   </article>)}</div>
   {loading && <p role="status" className="py-5 text-sm">Loading comments…</p>}
   {cursor && <button disabled={loading} onClick={()=>load(cursor)} className="mt-5 rounded-lg border px-5 py-3 text-sm">Load older comments</button>}
+  {composer()}
+  <details className="mt-2 text-xs leading-5 text-[#666666]">
+   <summary className="cursor-pointer">Comment guidelines</summary>
+   <p className="mt-2">Comments are public. Comments are identified by number and date. Don’t impersonate others or share private contact details. Spam and abuse may be hidden. A privacy-preserving connection identifier is used to limit spam: one post per 60 seconds, up to 20 per day per connection.</p>
+  </details>
  </div>;
 }
