@@ -10,7 +10,7 @@ export default function DiscussionPage() {
  return <main className="mx-auto max-w-4xl px-5 py-12 text-[#111111] sm:py-20">
   <p className="text-xs font-bold uppercase tracking-[0.18em]">Neonadri · An open conversation</p>
   <h1 className="mt-6 text-5xl font-black leading-[1.02] tracking-tight sm:text-7xl">Simple meetups.<br/><span className="text-[#666666]">What do you think?</span></h1>
-  <p className="mt-7 max-w-2xl text-xl leading-8">An activity. A time. A place. One other person.<br/>We’re building a simpler way to meet people in Los Angeles — and we’d like your honest opinion.</p>
+  <p className="mt-7 max-w-2xl text-xl leading-8">An activity. A time. A place. One other person.<br/>We’re building a simpler way to meet people in Los Angeles and we’d like your honest opinion.</p>
   <div id="discussion-top-composer" className="mt-7" />
   <p className="mt-3 text-sm text-[#666666]">Read, comment, or reply. No account needed.</p>
 

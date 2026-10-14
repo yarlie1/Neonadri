@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
-import { createHmac } from "crypto";
+import { createHmac, timingSafeEqual } from "crypto";
 import { createAdminClient } from "../../../lib/supabase/admin";
 import { createClient } from "../../../lib/supabase/server";
 
-type CommentRow = {id:number;nickname:string;body:string;parent_id:number|null;hidden:boolean;created_at:string};
+type CommentRow = {id:number;nickname:string;body:string;parent_id:number|null;hidden:boolean;created_at:string;deleted_at:string|null};
 const adminDb = () => createAdminClient() as any;
+function deletionToken(id:number) {
+ const secret=process.env.SUPABASE_SERVICE_ROLE_KEY;
+ if(!secret) throw Error("Missing server configuration");
+ return createHmac("sha256",secret).update("discussion-delete-v1:"+id).digest("hex");
+}
 export const dynamic = "force-dynamic";
 async function isAdmin() {
  const db = await createClient();
@@ -22,12 +27,12 @@ export async function GET(req: Request) {
   const cursor = new URL(req.url).searchParams.get("before");
   if(cursor && !/^\d{1,15}$/.test(cursor)) return NextResponse.json({error:"Invalid page."},{status:400});
   const admin = await isAdmin();
-  let query = adminDb().from("discussion_comments").select("id,nickname,body,parent_id,hidden,created_at").order("id",{ascending:false}).limit(31);
+  let query = adminDb().from("discussion_comments").select("id,nickname,body,parent_id,hidden,created_at,deleted_at").order("id",{ascending:false}).limit(31);
   if(cursor) query=query.lt("id",Number(cursor));
   const {data,error}=await query;
   if(error) throw error;
   const rows=(data || []) as CommentRow[];
-  const comments=rows.slice(0,30).map(row=>row.hidden && !admin ? {...row,nickname:"Hidden",body:""} : row);
+  const comments=rows.slice(0,30).map(row=>row.deleted_at || (row.hidden && !admin) ? {...row,nickname:"Hidden",body:""} : row);
   return NextResponse.json({comments,admin,nextCursor:rows.length>30 ? comments[comments.length-1].id : null},{headers:{"Cache-Control":"no-store"}});
  } catch { return NextResponse.json({error:"Could not load comments. Please try again."},{status:503}); }
 }
@@ -59,7 +64,7 @@ export async function POST(req: Request) {
     if(error.message.includes("discussion_parent_unavailable")) return NextResponse.json({error:"That comment is no longer available. Please post a new comment instead."},{status:400});
     throw error;
   }
-  return NextResponse.json({id:data},{status:201});
+  return NextResponse.json({id:data,deleteToken:deletionToken(Number(data))},{status:201,headers:{"Cache-Control":"no-store"}});
  } catch {return NextResponse.json({error:"Could not post your comment. Please try again."},{status:503});}
 }
 export async function PATCH(req: Request) {
@@ -68,9 +73,29 @@ export async function PATCH(req: Request) {
   if(!await isAdmin()) return NextResponse.json({error:"Forbidden"},{status:403});
   const input=await req.json();
   if(!input || !Number.isSafeInteger(input.id) || input.id<1 || typeof input.hidden!=="boolean") return NextResponse.json({error:"Invalid request."},{status:400});
-  const {data,error}=await adminDb().from("discussion_comments").update({hidden:input.hidden}).eq("id",input.id).select("id").maybeSingle();
+  const {data,error}=await adminDb().from("discussion_comments").update({hidden:input.hidden}).eq("id",input.id).is("deleted_at",null).select("id").maybeSingle();
   if(error) throw error;
   if(!data) return NextResponse.json({error:"Comment not found."},{status:404});
   return NextResponse.json({ok:true});
  } catch {return NextResponse.json({error:"Could not update comment."},{status:503});}
+}
+
+export async function DELETE(req: Request) {
+ if(!sameOrigin(req)) return NextResponse.json({error:"Invalid origin."},{status:403});
+ try {
+  const raw=await req.text();
+  if(raw.length>1000) return NextResponse.json({error:"Invalid request."},{status:400});
+  let input;
+  try {input=JSON.parse(raw);} catch {return NextResponse.json({error:"Invalid request."},{status:400});}
+  if(!input || !Number.isSafeInteger(input.id) || input.id<1 || typeof input.deleteToken!=="string" || !/^[a-f0-9]{64}$/.test(input.deleteToken))
+   return NextResponse.json({error:"Deletion is only available in the browser that posted this comment."},{status:403});
+  if(!timingSafeEqual(Buffer.from(input.deleteToken,"hex"),Buffer.from(deletionToken(input.id),"hex")))
+   return NextResponse.json({error:"You cannot delete this comment."},{status:403});
+  const {data,error}=await adminDb().from("discussion_comments")
+   .update({body:"[deleted]",nickname:"Anonymous",hidden:true,deleted_at:new Date().toISOString()})
+   .eq("id",input.id).is("deleted_at",null).select("id").maybeSingle();
+  if(error) throw error;
+  if(!data) return NextResponse.json({error:"Comment is already deleted or unavailable."},{status:404});
+  return NextResponse.json({ok:true});
+ } catch {return NextResponse.json({error:"Could not delete comment. Please try again."},{status:503});}
 }
