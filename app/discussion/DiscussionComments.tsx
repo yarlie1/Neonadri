@@ -1,5 +1,6 @@
 "use client";
 import { createPortal } from "react-dom";
+import { orderDiscussion } from "../../lib/discussion-thread";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 type Comment = {id:number;nickname:string;body:string;parent_id:number|null;hidden:boolean;created_at:string;deleted_at:string|null};
 export default function DiscussionComments() {
@@ -30,11 +31,23 @@ export default function DiscussionComments() {
  async function load(before?:number) {
   setLoading(true); setError("");
   try {
-   const r=await fetch("/api/discussion"+(before?"?before="+before:""),{cache:"no-store"});
-   const data=await r.json();
-   if(!r.ok) throw Error(data.error);
-   setComments(old=>before ? [...old,...data.comments.filter((c:Comment)=>!old.some(o=>o.id===c.id))] : data.comments);
-   setAdmin(data.admin); setCursor(data.nextCursor);
+   const merged=new Map<number,Comment>((before?comments:[]).map(c=>[c.id,c]));
+   let pageCursor=before;
+   let nextCursor:number|null=null;
+   let isAdmin=false;
+   // Include older pages when needed so a reply never appears without its parent.
+   do {
+    const r=await fetch("/api/discussion"+(pageCursor?"?before="+pageCursor:""),{cache:"no-store"});
+    const data=await r.json();
+    if(!r.ok) throw Error(data.error);
+    for(const c of data.comments as Comment[]) merged.set(c.id,c);
+    isAdmin=data.admin;nextCursor=data.nextCursor;
+    const missingParent=Array.from(merged.values()).some(c=>c.parent_id!==null && !merged.has(c.parent_id));
+    if(!missingParent || !nextCursor || nextCursor===pageCursor) break;
+    pageCursor=nextCursor;
+   } while(true);
+   setComments(Array.from(merged.values()));
+   setAdmin(isAdmin);setCursor(nextCursor);
   } catch(e) {setError(e instanceof Error?e.message:"Could not load comments.");}
   finally {setLoading(false);}
  }
@@ -98,16 +111,16 @@ export default function DiscussionComments() {
    {activeComposer===id && error && <p role="alert" className="mt-2 text-sm text-red-700">{error}</p>}
   </form>;
  }
+ const visibleComments=orderDiscussion(comments);
  return <div className="mt-7">
   {topContainer && createPortal(composer(null,true),topContainer)}
   <div className="flex items-center justify-between gap-3"><h3 className="text-xl font-bold">The conversation</h3><button disabled={loading || busy} onClick={()=>load()} className="text-sm underline disabled:opacity-40">Refresh</button></div>
   {error && !busy && <p role="alert" className="mt-3 text-sm text-red-700">{error} <button onClick={()=>load()} className="underline">Reload comments</button></p>}
-  <p className="mt-5 text-xs text-[#666666]">Newest first</p>
-  {!loading && !error && comments.length===0 && <p className="py-8 text-[#666666]">No comments yet. Be the first to share a thought.</p>}
-  <div className="mt-4 divide-y divide-[#dddddd]">{comments.map(c=><article key={c.id} id={"comment-"+c.id} className="py-6">
+  <p className="mt-5 text-xs text-[#666666]">Newest conversations first</p>
+  {!loading && !error && visibleComments.length===0 && <p className="py-8 text-[#666666]">No comments yet. Be the first to share a thought.</p>}
+  <div className="mt-4">{visibleComments.map(({comment:c,depth})=><article key={c.id} id={"comment-"+c.id} className={"border-t border-[#dddddd] py-6"+(depth?" border-l pl-4":"")} style={{marginLeft:Math.min(depth,3)*16}}>
    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1"><span className="font-bold">#{c.id}</span><time dateTime={c.created_at} className="text-xs text-[#666666]">{new Date(c.created_at).toLocaleString()}</time>{c.hidden && !c.deleted_at && admin && <span className="text-xs">Hidden from public</span>}</div>
-   {c.parent_id && <p className="mt-2 text-xs text-[#666666]">Reply to comment #{c.parent_id}</p>}
-   <p className="mt-3 whitespace-pre-wrap break-words leading-7">{c.deleted_at?"This comment was deleted by its author.":c.hidden && !admin?"This comment was hidden by a moderator.":c.body}</p>
+   <p className="mt-3 whitespace-pre-wrap break-words leading-7">{c.hidden && !admin?"This comment was hidden by a moderator.":c.body}</p>
    {!c.hidden && <button disabled={busy} aria-expanded={reply?.id===c.id} aria-controls={"reply-form-"+c.id} className="mt-3 text-sm underline underline-offset-4" onClick={()=>setReply(reply?.id===c.id?null:c)}>Reply</button>}
    {!c.deleted_at && deleteTokens[c.id] && <button disabled={busy} className="ml-5 mt-3 text-sm underline" onClick={()=>removeComment(c)}>Delete</button>}
    {admin && !c.deleted_at && <button disabled={busy} className="ml-5 mt-3 text-sm underline" onClick={()=>moderate(c)}>{c.hidden?"Restore":"Hide"}</button>}

@@ -1,0 +1,11 @@
+const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict'),ts=require('../node_modules/typescript');
+const output={};
+vm.runInNewContext(ts.transpileModule(fs.readFileSync('lib/discussion-thread.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,{exports:output});
+const row=(id,parent_id=null,deleted_at=null)=>({id,parent_id,deleted_at});
+const result=rows=>JSON.parse(JSON.stringify(output.orderDiscussion(rows).map(({comment,depth})=>[comment.id,depth])));
+assert.deepEqual(result([row(6,2),row(5),row(4,3),row(3,1),row(2,1),row(1)]),[[5,0],[1,0],[2,1],[6,2],[3,1],[4,2]]);
+assert.deepEqual(result([row(3,2),row(2,1,'deleted'),row(1)]),[[1,0],[3,1]]);
+assert.deepEqual(result([row(3,2),row(2,1),row(1,null,'deleted')]),[[2,0],[3,1]]);
+assert.deepEqual(result([row(1,null,'deleted')]),[]);
+assert.deepEqual(result([row(2,1),row(1),row(1)]),[[1,0],[2,1]]);
+console.log('PASS: replies remain under parents, nested replies, deleted parents preserve replies, deleted-only list, pagination deduplication');
