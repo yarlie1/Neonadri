@@ -1,4 +1,5 @@
 "use client";
+import HostRewardPanel from "../host-reward/HostRewardPanel";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -915,6 +916,7 @@ export default function DashboardClient({
   return (
     <main className={`min-h-screen px-4 py-5 sm:py-6 ${APP_PAGE_BG_CLASS}`}>
       <div className="mx-auto max-w-4xl space-y-5">
+        <HostRewardPanel/>
         {showMatchSuccess && (
           <div className={`${SOFT_CARD_CLASS} px-4 py-3 text-sm font-medium text-[#333333] shadow-none`}>
             Match created successfully.

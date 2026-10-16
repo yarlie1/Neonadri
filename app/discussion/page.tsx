@@ -1,12 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import DiscussionComments from "./DiscussionComments";
+import HostRewardPanel from "../host-reward/HostRewardPanel";
 
 export const metadata: Metadata = {
  title: "Simple meetups. What do you think?",
  description: "An activity, a time, a place, and one other person. Explore Neonadri's idea and share your honest feedback. No login needed to comment.",
 };
-export default function DiscussionPage() {
+export default function DiscussionPage({searchParams}:{searchParams?:{reward?:string}}) {
  return <main className="mx-auto max-w-4xl px-5 py-12 text-[#111111] sm:py-20">
   <p className="text-xs font-bold uppercase tracking-[0.18em]">Neonadri · An open conversation</p>
   <h1 className="mt-6 text-5xl font-black leading-[1.02] tracking-tight sm:text-7xl">Simple meetups.<br/><span className="text-[#666666]">What do you think?</span></h1>
@@ -35,7 +36,8 @@ export default function DiscussionPage() {
   <section id="conversation" className="mt-16 scroll-mt-8 border-t border-[#111111] pt-9">
    <h2 className="text-3xl font-black tracking-tight">Your perspective matters.</h2>
    <p className="mt-3 text-lg leading-7">Would you use this? What would make you hesitate? What would make it feel safer? What would you change?</p>
-   <p className="mt-3 text-sm text-[#666666]">Skeptical takes and constructive criticism are welcome. There is no reward for posting feedback here.</p>
+   <p className="mt-3 text-sm text-[#666666]">Skeptical takes and constructive criticism are welcome. Ordinary comments are unpaid. Eligible hosts can join the separate <Link href="/host-reward" className="underline">$100 Host Reward</Link>; event experiences are labeled.</p>
+   {searchParams?.reward==="host100" && <HostRewardPanel compose/>}
    <DiscussionComments/>
   </section>
   <section className="mt-14 border-t border-[#cccccc] pt-8">

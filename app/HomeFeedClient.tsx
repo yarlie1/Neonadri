@@ -293,6 +293,13 @@ export default function HomeFeedClient({
           </Link>
 
           <Link
+            href="/host-reward"
+            className="block rounded-lg border border-black bg-white px-4 py-4 text-[#111111]"
+          >
+            <strong>Host a meetup. Share your experience. Get $100.</strong>
+            <p className="mt-1 text-xs">Oct 20–Nov 30 · LA County · First 10 eligible hosts · Can be combined with the $10 reward. See how it works →</p>
+          </Link>
+          <Link
             href="/discussion"
             className="group flex items-center justify-between gap-3 rounded-[8px] border border-[#d6d6d6] bg-white px-4 py-3 text-[#111111] transition hover:border-[#111111] hover:bg-[#fafafa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111]"
           >

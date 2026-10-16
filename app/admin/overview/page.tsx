@@ -97,6 +97,7 @@ export default async function AdminOverviewPage() {
       className={`min-h-screen ${APP_PAGE_BG_CLASS} px-4 py-6 sm:px-6 sm:py-8`}
     >
       <div className="mx-auto max-w-6xl space-y-4">
+        <Link href="/admin/host-reward" className="inline-block rounded-lg border px-4 py-3 font-bold">Manage $100 Host Reward claims →</Link>
         <section className={HERO_SURFACE_CLASS}>
           <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/45 blur-2xl" />
           <div className="absolute bottom-0 left-0 h-28 w-28 rounded-full bg-[#d6e0e6]/45 blur-2xl" />

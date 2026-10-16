@@ -27,7 +27,7 @@ export async function GET(req: Request) {
   const cursor = new URL(req.url).searchParams.get("before");
   if(cursor && !/^\d{1,15}$/.test(cursor)) return NextResponse.json({error:"Invalid page."},{status:400});
   const admin = await isAdmin();
-  let query = adminDb().from("discussion_comments").select("id,nickname,body,parent_id,hidden,created_at,deleted_at").order("id",{ascending:false}).limit(31);
+  let query = adminDb().from("discussion_comments").select("id,nickname,body,parent_id,hidden,created_at,deleted_at,reward_program").order("id",{ascending:false}).limit(31);
   if(cursor) query=query.lt("id",Number(cursor));
   const {data,error}=await query;
   if(error) throw error;

@@ -2,7 +2,7 @@
 import { createPortal } from "react-dom";
 import { orderDiscussion } from "../../lib/discussion-thread";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-type Comment = {id:number;nickname:string;body:string;parent_id:number|null;hidden:boolean;created_at:string;deleted_at:string|null};
+type Comment = {id:number;nickname:string;body:string;parent_id:number|null;hidden:boolean;created_at:string;deleted_at:string|null;reward_program?:string|null};
 export default function DiscussionComments() {
  const [deleteTokens,setDeleteTokens]=useState<Record<string,string>>({});
  const [storageWarning,setStorageWarning]=useState("");
@@ -75,7 +75,7 @@ export default function DiscussionComments() {
   finally {setBusy(false);}
  }
  async function removeComment(c:Comment) {
-  if(busy || !window.confirm("Delete your comment? This cannot be undone. Replies will remain.")) return;
+  if(busy || !window.confirm(c.reward_program==="host100"?"Delete your experience? Any pending $100 claim will be withdrawn. Replies will remain.":"Delete your comment? This cannot be undone. Replies will remain.")) return;
   setBusy(true);setError("");
   try {
    const r=await fetch("/api/discussion",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:c.id,deleteToken:deleteTokens[c.id]})});
@@ -120,6 +120,7 @@ export default function DiscussionComments() {
   {!loading && !error && visibleComments.length===0 && <p className="py-8 text-[#666666]">No comments yet. Be the first to share a thought.</p>}
   <div className="mt-4">{visibleComments.map(({comment:c,depth})=><article key={c.id} id={"comment-"+c.id} className={"border-t border-[#dddddd] py-6"+(depth?" border-l pl-4":"")} style={{marginLeft:Math.min(depth,3)*16}}>
    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1"><span className="font-bold">#{c.id}</span><time dateTime={c.created_at} className="text-xs text-[#666666]">{new Date(c.created_at).toLocaleString()}</time>{c.hidden && !c.deleted_at && admin && <span className="text-xs">Hidden from public</span>}</div>
+   {c.reward_program==="host100" && <p className="mt-3 border-l-2 border-black pl-3 text-sm"><strong>Reward program participant</strong> — I am applying for Neonadri’s $100 reward for completing a meetup and sharing my honest experience.</p>}
    <p className="mt-3 whitespace-pre-wrap break-words leading-7">{c.hidden && !admin?"This comment was hidden by a moderator.":c.body}</p>
    {!c.hidden && <button disabled={busy} aria-expanded={reply?.id===c.id} aria-controls={"reply-form-"+c.id} className="mt-3 text-sm underline underline-offset-4" onClick={()=>setReply(reply?.id===c.id?null:c)}>Reply</button>}
    {!c.deleted_at && deleteTokens[c.id] && <button disabled={busy} className="ml-5 mt-3 text-sm underline" onClick={()=>removeComment(c)}>Delete</button>}

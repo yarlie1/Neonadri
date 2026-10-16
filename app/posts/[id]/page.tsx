@@ -27,6 +27,7 @@ import OwnerMatchPanel from "./OwnerMatchPanel";
 import DeletePostButton from "./DeletePostButton";
 import CancelMeetupButton from "./CancelMeetupButton";
 import LaunchRewardClaimBox from "./LaunchRewardClaimBox";
+import HostRewardPanel from "../../host-reward/HostRewardPanel";
 import PostDistanceNote from "./PostDistanceNote";
 import ScrollReveal from "./ScrollReveal";
 import {
@@ -767,6 +768,7 @@ export default async function MeetupDetailPage({ params }: PageProps) {
       <div className="mx-auto max-w-5xl space-y-5">
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(320px,360px)] lg:items-start">
           <div className="space-y-5">
+            {user?.id===post.user_id && <HostRewardPanel postId={post.id}/>}
             {shouldShowLaunchRewardClaim ? (
               <ScrollReveal>
                 <LaunchRewardClaimBox

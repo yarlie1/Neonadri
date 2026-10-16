@@ -18,6 +18,7 @@ const sections: RuleSection[] = [
     title: "2. Promotion Period",
     paragraphs: [
       "The Promotion begins on September 15, 2026 at 12:00 a.m. Pacific Time and ends when 100 eligible participants have been approved to receive the Launch Reward or at November 30, 2026 at 11:59 p.m. Pacific Time, whichever occurs first.",
+      "This $10 Launch Reward may be combined with the separate $100 Host Reward if you satisfy both promotions’ requirements, for up to $110 total. See /host-reward/rules for the separate Host Reward conditions.",
     ],
   },
   {

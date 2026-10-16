@@ -140,6 +140,7 @@ export default async function RewardPage() {
           </p>
           <p className="mt-3 text-base font-semibold leading-7 text-[#555555]">
             Starts September 15, 2026 at 12:00 a.m. Pacific Time. Ends November 30, 2026 at 11:59 p.m. Pacific Time, or earlier if all 100 rewards are approved. Qualifying posts and claim emails must be submitted during this period.
+            {" "}You can also earn the separate <Link href="/host-reward" className="underline">$100 Host Reward</Link> if you meet both promotions’ requirements, for up to $110 total.
           </p>
           <p className="mt-3 text-base font-semibold leading-7 text-[#555555]">
             Spots are allocated in reservation order, up to 100 eligible participants. A reserved spot counts even before the claim email is sent and does not automatically expire. Email your claim during the promotion period for review; a reservation does not guarantee a reward.
