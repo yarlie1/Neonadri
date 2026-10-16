@@ -17,7 +17,7 @@ const sections: RuleSection[] = [
   {
     title: "2. Promotion Period",
     paragraphs: [
-      "The Promotion begins on September 15, 2026 at 12:00 a.m. Pacific Time and ends when 100 eligible participants have been approved to receive the Launch Reward or at October 15, 2026 at 11:59 p.m. Pacific Time, whichever occurs first.",
+      "The Promotion begins on September 15, 2026 at 12:00 a.m. Pacific Time and ends when 100 eligible participants have been approved to receive the Launch Reward or at November 30, 2026 at 11:59 p.m. Pacific Time, whichever occurs first.",
     ],
   },
   {
