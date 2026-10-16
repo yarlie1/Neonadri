@@ -271,6 +271,21 @@ export default function HomeFeedClient({
           </div>
 
           <Link
+            href="/host-reward"
+            className="group block overflow-hidden rounded-[8px] border border-[#111111] bg-[#111111] px-4 py-4 text-white transition hover:bg-[#262626]"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-[10px] font-black uppercase tracking-[0.18em] text-[#d6d6d6]">LA Host Reward</div>
+                <div className="mt-2 text-xl font-black leading-[1.05] tracking-[-0.03em] text-[#ffffff] sm:text-2xl">Host a meetup. Get $100.</div>
+                <div className="mt-2 text-sm font-semibold leading-5 text-[#d6d6d6]">Complete a meetup & share your experience.</div>
+                <div className="mt-1 text-xs font-semibold leading-5 text-[#d6d6d6]">First 10 eligible hosts · Oct 20–Nov 30. Terms apply.</div>
+              </div>
+              <div className="shrink-0 rounded-full border border-white px-3 py-1 text-xs font-black text-[#ffffff] transition group-hover:bg-white group-hover:text-[#111111]">View</div>
+            </div>
+          </Link>
+
+          <Link
             href="/reward"
             className="group block overflow-hidden rounded-[8px] border border-[#111111] bg-[#111111] px-4 py-4 text-white transition hover:bg-[#262626]"
           >
@@ -292,13 +307,7 @@ export default function HomeFeedClient({
             </div>
           </Link>
 
-          <Link
-            href="/host-reward"
-            className="block rounded-lg border border-black bg-white px-4 py-4 text-[#111111]"
-          >
-            <strong>Host a meetup. Share your experience. Get $100.</strong>
-            <p className="mt-1 text-xs">Oct 20–Nov 30 · LA County · First 10 eligible hosts · Can be combined with the $10 reward. See how it works →</p>
-          </Link>
+
           <Link
             href="/discussion"
             className="group flex items-center justify-between gap-3 rounded-[8px] border border-[#d6d6d6] bg-white px-4 py-3 text-[#111111] transition hover:border-[#111111] hover:bg-[#fafafa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111]"

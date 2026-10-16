@@ -1,29 +1,98 @@
 import Link from "next/link";
 import HostRewardPanel from "./HostRewardPanel";
-export const metadata={title:"$100 Host Reward",description:"Host a meetup in LA County, complete both reviews, and share your honest experience. First 10 eligible hosts get $100."};
-export default function HostRewardPage(){
- return <main className="mx-auto max-w-3xl px-5 py-12 text-[#111111]">
-  <p className="text-sm font-bold uppercase tracking-widest">Neonadri · Host Reward</p>
-  <h1 className="mt-5 text-4xl font-black sm:text-6xl">Host a meetup.<br/>Share your experience.<br/>Get $100.</h1>
-  <p className="mt-6 text-lg leading-8">For the first 10 eligible hosts who complete all requirements and submit a claim. U.S. residents age 18+. Meetups must take place in Los Angeles County.</p>
-  <p className="mt-4 leading-7">October 20, 2026 at 12:00 a.m. through November 30, 2026 at 11:59 p.m. Pacific Time, or earlier when all 10 rewards are approved.</p>
-  <div className="my-7 flex flex-wrap gap-4"><Link href="/write" className="border border-black bg-black px-5 py-3 font-bold text-white" style={{color:"white"}}>Post a Meetup</Link><a href="#host-reward-claim" className="border px-5 py-3 font-bold">Check My Eligibility</a></div>
-  <ol className="space-y-6 border-y py-7">{[
-   ["1. Host a meetup","Create a meetup on Neonadri, accept a guest through the site, and meet in person in a public place in LA County during the event period."],
-   ["2. Complete both reviews","You and your guest must each submit a review and truthfully answer Yes to whether the other person attended. Ratings and opinions do not affect eligibility."],
-   ["3. Share and apply","Post your honest experience on Discussion using the reward form. Posting and submitting your claim happen together. No separate email is required."],
-   ["4. Receive $100","We review claims within 7 business days and send approved rewards within 7 business days of approval through Tango. Check your claim status in your Dashboard."]
-  ].map(([title,body])=><li key={title}><h2 className="text-xl font-bold">{title}</h2><p className="mt-2 leading-7">{body}</p></li>)}</ol>
-  <HostRewardPanel/>
-  <h2 className="mt-9 text-2xl font-bold">Good to know</h2>
-  <div className="mt-4 space-y-4 leading-7">
-   <p>One $100 reward per person, for hosts only. Guests are not eligible. Claims are reviewed in submission order; a pending claim is not a guaranteed reward.</p>
-   <p>Already earned the $10 Launch Reward? You can earn this $100 reward too. Meet each promotion’s separate requirements to receive up to $110. <Link href="/reward" className="underline">See the $10 event.</Link></p>
-   <p>Honest criticism is welcome. Positive ratings or positive feedback are never required. Event experiences display a reward-program disclosure.</p>
-   <p>Deleting your experience before approval withdraws your pending claim. There is no required retention period after approval. Photos and your guest’s name are not required.</p>
-   <p>There is no purchase or participation fee. Any activity costs agreed with your guest remain separate. Never continue an uncomfortable meetup to earn a reward.</p>
-   <p>Business days are Monday–Friday, excluding U.S. federal holidays. <Link href="/host-reward/rules" className="underline">Read the Official Rules.</Link></p>
-  </div>
- </main>;
-}
 
+export const metadata = {
+  title: "$100 Host Reward",
+  description: "Host a meetup in LA County, complete both reviews, and share your honest experience. First 10 eligible hosts get $100.",
+};
+
+const steps = [
+  { title: "Host a Meetup", body: "Post on Neonadri, accept a guest, and meet in person in a public place in LA County." },
+  { title: "Complete Both Reviews", body: "You and your guest each leave a review and truthfully confirm that the other person attended." },
+  { title: "Share & Claim $100", body: "Share your honest experience on Discussion using the reward form. Your post and claim are submitted together." },
+];
+
+const questions = [
+  ["Who can participate?", "Hosts only. You must be a U.S. resident age 18+ and host a qualifying meetup in Los Angeles County. One $100 reward per person."],
+  ["How are the first 10 chosen?", "Complete claims are reviewed in submission order. Up to 10 pending or approved spots are held at once. A pending claim does not guarantee a reward; declined or withdrawn claims reopen a spot while the event is open."],
+  ["When will I receive the reward?", "We review claims within 7 business days and send approved $100 digital rewards through Tango within 7 business days of approval. Business days exclude weekends and U.S. federal holidays. Track your claim in your Dashboard."],
+  ["Does my experience need to be positive?", "No. Honest criticism is welcome. Ratings and opinions do not affect eligibility. Your public experience will include a reward-program disclosure. Photos and your guest’s name are not required."],
+  ["What if I delete my experience?", "Deleting it before approval withdraws your pending claim. There is no required posting-retention period after approval."],
+];
+
+const primary = "inline-flex items-center justify-center rounded-[10px] border border-[#111111] bg-[#111111] px-7 py-4 text-base font-black transition hover:bg-[#333333]";
+const secondary = "inline-flex items-center justify-center rounded-[10px] border border-[#111111] bg-white px-7 py-4 text-base font-black transition hover:bg-[#f5f5f5]";
+
+export default function HostRewardPage() {
+  return (
+    <main className="min-h-screen bg-white px-5 py-11 text-[#111111] sm:py-14">
+      <div className="mx-auto max-w-3xl">
+        <p className="text-[13px] font-black uppercase tracking-[0.16em]">Los Angeles Host Reward</p>
+        <h1 className="mt-5 text-[44px] font-black leading-[0.98] tracking-[-0.03em] sm:text-[82px] sm:leading-[0.94] sm:tracking-[-0.05em]">
+          <span className="block">Host a Meetup.</span>
+          <span className="block">Get $100.</span>
+        </h1>
+        <p className="mt-6 text-[22px] font-bold leading-[1.35] text-[#333333]">Meet in person. Share your honest experience.</p>
+        <p className="mt-3 max-w-2xl text-lg font-semibold leading-8 text-[#555555]">Complete a meetup, finish both participant reviews, and post your experience on Discussion to claim your reward.</p>
+
+        <div className="mt-7 grid grid-cols-3 divide-x divide-[#cccccc] border-y border-[#111111] py-5">
+          {[["10 hosts", "First eligible claims"], ["$100", "Per approved host"], ["Oct 20–Nov 30", "2026 · Pacific Time"]].map(([value, label]) => (
+            <div key={value} className="px-2 first:pl-0 last:pr-0 sm:px-5">
+              <p className="text-base font-black sm:text-xl">{value}</p>
+              <p className="mt-1 text-xs font-medium leading-5 text-[#555555] sm:text-sm">{label}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Link href="/write" className={primary} style={{ color: "#ffffff" }}>Post a Meetup</Link>
+          <a href="#host-reward-claim" className={secondary}>Check My Eligibility</a>
+        </div>
+
+        <section className="mt-14 border-t border-[#111111] pt-9">
+          <h2 className="text-[32px] font-black tracking-[-0.04em]">How It Works</h2>
+          <div className="mt-5 divide-y divide-[#111111] border-y border-[#111111]">
+            {steps.map((step, index) => (
+              <div key={step.title} className="grid grid-cols-[40px_1fr] gap-4 py-6 sm:grid-cols-[72px_1fr] sm:gap-6">
+                <div className="text-[40px] font-black leading-none tracking-[-0.05em]">{index + 1}</div>
+                <div>
+                  <h3 className="text-[24px] font-black tracking-[-0.04em] sm:text-[26px]">{step.title}</h3>
+                  <p className="mt-2 text-base font-semibold leading-7 text-[#555555]">{step.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 text-sm font-semibold leading-6 text-[#555555]">Both reviews must answer Yes to “Did your match show up?” Positive ratings or feedback are never required.</p>
+        </section>
+
+        <section className="mt-8 border border-[#111111] p-6">
+          <p className="text-[11px] font-black uppercase tracking-[0.16em]">Two rewards. One meetup.</p>
+          <h2 className="mt-2 text-[28px] font-black tracking-[-0.04em]">Earn up to $110.</h2>
+          <p className="mt-2 text-base font-semibold leading-7 text-[#555555]">You can combine this $100 reward with the $10 Launch Reward when you meet both events’ requirements.</p>
+          <Link href="/reward" className="mt-3 inline-block text-sm font-bold underline underline-offset-4">See the $10 Launch Reward →</Link>
+        </section>
+
+        <div className="mt-8"><HostRewardPanel /></div>
+
+        <section className="mt-10">
+          <h2 className="text-[28px] font-black tracking-[-0.04em]">A Few Details</h2>
+          <div className="mt-4 divide-y divide-[#cccccc] border-y border-[#cccccc]">
+            {questions.map(([question, answer]) => (
+              <details key={question} className="group py-4">
+                <summary className="cursor-pointer text-base font-bold">{question}</summary>
+                <p className="mt-3 text-sm leading-7 text-[#555555]">{answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-8 border border-[#cccccc] bg-[#fafafa] p-5 text-sm leading-6 text-[#555555]">
+          <p className="font-semibold">U.S. residents 18+ · LA County meetups · Hosts only · No purchase necessary.</p>
+          <p className="mt-3">October 20, 2026 at 12:00 a.m.–November 30, 2026 at 11:59 p.m. Pacific Time, or earlier if all 10 rewards are approved. The meetup, both reviews, experience post and claim must be completed during this period.</p>
+          <p className="mt-3">Agreed activity costs are separate. Prioritize your safety; never continue an uncomfortable meetup to earn a reward.</p>
+          <Link href="/host-reward/rules" className="mt-3 inline-block font-bold text-[#111111] underline underline-offset-4">Read the Official Rules →</Link>
+        </section>
+        <div className="mt-8"><Link href="/write" className={primary + " w-full sm:w-auto"} style={{ color: "#ffffff" }}>Post a Meetup</Link></div>
+      </div>
+    </main>
+  );
+}
