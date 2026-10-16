@@ -272,16 +272,15 @@ export default function HomeFeedClient({
 
           <Link
             href="/host-reward"
-            className="group block overflow-hidden rounded-[8px] border border-[#111111] bg-[#111111] px-4 py-4 text-white transition hover:bg-[#262626]"
+            className="group block overflow-hidden rounded-[8px] border border-[#111111] bg-white px-4 py-4 text-[#111111] transition hover:bg-[#fafafa]"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <div className="text-[10px] font-black uppercase tracking-[0.18em] text-[#d6d6d6]">LA Host Reward</div>
-                <div className="mt-2 text-xl font-black leading-[1.05] tracking-[-0.03em] text-[#ffffff] sm:text-2xl">Host a meetup. Get $100.</div>
-                <div className="mt-2 text-sm font-semibold leading-5 text-[#d6d6d6]">Complete a meetup & share your experience.</div>
-                <div className="mt-1 text-xs font-semibold leading-5 text-[#d6d6d6]">First 10 eligible hosts · Oct 20–Nov 30. Terms apply.</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.18em] text-[#555555]">LA Host Reward</div>
+                <div className="mt-2 text-xl font-black leading-[1.05] tracking-[-0.03em] text-[#111111] sm:text-2xl">Host a meetup. Get $100.</div>
+                <div className="mt-2 text-sm font-semibold leading-5 text-[#555555]">Complete a meetup & share your experience. Terms apply.</div>
               </div>
-              <div className="shrink-0 rounded-full border border-white px-3 py-1 text-xs font-black text-[#ffffff] transition group-hover:bg-white group-hover:text-[#111111]">View</div>
+              <div className="shrink-0 rounded-full border border-[#111111] px-3 py-1 text-xs font-black text-[#111111] transition group-hover:bg-[#f0f0f0]">View</div>
             </div>
           </Link>
 
