@@ -290,12 +290,13 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "Invalid request." }, { status: 400 });
     }
 
-    const { error } = await supabase
+    const { data: cancelledRequests, error } = await supabase
       .from("match_requests")
       .delete()
       .eq("id", requestId)
       .eq("requester_user_id", user.id)
-      .eq("status", "pending");
+      .eq("status", "pending")
+      .select("id, post_id, post_owner_user_id");
 
     if (error) {
       console.error("Match request delete failed", {
@@ -308,6 +309,42 @@ export async function DELETE(req: Request) {
         { error: "Failed to cancel request." },
         { status: 500 }
       );
+    }
+
+    // Only the DELETE that actually removed a pending row may notify the host.
+    const cancelledRequest = cancelledRequests?.[0];
+    if (cancelledRequest) {
+      try {
+        const [{ data: profile }, { data: post }] = await Promise.all([
+          supabase.from("profiles").select("display_name").eq("id", user.id).maybeSingle(),
+          supabase.from("posts").select("meeting_purpose, place_name, location").eq("id", cancelledRequest.post_id).maybeSingle(),
+        ]);
+        const requesterName = profile?.display_name || "Someone";
+        const meetupLabel = post?.meeting_purpose || post?.place_name || post?.location || "your meetup";
+        const notificationBody = `${requesterName} cancelled their request to join ${meetupLabel}.`;
+        await Promise.all([
+          sendPushNotificationToUser(cancelledRequest.post_owner_user_id, {
+            title: "Meetup request cancelled",
+            body: notificationBody,
+            url: "/dashboard?tab=received",
+            tag: `match-request-${cancelledRequest.id}`,
+          }).catch((pushError) => {
+            console.error("Cancelled request push notification failed", pushError);
+          }),
+          sendEmailNotificationToUser(cancelledRequest.post_owner_user_id, {
+            subject: "Meetup request cancelled on Neonadri",
+            headline: "Meetup request cancelled",
+            body: notificationBody,
+            url: "/dashboard?tab=received",
+            buttonLabel: "View requests",
+          }).catch((emailError) => {
+            console.error("Cancelled request email notification failed", emailError);
+          }),
+        ]);
+      } catch (notificationError) {
+        // A notification failure must not turn a successful cancellation into an error.
+        console.error("Cancelled request notification failed", notificationError);
+      }
     }
 
     return NextResponse.json({ ok: true }, { status: 200 });
