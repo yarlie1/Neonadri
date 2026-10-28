@@ -1,4 +1,9 @@
 import Link from "next/link";
+import { getAdminActivity, type ActivityItem } from "../../../lib/adminActivity";
+import { createAdminClient } from "../../../lib/supabase/admin";
+import LatestActivity from "./LatestActivity";
+
+export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import {
@@ -82,6 +87,15 @@ export default async function AdminOverviewPage() {
     redirect("/");
   }
 
+  let activity: ActivityItem[] = [];
+  let activityError = false;
+  try {
+    activity = await getAdminActivity(createAdminClient());
+  } catch (error) {
+    console.error("Admin activity load failed", error);
+    activityError = true;
+  }
+
   let overview: Awaited<ReturnType<typeof getAdminOverviewData>> | null = null;
   let loadError = "";
 
@@ -136,6 +150,8 @@ export default async function AdminOverviewPage() {
             </div>
           </div>
         </section>
+
+        <LatestActivity items={activity} error={activityError} />
 
         {loadError ? (
           <section
